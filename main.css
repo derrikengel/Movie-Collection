@@ -1,0 +1,155 @@
+html {
+	background: #111;
+	box-sizing: border-box;
+	color: #fff;
+	font-family: 'Roboto', sans-serif;
+	font-size: 1rem;
+	line-height: 1.35;
+	overflow-x: hidden;
+}
+
+body {
+	margin: 0.5rem;
+}
+
+*,
+*:before,
+*:after {
+	box-sizing: inherit;
+}
+
+.movies {
+	display: grid;
+	grid-gap: 0.5rem;
+	grid-template-columns: repeat(auto-fit, 168px);
+	justify-content: center;
+}
+
+.movie-card {
+	background: #111;
+	overflow: hidden;
+	position: relative;
+	transition: all 250ms ease-out;
+	width: 168px;
+	will-change: transform;
+	outline: 0;
+}
+
+	.movie-card:hover,
+	.movie-card:focus {
+		box-shadow: 0 0 6rem #000, 0 0 3rem #000;
+		transform: scale(1.25);
+		z-index: 10;
+	}
+
+.movie-card-overlay {
+	background: rgba(17, 17, 17, 0.65);
+	bottom: 0;
+	left: 0;
+	opacity: 0;
+	padding: 1rem;
+	position: absolute;
+	right: 0;
+	top: 0;
+	transition: all 250ms ease-out;
+	transition-delay: 100ms;
+	will-change: opacity;
+}
+
+.movie-card:hover .movie-card-overlay,
+.movie-card:focus .movie-card-overlay {
+	opacity: 1;
+}
+
+.movie-card-img {
+	display: block;
+	width: 100%;
+}
+
+.movie-card:hover .movie-card-img,
+.movie-card:focus .movie-card-img {
+	filter: blur(3px);
+	transform: scale(1.05);
+}
+
+.movie-card-title {
+	color: #fff;
+	display: block;
+	font-weight: 700;
+}
+
+.movie-card-rating {
+	background-color: #fff;
+	color: #111;
+	display: inline-block;
+	font-size: 0.625rem;
+	font-weight: 700;
+	margin-right: 0.375em;
+	padding: 0.25em 0.5em;
+	vertical-align: middle;
+}
+
+.movie-card-year {
+	display: inline-block;
+	font-size: 0.625rem;
+	font-weight: 700;
+	vertical-align: middle;
+}
+
+.movie-card-content {
+	opacity: 0;
+	transition: 300ms all ease-out;
+	transition-delay: 150ms;
+	transform: translateY(0.5rem);
+	will-change: opacity, transform;
+}
+
+.movie-card:hover .movie-card-content,
+.movie-card:focus .movie-card-content {
+	opacity: 1;
+	transform: none;
+}
+
+.loader {
+	animation: loader 1s infinite linear;
+	border: 0.5em solid rgba(255, 255, 255, 0.3);
+	border-radius: 50%;
+	border-top-color: #fff;
+	display: block;
+	height: 4em;
+	margin: 0 auto;
+	transform: translateZ(0);
+	width: 4em;
+}
+
+@keyframes loader {
+	0% {
+		transform: rotate(0deg);
+	}
+
+	100% {
+		transform: rotate(360deg);
+	}
+}
+
+
+@media screen and (min-width: 42rem) {
+	body {
+		margin: 3rem;
+	}
+
+	.movies {
+		display: grid;
+		grid-gap: 1rem;
+	}
+
+	.movie-card:hover,
+	.movie-card:focus {
+		transform: scale(1.5);
+	}
+
+	.movie-card-rating,
+	.movie-card-year {
+		font-size: 0.5rem;
+	}
+}
