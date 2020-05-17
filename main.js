@@ -77,7 +77,17 @@ $(function () {
 
 	$randomBtn.on('click', randomMovie);
 
-	$movieList.on('click', '.movie-card', function () {
-		$(this).blur();
+	$movieList.on('click keypress', '.movie-card', function (e) {
+		if (e.type === 'click' || (e.type === 'keypress' && e.keyCode === 13)) {
+			$('.movie-card').not(this).removeClass('active');
+
+			if ($(this).hasClass('active')) {
+				$(this).removeClass('active').blur();
+				$movieList.removeClass('card-expanded');
+			} else {
+				$(this).addClass('active');
+				$movieList.addClass('card-expanded');
+			}
+		}
 	});
 });

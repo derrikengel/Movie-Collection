@@ -52,8 +52,8 @@
 
 	<script id="movie-template" type="text/template">
 		{{#movies}}
-			<div class="movie-card" tabindex="0" data-id="{{index}}" data-acquired="{{ gsx$acquired.$t }}">
-				<img src="{{ gsx$image.$t }}" alt="gsx$movietitle.$t" class="movie-card-img">
+			<div class="movie-card" tabindex="0" title="{{ gsx$movietitle.$t }}" data-id="{{index}}" data-acquired="{{ gsx$acquired.$t }}">
+				<img src="{{ gsx$image.$t }}" alt="{{ gsx$movietitle.$t }}" class="movie-card-img">
 				<div class="movie-card-overlay">
 					<div class="movie-card-content">
 						<span class="movie-card-title">{{ gsx$movietitle.$t }}</span>
