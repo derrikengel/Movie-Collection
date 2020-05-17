@@ -52,7 +52,7 @@ $(function () {
 	};
 
 	var searchMovies = function () {
-		var searchTerm = $searchField.val();
+		var searchTerm = $searchField.val().toLowerCase();
 
 		$movieList.find('.movie-card').filter(function () {
 			return $(this).find('.movie-card-title').text().toLowerCase().indexOf(searchTerm) > -1;
