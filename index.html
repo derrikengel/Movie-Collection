@@ -8,34 +8,66 @@
 	<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
 	<link href="main.css" rel="stylesheet">
 </head>
-	
-	<body>
-		<h2>filters</h2>
-			<script id="movie-template" type="text/template">
-			{{#feed}}
-				{{#entry}}
-					<div class="movie-card" tabindex="0" data-acquired="{{ gsx$acquired.$t }}">
-						<img src="{{ gsx$image.$t }}" alt="gsx$movietitle.$t" class="movie-card-img">
-						<div class="movie-card-overlay">
-							<div class="movie-card-content">
-								<span class="movie-card-title">{{ gsx$movietitle.$t }}</span>
-								where to watch / quality<br>
-								<span class="movie-card-rating">{{ gsx$rating.$t }}</span>
-								<span class="movie-card-year">{{ gsx$year.$t }}</span>
-							</div>
-						</div>
-					</div>
-				{{/entry}}
-			{{/feed}}
-		</script>
-	
-		
-		<div class="movies" id="movies">
-			<div class="loader"></div>
-		</div>
 
-		<script src="https://code.jquery.com/jquery-3.5.1.min.js" integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=" crossorigin="anonymous"></script>		
-		<script src="https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/mustache.min.js"></script>
-		<script src="main.js"></script>
-	</body>
+<body>
+	
+	<div class="filters">
+
+		<div class="filter-field">
+			<label for="sort-by">Sort by</label>
+			<select id="sort-by" class="js-sort">
+				<option selected value="recent">Recently Added</option>
+				<option value="alpha">Alphabetical</option>
+			</select>
+		</div> <!-- /filter-field -->
+
+		<div class="filter-field">
+			<input type="search" placeholder="Search by movie title" class="js-search">
+		</div> <!-- /filter-field -->
+		<div class="filter-field">
+			format (digital, dvd, blu-ray, 4k blu-ray)
+		</div> <!-- /filter-field -->
+		<div class="filter-field">
+			genre
+		</div> <!-- /filter-field -->
+		<div class="filter-field">
+			rating
+		</div> <!-- /filter-field -->
+		<div class="filter-field">
+			release year
+		</div> <!-- /filter-field -->
+		<div class="filter-field">
+			digital quality (4k, hd, sd)
+		</div> <!-- /filter-field -->
+		<div class="filter-field">
+			<button class="js-random">Random Movie</button>
+		</div> <!-- /filter-field -->
+	</div> <!-- /filters -->
+
+	<h2><span class="js-count"></span> Movies</h2>
+
+	<div class="movies js-movies">
+		<div class="loader"></div>
+	</div> <!-- /movies -->
+
+	<script id="movie-template" type="text/template">
+		{{#movies}}
+			<div class="movie-card" tabindex="0" data-id="{{index}}" data-acquired="{{ gsx$acquired.$t }}">
+				<img src="{{ gsx$image.$t }}" alt="gsx$movietitle.$t" class="movie-card-img">
+				<div class="movie-card-overlay">
+					<div class="movie-card-content">
+						<span class="movie-card-title">{{ gsx$movietitle.$t }}</span>
+						where to watch / quality<br>
+						<span class="movie-card-rating">{{ gsx$rating.$t }}</span>
+						<span class="movie-card-year">{{ gsx$year.$t }}</span>
+					</div> <!-- /movie-card-content -->
+				</div> <!-- /movie-card-overlay -->
+			</div>
+		{{/movies}}
+	</script>
+
+	<script src="https://code.jquery.com/jquery-3.5.1.min.js" integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=" crossorigin="anonymous"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/mustache.min.js"></script>
+	<script src="main.js"></script>
+</body>
 </html>
