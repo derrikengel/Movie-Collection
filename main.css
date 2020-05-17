@@ -1,7 +1,7 @@
 html {
 	background: #111;
 	box-sizing: border-box;
-	color: #fff;
+	color: #eee;
 	font-family: 'Roboto', sans-serif;
 	font-size: 1rem;
 	line-height: 1.35;
@@ -18,11 +18,60 @@ body {
 	box-sizing: inherit;
 }
 
+h1 {
+	font-size: calc(32px + (80 - 32) * ((100vw - 320px) / (1900 - 320)));
+}
+
+h2 {
+	font-size: calc(20px + (24 - 20) * ((100vw - 320px) / (1900 - 320)));
+	margin: 0;
+}
+
+.filters {
+	align-items: center;
+	background: rgba(17, 17, 17, 0.95);
+	border-bottom: 2px solid rgba(255, 255, 255, 0.15);
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: space-between;
+	padding: 0.5rem 0;
+	position: sticky;
+	top: 0;
+	z-index: 100;
+}
+
+.filter-field {
+	margin: 0.5rem;
+}
+
+input {
+	-webkit-appearance: none;
+	background-color: transparent;
+	border: none;
+	border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+	border-radius: 0;
+	box-shadow: none;
+	box-sizing: border-box;
+	color: #eee;
+	display: block;
+	font-size: 1rem;
+	font-family: 'Roboto', sans-serif;
+	line-height: 1.35;
+	padding: 0.75rem 0;
+	width: 100%;
+}
+
+input:focus {
+	border-color: #eee;
+	outline: 0;
+}
+
 .movies {
 	display: grid;
 	grid-gap: 0.5rem;
 	grid-template-columns: repeat(auto-fit, 168px);
 	justify-content: center;
+	margin-top: 3rem;
 }
 
 .movie-card {
@@ -30,7 +79,7 @@ body {
 	cursor: pointer;
 	overflow: hidden;
 	position: relative;
-	transition: all 250ms ease-out;
+	transition: opacity 250ms ease-out, transform 250ms ease-out;
 	width: 168px;
 	will-change: transform;
 }
@@ -48,7 +97,7 @@ body {
 }
 
 .movies.card-expanded .movie-card {
-	opacity: 0.4;
+	opacity: 0.3;
 }
 
 .movies.card-expanded .movie-card.active {
@@ -84,13 +133,13 @@ body {
 }
 
 .movie-card-title {
-	color: #fff;
+	color: #eee;
 	display: block;
 	font-weight: 700;
 }
 
 .movie-card-rating {
-	background-color: #fff;
+	background-color: #eee;
 	color: #111;
 	display: inline-block;
 	font-size: 0.625rem;
@@ -124,7 +173,7 @@ body {
 	animation: loader 1s infinite linear;
 	border: 0.5em solid rgba(255, 255, 255, 0.3);
 	border-radius: 50%;
-	border-top-color: #fff;
+	border-top-color: #eee;
 	display: block;
 	height: 4em;
 	margin: 0 auto;
@@ -153,11 +202,11 @@ body {
 	}
 
 	.movies:hover .movie-card {
-		opacity: 0.6;
+		opacity: 0.5;
 	}
 
 	.movies.card-expanded .movie-card {
-		opacity: 0.4;
+		opacity: 0.3;
 	}
 
 	.movies:hover .movie-card:hover,

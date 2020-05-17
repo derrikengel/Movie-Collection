@@ -10,8 +10,12 @@
 </head>
 
 <body>
-	
+	<h1>Movie Collection</h1>
+
 	<div class="filters">
+		<div class="filter-field">
+			<h2><span class="js-count">0</span> Movies</h2>
+		</div> <!-- /filter-field -->
 
 		<div class="filter-field">
 			<label for="sort-by">Sort by</label>
@@ -25,26 +29,24 @@
 			<input type="search" placeholder="Search by movie title" class="js-search">
 		</div> <!-- /filter-field -->
 		<div class="filter-field">
-			format (digital, dvd, blu-ray, 4k blu-ray)
+			Format
 		</div> <!-- /filter-field -->
 		<div class="filter-field">
-			genre
+			Genre
 		</div> <!-- /filter-field -->
 		<div class="filter-field">
-			rating
+			Rating
 		</div> <!-- /filter-field -->
 		<div class="filter-field">
-			release year
+			Year
 		</div> <!-- /filter-field -->
 		<div class="filter-field">
-			digital quality (4k, hd, sd)
+			Quality
 		</div> <!-- /filter-field -->
 		<div class="filter-field">
 			<button class="js-random">Random Movie</button>
 		</div> <!-- /filter-field -->
 	</div> <!-- /filters -->
-
-	<h2><span class="js-count"></span> Movies</h2>
 
 	<div class="movies js-movies">
 		<div class="loader"></div>
@@ -52,17 +54,17 @@
 
 	<script id="movie-template" type="text/template">
 		{{#movies}}
-			<div class="movie-card" tabindex="0" title="{{ gsx$movietitle.$t }}" data-id="{{index}}" data-acquired="{{ gsx$acquired.$t }}">
-				<img src="{{ gsx$image.$t }}" alt="{{ gsx$movietitle.$t }}" class="movie-card-img">
-				<div class="movie-card-overlay">
-					<div class="movie-card-content">
-						<span class="movie-card-title">{{ gsx$movietitle.$t }}</span>
-						where to watch / quality<br>
-						<span class="movie-card-rating">{{ gsx$rating.$t }}</span>
-						<span class="movie-card-year">{{ gsx$year.$t }}</span>
-					</div> <!-- /movie-card-content -->
-				</div> <!-- /movie-card-overlay -->
-			</div>
+		<div class="movie-card" tabindex="0" title="{{ gsx$movietitle.$t }}" data-id="{{index}}" data-acquired="{{ gsx$acquired.$t }}">
+			<img src="{{ gsx$image.$t }}" alt="{{ gsx$movietitle.$t }}" class="movie-card-img">
+			<div class="movie-card-overlay">
+				<div class="movie-card-content">
+					<span class="movie-card-title">{{ gsx$movietitle.$t }}</span>
+					where to watch / quality<br>
+					<span class="movie-card-rating">{{ gsx$rating.$t }}</span>
+					<span class="movie-card-year">{{ gsx$year.$t }}</span>
+				</div> <!-- /movie-card-content -->
+			</div> <!-- /movie-card-overlay -->
+		</div>
 		{{/movies}}
 	</script>
 
