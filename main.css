@@ -27,6 +27,7 @@ body {
 
 .movie-card {
 	background: #111;
+	cursor: pointer;
 	overflow: hidden;
 	position: relative;
 	transition: all 250ms ease-out;
@@ -35,12 +36,12 @@ body {
 	outline: 0;
 }
 
-	.movie-card:hover,
-	.movie-card:focus {
-		box-shadow: 0 0 6rem #000, 0 0 3rem #000;
-		transform: scale(1.25);
-		z-index: 10;
-	}
+.movie-card:hover,
+.movie-card:focus {
+	box-shadow: 0 0 6rem #000, 0 0 3rem #000;
+	transform: scale(1.25);
+	z-index: 10;
+}
 
 .movie-card-overlay {
 	background: rgba(17, 17, 17, 0.65);

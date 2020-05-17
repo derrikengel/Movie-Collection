@@ -2,6 +2,7 @@ $(function () {
 	var googleSheet = 'https://spreadsheets.google.com/feeds/list/1QrEHAN4o6dQe4PqCXg5_AkQ8u_j1nqt1GCpz90Lv5g4/od6/public/values?alt=json',
 		template = $('#movie-template').html(),
 		$movieList = $('.js-movies'),
+		$movieCards = $('.js-movie-card'),
 		$sortOptions = $('.js-sort'),
 		$searchField = $('.js-search'),
 		$count = $('.js-count'),
@@ -30,6 +31,9 @@ $(function () {
 		if ($sortOptions.val() == 'recent') {
 			// sort by 'acquired' data attribute
 			$cards.sort(function (a, b) {
+				// send empty values to the end
+				if (!$(a).data('acquired')) return 1
+				if (!$(b).data('acquired')) return -1
 				return new Date($(b).data('acquired')) - new Date($(a).data('acquired'));
 			}).appendTo($movieList);
 		} else {
@@ -72,4 +76,8 @@ $(function () {
 	$searchField.on('input', searchMovies);
 
 	$randomBtn.on('click', randomMovie);
+
+	$movieList.on('click', '.movie-card', function () {
+		$(this).blur();
+	});
 });
