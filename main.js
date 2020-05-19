@@ -3,6 +3,8 @@ $(function () {
 		template = $('#movie-template').html(),
 		$movieList = $('.js-movies'),
 		$movieCards = $('.js-movie-card'),
+		$filterBtn = $('.js-filter-btn'),
+		$filterPanel = $('.js-filter-panel'),
 		$sortOptions = $('.js-sort'),
 		$searchField = $('.js-search'),
 		$count = $('.js-count'),
@@ -12,13 +14,17 @@ $(function () {
 		// get json data from google sheets
 		movies = data.feed.entry;
 
-		// generate an index for each item
-		for (i in movies) {
-			movies[i].index = i;
-		}
+		// render the list with Handlebars
+		var templateScript = Handlebars.compile(template);
 
-		// render the list with mustache
-		$movieList.html(Mustache.render(template, { movies: movies }));
+		Handlebars.registerHelper('eq', function () {
+			const args = Array.prototype.slice.call(arguments, 0, -1);
+			return args.every(function (expression) {
+				return args[0] === expression;
+			});
+		});
+
+		$movieList.html(templateScript({ movies: movies }));
 
 		sortMovies();
 
@@ -50,13 +56,18 @@ $(function () {
 
 		// add data attribute to keep trach of which items were hidden with randomize
 		// so randomize works multiples times with filtered results
-		$cards.attr('data-random-hidden', true).hide().eq(random).show();
+		$cards.attr('data-random-hidden', true).hide().eq(random).show().removeAttr('data-random-hidden');
 
 		updateCount();
+
+		resetStates();
 	};
 
 	var searchMovies = function () {
 		var searchTerm = $searchField.val().toLowerCase();
+
+		// remove data-random-hidden attribute because we are performing a new search
+		$('.movie-card[data-random-hidden]').removeAttr('data-random-hidden');
 
 		$movieList.find('.movie-card').filter(function () {
 			return $(this).find('.movie-card-title').text().toLowerCase().indexOf(searchTerm) > -1;
@@ -65,11 +76,22 @@ $(function () {
 		}).hide();
 
 		updateCount();
+
+		resetStates();
 	}
+
+	var resetStates = function () {
+		$('.movie-card').removeClass('active').blur();
+		$movieList.removeClass('card-expanded');
+	};
 
 	var updateCount = function () {
 		$count.text($movieList.find('.movie-card:visible').length);
 	};
+
+	$filterBtn.on('click', function () {
+		$filterPanel.toggleClass('active');
+	});
 
 	$sortOptions.on('change', sortMovies);
 
@@ -82,8 +104,7 @@ $(function () {
 			$('.movie-card').not(this).removeClass('active');
 
 			if ($(this).hasClass('active')) {
-				$(this).removeClass('active').blur();
-				$movieList.removeClass('card-expanded');
+				resetStates();
 			} else {
 				$(this).addClass('active');
 				$movieList.addClass('card-expanded');

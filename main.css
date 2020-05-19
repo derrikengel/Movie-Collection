@@ -1,7 +1,7 @@
 html {
-	background: #111;
+	background: #1c1c1c;
 	box-sizing: border-box;
-	color: #eee;
+	color: #f2f2f2;
 	font-family: 'Roboto', sans-serif;
 	font-size: 1rem;
 	line-height: 1.35;
@@ -27,10 +27,41 @@ h2 {
 	margin: 0;
 }
 
+button {
+	background-color: #333;
+	border: none;
+	border-radius: 3px;
+	color: #f2f2f2;
+	cursor: pointer;
+	font-weight: 700;
+	line-height: 1.35;
+	padding: 0.75em 1.75em;
+	text-align: center;
+	text-decoration: none;
+	transition: 200ms all ease-out;
+}
+
+button:hover,
+button:focus {
+	background-color: #f2f2f2;
+	color: #1c1c1c;
+}
+
+.filter-btn {
+
+}
+
+.filter-close-btn {
+	font-size: 1.5rem;
+	height: 2rem;
+	line-height: 2rem;
+	padding: 0;
+	width: 2rem;
+}
+
 .filters {
 	align-items: center;
-	background: rgba(17, 17, 17, 0.95);
-	border-bottom: 2px solid rgba(255, 255, 255, 0.15);
+	background: #1c1c1c;
 	display: flex;
 	flex-wrap: wrap;
 	justify-content: space-between;
@@ -38,6 +69,24 @@ h2 {
 	position: sticky;
 	top: 0;
 	z-index: 100;
+}
+
+.filter-panel {
+	background: #333;
+	height: 100%;
+	max-width: 18rem;
+	padding: 1.5rem;
+	position: fixed;
+	right: 0;
+	top: 0;
+	transform: translateX(100%);
+	transition: all 300ms ease-out;
+	width: 90%;
+}
+
+.filter-panel.active {
+	box-shadow: 0 0 6rem #000, 0 0 3rem #000;
+	transform: none;
 }
 
 .filter-field {
@@ -48,22 +97,42 @@ input {
 	-webkit-appearance: none;
 	background-color: transparent;
 	border: none;
-	border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+	border-bottom: 1px solid #333;
 	border-radius: 0;
 	box-shadow: none;
 	box-sizing: border-box;
-	color: #eee;
+	color: #f2f2f2;
 	display: block;
 	font-size: 1rem;
 	font-family: 'Roboto', sans-serif;
 	line-height: 1.35;
-	padding: 0.75rem 0;
+	padding: 0.25rem 0;
 	width: 100%;
 }
 
 input:focus {
-	border-color: #eee;
+	border-color: #f2f2f2;
 	outline: 0;
+}
+
+select {
+	-webkit-appearance: none;
+	background-color: transparent;
+	border: none;
+	border-radius: 0;
+	box-shadow: none;
+	box-sizing: border-box;
+	color: #f2f2f2;
+	display: block;
+	font-size: 1rem;
+	font-family: 'Roboto', sans-serif;
+	line-height: 1.35;
+	padding: 0.25rem 0;
+	width: 100%;
+}
+
+.movie-count {
+	margin: 0.5rem;
 }
 
 .movies {
@@ -75,7 +144,7 @@ input:focus {
 }
 
 .movie-card {
-	background: #111;
+	background: #1c1c1c;
 	cursor: pointer;
 	overflow: hidden;
 	position: relative;
@@ -105,7 +174,7 @@ input:focus {
 }
 
 .movie-card-overlay {
-	background: rgba(17, 17, 17, 0.65);
+	background: rgba(28, 28, 28, 0.65);
 	bottom: 0;
 	left: 0;
 	opacity: 0;
@@ -133,14 +202,38 @@ input:focus {
 }
 
 .movie-card-title {
-	color: #eee;
+	color: #f2f2f2;
 	display: block;
 	font-weight: 700;
 }
 
+.movie-card-watch {
+	border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+	display: flex;
+	font-size: 0.75rem;
+	flex-wrap: wrap;
+	margin: 1em 0 0 0;
+}
+
+.movie-card-watch dt,
+.movie-card-watch dd {
+	border-top: 1px solid rgba(255, 255, 255, 0.2);
+	flex: 1 1 50%;
+	margin: 0;
+	padding: 0.5em 0;
+}
+
+.movie-card-watch dt {
+	font-weight: 700;
+}
+
+.movie-card-watch dd {
+	text-align: right;
+}
+
 .movie-card-rating {
-	background-color: #eee;
-	color: #111;
+	background-color: #f2f2f2;
+	color: #1c1c1c;
 	display: inline-block;
 	font-size: 0.625rem;
 	font-weight: 700;
@@ -173,7 +266,7 @@ input:focus {
 	animation: loader 1s infinite linear;
 	border: 0.5em solid rgba(255, 255, 255, 0.3);
 	border-radius: 50%;
-	border-top-color: #eee;
+	border-top-color: #f2f2f2;
 	display: block;
 	height: 4em;
 	margin: 0 auto;
@@ -196,9 +289,33 @@ input:focus {
 		margin: 3rem;
 	}
 
+	.filter-btn,
+	.filter-close-btn {
+		display: none;
+	}
+
+	.filters {
+		justify-content: flex-start;
+	}
+
+	.filter-panel {
+		align-items: center;
+		background: transparent;
+		display: flex;
+		flex-wrap: wrap;
+		flex: 1;
+		justify-content: space-between;
+		max-width: none;
+		padding: 0.5rem 0;
+		position: static;
+		transform: none;
+		width: auto;
+	}
+
 	.movies {
 		display: grid;
 		grid-gap: 1rem;
+		margin-top: 4rem;
 	}
 
 	.movies:hover .movie-card {
@@ -228,5 +345,14 @@ input:focus {
 	.movie-card-rating,
 	.movie-card-year {
 		font-size: 0.5rem;
+	}
+
+	.movie-card-watch {
+		font-size: 0.625rem;
+	}
+
+	.movie-card-watch dt,
+	.movie-card-watch dd {
+		padding: 0.75em 0;
 	}
 }
