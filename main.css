@@ -150,7 +150,7 @@ select {
 	position: relative;
 	transition: opacity 250ms ease-out, transform 250ms ease-out;
 	width: 168px;
-	will-change: transform;
+	/*will-change: transform;*/
 }
 
 .movie-card:hover,
@@ -184,7 +184,7 @@ select {
 	top: 0;
 	transition: all 250ms ease-out;
 	transition-delay: 100ms;
-	will-change: opacity;
+	/*will-change: opacity;*/
 }
 
 .movie-card.active .movie-card-overlay {
@@ -254,7 +254,7 @@ select {
 	transition: 300ms all ease-out;
 	transition-delay: 150ms;
 	transform: translateY(0.5rem);
-	will-change: opacity, transform;
+	/*will-change: opacity, transform;*/
 }
 
 .movie-card.active .movie-card-content {
