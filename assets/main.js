@@ -9,6 +9,7 @@ new Vue({
             panelActive: false,
             activeFilter: null,
             allFormats: [],
+            allGenres: [],
             allRatings: [],
             sort: 'recent',
             search: '',
@@ -18,11 +19,7 @@ new Vue({
             startYear: null,
             endYear: null,
             minYear: 0,
-            maxYear: 0,
-            formatSelections: 0,
-            genreSelections: 0,
-            ratingSelections: 0,
-
+            maxYear: 0
         }
     },
     computed: {
@@ -52,13 +49,12 @@ new Vue({
             .then(response => {
                 this.movieData = response.data.feed.entry
                 this.allRatings = [...new Set(this.movieData.flatMap(movie => movie.gsx$rating.$t))].sort()
-
                 var vuduFormats = this.movieData.flatMap(movie => movie.gsx$vudu.$t)
                 var gpFormats = this.movieData.flatMap(movie => movie.gsx$googleplay.$t)
                 var discFormats = this.movieData.flatMap(movie => movie.gsx$disc.$t)
                 var mergedFormats = [...vuduFormats, ...gpFormats, ...discFormats]
                 this.allFormats = [...new Set(mergedFormats)].filter(el => el != '')
-
+                this.allGenres = [...new Set(this.movieData.flatMap(movie => movie.gsx$genre.$t.split(', ')))].sort()
                 this.minYear = Math.min.apply(Math, this.movieData.flatMap(o => o.gsx$year.$t))
                 this.maxYear = Math.max.apply(Math, this.movieData.flatMap(o => o.gsx$year.$t))
             })
@@ -73,7 +69,7 @@ new Vue({
             index === this.activeItem ? this.activeItem = null : this.activeItem = index
             this.activeFilter = null
         },
-        toggleFilters: function() {
+        toggleFilters: function () {
             this.panelActive = !this.panelActive
         },
         selectFilter(filter) {

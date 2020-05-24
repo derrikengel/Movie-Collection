@@ -60,15 +60,15 @@
 							<div class="filter-field">
 								<input type="radio" id="sort-recent" value="recent" v-model="sort">
 								<label for="sort-recent">Recently Added</label>
-							</div> <!-- /filter-field -->
+							</div>
 							<div class="filter-field">
 								<input type="radio" id="sort-alpha" value="alpha" v-model="sort">
 								<label for="sort-alpha">A-Z</label>
-							</div> <!-- /filter-field -->
+							</div>
 						</div> <!-- /filter-option-menu -->
 					</div> <!-- /filter-option -->
 
-					<div class="filter-option" :class="{ active: activeFilter === 'format' }">
+					<div class="filter-option" :class="{ active: activeFilter === 'format', 'has-selections' : formatFilter.length > 0 }">
 						<span class="filter-option-title" tabindex="0" @click="selectFilter('format')" v-on:keyup.enter="selectFilter('format')">
 							Format &amp; Quality
 							<svg class="filter-arrow" width="10px" height="7px" viewBox="0 0 10 7" xmlns="http://www.w3.org/2000/svg">
@@ -79,11 +79,11 @@
 							<div class="filter-field" v-for="(format, index) in allFormats">
 								<input type="checkbox" :id="'format-' + index" :value="format" v-model="formatFilter">
 								<label :for="'format-' + index">{{ format }}</label>
-							</div> <!-- /filter-field -->
+							</div>
 						</div> <!-- /filter-option-menu -->
 					</div> <!-- /filter-option -->
 
-					<div class="filter-option" :class="{ active: activeFilter === 'genre' }">
+					<div class="filter-option" :class="{ active: activeFilter === 'genre', 'has-selections' : genreFilter.length > 0 }">
 						<span class="filter-option-title" tabindex="0" @click="selectFilter('genre')" v-on:keyup.enter="selectFilter('genre')">
 							Genre
 							<svg class="filter-arrow" width="10px" height="7px" viewBox="0 0 10 7" xmlns="http://www.w3.org/2000/svg">
@@ -91,86 +91,14 @@
 							</svg>
 						</span>
 						<div class="filter-option-menu">
-							<div class="filter-field">
-								<input type="checkbox" id="genre-action" value="Action" v-model="genreFilter">
-								<label for="genre-action">Action</label>
-							</div> <!-- /filter-field -->
-							<div class="filter-field">
-								<input type="checkbox" id="genre-adventure" value="Adventure" v-model="genreFilter">
-								<label for="genre-adventure">Adventure</label>
-							</div> <!-- /filter-field -->
-							<div class="filter-field">
-								<input type="checkbox" id="genre-animation" value="Animation" v-model="genreFilter">
-								<label for="genre-animation">Animation</label>
-							</div> <!-- /filter-field -->
-							<div class="filter-field">
-								<input type="checkbox" id="genre-christmas" value="Christmas" v-model="genreFilter">
-								<label for="genre-christmas">Christmas</label>
-							</div> <!-- /filter-field -->
-							<div class="filter-field">
-								<input type="checkbox" id="genre-comedy" value="Comedy" v-model="genreFilter">
-								<label for="genre-comedy">Comedy</label>
-							</div> <!-- /filter-field -->
-							<div class="filter-field">
-								<input type="checkbox" id="genre-not-comedy" value="Comedy(?)" v-model="genreFilter">
-								<label for="genre-not-comedy">Comedy(?)</label>
-							</div> <!-- /filter-field -->
-							<div class="filter-field">
-								<input type="checkbox" id="genre-crime-thrillers" value="Crime & Thrillers" v-model="genreFilter">
-								<label for="genre-crime-thrillers">Crime &amp; Thrillers</label>
-							</div> <!-- /filter-field -->
-							<div class="filter-field">
-								<input type="checkbox" id="genre-documentary" value="Documentary" v-model="genreFilter">
-								<label for="genre-documentary">Documentary</label>
-							</div> <!-- /filter-field -->
-							<div class="filter-field">
-								<input type="checkbox" id="genre-drama" value="Drama" v-model="genreFilter">
-								<label for="genre-drama">Drama</label>
-							</div> <!-- /filter-field -->
-							<div class="filter-field">
-								<input type="checkbox" id="genre-halloween" value="Halloween" v-model="genreFilter">
-								<label for="genre-halloween">Halloween</label>
-							</div> <!-- /filter-field -->
-							<div class="filter-field">
-								<input type="checkbox" id="genre-history" value="History" v-model="genreFilter">
-								<label for="genre-history">History</label>
-							</div> <!-- /filter-field -->
-							<div class="filter-field">
-								<input type="checkbox" id="genre-horror" value="Horror" v-model="genreFilter">
-								<label for="genre-horror">Horror</label>
-							</div> <!-- /filter-field -->
-							<div class="filter-field">
-								<input type="checkbox" id="genre-kids-family" value="Kids & Family" v-model="genreFilter">
-								<label for="genre-kids-family">Kids &amp; Family</label>
-							</div> <!-- /filter-field -->
-							<div class="filter-field">
-								<input type="checkbox" id="genre-musicals" value="Musicals" v-model="genreFilter">
-								<label for="genre-musicals">Musicals</label>
-							</div> <!-- /filter-field -->
-							<div class="filter-field">
-								<input type="checkbox" id="genre-romance" value="Romance" v-model="genreFilter">
-								<label for="genre-romance">Romance</label>
-							</div> <!-- /filter-field -->
-							<div class="filter-field">
-								<input type="checkbox" id="genre-sci-fi" value="Sci-Fi" v-model="genreFilter">
-								<label for="genre-sci-fi">Sci-Fi</label>
-							</div> <!-- /filter-field -->
-							<div class="filter-field">
-								<input type="checkbox" id="genre-sports" value="Sports" v-model="genreFilter">
-								<label for="genre-sports">Sports</label>
-							</div> <!-- /filter-field -->
-							<div class="filter-field">
-								<input type="checkbox" id="genre-teen" value="Teen" v-model="genreFilter">
-								<label for="genre-teen">Teen</label>
-							</div> <!-- /filter-field -->
-							<div class="filter-field">
-								<input type="checkbox" id="genre-westerns" value="Westerns" v-model="genreFilter">
-								<label for="genre-westerns">Westerns</label>
-							</div> <!-- /filter-field -->
+							<div class="filter-field" v-for="(genre, index) in allGenres">
+								<input type="checkbox" :id="'genre-' + index" :value="genre" v-model="genreFilter">
+								<label :for="'genre-' + index">{{ genre }}</label>
+							</div>
 						</div> <!-- /filter-option-menu -->
 					</div> <!-- /filter-option -->
 
-					<div class="filter-option" :class="{ active: activeFilter === 'rating' }">
+					<div class="filter-option" :class="{ active: activeFilter === 'rating', 'has-selections' : ratingFilter.length > 0 }">
 						<span class="filter-option-title" tabindex="0" @click="selectFilter('rating')" v-on:keyup.enter="selectFilter('rating')">
 							Rating
 							<svg class="filter-arrow" width="10px" height="7px" viewBox="0 0 10 7" xmlns="http://www.w3.org/2000/svg">
@@ -181,11 +109,11 @@
 							<div class="filter-field" v-for="(rating, index) in allRatings">
 								<input type="checkbox" :id="'rating-' + index" :value="rating" v-model="ratingFilter">
 								<label :for="'rating-' + index">{{ rating }}</label>
-							</div> <!-- /filter-field -->
+							</div>
 						</div> <!-- /filter-option-menu -->
 					</div> <!-- /filter-option -->
 
-					<div class="filter-option" :class="{ active: activeFilter === 'year' }">
+					<div class="filter-option" :class="{ active: activeFilter === 'year', 'has-selections' : startYear || endYear }">
 						<span class="filter-option-title" tabindex="0" @click="selectFilter('year')" v-on:keyup.enter="selectFilter('year')">
 							Year
 							<svg class="filter-arrow" width="10px" height="7px" viewBox="0 0 10 7" xmlns="http://www.w3.org/2000/svg">
@@ -197,7 +125,7 @@
 								<input type="number" :min="minYear" :max="maxYear" :placeholder="minYear" v-model.lazy="startYear">
 								to
 								<input type="number" :min="minYear" :max="maxYear" :placeholder="maxYear" v-model.lazy="endYear">
-							</div> <!-- /filter-field -->
+							</div>
 						</div> <!-- /filter-option-menu -->
 					</div> <!-- /filter-option -->
 
@@ -237,9 +165,9 @@
 		</template>
 	</div>
 
-	<script src="https://unpkg.com/vue"></script>
-	<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.11/lodash.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/vue@2.6.11/dist/vue.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/axios@0.19.2/dist/axios.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/lodash@4.17.15/lodash.min.js"></script>
 	<script src="assets/main.js"></script>
 </body>
 
