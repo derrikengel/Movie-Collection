@@ -1,38 +1,66 @@
 new Vue({
-	el: '#movies',
-	data() {
-		return {
-			movieData: null,
-			loading: true,
+    el: '#movies',
+    data() {
+        return {
+            movieData: null,
+            loading: true,
             errored: false,
             activeItem: null,
+            panelActive: false,
+            activeFilter: null,
+            allFormats: [],
+            allRatings: [],
+            sort: 'recent',
             search: '',
-            disc: '',
-            sort: 'recent'
-		}
-	},
+            formatFilter: [],
+            ratingFilter: [],
+            genreFilter: [],
+            startYear: null,
+            endYear: null,
+            minYear: 0,
+            maxYear: 0,
+            formatSelections: 0,
+            genreSelections: 0,
+            ratingSelections: 0,
+
+        }
+    },
     computed: {
         movies() {
             var self = this
             var movies = self.movieData
             var filteredMovies = _.filter(movies, function (movie) {
-                var disc = self.disc ? (movie.gsx$disc.$t == self.disc) : true
                 var search = self.search ? new RegExp('\\b' + self.search, 'gi').test(movie.gsx$movietitle.$t) : true
-                return disc && search
+                var format = self.formatFilter.length ? (self.formatFilter.includes(movie.gsx$vudu.$t) || self.formatFilter.includes(movie.gsx$googleplay.$t) || self.formatFilter.includes(movie.gsx$disc.$t)) : true
+                var rating = self.ratingFilter.length ? self.ratingFilter.includes(movie.gsx$rating.$t) : true
+                var genre = self.genreFilter.length ? self.genreFilter.every(item => movie.gsx$genre.$t.includes(item)) : true
+                var year = (self.startYear ? movie.gsx$year.$t >= self.startYear : self.minYear) && (self.endYear ? movie.gsx$year.$t <= self.endYear : self.maxYear)
+
+                return search && format && rating && genre && year
             })
-            
+
+            this.activeItem = null
+
             if (self.sort == 'alpha')
                 return _.orderBy(filteredMovies)
             else
-                return _.orderBy(filteredMovies, function (m) {
-                    return m.gsx$acquired.$t ? new Date(m.gsx$acquired.$t) : ''
-                }, ['desc'])
+                return _.orderBy(filteredMovies, m => m.gsx$acquired.$t ? new Date(m.gsx$acquired.$t) : '', ['desc'])
         }
     },
     mounted() {
         axios.get('https://spreadsheets.google.com/feeds/list/1QrEHAN4o6dQe4PqCXg5_AkQ8u_j1nqt1GCpz90Lv5g4/od6/public/values?alt=json')
             .then(response => {
                 this.movieData = response.data.feed.entry
+                this.allRatings = [...new Set(this.movieData.flatMap(movie => movie.gsx$rating.$t))].sort()
+
+                var vuduFormats = this.movieData.flatMap(movie => movie.gsx$vudu.$t)
+                var gpFormats = this.movieData.flatMap(movie => movie.gsx$googleplay.$t)
+                var discFormats = this.movieData.flatMap(movie => movie.gsx$disc.$t)
+                var mergedFormats = [...vuduFormats, ...gpFormats, ...discFormats]
+                this.allFormats = [...new Set(mergedFormats)].filter(el => el != '')
+
+                this.minYear = Math.min.apply(Math, this.movieData.flatMap(o => o.gsx$year.$t))
+                this.maxYear = Math.max.apply(Math, this.movieData.flatMap(o => o.gsx$year.$t))
             })
             .catch(error => {
                 console.log(error)
@@ -42,10 +70,15 @@ new Vue({
     },
     methods: {
         selectItem(index) {
-            if (index === this.activeItem)
-                this.activeItem = null
-            else
-                this.activeItem = index
+            index === this.activeItem ? this.activeItem = null : this.activeItem = index
+            this.activeFilter = null
+        },
+        toggleFilters: function() {
+            this.panelActive = !this.panelActive
+        },
+        selectFilter(filter) {
+            filter === this.activeFilter ? this.activeFilter = null : this.activeFilter = filter
+            this.activeItem = null
         }
     }
 })

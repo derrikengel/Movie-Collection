@@ -1,5 +1,6 @@
 ﻿<!DOCTYPE html>
 <html lang="en">
+
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
@@ -7,90 +8,214 @@
 	<title>Engel Movie Collection</title>
 	<link rel="apple-touch-icon" href="assets/favicon-228.png">
 	<link rel="icon" type="image/png" href="assets/favicon-228.png">
-	<link rel="shortcut icon" href="/path/to/favicon-228.png">
-	<meta name="msapplication-TileColor" content="#f71735">
+	<link rel="shortcut icon" href="assets/favicon-228.png">
+	<meta name="msapplication-TileColor" content="#41ead4">
 	<meta name="msapplication-TileImage" content="assets/favicon-144.png">
-	<meta name="theme-color" content="#f71735">
-	<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@100;300;400;700&display=swap" rel="stylesheet">
+	<meta name="theme-color" content="#21292e">
+	<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;900&display=swap" rel="stylesheet">
 	<link href="assets/main.css" rel="stylesheet">
 </head>
 
 <body>
-	<h1>Movie Collection</h1>
+	<h1><span>Movie</span> Collection</h1>
 
-	<div id="movies">
-		<p v-if="errored">Movie data could not be retrieved. Try again later.</p>
+	<div id="movies" v-cloak>
+		<div v-if="loading" class="loader"></div>
 
-		<div v-else>
+		<h2 v-else-if="errored">Movie data could not be retrieved. Try again later.</h2>
+
+		<template v-else>
 			<div class="filters">
 
 				<div class="movie-count">
 					<h2><span>{{ movies.length}}</span> movies</h2>
 				</div> <!-- /movie-count -->
 
-				<button type="button" class="filter-btn">Filter</button>
+				<button type="button" class="filter-btn" @click="toggleFilters">
+					<svg class="filter-icon" width="12px" height="10px" viewBox="0 0 12 10" xmlns="http://www.w3.org/2000/svg">
+						<path d="M11.07,2H0.93C0.41,2,0,1.59,0,1.07V0.93C0,0.41,0.41,0,0.93,0l10.15,0C11.59,0,12,0.41,12,0.93v0.15 C12,1.59,11.59,2,11.07,2z M12,5.07V4.93C12,4.41,11.59,4,11.07,4H0.93C0.41,4,0,4.41,0,4.93v0.15C0,5.59,0.41,6,0.93,6h10.15 C11.59,6,12,5.59,12,5.07z M12,9.07V8.93C12,8.41,11.59,8,11.07,8H0.93C0.41,8,0,8.41,0,8.93v0.15C0,9.59,0.41,10,0.93,10h10.15 C11.59,10,12,9.59,12,9.07z" />
+					</svg>
+					Filter
+				</button>
 
-				<div class="filter-panel">
-					<button type="button" class="filter-close-btn">&times;</button>
+				<div class="filter-panel" :class="{active: panelActive}">
+					<button type="button" class="filter-close-btn" @click="toggleFilters" title="Close">&times;</button>
 
-					<div class="filter-field">
-						<label for="sort">Sort by</label>
-						<select id="sort" v-model="sort">
-							<option value="recent">Recently Added</option>
-							<option value="alpha">Alphabetical</option>
-						</select>
-					</div> <!-- /filter-field -->
+					<div class="filter-option search">
+						<svg class="search-icon" width="14px" height="14px" viewBox="0 0 14 14" xmlns="http://www.w3.org/2000/svg">
+							<path d="M13.7,12.3l-3-3c0.7-1,1.1-2.2,1.1-3.5c0-1.6-0.6-3.1-1.7-4.2C9,0.6,7.5,0,5.9,0C4.4,0,2.9,0.6,1.7,1.7 C0.6,2.9,0,4.4,0,5.9S0.6,9,1.7,10.1c1.1,1.1,2.6,1.7,4.2,1.7c1.3,0,2.5-0.4,3.5-1.1l3,3c0.2,0.2,0.4,0.3,0.7,0.3 c0.2,0,0.5-0.1,0.7-0.3C14.1,13.3,14.1,12.7,13.7,12.3z M3.1,8.8C2.4,8,1.9,7,1.9,5.9s0.4-2.1,1.2-2.8c0.8-0.8,1.8-1.2,2.8-1.2 S8,2.4,8.8,3.1c0.8,0.8,1.2,1.8,1.2,2.8S9.5,8,8.8,8.8C8,9.5,7,9.9,5.9,9.9S3.9,9.5,3.1,8.8z">
+						</svg>
+						<input type="search" placeholder="Search by movie title" id="search" v-model.lazy="search" autocomplete="off">
+					</div> <!-- /filter-option -->
 
-					<div class="filter-field">
-						<input type="search" placeholder="Search by movie title" id="search" v-model="search">
-					</div> <!-- /filter-field -->
+					<div class="filter-option" :class="{ active: activeFilter === 'sort' }">
+						<span class="filter-option-title" tabindex="0" @click="selectFilter('sort')" v-on:keyup.enter="selectFilter('sort')">
+							Sort
+							<svg class="filter-arrow" width="10px" height="7px" viewBox="0 0 10 7" xmlns="http://www.w3.org/2000/svg">
+								<path
+									d="M4.47,6.24L0.22,1.99c-0.29-0.29-0.29-0.77,0-1.06l0.71-0.71c0.29-0.29,0.77-0.29,1.06,0L5,3.23l3.01-3.01 c0.29-0.29,0.77-0.29,1.06,0l0.71,0.71c0.29,0.29,0.29,0.77,0,1.06L5.53,6.24C5.24,6.53,4.77,6.53,4.47,6.24L4.47,6.24z">
+							</svg>
+						</span>
+						<div class="filter-option-menu">
+							<div class="filter-field">
+								<input type="radio" id="sort-recent" value="recent" v-model="sort">
+								<label for="sort-recent">Recently Added</label>
+							</div> <!-- /filter-field -->
+							<div class="filter-field">
+								<input type="radio" id="sort-alpha" value="alpha" v-model="sort">
+								<label for="sort-alpha">A-Z</label>
+							</div> <!-- /filter-field -->
+						</div> <!-- /filter-option-menu -->
+					</div> <!-- /filter-option -->
 
-					<div class="filter-field">
-						Format
-					</div> <!-- /filter-field -->
+					<div class="filter-option" :class="{ active: activeFilter === 'format' }">
+						<span class="filter-option-title" tabindex="0" @click="selectFilter('format')" v-on:keyup.enter="selectFilter('format')">
+							Format &amp; Quality
+							<svg class="filter-arrow" width="10px" height="7px" viewBox="0 0 10 7" xmlns="http://www.w3.org/2000/svg">
+								<path d="M4.47,6.24L0.22,1.99c-0.29-0.29-0.29-0.77,0-1.06l0.71-0.71c0.29-0.29,0.77-0.29,1.06,0L5,3.23l3.01-3.01 c0.29-0.29,0.77-0.29,1.06,0l0.71,0.71c0.29,0.29,0.29,0.77,0,1.06L5.53,6.24C5.24,6.53,4.77,6.53,4.47,6.24L4.47,6.24z">
+							</svg>
+						</span>
+						<div class="filter-option-menu">
+							<div class="filter-field" v-for="(format, index) in allFormats">
+								<input type="checkbox" :id="'format-' + index" :value="format" v-model="formatFilter">
+								<label :for="'format-' + index">{{ format }}</label>
+							</div> <!-- /filter-field -->
+						</div> <!-- /filter-option-menu -->
+					</div> <!-- /filter-option -->
 
-					<div class="filter-field">
-						<input type="radio" id="dvd" value="DVD" v-model="disc">
-						<label for="dvd">DVD</label>
-						<br>
-						<input type="radio" id="bluray" value="Blu-Ray" v-model="disc">
-						<label for="bluray">Blu-Ray</label>
-						<br>
-						<input type="radio" id="4kbluray" value="4K Blu-Ray" v-model="disc">
-						<label for="4kbluray">4K Blu-Ray</label>
-						<br>
-						<input type="radio" id="all" value="" v-model="disc">
-						<label for="all">all</label>
-					</div>
+					<div class="filter-option" :class="{ active: activeFilter === 'genre' }">
+						<span class="filter-option-title" tabindex="0" @click="selectFilter('genre')" v-on:keyup.enter="selectFilter('genre')">
+							Genre
+							<svg class="filter-arrow" width="10px" height="7px" viewBox="0 0 10 7" xmlns="http://www.w3.org/2000/svg">
+								<path d="M4.47,6.24L0.22,1.99c-0.29-0.29-0.29-0.77,0-1.06l0.71-0.71c0.29-0.29,0.77-0.29,1.06,0L5,3.23l3.01-3.01 c0.29-0.29,0.77-0.29,1.06,0l0.71,0.71c0.29,0.29,0.29,0.77,0,1.06L5.53,6.24C5.24,6.53,4.77,6.53,4.47,6.24L4.47,6.24z">
+							</svg>
+						</span>
+						<div class="filter-option-menu">
+							<div class="filter-field">
+								<input type="checkbox" id="genre-action" value="Action" v-model="genreFilter">
+								<label for="genre-action">Action</label>
+							</div> <!-- /filter-field -->
+							<div class="filter-field">
+								<input type="checkbox" id="genre-adventure" value="Adventure" v-model="genreFilter">
+								<label for="genre-adventure">Adventure</label>
+							</div> <!-- /filter-field -->
+							<div class="filter-field">
+								<input type="checkbox" id="genre-animation" value="Animation" v-model="genreFilter">
+								<label for="genre-animation">Animation</label>
+							</div> <!-- /filter-field -->
+							<div class="filter-field">
+								<input type="checkbox" id="genre-christmas" value="Christmas" v-model="genreFilter">
+								<label for="genre-christmas">Christmas</label>
+							</div> <!-- /filter-field -->
+							<div class="filter-field">
+								<input type="checkbox" id="genre-comedy" value="Comedy" v-model="genreFilter">
+								<label for="genre-comedy">Comedy</label>
+							</div> <!-- /filter-field -->
+							<div class="filter-field">
+								<input type="checkbox" id="genre-not-comedy" value="Comedy(?)" v-model="genreFilter">
+								<label for="genre-not-comedy">Comedy(?)</label>
+							</div> <!-- /filter-field -->
+							<div class="filter-field">
+								<input type="checkbox" id="genre-crime-thrillers" value="Crime & Thrillers" v-model="genreFilter">
+								<label for="genre-crime-thrillers">Crime &amp; Thrillers</label>
+							</div> <!-- /filter-field -->
+							<div class="filter-field">
+								<input type="checkbox" id="genre-documentary" value="Documentary" v-model="genreFilter">
+								<label for="genre-documentary">Documentary</label>
+							</div> <!-- /filter-field -->
+							<div class="filter-field">
+								<input type="checkbox" id="genre-drama" value="Drama" v-model="genreFilter">
+								<label for="genre-drama">Drama</label>
+							</div> <!-- /filter-field -->
+							<div class="filter-field">
+								<input type="checkbox" id="genre-halloween" value="Halloween" v-model="genreFilter">
+								<label for="genre-halloween">Halloween</label>
+							</div> <!-- /filter-field -->
+							<div class="filter-field">
+								<input type="checkbox" id="genre-history" value="History" v-model="genreFilter">
+								<label for="genre-history">History</label>
+							</div> <!-- /filter-field -->
+							<div class="filter-field">
+								<input type="checkbox" id="genre-horror" value="Horror" v-model="genreFilter">
+								<label for="genre-horror">Horror</label>
+							</div> <!-- /filter-field -->
+							<div class="filter-field">
+								<input type="checkbox" id="genre-kids-family" value="Kids & Family" v-model="genreFilter">
+								<label for="genre-kids-family">Kids &amp; Family</label>
+							</div> <!-- /filter-field -->
+							<div class="filter-field">
+								<input type="checkbox" id="genre-musicals" value="Musicals" v-model="genreFilter">
+								<label for="genre-musicals">Musicals</label>
+							</div> <!-- /filter-field -->
+							<div class="filter-field">
+								<input type="checkbox" id="genre-romance" value="Romance" v-model="genreFilter">
+								<label for="genre-romance">Romance</label>
+							</div> <!-- /filter-field -->
+							<div class="filter-field">
+								<input type="checkbox" id="genre-sci-fi" value="Sci-Fi" v-model="genreFilter">
+								<label for="genre-sci-fi">Sci-Fi</label>
+							</div> <!-- /filter-field -->
+							<div class="filter-field">
+								<input type="checkbox" id="genre-sports" value="Sports" v-model="genreFilter">
+								<label for="genre-sports">Sports</label>
+							</div> <!-- /filter-field -->
+							<div class="filter-field">
+								<input type="checkbox" id="genre-teen" value="Teen" v-model="genreFilter">
+								<label for="genre-teen">Teen</label>
+							</div> <!-- /filter-field -->
+							<div class="filter-field">
+								<input type="checkbox" id="genre-westerns" value="Westerns" v-model="genreFilter">
+								<label for="genre-westerns">Westerns</label>
+							</div> <!-- /filter-field -->
+						</div> <!-- /filter-option-menu -->
+					</div> <!-- /filter-option -->
 
-					<div class="filter-field">
-						Genre
-					</div> <!-- /filter-field -->
-					<div class="filter-field">
-						Rating
-					</div> <!-- /filter-field -->
-					<div class="filter-field">
-						Year
-					</div> <!-- /filter-field -->
-					<div class="filter-field">
-						Quality
-					</div> <!-- /filter-field -->
-					<div class="filter-field">
-						<button>Random Movie</button>
-					</div> <!-- /filter-field -->
+					<div class="filter-option" :class="{ active: activeFilter === 'rating' }">
+						<span class="filter-option-title" tabindex="0" @click="selectFilter('rating')" v-on:keyup.enter="selectFilter('rating')">
+							Rating
+							<svg class="filter-arrow" width="10px" height="7px" viewBox="0 0 10 7" xmlns="http://www.w3.org/2000/svg">
+								<path d="M4.47,6.24L0.22,1.99c-0.29-0.29-0.29-0.77,0-1.06l0.71-0.71c0.29-0.29,0.77-0.29,1.06,0L5,3.23l3.01-3.01 c0.29-0.29,0.77-0.29,1.06,0l0.71,0.71c0.29,0.29,0.29,0.77,0,1.06L5.53,6.24C5.24,6.53,4.77,6.53,4.47,6.24L4.47,6.24z">
+							</svg>
+						</span>
+						<div class="filter-option-menu">
+							<div class="filter-field" v-for="(rating, index) in allRatings">
+								<input type="checkbox" :id="'rating-' + index" :value="rating" v-model="ratingFilter">
+								<label :for="'rating-' + index">{{ rating }}</label>
+							</div> <!-- /filter-field -->
+						</div> <!-- /filter-option-menu -->
+					</div> <!-- /filter-option -->
+
+					<div class="filter-option" :class="{ active: activeFilter === 'year' }">
+						<span class="filter-option-title" tabindex="0" @click="selectFilter('year')" v-on:keyup.enter="selectFilter('year')">
+							Year
+							<svg class="filter-arrow" width="10px" height="7px" viewBox="0 0 10 7" xmlns="http://www.w3.org/2000/svg">
+								<path d="M4.47,6.24L0.22,1.99c-0.29-0.29-0.29-0.77,0-1.06l0.71-0.71c0.29-0.29,0.77-0.29,1.06,0L5,3.23l3.01-3.01 c0.29-0.29,0.77-0.29,1.06,0l0.71,0.71c0.29,0.29,0.29,0.77,0,1.06L5.53,6.24C5.24,6.53,4.77,6.53,4.47,6.24L4.47,6.24z">
+							</svg>
+						</span>
+						<div class="filter-option-menu">
+							<div class="filter-field">
+								<input type="number" :min="minYear" :max="maxYear" :placeholder="minYear" v-model.lazy="startYear">
+								to
+								<input type="number" :min="minYear" :max="maxYear" :placeholder="maxYear" v-model.lazy="endYear">
+							</div> <!-- /filter-field -->
+						</div> <!-- /filter-option-menu -->
+					</div> <!-- /filter-option -->
+
+					<div class="filter-option">
+						<button class="filter-random-btn">I'm Feeling Lucky</button>
+					</div> <!-- /filter-option -->
+
 				</div> <!-- /filter-panel -->
 			</div> <!-- /filters -->
 
-			<div v-if="loading" class="loader"></div>
-
-			<div class="movies" v-else :class="{ 'card-expanded': activeItem != null }">
+			<div class="movies" :class="{ 'card-expanded': activeItem != null }">
 				<div v-for="(movie, index) in movies" :key="index" :class="{ active: index === activeItem }" class="movie-card" tabindex="0" :title="movie.gsx$movietitle.$t" @click="selectItem(index)" v-on:keyup.enter="selectItem(index)">
 					<img :src="movie.gsx$image.$t" :alt="movie.gsx$movietitle.$t" class="movie-card-img">
 					<div class="movie-card-overlay">
 						<div class="movie-card-content">
 							<span class="movie-card-title">{{ movie.gsx$movietitle.$t }}</span>
-							<span class="movie-card-rating">{{ movie.gsx$rating.$t }}</span>
-							<span class="movie-card-year">{{ movie.gsx$year.$t }}</span>
+							<span class="movie-card-rating" title="Rating">{{ movie.gsx$rating.$t }}</span>
+							<span class="movie-card-year" title="Release Year">{{ movie.gsx$year.$t }}</span>
 							<dl class="movie-card-watch">
 								<dt v-if="movie.gsx$vudu.$t">Vudu</dt>
 								<dd v-if="movie.gsx$vudu.$t === 'SD'">SD</dd>
@@ -109,7 +234,7 @@
 					</div>
 				</div>
 			</div>
-		</div>
+		</template>
 	</div>
 
 	<script src="https://unpkg.com/vue"></script>
@@ -117,4 +242,5 @@
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.11/lodash.min.js"></script>
 	<script src="assets/main.js"></script>
 </body>
+
 </html>
