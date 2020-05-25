@@ -19,7 +19,8 @@ new Vue({
             startYear: null,
             endYear: null,
             minYear: 0,
-            maxYear: 0
+            maxYear: 0,
+            randomMovie: false
         }
     },
     computed: {
@@ -38,7 +39,11 @@ new Vue({
 
             this.activeItem = null
 
-            if (self.sort == 'alpha')
+            var randomNum = _.random(filteredMovies.length - 1)
+
+            if (self.randomMovie && randomNum > -1)
+                return [filteredMovies[randomNum]]
+            else if (self.sort == 'alpha')
                 return _.orderBy(filteredMovies)
             else
                 return _.orderBy(filteredMovies, m => m.gsx$acquired.$t ? new Date(m.gsx$acquired.$t) : '', ['desc'])
@@ -53,10 +58,10 @@ new Vue({
                 var gpFormats = this.movieData.flatMap(movie => movie.gsx$googleplay.$t)
                 var discFormats = this.movieData.flatMap(movie => movie.gsx$disc.$t)
                 var mergedFormats = [...vuduFormats, ...gpFormats, ...discFormats]
-                this.allFormats = [...new Set(mergedFormats)].filter(el => el != '')
+                this.allFormats = [...new Set(mergedFormats)].filter(el => el != '').sort()
                 this.allGenres = [...new Set(this.movieData.flatMap(movie => movie.gsx$genre.$t.split(', ')))].sort()
-                this.minYear = Math.min.apply(Math, this.movieData.flatMap(o => o.gsx$year.$t))
-                this.maxYear = Math.max.apply(Math, this.movieData.flatMap(o => o.gsx$year.$t))
+                this.minYear = Math.min.apply(Math, this.movieData.flatMap(movie => movie.gsx$year.$t))
+                this.maxYear = Math.max.apply(Math, this.movieData.flatMap(movie => movie.gsx$year.$t))
             })
             .catch(error => {
                 console.log(error)
@@ -75,6 +80,17 @@ new Vue({
         selectFilter(filter) {
             filter === this.activeFilter ? this.activeFilter = null : this.activeFilter = filter
             this.activeItem = null
+        },
+        selectRandom() {
+            // set to false, then back to true to force recomputed
+            this.randomMovie = false
+            this.randomMovie = true
+
+            // close the side panel for narrow views
+            this.panelActive = false
+
+            // hide filter menus
+            this.activeFilter = null
         }
     }
 })

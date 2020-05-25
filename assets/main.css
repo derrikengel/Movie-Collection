@@ -73,7 +73,7 @@ input[type='radio'] + label:before {
 	height: 1em;
 	opacity: 0.35;
 	margin: 0.0625em 0.5em 0 0;
-	transition: 200ms all ease-out;
+	transition: 200ms background ease-out, 200ms opacity ease-out;
 	width: 1em;
 }
 
@@ -89,7 +89,7 @@ input[type='radio']:checked + label {
 input[type='checkbox']:checked + label:before,
 input[type='radio']:checked + label:before {
 	background: linear-gradient(45deg, #f71735, #ff9f1c);
-	border: none;
+	border-color: transparent;
 	opacity: 1;
 }
 
