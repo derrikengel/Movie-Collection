@@ -11,7 +11,7 @@
 	<link rel="shortcut icon" href="assets/favicon-228.png">
 	<meta name="msapplication-TileColor" content="#41ead4">
 	<meta name="msapplication-TileImage" content="assets/favicon-144.png">
-	<meta name="theme-color" content="#21292e">
+	<meta name="theme-color" content="#181e20">
 	<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;900&display=swap" rel="stylesheet">
 	<link href="assets/main.css" rel="stylesheet">
 </head>
@@ -76,9 +76,15 @@
 							</svg>
 						</span>
 						<div class="filter-option-menu">
-							<div class="filter-field" v-for="(format, index) in allFormats">
-								<input type="checkbox" :id="'format-' + index" :value="format" v-model="formatFilter">
-								<label :for="'format-' + index">{{ format }}</label>
+							<span class="filter-option-cat">Digital</span>
+							<div class="filter-field" v-for="(digitalFormat, index) in digitalFormats">
+								<input type="checkbox" :id="'digital-' + index" :value="digitalFormat" v-model="formatFilter">
+								<label :for="'digital-' + index">{{ digitalFormat }}</label>
+							</div>
+							<span class="filter-option-cat">Physical</span>
+							<div class="filter-field" v-for="(physicalFormat, index) in physicalFormats">
+								<input type="checkbox" :id="'physical-' + index" :value="physicalFormat" v-model="formatFilter">
+								<label :for="'physical-' + index">{{ physicalFormat }}</label>
 							</div>
 						</div> <!-- /filter-option-menu -->
 					</div> <!-- /filter-option -->
@@ -121,16 +127,20 @@
 							</svg>
 						</span>
 						<div class="filter-option-menu">
-							<div class="filter-field">
-								<input type="number" :min="minYear" :max="maxYear" :placeholder="minYear" v-model.lazy="startYear">
+							<div class="filter-field year-range">
+								<input type="number" :min="minYear" :max="maxYear" :placeholder="minYear" v-model.lazy="startYear" @change="validateMinYear()">
 								to
-								<input type="number" :min="minYear" :max="maxYear" :placeholder="maxYear" v-model.lazy="endYear">
+								<input type="number" :min="minYear" :max="maxYear" :placeholder="maxYear" v-model.lazy="endYear" @change="validateMaxYear()">
 							</div>
 						</div> <!-- /filter-option-menu -->
 					</div> <!-- /filter-option -->
 
 					<div class="filter-option">
 						<button class="filter-random-btn" @click="selectRandom()">Surprise Me</button>
+					</div> <!-- /filter-option -->
+
+					<div class="filter-option">
+						<button class="reset-btn" @click="reset()">Reset</button>
 					</div> <!-- /filter-option -->
 
 				</div> <!-- /filter-panel -->
@@ -145,18 +155,20 @@
 							<span class="movie-card-rating" title="Rating">{{ movie.gsx$rating.$t }}</span>
 							<span class="movie-card-year" title="Release Year">{{ movie.gsx$year.$t }}</span>
 							<dl class="movie-card-watch">
-								<dt v-if="movie.gsx$vudu.$t">Vudu</dt>
-								<dd v-if="movie.gsx$vudu.$t === 'SD'">SD</dd>
-								<dd v-else-if="movie.gsx$vudu.$t === 'HDX'">HD</dd>
-								<dd v-else-if="movie.gsx$vudu.$t === 'UHD'">4K</dd>
+								<template v-if="movie.gsx$vudu.$t">
+									<dt>Vudu</dt>
+									<dd>{{ movie.gsx$vudu.$t }}</dd>
+								</template>
 
-								<dt v-if="movie.gsx$googleplay.$t">Google Play</dt>
-								<dd v-if="movie.gsx$googleplay.$t === 'SD'">SD</dd>
-								<dd v-else-if="movie.gsx$googleplay.$t === 'HDX'">HD</dd>
-								<dd v-else-if="movie.gsx$googleplay.$t === 'UHD'">4K</dd>
+								<template v-if="movie.gsx$googleplay.$t">
+									<dt>Google Play</dt>
+									<dd>{{ movie.gsx$googleplay.$t }}</dd>
+								</template>
 
-								<dt v-if="movie.gsx$disc.$t">Disc</dt>
-								<dd v-if="movie.gsx$disc.$t">{{ movie.gsx$disc.$t }}</dd>
+								<template v-if="movie.gsx$disc.$t">
+									<dt>Disc</dt>
+									<dd>{{ movie.gsx$disc.$t }}</dd>
+								</template>
 							</dl>
 						</div>
 					</div>

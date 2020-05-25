@@ -8,7 +8,8 @@ new Vue({
             activeItem: null,
             panelActive: false,
             activeFilter: null,
-            allFormats: [],
+            digitalFormats: [],
+            physicalFormats: [],
             allGenres: [],
             allRatings: [],
             sort: 'recent',
@@ -54,14 +55,17 @@ new Vue({
             .then(response => {
                 this.movieData = response.data.feed.entry
                 this.allRatings = [...new Set(this.movieData.flatMap(movie => movie.gsx$rating.$t))].sort()
-                var vuduFormats = this.movieData.flatMap(movie => movie.gsx$vudu.$t)
-                var gpFormats = this.movieData.flatMap(movie => movie.gsx$googleplay.$t)
-                var discFormats = this.movieData.flatMap(movie => movie.gsx$disc.$t)
-                var mergedFormats = [...vuduFormats, ...gpFormats, ...discFormats]
-                this.allFormats = [...new Set(mergedFormats)].filter(el => el != '').sort()
                 this.allGenres = [...new Set(this.movieData.flatMap(movie => movie.gsx$genre.$t.split(', ')))].sort()
                 this.minYear = Math.min.apply(Math, this.movieData.flatMap(movie => movie.gsx$year.$t))
                 this.maxYear = Math.max.apply(Math, this.movieData.flatMap(movie => movie.gsx$year.$t))
+                
+                var vuduFormats = this.movieData.flatMap(movie => movie.gsx$vudu.$t)
+                var gpFormats = this.movieData.flatMap(movie => movie.gsx$googleplay.$t)
+                var mergedFormats = [...vuduFormats, ...gpFormats]               
+                this.digitalFormats = [...new Set(mergedFormats)].filter(el => el != '').sort()
+                
+                var discFormats = this.movieData.flatMap(movie => movie.gsx$disc.$t)
+                this.physicalFormats = [...new Set(discFormats)].filter(el => el != '').sort()
             })
             .catch(error => {
                 console.log(error)
@@ -74,12 +78,26 @@ new Vue({
             index === this.activeItem ? this.activeItem = null : this.activeItem = index
             this.activeFilter = null
         },
-        toggleFilters: function () {
+        toggleFilters() {
             this.panelActive = !this.panelActive
         },
         selectFilter(filter) {
             filter === this.activeFilter ? this.activeFilter = null : this.activeFilter = filter
             this.activeItem = null
+        },
+        validateMinYear() {
+            if (this.startYear && this.startYear < this.minYear)
+                this.startYear = this.minYear
+            
+            if (this.startYear && this.startYear > this.maxYear)
+                    this.startYear = this.maxYear
+        },
+        validateMaxYear() {
+            if (this.endYear && this.endYear < this.minYear)
+                this.endYear = this.minYear
+
+            if (this.endYear && this.endYear > this.maxYear)
+                this.endYear = this.maxYear
         },
         selectRandom() {
             // set to false, then back to true to force recomputed
@@ -91,6 +109,17 @@ new Vue({
 
             // hide filter menus
             this.activeFilter = null
+        },
+        reset() {
+            this.activeItem = null
+            this.activeFilter = null
+            this.search = ''
+            this.formatFilter = []
+            this.ratingFilter = []
+            this.genreFilter = []
+            this.startYear = null
+            this.endYear = null
+            this.randomMovie = false
         }
     }
 })

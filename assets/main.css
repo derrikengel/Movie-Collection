@@ -45,6 +45,7 @@ h2 {
 }
 
 button {
+	background-color: #f71735;
 	background: linear-gradient(45deg, #f71735, #ff9f1c);
 	border: none;
 	border-radius: 3px;
@@ -58,14 +59,9 @@ button {
 	transition: 200ms all ease-out;
 }
 
-button:hover,
-button:focus {
-	background-color: #fff;
-}
-
 input[type='checkbox'] + label:before,
 input[type='radio'] + label:before {
-	border: 1px solid #181e20;
+	box-shadow: inset 0 0 0 1px #181e20;
 	border-radius: 3px;
 	content: '';
 	display: block;
@@ -89,7 +85,12 @@ input[type='radio']:checked + label {
 input[type='checkbox']:checked + label:before,
 input[type='radio']:checked + label:before {
 	background: linear-gradient(45deg, #f71735, #ff9f1c);
-	border-color: transparent;
+	box-shadow: none;
+	opacity: 1;
+}
+
+input[type='checkbox']:focus + label:before,
+input[type='radio']:focus + label:before {
 	opacity: 1;
 }
 
@@ -118,8 +119,9 @@ input[type='radio'] {
 }
 
 .filter-close-btn {
-	font-size: 1.5rem;
-	font-weight: 400;
+	background: #41ead4;
+	color: #181e20;
+	font-size: 1.25rem;
 	height: 2rem;
 	line-height: 2rem;
 	margin-left: auto;
@@ -170,9 +172,11 @@ input[type='radio'] {
 	text-align: center;
 }
 
-.filter-option:last-child {
+.filter-option:last-child,
+.filter-option:nth-last-child(2) {
 	border-bottom: none;
 }
+
 
 .filter-option-title {
 	align-items: center;
@@ -202,12 +206,25 @@ input[type='radio'] {
 }
 
 .filter-option-menu {
+	color: #181e20;
 	display: none;
+	text-align: left;
 }
 
 .filter-option.active .filter-option-menu {
 	display: block;
 	z-index: 200;
+}
+
+.filter-option-cat {
+	font-size: 0.875rem;
+	font-weight: 900;
+	display: block;
+	margin-bottom: 0.25rem;
+}
+
+.filter-field + .filter-option-cat {
+	margin-top: 1rem;
 }
 
 .filter-field label {
@@ -226,6 +243,82 @@ input[type='radio'] {
 
 .filter-random-btn {
 	margin-top: 0.5rem;
+	width: 100%;
+}
+
+.year-range {
+	align-items: center;
+	display: flex;
+	font-weight: 900;
+}
+
+.year-range input {
+	-moz-appearance: textfield;
+	background-color: transparent;
+	border: none;
+	border-bottom: 2px solid #f71735;
+	border-radius: 0;
+	box-shadow: none;
+	box-sizing: border-box;
+	color: #181e20;
+	display: block;
+	font-family: 'Roboto', sans-serif;
+	font-size: 1rem;
+	font-weight: 900;
+	line-height: 1.35;
+	padding: 0.25em 0;
+	position: relative;
+	transition: 200ms all ease-out;
+	width: 3rem;
+	text-align: center;
+}
+
+.year-range input::-webkit-outer-spin-button,
+.year-range input::-webkit-inner-spin-button {
+	-webkit-appearance: none;
+	margin: 0;
+}
+
+.year-range input:first-child {
+	margin-right: 0.5rem;
+}
+
+.year-range input:last-child {
+	margin-left: 0.5rem;
+}
+
+.year-range input:focus {
+	border-color: #41ead4;
+}
+
+.year-range input::-webkit-input-placeholder {
+	color: rgba(24, 30, 32, 0.4);
+	font-weight: 400;
+}
+
+.year-range input:-moz-placeholder {
+	color: rgba(24, 30, 32, 0.4);
+	font-weight: 400;
+}
+
+.year-range input::-moz-placeholder {
+	color: rgba(24, 30, 32, 0.4);
+	font-weight: 400;
+}
+
+.year-range input:-ms-input-placeholder {
+	color: rgba(24, 30, 32, 0.4);
+	font-weight: 400;
+}
+
+.year-range input::placeholder {
+	color: rgba(24, 30, 32, 0.4);
+	font-weight: 400;
+}
+
+.reset-btn {
+	background: #41ead4;
+	color: #181e20;
 	width: 100%;
 }
 
@@ -250,7 +343,7 @@ input[type='radio'] {
 	border-radius: 0;
 	box-shadow: none;
 	box-sizing: border-box;
-	color: #f71735;
+	color: #181e20;
 	display: block;
 	font-family: 'Roboto', sans-serif;
 	font-size: 1rem;
@@ -268,23 +361,28 @@ input[type='radio'] {
 }
 
 .search input::-webkit-input-placeholder {
-	color: #181e20;
+	color: rgba(24, 30, 32, 0.4);
+	font-weight: 400;
 }
 
 .search input:-moz-placeholder {
-	color: #181e20;
+	color: rgba(24, 30, 32, 0.4);
+	font-weight: 400;
 }
 
 .search input::-moz-placeholder {
-	color: #181e20;
+	color: rgba(24, 30, 32, 0.4);
+	font-weight: 400;
 }
 
 .search input:-ms-input-placeholder {
-	color: #181e20;
+	color: rgba(24, 30, 32, 0.4);
+	font-weight: 400;
 }
 
 .search input::placeholder {
-	color: #181e20;
+	color: rgba(24, 30, 32, 0.4);
+	font-weight: 400;
 }
 
 .movie-count h2 {
@@ -494,6 +592,13 @@ input[type='radio'] {
 }
 
 @media screen and (min-width: 72rem) {
+	button:hover,
+	button:focus {
+		background: transparent;
+		box-shadow: inset 0 0 0 1px #f71735;
+		color: #f71735;
+	}
+
 	.filter-btn,
 	.filter-close-btn {
 		display: none;
@@ -525,6 +630,7 @@ input[type='radio'] {
 	}
 
 	.filter-option {
+		border-bottom: none;
 		margin: 0;
 		padding: 0;
 	}
@@ -541,6 +647,7 @@ input[type='radio'] {
 	.filter-option.has-selections .filter-option-title {
 		color: #41ead4;
 	}
+
 	.filter-option-title:hover,
 	.filter-option-title:focus {
 		box-shadow: inset 0 0 0 1px #41ead4;
@@ -564,6 +671,21 @@ input[type='radio'] {
 	.filter-random-btn {
 		margin-top: 0;
 		width: auto;
+	}
+
+	.year-range {
+		justify-content: center;
+	}
+
+	.reset-btn {
+		width: auto;
+	}
+
+	.reset-btn:hover,
+	.reset-btn:focus {
+		background: transparent;
+		color: #41ead4;
+		box-shadow: inset 0 0 0 1px #41ead4;
 	}
 
 	.search input {
