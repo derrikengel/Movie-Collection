@@ -54,7 +54,6 @@ new Vue({
         axios.get('https://spreadsheets.google.com/feeds/list/1QrEHAN4o6dQe4PqCXg5_AkQ8u_j1nqt1GCpz90Lv5g4/od6/public/values?alt=json')
             .then(response => {
                 this.movieData = response.data.feed.entry
-                this.allRatings = [...new Set(this.movieData.flatMap(movie => movie.gsx$rating.$t))].sort()
                 this.allGenres = [...new Set(this.movieData.flatMap(movie => movie.gsx$genre.$t.split(', ')))].sort()
                 this.minYear = _.min(this.movieData.flatMap(movie => movie.gsx$year.$t))
                 this.maxYear = _.max(this.movieData.flatMap(movie => movie.gsx$year.$t))
@@ -66,6 +65,16 @@ new Vue({
                 
                 var discFormats = this.movieData.flatMap(movie => movie.gsx$disc.$t)
                 this.physicalFormats = [...new Set(discFormats)].filter(el => el != '').sort()
+
+                var ratings = [...new Set(this.movieData.flatMap(movie => movie.gsx$rating.$t))]
+                var ratingsOrder = ['G', 'TV-G', 'PG', 'TV-PG', 'PG-13', 'R', 'TV-MA', 'NR']
+                var orderedratings = []
+
+                for (var i = 0; i < ratingsOrder.length; i++)
+                    if (ratings.indexOf(ratingsOrder[i]) > -1)
+                        orderedratings.push(ratingsOrder[i])
+                
+                this.allRatings = orderedratings
             })
             .catch(error => {
                 console.log(error)
@@ -90,7 +99,7 @@ new Vue({
                 this.startYear = this.minYear
             
             if (this.startYear && this.startYear > this.maxYear)
-                    this.startYear = this.maxYear
+                this.startYear = this.maxYear
         },
         validateMaxYear() {
             if (this.endYear && this.endYear < this.minYear)
