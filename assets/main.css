@@ -120,8 +120,8 @@ input[type='radio'] {
 }
 
 .filter-close-btn {
-	background: #41ead4;
-	color: #0d0e16;
+	background: #0d0e16;
+	color: #fff;
 	font-size: 1.25rem;
 	height: 2rem;
 	line-height: 2rem;
@@ -536,7 +536,7 @@ input[type='radio'] {
 	border-top-color: transparent;
 	display: block;
 	height: 3em;
-	margin: 0 auto;
+	margin: 3rem auto 0 auto;
 	transform: translateZ(0);
 	width: 3em;
 }
