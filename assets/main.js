@@ -56,8 +56,8 @@ new Vue({
                 this.movieData = response.data.feed.entry
                 this.allRatings = [...new Set(this.movieData.flatMap(movie => movie.gsx$rating.$t))].sort()
                 this.allGenres = [...new Set(this.movieData.flatMap(movie => movie.gsx$genre.$t.split(', ')))].sort()
-                this.minYear = Math.min.apply(Math, this.movieData.flatMap(movie => movie.gsx$year.$t))
-                this.maxYear = Math.max.apply(Math, this.movieData.flatMap(movie => movie.gsx$year.$t))
+                this.minYear = _.min(this.movieData.flatMap(movie => movie.gsx$year.$t))
+                this.maxYear = _.max(this.movieData.flatMap(movie => movie.gsx$year.$t))
                 
                 var vuduFormats = this.movieData.flatMap(movie => movie.gsx$vudu.$t)
                 var gpFormats = this.movieData.flatMap(movie => movie.gsx$googleplay.$t)
