@@ -86,9 +86,15 @@ new Vue({
         selectItem(index) {
             index === this.activeItem ? this.activeItem = null : this.activeItem = index
             this.activeFilter = null
+
+            // close the side panel for narrow views
+            this.panelActive = false
         },
         toggleFilters() {
             this.panelActive = !this.panelActive
+
+            if (this.panelActive)
+                this.activeItem = null
         },
         selectFilter(filter) {
             filter === this.activeFilter ? this.activeFilter = null : this.activeFilter = filter
