@@ -1,0 +1,176 @@
+.movies {
+	display: grid;
+	grid-gap: 0.5rem;
+	grid-template-columns: repeat(auto-fit, 168px);
+	justify-content: center;
+	margin-bottom: 1rem;
+}
+
+.movie-card {
+	background: $color-cinder;
+	cursor: pointer;
+	margin-bottom: 1.5rem;
+	overflow: hidden;
+	position: relative;
+	transition: opacity 250ms ease-out, transform 250ms ease-out;
+	width: 168px;
+	will-change: transform;
+
+	@include query(sm) {
+		transition: all 250ms ease-out;
+	}
+
+	&:hover {
+		z-index: 10;
+
+		@include query(sm) {
+			box-shadow: 0 0 6rem $color-cinder, 0 0 3rem $color-cinder;
+			opacity: 1;
+			transform: scale(1.15);
+			z-index: 20;
+		}
+	}
+	
+	&:focus {
+		outline: 2px solid #fff;
+		z-index: 10;
+	}
+}
+
+.movie-card-overlay {
+	background: linear-gradient(45deg, rgba(9, 11, 21, 0.95) 0%, rgba(11, 43, 65, 0.82) 38%, rgba(15, 75, 87, 0.76) 62%, rgba(18, 161, 142, 0.66) 100%);
+	bottom: 0;
+	left: 0;
+	opacity: 0;
+	padding: 1rem;
+	position: absolute;
+	right: 0;
+	top: 0;
+	transition: all 250ms ease-out;
+	transition-delay: 100ms;
+	will-change: opacity;
+}
+
+.movie-card-img {
+	display: block;
+	width: 100%;
+}
+
+.movie-card-title {
+	display: block;
+	font-weight: $font-weight-bold;
+}
+
+.movie-card-watch {
+	border-bottom: 1px solid rgba(#fff, 0.2);
+	display: flex;
+	font-size: 0.75rem;
+	flex-wrap: wrap;
+	margin: 1em 0 0 0;
+
+	@include query(sm) {
+		font-size: 0.625rem;
+	}
+}
+
+.movie-card-watch dt,
+.movie-card-watch dd {
+	border-top: 1px solid rgba(#fff, 0.2);
+	flex: 1 1 50%;
+	margin: 0;
+	padding: 0.5em 0;
+
+	@include query(sm) {
+		padding: 0.75em 0;
+	}
+}
+
+.movie-card-watch dt {
+	font-weight: $font-weight-bold;
+}
+
+.movie-card-watch dd {
+	text-align: right;
+}
+
+.movie-card-rating {
+	background-color: #fff;
+	border-radius: 2px;
+	color: $color-cinder;
+	display: inline-block;
+	font-size: 0.625rem;
+	font-weight: $font-weight-bold;
+	margin-right: 0.375em;
+	padding: 0.125em 0.375em;
+	vertical-align: middle;
+
+	@include query(sm) {
+		font-size: 0.5rem;
+	}
+}
+
+.movie-card-year {
+	display: inline-block;
+	font-size: 0.625rem;
+	font-weight: $font-weight-bold;
+	vertical-align: middle;
+
+	@include query(sm) {
+		font-size: 0.5rem;
+	}
+}
+
+.movie-card-content {
+	color: #fff;
+	opacity: 0;
+	transition: 300ms all ease-out;
+	transition-delay: 150ms;
+	transform: translateY(0.5rem);
+	will-change: opacity, transform;
+}
+
+.movies.card-expanded {
+	.movie-card {
+		opacity: 0.3;
+	}
+
+	.movie-card:hover {
+		@include query(sm) {
+			box-shadow: 0 0 6rem $color-cinder, 0 0 3rem $color-cinder;
+			opacity: 1;
+			transform: scale(1.15);
+			z-index: 20;
+		}
+	}
+
+	.movie-card.active {
+		opacity: 1;
+
+		@include query(sm) {
+			transform: scale(1.5);
+			z-index: 30;
+		}
+	}
+}
+
+// active state
+.movie-card.active {
+	box-shadow: 0 0 6rem $color-cinder, 0 0 3rem $color-cinder;
+	outline: 0;
+	transform: scale(1.25);
+	z-index: 20;
+
+	.movie-card-overlay {
+		opacity: 1;
+	}
+
+	.movie-card-img {
+		filter: blur(4px);
+		transform: scale(1.05);
+	}
+
+	.movie-card-content {
+		opacity: 1;
+		transform: none;
+	}
+}

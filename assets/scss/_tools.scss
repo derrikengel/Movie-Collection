@@ -1,0 +1,7 @@
+@mixin query($breakpoint) {
+	$q: map-get($breakpoints, $breakpoint);
+
+	@media #{$q} {
+		@content;
+	}
+}

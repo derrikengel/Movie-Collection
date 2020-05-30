@@ -2,7 +2,6 @@
 # This .gitignore file was automatically created by Microsoft(R) Visual Studio.
 ################################################################################
 
-/.vs
 /.vscode
 assets/FaviconGuides2020.ai
 assets/FaviconGuides2020-v2.ai
