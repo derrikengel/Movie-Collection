@@ -1,6 +1,9 @@
 Vue.use(VueLazyload)
 
+var router = new VueRouter();
+
 new Vue({
+    router,
     el: '#movies',
     data() {
         return {
@@ -23,7 +26,8 @@ new Vue({
             endYear: null,
             minYear: 0,
             maxYear: 0,
-            randomMovie: false
+            randomMovie: false,
+            screenPass: false
         }
     },
     computed: {
@@ -86,6 +90,7 @@ new Vue({
     },
     methods: {
         selectItem(index) {
+            // handle click for movie cards
             index === this.activeItem ? this.activeItem = null : this.activeItem = index
             this.activeFilter = null
 
@@ -93,12 +98,14 @@ new Vue({
             this.panelActive = false
         },
         toggleFilters() {
+            // toggle the filter side panel for narrow screens
             this.panelActive = !this.panelActive
 
             if (this.panelActive)
                 this.activeItem = null
         },
         selectFilter(filter) {
+            // handle click for filter dropdowns
             filter === this.activeFilter ? this.activeFilter = null : this.activeFilter = filter
             this.activeItem = null
         },
