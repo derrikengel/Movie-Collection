@@ -53,7 +53,21 @@
 
 .movie-card-img {
 	display: block;
+	transition: 500ms opacity ease-out;
 	width: 100%;
+}
+
+.movie-card-img[lazy='loading'] {
+	background-image: url('/assets/loading.svg');
+	background-position: 50% 50%;
+	background-repeat: no-repeat;
+	background-size: 16px 16px;
+}
+
+.movie-card-img[lazy='loaded'] {
+	animation-duration: 1s;
+	animation-fill-mode: both;
+	animation-name: fadeIn;
 }
 
 .movie-card-title {
@@ -172,5 +186,14 @@
 	.movie-card-content {
 		opacity: 1;
 		transform: none;
+	}
+}
+
+@keyframes fadeIn {
+	0% {
+		opacity: 0;
+	}
+	100% {
+		opacity: 1;
 	}
 }

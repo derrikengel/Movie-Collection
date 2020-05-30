@@ -1,3 +1,5 @@
+Vue.use(VueLazyload)
+
 new Vue({
     el: '#movies',
     data() {

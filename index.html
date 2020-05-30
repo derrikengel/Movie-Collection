@@ -162,7 +162,7 @@
 
 			<div class="movies" :class="{ 'card-expanded': activeItem != null }">
 				<div v-for="(movie, index) in movies" :key="index" :class="{ active: index === activeItem }" class="movie-card" tabindex="0" :title="movie.gsx$movietitle.$t" @click="selectItem(index)" v-on:keyup.enter="selectItem(index)">
-					<img :src="movie.gsx$image.$t" :alt="movie.gsx$movietitle.$t" class="movie-card-img">
+					<img v-lazy="movie.gsx$image.$t" :alt="movie.gsx$movietitle.$t" class="movie-card-img">
 					<div class="movie-card-overlay">
 						<div class="movie-card-content">
 							<span class="movie-card-title">{{ movie.gsx$movietitle.$t }}</span>
@@ -194,6 +194,7 @@
 	<script src="https://cdn.jsdelivr.net/npm/vue@2.6.11/dist/vue.min.js"></script>
 	<script src="https://cdn.jsdelivr.net/npm/axios@0.19.2/dist/axios.min.js"></script>
 	<script src="https://cdn.jsdelivr.net/npm/lodash@4.17.15/lodash.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/vue-lazyload@1.3.3/vue-lazyload.min.js"></script>
 	<script src="assets/main.min.js"></script>
 </body>
 
