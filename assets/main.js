@@ -9,7 +9,7 @@ var router = new VueRouter({
     ]
 });
 
-new Vue({
+var movies = new Vue({
     router,
     el: '#movies',
     data() {
@@ -35,14 +35,17 @@ new Vue({
             maxYear: 0,
             randomMovie: false,
             screenPass: false,
-            screenPassUser: null
+            screenPassData: null,
+            screenPassUser: null,
+            screenPassAvailable: true,
+            screenPassStatus: null
         }
     },
     computed: {
         movies() {
             var self = this
             var movies = self.movieData
-            var filteredMovies = _.filter(movies, function (movie) {
+            var filteredMovies = _.filter(movies, movie => {
                 var search = self.search ? new RegExp('\\b' + self.search, 'gi').test(movie.gsx$movietitle.$t) : true
                 var format = self.formatFilter.length ? (self.formatFilter.includes(movie.gsx$vudu.$t) || self.formatFilter.includes(movie.gsx$googleplay.$t) || self.formatFilter.includes(movie.gsx$disc.$t)) : true
                 var rating = self.ratingFilter.length ? self.ratingFilter.includes(movie.gsx$rating.$t) : true
@@ -65,7 +68,7 @@ new Vue({
         }
     },
     mounted() {
-        axios.get('https://spreadsheets.google.com/feeds/list/1QrEHAN4o6dQe4PqCXg5_AkQ8u_j1nqt1GCpz90Lv5g4/od6/public/values?alt=json')
+        axios.get('https://spreadsheets.google.com/feeds/list/1QrEHAN4o6dQe4PqCXg5_AkQ8u_j1nqt1GCpz90Lv5g4/1/public/values?alt=json')
             .then(response => {
                 this.movieData = response.data.feed.entry
 
@@ -73,8 +76,33 @@ new Vue({
                     this.screenPass = true
                     this.movieData = this.movieData.filter(movie => movie.gsx$screenpass.$t == 'Yes')
                     this.sort = 'alpha'
+
+                    // get screen pass data
+                    axios.get('https://spreadsheets.google.com/feeds/list/1QrEHAN4o6dQe4PqCXg5_AkQ8u_j1nqt1GCpz90Lv5g4/4/public/values?alt=json')
+                        .then(response => {
+                            this.screenPassData = response.data.feed.entry
+
+                            // get current date, first day of current month and last day of current month
+                            var currentDate = new Date()
+                            currentDate.setHours(0, 0, 0, 0)
+                            var firstDay = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1)
+                            var lastDay = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0)
+
+                            // get the requests for the current month
+                            var currentRequests = this.screenPassData.filter(request => {
+                                var requestDate = new Date(request.gsx$timestamp.$t).setHours(0, 0, 0, 0)
+                                return requestDate >= firstDay && requestDate <= lastDay
+                            })
+
+                            if (currentRequests.length >= 3)
+                                this.screenPassAvailable = false
+                        })
                 }
 
+                if (this.screenPass && readCookie('screenPassRequested'))
+                    this.screenPassAvailable = false
+
+                // set up filters
                 this.allGenres = [...new Set(this.movieData.flatMap(movie => movie.gsx$genre.$t.split(', ')))].sort()
                 this.minYear = _.min(this.movieData.flatMap(movie => movie.gsx$year.$t))
                 this.maxYear = _.max(this.movieData.flatMap(movie => movie.gsx$year.$t))
@@ -92,8 +120,8 @@ new Vue({
                 var orderedratings = []
                 
                 for (var i = 0; i < ratingsOrder.length; i++)
-                if (ratings.indexOf(ratingsOrder[i]) > -1)
-                orderedratings.push(ratingsOrder[i])
+                    if (ratings.indexOf(ratingsOrder[i]) > -1)
+                        orderedratings.push(ratingsOrder[i])
                 
                 this.allRatings = orderedratings
             })
@@ -107,6 +135,10 @@ new Vue({
         selectItem(index) {
             // handle click for movie cards
             index === this.activeItem ? this.activeItem = null : this.activeItem = index
+
+            // focus not working?
+            // if (this.screenPass && index === this.activeItem)
+            //     this.$refs.email[index].focus()
 
             this.activeFilter = null
 
@@ -156,9 +188,20 @@ new Vue({
             formData.append('Requester', this.screenPassUser)
             formData.append('Movie', movie)
 
+            this.screenPassStatus = 'processing'
+            
             fetch(scriptURL, { method: 'POST', body: formData })
-                .then(result => console.log('success!'))
-                .catch(error => console.error(error.message))
+                .then(result => {
+                    this.screenPassStatus = 'success'
+                    this.screenPassAvailable = false
+
+                    // set a cookie to expire the first day of next month so a user can only request 1 per month
+                    setCookie('screenPassRequested', 'true')
+                })
+                .catch(error => {
+                    console.error(error.message)
+                    this.screenPassStatus = 'error'
+                })
         },
         reset() {
             this.activeItem = null
@@ -173,3 +216,26 @@ new Vue({
         }
     }
 })
+
+setCookie = function (name, value) {
+    var date = new Date();
+    // set to expire first day of next month
+    date.setMonth(date.getMonth() + 1, 1)
+    var expires = '; expires=' + date.toString();
+    document.cookie = name + '=' + value + expires + '; path=/';
+};
+
+readCookie = function (name) {
+    var nameEQ = name + '=';
+    var ca = document.cookie.split(';');
+    for (var i = 0; i < ca.length; i++) {
+        var c = ca[i];
+        while (c.charAt(0) == ' ') c = c.substring(1, c.length);
+        if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length, c.length);
+    }
+    return null;
+};
+
+clearCookie = function (name) {
+    setCookie(name, '', -1);
+};

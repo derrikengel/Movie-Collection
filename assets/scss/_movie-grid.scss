@@ -46,7 +46,6 @@
 	position: absolute;
 	top: 0;
 	transition: all 250ms ease-out;
-	transition-delay: 100ms;
 	width: 100%;
 	will-change: opacity;
 }
@@ -55,9 +54,9 @@
 	color: #fff;
 	height: 100%;
 	opacity: 0;
-	transition: 300ms all ease-out;
-	transition-delay: 150ms;
-	transform: translateY(0.5rem);
+	transition: 250ms all ease-out;
+	transition-delay: 0;
+	transform: translateY(0.25rem);
 	will-change: opacity, transform;
 }
 
@@ -144,27 +143,40 @@
 	}
 }
 
-.movie-card form {
+.screen-pass-form {
 	bottom: 0;
 	cursor: auto;
+	display: none;
+	font-size: 0.75rem;
 	left: 0;
 	position: absolute;
 	width: 100%;
-}
-
-.movie-card form input {
-	color: #fff;
-	font-size: 0.75rem;
 
 	@include query(sm) {
 		font-size: 0.625rem;
 	}
 }
 
-.movie-card form button {
+.screen-pass-form input {
+    background: rgba(#fff, 0.1);
+    border-bottom: none;
+    border-radius: 0.25rem;
+	color: #fff;
+	font-size: 0.75rem;
+	margin-top: 0.25rem;
+    padding: 0.625em 1em;
+	text-align: center;
+	
+	@include query(sm) {
+		font-size: 0.625rem;
+	}
+}
+
+.screen-pass-form button {
 	display: block;
 	font-size: 0.625rem;
-	margin-top: 0.5rem;
+	margin-top: 0.25rem;
+	position: relative;
 	width: 100%;
 
 	&:hover,
@@ -175,6 +187,41 @@
 		}
 	}
 }
+
+.screen-pass-form button .btn-title,
+.screen-pass-form button .loader {
+	transition: 200ms opacity ease-out;
+}
+
+.screen-pass-form button .loader {
+	font-size: 0.25rem;
+	left: 50%;
+	margin: -1.5em 0 0 -1.5em;
+	opacity: 0;
+	position: absolute;
+	top: 50%;
+}
+
+.screen-pass-form button:disabled {
+	background: transparent;
+	cursor: auto;
+
+	.btn-title {
+		opacity: 0;
+	}
+	
+	.loader {
+		opacity: 1;
+	}
+
+	&:hover,
+	&:focus {
+		@include query(lg) {
+			box-shadow: none;
+		}
+	}
+}
+
 
 .movies.card-expanded {
 	.movie-card {
@@ -219,6 +266,11 @@
 	.movie-card-content {
 		opacity: 1;
 		transform: none;
+		transition-delay: 200ms;
+	}
+
+	.screen-pass-form {
+		display: block;
 	}
 }
 

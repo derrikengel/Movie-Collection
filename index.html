@@ -188,10 +188,18 @@
 									<dd>{{ movie.gsx$disc.$t }}</dd>
 								</template>
 							</dl>
-							<form v-if="screenPass" @submit.prevent="submitScreenPass(movie.gsx$movietitle.$t)" v-on:click.stop v-on:keyup.enter.stop>
-								<input type="text" placeholder="Your name or email" v-model="screenPassUser" required>
-								<button type="submit">Request Screen Pass</button>
-							</form>
+							<div class="screen-pass-form" v-if="screenPass" v-on:click.stop v-on:keyup.enter.stop>
+								<template v-if="screenPassStatus == 'error'">Sorry, something went wrong.</template>
+								<form @submit.prevent="submitScreenPass(movie.gsx$movietitle.$t)" v-if="screenPassAvailable">
+									<input type="text" placeholder="Your name or email" v-model="screenPassUser" ref="email" required>
+									<button type="submit" :disabled="screenPassStatus == 'processing'">
+										<span class="btn-title">Request Screen Pass</span>
+										<span class="loader"></span>
+									</button>
+								</form>
+								<template v-if="!screenPassAvailable && screenPassStatus != 'success'">Please check back next month for more Screen Passes.</template>
+								<template v-if="screenPassStatus == 'success'">Thank - we'll send you a link for your movie soon!</template>
+							</div>
 						</div>
 					</div>
 				</div>
