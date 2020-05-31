@@ -35,11 +35,14 @@ h1 {
 	z-index: 110;
 }
 
-h1 span {
-	color: $color-torch-red;
-	background: $gradient;
-	-webkit-background-clip: text;
-	-webkit-text-fill-color: transparent;
+h1 .screen-pass {
+	color: $color-turquoise;
+	display: block;
+	font-size: calc(14px + (22 - 14) * ((100vw - 320px) / (1900 - 320)));
+	font-weight: $font-weight-bold;
+}
+
+h1 .gradient-text {
 	font-weight: $font-weight-bold;
 }
 
@@ -80,6 +83,54 @@ button {
 button svg {
 	fill: currentColor;
 	margin-right: 0.5rem;
+}
+
+input[type='text'],
+input[type='search'] {
+	background-color: transparent;
+	border: none;
+	border-bottom: 2px solid $color-torch-red;
+	border-radius: 0;
+	box-shadow: none;
+	box-sizing: border-box;
+	color: $color-turquoise;
+	display: block;
+	font-family: $font-stack;
+	font-size: 1rem;
+	font-weight: $font-weight-bold;
+	line-height: 1.35;
+	padding: 0.25em 0;
+	transition: 200ms all ease-out;
+	width: 100%;
+
+	&:focus {
+		border-color: $color-turquoise;
+	}
+
+	&::-webkit-input-placeholder {
+		color: #fff;
+		font-weight: $font-weight-regular;
+	}
+
+	&:-moz-placeholder {
+		color: #fff;
+		font-weight: $font-weight-regular;
+	}
+
+	&::-moz-placeholder {
+		color: #fff;
+		font-weight: $font-weight-regular;
+	}
+
+	&:-ms-input-placeholder {
+		color: #fff;
+		font-weight: $font-weight-regular;
+	}
+
+	&::placeholder {
+		color: #fff;
+		font-weight: $font-weight-regular;
+	}
 }
 
 input[type='checkbox'] + label:before,
@@ -125,6 +176,13 @@ input[type='radio'] {
 	position: absolute;
 	top: 0;
 	width: 0;
+}
+
+.gradient-text {
+	color: $color-torch-red;
+	background: $gradient;
+	-webkit-background-clip: text;
+	-webkit-text-fill-color: transparent;
 }
 
 [v-cloak] {

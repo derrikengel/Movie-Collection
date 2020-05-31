@@ -1,6 +1,13 @@
 Vue.use(VueLazyload)
 
-var router = new VueRouter();
+var router = new VueRouter({
+    routes: [
+        {
+            path: '/screen-pass',
+            name: 'screen-pass'
+        }
+    ]
+});
 
 new Vue({
     router,
@@ -27,7 +34,8 @@ new Vue({
             minYear: 0,
             maxYear: 0,
             randomMovie: false,
-            screenPass: false
+            screenPass: false,
+            screenPassUser: null
         }
     },
     computed: {
@@ -60,6 +68,13 @@ new Vue({
         axios.get('https://spreadsheets.google.com/feeds/list/1QrEHAN4o6dQe4PqCXg5_AkQ8u_j1nqt1GCpz90Lv5g4/od6/public/values?alt=json')
             .then(response => {
                 this.movieData = response.data.feed.entry
+
+                if (this.$route.name == 'screen-pass') {
+                    this.screenPass = true
+                    this.movieData = this.movieData.filter(movie => movie.gsx$screenpass.$t == 'Yes')
+                    this.sort = 'alpha'
+                }
+
                 this.allGenres = [...new Set(this.movieData.flatMap(movie => movie.gsx$genre.$t.split(', ')))].sort()
                 this.minYear = _.min(this.movieData.flatMap(movie => movie.gsx$year.$t))
                 this.maxYear = _.max(this.movieData.flatMap(movie => movie.gsx$year.$t))
@@ -71,14 +86,14 @@ new Vue({
                 
                 var discFormats = this.movieData.flatMap(movie => movie.gsx$disc.$t)
                 this.physicalFormats = [...new Set(discFormats)].filter(el => el != '').sort()
-
+                
                 var ratings = [...new Set(this.movieData.flatMap(movie => movie.gsx$rating.$t))]
                 var ratingsOrder = ['G', 'TV-G', 'PG', 'TV-PG', 'PG-13', 'R', 'TV-MA', 'NR']
                 var orderedratings = []
-
+                
                 for (var i = 0; i < ratingsOrder.length; i++)
-                    if (ratings.indexOf(ratingsOrder[i]) > -1)
-                        orderedratings.push(ratingsOrder[i])
+                if (ratings.indexOf(ratingsOrder[i]) > -1)
+                orderedratings.push(ratingsOrder[i])
                 
                 this.allRatings = orderedratings
             })
@@ -92,6 +107,7 @@ new Vue({
         selectItem(index) {
             // handle click for movie cards
             index === this.activeItem ? this.activeItem = null : this.activeItem = index
+
             this.activeFilter = null
 
             // close the side panel for narrow views
@@ -133,6 +149,16 @@ new Vue({
 
             // hide filter menus
             this.activeFilter = null
+        },
+        submitScreenPass(movie) {
+            const scriptURL = 'https://script.google.com/macros/s/AKfycbzDLlzElZKNrEPIcrnQNV9P6duLdkufuq_g8QQSSTgi0yHvU3Y/exec'
+            const formData = new FormData()
+            formData.append('Requester', this.screenPassUser)
+            formData.append('Movie', movie)
+
+            fetch(scriptURL, { method: 'POST', body: formData })
+                .then(result => console.log('success!'))
+                .catch(error => console.error(error.message))
         },
         reset() {
             this.activeItem = null

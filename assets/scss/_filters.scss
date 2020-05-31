@@ -312,77 +312,59 @@
 }
 
 .search input {
-	background-color: transparent;
-	border: none;
-	border-bottom: 2px solid $color-torch-red;
-	border-radius: 0;
-	box-shadow: none;
-	box-sizing: border-box;
 	color: $color-cinder;
-	display: block;
-	font-family: $font-stack;
-	font-size: 1rem;
-	font-weight: $font-weight-bold;
-	line-height: 1.35;
-	padding: 0.25em 0 0.25em 1.25em;
+	padding-left: 1.25em;
 	position: relative;
-	transition: 200ms all ease-out;
-	width: 100%;
     z-index: 20;
     
     @include query(lg) {
         color: $color-turquoise;
 		max-width: 16rem;
-    }
-}
+	}
+	
+	&:focus {
+		border-color: $color-turquoise;
+	}
 
-.search input:focus {
-	border-color: $color-turquoise;
-}
+	&::-webkit-input-placeholder {
+		color: $color-placeholder;
+		
+		@include query(lg) {
+			color: #fff;
+		}
+	}
 
-.search input::-webkit-input-placeholder {
-	color: $color-placeholder;
-    font-weight: $font-weight-regular;
-    
-    @include query(lg) {
-        color: #fff;
-    }
-}
+	&:-moz-placeholder {
+		color: $color-placeholder;
+		
+		@include query(lg) {
+			color: #fff;
+		}
+	}
 
-.search input:-moz-placeholder {
-	color: $color-placeholder;
-    font-weight: $font-weight-regular;
-    
-    @include query(lg) {
-        color: #fff;
-    }
-}
+	&::-moz-placeholder {
+		color: $color-placeholder;
+		
+		@include query(lg) {
+			color: #fff;
+		}
+	}
 
-.search input::-moz-placeholder {
-	color: $color-placeholder;
-    font-weight: $font-weight-regular;
-    
-    @include query(lg) {
-        color: #fff;
-    }
-}
+	&:-ms-input-placeholder {
+		color: $color-placeholder;
+		
+		@include query(lg) {
+			color: #fff;
+		}
+	}
 
-.search input:-ms-input-placeholder {
-	color: $color-placeholder;
-    font-weight: $font-weight-regular;
-    
-    @include query(lg) {
-        color: #fff;
-    }
-}
-
-.search input::placeholder {
-	color: $color-placeholder;
-    font-weight: $font-weight-regular;
-    
-    @include query(lg) {
-        color: #fff;
-    }
+	&::placeholder {
+		color: $color-placeholder;
+		
+		@include query(lg) {
+			color: #fff;
+		}
+	}
 }
 
 .movie-count h2 {

@@ -17,9 +17,13 @@
 </head>
 
 <body>
-	<h1><span>Movie</span> Collection</h1>
-
 	<div id="movies" v-cloak>
+
+		<h1>
+			<span class="screen-pass" v-if="screenPass">Screen Pass</span>
+			<span class="gradient-text">Movie</span> Collection
+		</h1>
+
 		<div v-if="loading" class="loader"></div>
 
 		<h2 v-else-if="errored">Movie data could not be retrieved. Try again later.</h2>
@@ -50,7 +54,7 @@
 						</svg>
 					</div> <!-- /filter-option -->
 
-					<div class="filter-option" :class="{ active: activeFilter === 'sort' }">
+					<div class="filter-option" :class="{ active: activeFilter === 'sort' }" v-if="!screenPass">
 						<span class="filter-option-title" tabindex="0" @click="selectFilter('sort')" v-on:keyup.enter="selectFilter('sort')">
 							Sort
 							<svg class="filter-arrow" width="10px" height="7px" viewBox="0 0 10 7" xmlns="http://www.w3.org/2000/svg">
@@ -69,7 +73,7 @@
 						</div> <!-- /filter-option-menu -->
 					</div> <!-- /filter-option -->
 
-					<div class="filter-option" :class="{ active: activeFilter === 'format', 'has-selections' : formatFilter.length > 0 }">
+					<div class="filter-option" :class="{ active: activeFilter === 'format', 'has-selections' : formatFilter.length > 0 }" v-if="!screenPass">
 						<span class="filter-option-title" tabindex="0" @click="selectFilter('format')" v-on:keyup.enter="selectFilter('format')">
 							Format &amp; Quality
 							<svg class="filter-arrow" width="10px" height="7px" viewBox="0 0 10 7" xmlns="http://www.w3.org/2000/svg">
@@ -136,7 +140,7 @@
 						</div> <!-- /filter-option-menu -->
 					</div> <!-- /filter-option -->
 
-					<div class="filter-option">
+					<div class="filter-option" v-if="!screenPass">
 						<button class="filter-random-btn" @click="selectRandom()">
 							<svg class="random-icon" width="18px" height="16px" viewBox="0 0 36 32" xmlns="http://www.w3.org/2000/svg">
 								<path d="M10.5,10.44l1.82,2.8l2.38-3.67l-0.85-1.31C12.28,5.83,8.9,4,6,4H0v4h6C7.53,8,9.67,9.16,10.5,10.44z" />
@@ -168,7 +172,7 @@
 							<span class="movie-card-title">{{ movie.gsx$movietitle.$t }}</span>
 							<span class="movie-card-rating" title="Rating">{{ movie.gsx$rating.$t }}</span>
 							<span class="movie-card-year" title="Release Year">{{ movie.gsx$year.$t }}</span>
-							<dl class="movie-card-watch">
+							<dl class="movie-card-watch" v-if="!screenPass">
 								<template v-if="movie.gsx$vudu.$t">
 									<dt>Vudu</dt>
 									<dd>{{ movie.gsx$vudu.$t }}</dd>
@@ -184,6 +188,10 @@
 									<dd>{{ movie.gsx$disc.$t }}</dd>
 								</template>
 							</dl>
+							<form v-if="screenPass" @submit.prevent="submitScreenPass(movie.gsx$movietitle.$t)" v-on:click.stop v-on:keyup.enter.stop>
+								<input type="text" placeholder="Your name or email" v-model="screenPassUser" required>
+								<button type="submit">Request Screen Pass</button>
+							</form>
 						</div>
 					</div>
 				</div>
