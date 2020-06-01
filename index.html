@@ -190,7 +190,7 @@
 							</dl>
 							<div class="screen-pass-form" v-if="screenPass" v-on:click.stop v-on:keyup.enter.stop>
 								<template v-if="screenPassStatus == 'error'">Sorry, something went wrong.</template>
-								<form @submit.prevent="submitScreenPass(movie.gsx$movietitle.$t)" v-if="screenPassAvailable">
+								<form @submit.prevent="submitScreenPass(movie.gsx$movietitle.$t, movie.gsx$year.$t)" v-if="screenPassAvailable">
 									<input type="text" placeholder="Your name or email" v-model="screenPassUser" ref="email" required>
 									<button type="submit" :disabled="screenPassStatus == 'processing'">
 										<span class="btn-title">Request Screen Pass</span>

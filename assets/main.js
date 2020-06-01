@@ -182,11 +182,11 @@ var movies = new Vue({
             // hide filter menus
             this.activeFilter = null
         },
-        submitScreenPass(movie) {
+        submitScreenPass(movie, year) {
             const scriptURL = 'https://script.google.com/macros/s/AKfycbzDLlzElZKNrEPIcrnQNV9P6duLdkufuq_g8QQSSTgi0yHvU3Y/exec'
             const formData = new FormData()
             formData.append('Requester', this.screenPassUser)
-            formData.append('Movie', movie)
+            formData.append('Movie', movie + ' (' + year + ')' )
 
             this.screenPassStatus = 'processing'
             
