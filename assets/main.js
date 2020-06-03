@@ -38,7 +38,9 @@ var movies = new Vue({
             screenPassData: null,
             screenPassUser: null,
             screenPassAvailable: true,
-            screenPassStatus: null
+            screenPassStatus: null,
+            screenPassCounter: null,
+            currentMonth: null
         }
     },
     computed: {
@@ -72,35 +74,8 @@ var movies = new Vue({
             .then(response => {
                 this.movieData = response.data.feed.entry
 
-                if (this.$route.name == 'screen-pass') {
-                    this.screenPass = true
+                if (this.$route.name == 'screen-pass')
                     this.movieData = this.movieData.filter(movie => movie.gsx$screenpass.$t == 'Yes')
-                    this.sort = 'alpha'
-
-                    // get screen pass data
-                    axios.get('https://spreadsheets.google.com/feeds/list/1QrEHAN4o6dQe4PqCXg5_AkQ8u_j1nqt1GCpz90Lv5g4/4/public/values?alt=json')
-                        .then(response => {
-                            this.screenPassData = response.data.feed.entry
-
-                            // get current date, first day of current month and last day of current month
-                            var currentDate = new Date()
-                            currentDate.setHours(0, 0, 0, 0)
-                            var firstDay = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1)
-                            var lastDay = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0)
-
-                            // get the requests for the current month
-                            var currentRequests = this.screenPassData.filter(request => {
-                                var requestDate = new Date(request.gsx$timestamp.$t).setHours(0, 0, 0, 0)
-                                return requestDate >= firstDay && requestDate <= lastDay
-                            })
-
-                            if (currentRequests.length >= 3)
-                                this.screenPassAvailable = false
-                        })
-                }
-
-                if (this.screenPass && readCookie('screenPassRequested'))
-                    this.screenPassAvailable = false
 
                 // set up filters
                 this.allGenres = [...new Set(this.movieData.flatMap(movie => movie.gsx$genre.$t.split(', ')))].sort()
@@ -130,6 +105,42 @@ var movies = new Vue({
                 this.errored = true
             })
             .finally(() => this.loading = false)
+        
+        if (this.$route.name == 'screen-pass') {
+            this.screenPass = true
+            this.sort = 'alpha'
+
+            // get screen pass data
+            axios.get('https://spreadsheets.google.com/feeds/list/1QrEHAN4o6dQe4PqCXg5_AkQ8u_j1nqt1GCpz90Lv5g4/4/public/values?alt=json')
+                .then(response => {
+                    this.screenPassData = response.data.feed.entry
+
+                    if (readCookie('screenPassRequested'))
+                        this.screenPassAvailable = false
+
+                    // get current date, first day of current month and last day of current month
+                    var currentDate = new Date()
+                    currentDate.setHours(0, 0, 0, 0)
+                    var currentMonth = currentDate.getMonth()
+                    var firstDay = new Date(currentDate.getFullYear(), currentMonth, 1)
+                    var lastDay = new Date(currentDate.getFullYear(), currentMonth + 1, 0)
+
+                    var months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
+                    this.currentMonth = months[currentMonth]
+
+                    // get the requests for the current month
+                    var currentRequests = this.screenPassData.filter(request => {
+                        var requestDate = new Date(request.gsx$timestamp.$t).setHours(0, 0, 0, 0)
+                        return requestDate >= firstDay && requestDate <= lastDay
+                    })
+                    
+                    // set the number of remaining passes
+                    this.screenPassCounter = currentRequests.length <= 3 ? currentRequests.length - 3 : 0;
+
+                    if (this.screenPassCounter < 1)
+                        this.screenPassAvailable = false
+                })
+        }
     },
     methods: {
         selectItem(index) {

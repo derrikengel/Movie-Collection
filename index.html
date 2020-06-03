@@ -20,8 +20,17 @@
 	<div id="movies" v-cloak>
 
 		<h1>
-			<span class="screen-pass" v-if="screenPass">Screen Pass</span>
-			<span class="gradient-text">Movie</span> Collection
+			<template v-if="screenPass">
+				<span class="gradient-text">Screen</span> Pass
+				<span class="screen-pass-availability" v-if="currentMonth">
+					<span class="screen-pass-counter">{{ screenPassCounter }}</span>
+					remaining for {{ currentMonth }}
+				</span>
+			</template>
+
+			<template v-else>
+				<span class="gradient-text">Movie</span> Collection
+			</template>
 		</h1>
 
 		<div v-if="loading" class="loader"></div>
@@ -54,7 +63,7 @@
 						</svg>
 					</div> <!-- /filter-option -->
 
-					<div class="filter-option" :class="{ active: activeFilter === 'sort' }" v-if="!screenPass">
+					<div class="filter-option" :class="{ active: activeFilter === 'sort' }">
 						<span class="filter-option-title" tabindex="0" @click="selectFilter('sort')" v-on:keyup.enter="selectFilter('sort')">
 							Sort
 							<svg class="filter-arrow" width="10px" height="7px" viewBox="0 0 10 7" xmlns="http://www.w3.org/2000/svg">
@@ -191,13 +200,13 @@
 							<div class="screen-pass-form" v-if="screenPass" v-on:click.stop v-on:keyup.enter.stop>
 								<template v-if="screenPassStatus == 'error'">Sorry, something went wrong.</template>
 								<form @submit.prevent="submitScreenPass(movie.gsx$movietitle.$t, movie.gsx$year.$t)" v-if="screenPassAvailable">
-									<input type="text" placeholder="Your name or email" v-model="screenPassUser" ref="email" required>
+									<input type="text" placeholder="Your name or email" v-model="screenPassUser" title="Enter your full name, profile, or email address so we know where to send the Screen Pass!" ref="email" required>
 									<button type="submit" :disabled="screenPassStatus == 'processing'">
 										<span class="btn-title">Request Screen Pass</span>
 										<span class="loader"></span>
 									</button>
 								</form>
-								<template v-if="!screenPassAvailable && screenPassStatus != 'success'">Please check back next month for more Screen Passes.</template>
+								<!-- <template v-if="!screenPassAvailable && screenPassStatus != 'success'">Please check back next month for more Screen Passes.</template> -->
 								<template v-if="screenPassStatus == 'success'">Thank - we'll send you a link for your movie soon!</template>
 							</div>
 						</div>

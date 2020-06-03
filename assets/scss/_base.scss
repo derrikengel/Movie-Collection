@@ -31,15 +31,25 @@ h1 {
 	font-size: calc(40px + (92 - 40) * ((100vw - 320px) / (1900 - 320)));
 	font-weight: $font-weight-regular;
 	line-height: 1.15;
+	margin: 0.75em 0;
 	position: relative;
 	z-index: 110;
 }
 
-h1 .screen-pass {
+h1 .screen-pass-availability {
 	color: $color-turquoise;
 	display: block;
 	font-size: calc(14px + (22 - 14) * ((100vw - 320px) / (1900 - 320)));
+	margin-top: 0.25em;
+}
+
+h1 .screen-pass-counter {
+	background-color: #fff;
+	border-radius: 0.25rem;
+	color: $color-cinder;
 	font-weight: $font-weight-bold;
+	margin-right: 0.125em;
+	padding: 0.125em 0.3125em;
 }
 
 h1 .gradient-text {

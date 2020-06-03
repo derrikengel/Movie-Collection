@@ -166,9 +166,14 @@
 	margin-top: 0.25rem;
     padding: 0.625em 1em;
 	text-align: center;
+	transition: 200ms box-shadow ease-out;
 	
 	@include query(sm) {
 		font-size: 0.625rem;
+	}
+
+	&:focus {
+		box-shadow: inset 0 0 0 1px rgba(#fff, 0.2);
 	}
 }
 
