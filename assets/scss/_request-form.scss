@@ -10,7 +10,7 @@
 	transform: translateY(100%) translateY(-3rem);
 	transition: 300ms transform ease-out;
 	width: 16rem;
-	z-index: 30;
+	z-index: 400;
 	
 	&.active {
 		transform: none;
