@@ -53,7 +53,7 @@
 					Filter
 				</button>
 
-				<div class="filter-panel" :class="{active: panelActive}">
+				<div class="filter-panel" :class="{ active: panelActive }">
 					<button type="button" class="filter-close-btn" @click="toggleFilters" title="Close">&times;</button>
 
 					<div class="filter-option search">
@@ -213,6 +213,37 @@
 					</div>
 				</div>
 			</div>
+			
+			<div class="request-form" :class="{ active: requestFormActive }" v-if="!screenPass">
+				<button type="button" class="request-form-header" @click="toggleRequestForm">
+					<svg class="request-icon" width="18px" height="18px" viewBox="0 0 36 36" xmlns="http://www.w3.org/2000/svg">
+						<path d="M18,0C8.06,0,0,8.06,0,18c0,4.97,2.01,9.47,5.27,12.73L0,36h18c9.94,0,18-8.06,18-18C36,8.06,27.94,0,18,0z M12,20 c-1.1,0-2-0.9-2-2s0.9-2,2-2c1.1,0,2,0.9,2,2S13.1,20,12,20z M18,20c-1.1,0-2-0.9-2-2s0.9-2,2-2c1.1,0,2,0.9,2,2S19.1,20,18,20z M24,20c-1.1,0-2-0.9-2-2s0.9-2,2-2c1.1,0,2,0.9,2,2S25.1,20,24,20z"/>
+					</svg>
+					Request a Movie
+				</button>
+				<form @submit.prevent="submitRequest">
+					<p class="success-msg" v-if="requestStatus == 'success'">
+						<svg class="success-icon" width="20px" height="20px" viewBox="0 0 36 36" xmlns="http://www.w3.org/2000/svg">
+							<path d="M18,0C8.08,0,0,8.08,0,18s8.08,18,18,18c9.92,0,18-8.08,18-18S27.92,0,18,0z M18,32c-7.72,0-14-6.28-14-14S10.28,4,18,4 c7.72,0,14,6.28,14,14S25.72,32,18,32z"/>
+							<polygon points="16,19.17 13.41,16.59 10.59,19.41 16,24.83 25.41,15.41 22.59,12.59"/>
+						</svg>
+						Sent successfully!
+					</p>
+					<p class="error-msg" v-if="requestStatus == 'error'">
+						<svg class="error-icon" width="20px" height="20px" viewBox="0 0 36 36" xmlns="http://www.w3.org/2000/svg">
+							<path d="M18,0C8.08,0,0,8.08,0,18s8.08,18,18,18c9.92,0,18-8.08,18-18S27.92,0,18,0z M18,32c-7.72,0-14-6.28-14-14S10.28,4,18,4 c7.72,0,14,6.28,14,14S25.72,32,18,32z"/>
+							<polygon points="24.36,14.46 21.54,11.64 18,15.17 14.46,11.64 11.64,14.46 15.17,18 11.64,21.54 14.46,24.36 18,20.83 21.54,24.36 24.36,21.54 20.83,18"/>
+						</svg>
+						Sorry, something went wrong.
+					</p>
+					<input type="text" placeholder="First Name" v-model="requestName" ref="requestName" required>
+					<input type="text" placeholder="Movie Title & Year" v-model="requestTitle" ref="requestTitle" required>
+					<button class="request-form-btn" type="submit" :disabled="requestStatus == 'processing'">
+						<span class="btn-title">Request</span>
+						<span class="loader"></span>
+					</button>
+				</form>
+			</div> <!-- /request-form -->
 		</template>
 	</div>
 

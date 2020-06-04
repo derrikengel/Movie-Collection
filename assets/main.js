@@ -40,7 +40,11 @@ var movies = new Vue({
             screenPassAvailable: true,
             screenPassStatus: null,
             screenPassCounter: null,
-            currentMonth: null
+            currentMonth: null,
+            requestFormActive: false,
+            requestName: null,
+            requestTitle: null,
+            requestStatus: null
         }
     },
     computed: {
@@ -76,6 +80,10 @@ var movies = new Vue({
 
                 if (this.$route.name == 'screen-pass')
                     this.movieData = this.movieData.filter(movie => movie.gsx$screenpass.$t == 'Yes')
+                
+
+                if (readCookie('movieRequester'))
+                    this.requestName = readCookie('movieRequester')
 
                 // set up filters
                 this.allGenres = [...new Set(this.movieData.flatMap(movie => movie.gsx$genre.$t.split(', ')))].sort()
@@ -194,24 +202,61 @@ var movies = new Vue({
             this.activeFilter = null
         },
         submitScreenPass(movie, year) {
+            // MA implemented their own list sharing, so removing this for now
+            // const scriptURL = 'https://script.google.com/macros/s/AKfycbzDLlzElZKNrEPIcrnQNV9P6duLdkufuq_g8QQSSTgi0yHvU3Y/exec'
+            // const formData = new FormData()
+            // formData.append('Requester', this.screenPassUser)
+            // formData.append('Movie', movie + ' (' + year + ')' )
+
+            // this.screenPassStatus = 'processing'
+            
+            // fetch(scriptURL, { method: 'POST', body: formData })
+            //     .then(result => {
+            //         this.screenPassStatus = 'success'
+            //         this.screenPassAvailable = false
+
+            //         // set to expire cookie first day of next month
+            //         var date = new Date();
+            //         date.setMonth(date.getMonth() + 1, 1)
+
+            //         // set a cookie to expire the first day of next month so a user can only request 1 per month
+            //         setCookie('screenPassRequested', 'true', date)
+            //     })
+            //     .catch(error => {
+            //         console.error(error.message)
+            //         this.screenPassStatus = 'error'
+            //     })
+        },
+        toggleRequestForm(e) {
+            this.requestFormActive = !this.requestFormActive
+
+            e.target.blur()
+
+            if (this.requestFormActive && this.requestName)
+                this.$refs.requestTitle.focus()
+            else if (this.requestFormActive)
+                this.$refs.requestName.focus()
+        },
+        submitRequest() {
             const scriptURL = 'https://script.google.com/macros/s/AKfycbzDLlzElZKNrEPIcrnQNV9P6duLdkufuq_g8QQSSTgi0yHvU3Y/exec'
             const formData = new FormData()
-            formData.append('Requester', this.screenPassUser)
-            formData.append('Movie', movie + ' (' + year + ')' )
+            formData.append('Movie Title', this.requestTitle)
+            formData.append('Requester', this.requestName)
 
-            this.screenPassStatus = 'processing'
-            
+            this.requestStatus = 'processing'
+
+            var date = new Date();
+            date.setFullYear(date.getFullYear() + 1)
+            setCookie('movieRequester', this.requestName, date)
+
             fetch(scriptURL, { method: 'POST', body: formData })
                 .then(result => {
-                    this.screenPassStatus = 'success'
-                    this.screenPassAvailable = false
-
-                    // set a cookie to expire the first day of next month so a user can only request 1 per month
-                    setCookie('screenPassRequested', 'true')
+                    this.requestStatus = 'success'
+                    this.requestTitle = null
                 })
                 .catch(error => {
                     console.error(error.message)
-                    this.screenPassStatus = 'error'
+                    this.requestStatus = 'error'
                 })
         },
         reset() {
@@ -228,10 +273,7 @@ var movies = new Vue({
     }
 })
 
-setCookie = function (name, value) {
-    var date = new Date();
-    // set to expire first day of next month
-    date.setMonth(date.getMonth() + 1, 1)
+setCookie = function (name, value, date) {
     var expires = '; expires=' + date.toString();
     document.cookie = name + '=' + value + expires + '; path=/';
 };
@@ -250,3 +292,8 @@ readCookie = function (name) {
 clearCookie = function (name) {
     setCookie(name, '', -1);
 };
+
+
+
+
+

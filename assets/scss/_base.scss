@@ -70,7 +70,7 @@ button {
 	color: #fff;
 	cursor: pointer;
 	display: inline-flex;
-	font-family: $font-stack;
+	font-family: inherit;
 	font-size: 1rem;
 	font-weight: $font-weight-bold;
 	line-height: 1.35;
@@ -92,6 +92,7 @@ button {
 
 button svg {
 	fill: currentColor;
+	flex: 0 0 auto;
 	margin-right: 0.5rem;
 }
 
@@ -105,7 +106,7 @@ input[type='search'] {
 	box-sizing: border-box;
 	color: $color-turquoise;
 	display: block;
-	font-family: $font-stack;
+	font-family: inherit;
 	font-size: 1rem;
 	font-weight: $font-weight-bold;
 	line-height: 1.35;
@@ -193,6 +194,31 @@ input[type='radio'] {
 	background: $gradient;
 	-webkit-background-clip: text;
 	-webkit-text-fill-color: transparent;
+}
+
+.error-msg {
+	align-items: flex-start;
+	color: $color-torch-red;
+	display: flex;
+	font-weight: $font-weight-bold;
+	
+	.error-icon {
+		fill: currentColor;
+		flex: 0 0 auto;
+		margin-right: 0.5rem;
+	}
+}
+
+.success-msg {
+	align-items: flex-start;
+	display: flex;
+	font-weight: $font-weight-bold;
+
+	.success-icon {
+		fill: currentColor;
+		flex: 0 0 auto;
+		margin-right: 0.5rem;
+	}
 }
 
 [v-cloak] {
