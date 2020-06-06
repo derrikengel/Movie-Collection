@@ -33,12 +33,20 @@
 	padding: 0.5rem;
 	position: sticky;
 	top: 0;
-    z-index: 300;
+	z-index: 300;
+	
+	&.active {
+		z-index: 500;
+	}
     
     @include query(lg) {
         display: block;
 		margin: 0 0 6rem 0;
 		padding: 1rem 0;
+
+		&.active {
+			z-index: 300;
+		}
     }
 }
 

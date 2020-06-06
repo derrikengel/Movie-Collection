@@ -38,7 +38,7 @@
 		<h2 v-else-if="errored">Movie data could not be retrieved. Try again later.</h2>
 
 		<template v-else>
-			<div class="filters">
+			<div class="filters" :class="{ active: panelActive }">
 
 				<div class="movie-count">
 					<h2><span>{{ movies.length}}</span> movies</h2>
