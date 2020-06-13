@@ -26,6 +26,21 @@ body {
 	outline: 0;
 }
 
+html::-webkit-scrollbar {
+	background-color: $color-cinder;
+	width: 1rem;
+}
+
+html::-webkit-scrollbar-thumb {
+	background-color: $color-turquoise;
+	border-radius: 0.5rem;
+	border: 0.25rem solid $color-cinder;
+
+	&:hover {
+		background-color: #fff;
+	}
+}
+
 h1 {
 	color: #fff;
 	font-size: calc(40px + (92 - 40) * ((100vw - 320px) / (1900 - 320)));

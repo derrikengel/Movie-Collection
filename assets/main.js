@@ -77,10 +77,10 @@ var movies = new Vue({
         axios.get('https://spreadsheets.google.com/feeds/list/1QrEHAN4o6dQe4PqCXg5_AkQ8u_j1nqt1GCpz90Lv5g4/1/public/values?alt=json')
             .then(response => {
                 this.movieData = response.data.feed.entry
+                this.movieData = Object.freeze(this.movieData);
 
                 if (this.$route.name == 'screen-pass')
                     this.movieData = this.movieData.filter(movie => movie.gsx$screenpass.$t == 'Yes')
-                
 
                 if (readCookie('movieRequester'))
                     this.requestName = readCookie('movieRequester')

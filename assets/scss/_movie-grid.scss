@@ -66,12 +66,13 @@
 	width: 100%;
 }
 
-.movie-card-img[lazy='loading'] {
-	background-image: url('/assets/loading.svg');
-	background-position: 50% 50%;
-	background-repeat: no-repeat;
-	background-size: 16px 16px;
-}
+// disabled for performance
+// .movie-card-img[lazy='loading'] {
+// 	background-image: url('/assets/loading.svg');
+// 	background-position: 50% 50%;
+// 	background-repeat: no-repeat;
+// 	background-size: 16px 16px;
+// }
 
 .movie-card-img[lazy='loaded'] {
 	animation-duration: 1s;

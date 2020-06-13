@@ -79,6 +79,18 @@
     }
 }
 
+.filter-panel::-webkit-scrollbar {
+	background-color: #fff;
+}
+
+.filter-panel::-webkit-scrollbar-thumb {
+	border: 0.25rem solid #fff;
+
+	&:hover {
+		background-color: $color-cinder;
+	}
+}
+
 .filter-panel.active {
 	box-shadow: 0 0 6rem $color-cinder, 0 0 3rem $color-cinder;
     transform: none;
