@@ -38,7 +38,7 @@
 		<h2 v-else-if="errored">Movie data could not be retrieved. Try again later.</h2>
 
 		<template v-else>
-			<div class="filters" :class="{ active: panelActive }">
+			<div class="filters" :class="{ active: panelActive }" v-for="i in 1">
 
 				<div class="movie-count">
 					<h2><span>{{ movies.length}}</span> movies</h2>
@@ -63,7 +63,7 @@
 						</svg>
 					</div> <!-- /filter-option -->
 
-					<div class="filter-option" :class="{ active: activeFilter === 'sort' }">
+					<div class="filter-option" :class="{ active: activeFilter === 'sort' }" ref="filterOption">
 						<span class="filter-option-title" tabindex="0" @click="selectFilter('sort')" v-on:keyup.enter="selectFilter('sort')">
 							Sort
 							<svg class="filter-arrow" width="10px" height="7px" viewBox="0 0 10 7" xmlns="http://www.w3.org/2000/svg">
@@ -82,7 +82,7 @@
 						</div> <!-- /filter-option-menu -->
 					</div> <!-- /filter-option -->
 
-					<div class="filter-option" :class="{ active: activeFilter === 'format', 'has-selections' : formatFilter.length > 0 }" v-if="!screenPass">
+					<div class="filter-option" :class="{ active: activeFilter === 'format', 'has-selections' : formatFilter.length > 0 }" v-if="!screenPass" ref="filterOption">
 						<span class="filter-option-title" tabindex="0" @click="selectFilter('format')" v-on:keyup.enter="selectFilter('format')">
 							Format &amp; Quality
 							<svg class="filter-arrow" width="10px" height="7px" viewBox="0 0 10 7" xmlns="http://www.w3.org/2000/svg">
@@ -103,7 +103,7 @@
 						</div> <!-- /filter-option-menu -->
 					</div> <!-- /filter-option -->
 
-					<div class="filter-option" :class="{ active: activeFilter === 'genre', 'has-selections' : genreFilter.length > 0 }">
+					<div class="filter-option" :class="{ active: activeFilter === 'genre', 'has-selections' : genreFilter.length > 0 }" ref="filterOption">
 						<span class="filter-option-title" tabindex="0" @click="selectFilter('genre')" v-on:keyup.enter="selectFilter('genre')">
 							Genre
 							<svg class="filter-arrow" width="10px" height="7px" viewBox="0 0 10 7" xmlns="http://www.w3.org/2000/svg">
@@ -118,7 +118,7 @@
 						</div> <!-- /filter-option-menu -->
 					</div> <!-- /filter-option -->
 
-					<div class="filter-option" :class="{ active: activeFilter === 'rating', 'has-selections' : ratingFilter.length > 0 }">
+					<div class="filter-option" :class="{ active: activeFilter === 'rating', 'has-selections' : ratingFilter.length > 0 }" ref="filterOption">
 						<span class="filter-option-title" tabindex="0" @click="selectFilter('rating')" v-on:keyup.enter="selectFilter('rating')">
 							Rating
 							<svg class="filter-arrow" width="10px" height="7px" viewBox="0 0 10 7" xmlns="http://www.w3.org/2000/svg">
@@ -133,7 +133,7 @@
 						</div> <!-- /filter-option-menu -->
 					</div> <!-- /filter-option -->
 
-					<div class="filter-option" :class="{ active: activeFilter === 'year', 'has-selections' : startYear || endYear }">
+					<div class="filter-option" :class="{ active: activeFilter === 'year', 'has-selections' : startYear || endYear }" ref="filterOption">
 						<span class="filter-option-title" tabindex="0" @click="selectFilter('year')" v-on:keyup.enter="selectFilter('year')">
 							Year
 							<svg class="filter-arrow" width="10px" height="7px" viewBox="0 0 10 7" xmlns="http://www.w3.org/2000/svg">

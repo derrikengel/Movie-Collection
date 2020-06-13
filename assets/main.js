@@ -269,7 +269,28 @@ var movies = new Vue({
             this.startYear = null
             this.endYear = null
             this.randomMovie = false
+        },
+        documentClick(e) {
+            // close all filters on click outside
+            var filters = this.$refs.filterOption
+            var target = e.target
+            var filterClicked = false
+
+            filters.forEach(filter => {
+                if (filter == target || filter.contains(target)) {
+                    filterClicked = true
+                }
+            })
+            
+            if (!filterClicked)
+                this.activeFilter = null
         }
+    },
+    created() {
+        document.addEventListener('click', this.documentClick)
+    },
+    destroyed() {
+        document.removeEventListener('click', this.documentClick)
     }
 })
 
