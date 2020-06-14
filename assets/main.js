@@ -1,4 +1,6 @@
-Vue.use(VueLazyload)
+Vue.use(VueLazyload, {
+    preLoad: 1.6
+})
 
 var router = new VueRouter({
     routes: [
@@ -17,7 +19,7 @@ var movies = new Vue({
             movieData: null,
             loading: true,
             errored: false,
-            activeItem: null,
+            activeCard: null,
             panelActive: false,
             activeFilter: null,
             digitalFormats: [],
@@ -61,7 +63,7 @@ var movies = new Vue({
                 return search && format && rating && genre && year
             })
 
-            this.activeItem = null
+            this.activeCard = null
 
             var randomNum = _.random(filteredMovies.length - 1)
 
@@ -92,7 +94,7 @@ var movies = new Vue({
                 
                 var vuduFormats = this.movieData.flatMap(movie => movie.gsx$vudu.$t)
                 var gpFormats = this.movieData.flatMap(movie => movie.gsx$googleplay.$t)
-                var mergedFormats = [...vuduFormats, ...gpFormats]               
+                var mergedFormats = [...vuduFormats, ...gpFormats]
                 this.digitalFormats = [...new Set(mergedFormats)].filter(el => el != '').sort()
                 
                 var discFormats = this.movieData.flatMap(movie => movie.gsx$disc.$t)
@@ -153,10 +155,10 @@ var movies = new Vue({
     methods: {
         selectItem(index) {
             // handle click for movie cards
-            index === this.activeItem ? this.activeItem = null : this.activeItem = index
+            index === this.activeCard ? this.activeCard = null : this.activeCard = index
 
             // focus not working?
-            // if (this.screenPass && index === this.activeItem)
+            // if (this.screenPass && index === this.activeCard)
             //     this.$refs.email[index].focus()
 
             this.activeFilter = null
@@ -169,12 +171,12 @@ var movies = new Vue({
             this.panelActive = !this.panelActive
 
             if (this.panelActive)
-                this.activeItem = null
+                this.activeCard = null
         },
         selectFilter(filter) {
             // handle click for filter dropdowns
             filter === this.activeFilter ? this.activeFilter = null : this.activeFilter = filter
-            this.activeItem = null
+            this.activeCard = null
         },
         validateMinYear() {
             if (this.startYear && this.startYear < this.minYear)
@@ -260,7 +262,7 @@ var movies = new Vue({
                 })
         },
         reset() {
-            this.activeItem = null
+            this.activeCard = null
             this.activeFilter = null
             this.search = ''
             this.formatFilter = []
@@ -271,19 +273,28 @@ var movies = new Vue({
             this.randomMovie = false
         },
         documentClick(e) {
+            var target = e.target
+            
+            // close filter panel (narrow views) on click outside
+            var filterPanel = this.$refs.filterPanel
+            var filterPanelBtn = this.$refs.filterPanelBtn
+
+            if (filterPanel !== target && !filterPanel.contains(target) && filterPanelBtn !== target && !filterPanelBtn.contains(target))
+                this.panelActive = false
+
             // close all filters on click outside
             var filters = this.$refs.filterOption
-            var target = e.target
             var filterClicked = false
 
-            filters.forEach(filter => {
+            for (var filter of filters) {
                 if (filter == target || filter.contains(target)) {
                     filterClicked = true
+                    break
                 }
-            })
+            }
             
             if (!filterClicked)
-                this.activeFilter = null
+                this.activeFilter = null        
         }
     },
     created() {
@@ -292,7 +303,7 @@ var movies = new Vue({
     destroyed() {
         document.removeEventListener('click', this.documentClick)
     }
-})
+});
 
 setCookie = function (name, value, date) {
     var expires = '; expires=' + date.toString();
@@ -313,8 +324,3 @@ readCookie = function (name) {
 clearCookie = function (name) {
     setCookie(name, '', -1);
 };
-
-
-
-
-

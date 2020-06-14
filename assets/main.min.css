@@ -221,7 +221,7 @@ input[type='checkbox'], input[type='radio'] { height: 0; left: 0; opacity: 0; po
 
 .movie-card-content { color: #fff; height: 100%; opacity: 0; -webkit-transition: 250ms all ease-out; transition: 250ms all ease-out; -webkit-transition-delay: 0; transition-delay: 0; -webkit-transform: translateY(0.25rem); transform: translateY(0.25rem); will-change: opacity, transform; }
 
-.movie-card-img { display: block; -webkit-transition: 500ms opacity ease-out; transition: 500ms opacity ease-out; width: 100%; }
+.movie-card-img { background: rgba(255, 255, 255, 0.08); display: block; -webkit-transition: 500ms opacity ease-out; transition: 500ms opacity ease-out; width: 100%; }
 
 .movie-card-img[lazy='loaded'] { -webkit-animation-duration: 1s; animation-duration: 1s; -webkit-animation-fill-mode: both; animation-fill-mode: both; -webkit-animation-name: fadeIn; animation-name: fadeIn; }
 
