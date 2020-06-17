@@ -9,10 +9,14 @@ html {
 }
 
 body {
-	margin: 0.5rem;
+	margin: 1.25rem;
 	
 	@include query(sm) {
 		margin: 3rem;
+	}
+
+	@include query(lg) {
+		margin: 5rem;
 	}
 }
 
@@ -39,6 +43,11 @@ html::-webkit-scrollbar-thumb {
 	&:hover {
 		background-color: #fff;
 	}
+}
+
+img {
+	height: auto !important;
+	max-width: 100%;
 }
 
 h1 {
