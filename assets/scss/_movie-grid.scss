@@ -56,6 +56,7 @@
 	top: -0.125rem;
 	transition: all 250ms ease-out;
 	will-change: opacity;
+	z-index: 20;
 
 	@include query(sm) {
 		padding: 1.25rem;
@@ -79,8 +80,10 @@
 .movie-card-img {
 	background: rgba(#fff, 0.08);
 	display: block;
+	z-index: 10;
 	transition: 500ms opacity ease-out;
 	width: 100%;
+	position: relative;
 }
 
 // disabled for performance
@@ -104,6 +107,27 @@
 
 	@include query(sm) {
 		font-size: 1.25rem;
+	}
+}
+
+.movie-card-title-preload {
+	align-items: center;
+	color: rgba(#fff, 0.35);
+	display: flex;
+	font-weight: $font-weight-bold;
+	height: 100%;
+	justify-content: center;
+	padding: 1rem;
+	position: absolute;
+	text-align: center;
+	width: 100%;
+
+	@include query(sm) {
+		padding: 1.25rem;
+	}
+
+	@include query(lg) {
+		padding: 1.5rem;
 	}
 }
 

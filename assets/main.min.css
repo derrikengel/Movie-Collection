@@ -225,7 +225,7 @@ input[type='checkbox'], input[type='radio'] { height: 0; left: 0; opacity: 0; po
 
 .movie-card:focus { outline: 2px solid #fff; z-index: 10; }
 
-.movie-card-overlay { background: linear-gradient(45deg, rgba(9, 11, 21, 0.95) 0%, rgba(11, 43, 65, 0.82) 38%, rgba(15, 75, 87, 0.76) 62%, rgba(18, 161, 142, 0.66) 100%); bottom: -0.125rem; left: -0.125rem; opacity: 0; padding: 1rem; position: absolute; right: -0.125rem; top: -0.125rem; -webkit-transition: all 250ms ease-out; transition: all 250ms ease-out; will-change: opacity; }
+.movie-card-overlay { background: linear-gradient(45deg, rgba(9, 11, 21, 0.95) 0%, rgba(11, 43, 65, 0.82) 38%, rgba(15, 75, 87, 0.76) 62%, rgba(18, 161, 142, 0.66) 100%); bottom: -0.125rem; left: -0.125rem; opacity: 0; padding: 1rem; position: absolute; right: -0.125rem; top: -0.125rem; -webkit-transition: all 250ms ease-out; transition: all 250ms ease-out; will-change: opacity; z-index: 20; }
 
 @media screen and (min-width: 42rem) { .movie-card-overlay { padding: 1.25rem; } }
 
@@ -233,13 +233,19 @@ input[type='checkbox'], input[type='radio'] { height: 0; left: 0; opacity: 0; po
 
 .movie-card-content { color: #fff; height: 100%; opacity: 0; -webkit-transition: 250ms all ease-out; transition: 250ms all ease-out; -webkit-transition-delay: 0; transition-delay: 0; -webkit-transform: translateY(0.25rem); transform: translateY(0.25rem); will-change: opacity, transform; }
 
-.movie-card-img { background: rgba(255, 255, 255, 0.08); display: block; -webkit-transition: 500ms opacity ease-out; transition: 500ms opacity ease-out; width: 100%; }
+.movie-card-img { background: rgba(255, 255, 255, 0.08); display: block; z-index: 10; -webkit-transition: 500ms opacity ease-out; transition: 500ms opacity ease-out; width: 100%; position: relative; }
 
 .movie-card-img[lazy='loaded'] { -webkit-animation-duration: 1s; animation-duration: 1s; -webkit-animation-fill-mode: both; animation-fill-mode: both; -webkit-animation-name: fadeIn; animation-name: fadeIn; }
 
 .movie-card-title { display: block; font-weight: 900; margin-bottom: 0.125em; }
 
 @media screen and (min-width: 42rem) { .movie-card-title { font-size: 1.25rem; } }
+
+.movie-card-title-preload { -webkit-box-align: center; -ms-flex-align: center; align-items: center; color: rgba(255, 255, 255, 0.35); display: -webkit-box; display: -ms-flexbox; display: flex; font-weight: 900; height: 100%; -webkit-box-pack: center; -ms-flex-pack: center; justify-content: center; padding: 1rem; position: absolute; text-align: center; width: 100%; }
+
+@media screen and (min-width: 42rem) { .movie-card-title-preload { padding: 1.25rem; } }
+
+@media screen and (min-width: 72rem) { .movie-card-title-preload { padding: 1.5rem; } }
 
 .movie-card-watch { border-bottom: 1px solid rgba(255, 255, 255, 0.2); display: -webkit-box; display: -ms-flexbox; display: flex; font-size: 0.75rem; -ms-flex-wrap: wrap; flex-wrap: wrap; margin: 1.25rem 0 0 0; }
 
