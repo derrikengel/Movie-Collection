@@ -84,11 +84,13 @@ input[type='checkbox'], input[type='radio'] { height: 0; left: 0; opacity: 0; po
 
 @media screen and (min-width: 72rem) { .filter-close-btn { display: none; } }
 
-.filters { -webkit-box-align: center; -ms-flex-align: center; align-items: center; background: #0d0e16; -webkit-box-shadow: 0 1rem 6rem #0d0e16, 0 1rem 3rem #0d0e16; box-shadow: 0 1rem 6rem #0d0e16, 0 1rem 3rem #0d0e16; display: -webkit-box; display: -ms-flexbox; display: flex; -ms-flex-wrap: wrap; flex-wrap: wrap; -webkit-box-pack: justify; -ms-flex-pack: justify; justify-content: space-between; margin: 0 -0.5rem 3rem -0.5rem; padding: 0.5rem; position: -webkit-sticky; position: sticky; top: 0; z-index: 300; }
+.filters { -webkit-box-align: center; -ms-flex-align: center; align-items: center; background: #0d0e16; -webkit-box-shadow: 0 1rem 6rem #0d0e16, 0 1rem 3rem #0d0e16; box-shadow: 0 1rem 6rem #0d0e16, 0 1rem 3rem #0d0e16; display: -webkit-box; display: -ms-flexbox; display: flex; -ms-flex-wrap: wrap; flex-wrap: wrap; -webkit-box-pack: justify; -ms-flex-pack: justify; justify-content: space-between; margin: 0 -1.25rem 3rem -1.25rem; padding: 0.5rem 1.25rem; position: -webkit-sticky; position: sticky; top: 0; z-index: 300; }
 
 .filters.active { z-index: 500; }
 
-@media screen and (min-width: 72rem) { .filters { display: block; margin: 0 0 6rem 0; padding: 1rem 0; }
+@media screen and (min-width: 42rem) { .filters { margin: 0 -3rem 3rem -3rem; padding: 0.5rem 3rem; } }
+
+@media screen and (min-width: 72rem) { .filters { display: block; margin: 0 -5rem 5rem -5rem; padding: 1rem 5rem; }
   .filters.active { z-index: 300; } }
 
 .filter-panel { background: #fff; height: 100%; max-width: 18rem; overflow: auto; padding: 3rem 1.5rem 1.5rem 1.5rem; position: fixed; right: 0; top: 0; -webkit-transform: translateX(100%); transform: translateX(100%); -webkit-transition: -webkit-transform 300ms ease-out; transition: -webkit-transform 300ms ease-out; transition: transform 300ms ease-out; transition: transform 300ms ease-out, -webkit-transform 300ms ease-out; width: 90%; }

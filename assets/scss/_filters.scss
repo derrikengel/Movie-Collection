@@ -29,8 +29,8 @@
 	display: flex;
 	flex-wrap: wrap;
 	justify-content: space-between;
-	margin: 0 -0.5rem 3rem -0.5rem;
-	padding: 0.5rem;
+	margin: 0 -1.25rem 3rem -1.25rem;
+	padding: 0.5rem 1.25rem;
 	position: sticky;
 	top: 0;
 	z-index: 300;
@@ -38,11 +38,16 @@
 	&.active {
 		z-index: 500;
 	}
-    
+	
+	@include query(sm) {
+		margin: 0 -3rem 3rem -3rem;
+		padding: 0.5rem 3rem;
+	}
+
     @include query(lg) {
         display: block;
-		margin: 0 0 6rem 0;
-		padding: 1rem 0;
+		margin: 0 -5rem 5rem -5rem;
+		padding: 1rem 5rem;
 
 		&.active {
 			z-index: 300;
