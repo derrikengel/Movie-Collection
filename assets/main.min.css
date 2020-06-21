@@ -20,10 +20,6 @@ img { height: auto !important; max-width: 100%; }
 
 h1 { color: #fff; font-size: calc(40px + (92 - 40) * ((100vw - 320px) / (1900 - 320))); font-weight: 400; line-height: 1.15; margin: 0.75em 0; position: relative; z-index: 110; }
 
-h1 .screen-pass-availability { color: #41ead4; display: block; font-size: calc(14px + (22 - 14) * ((100vw - 320px) / (1900 - 320))); margin-top: 0.25em; }
-
-h1 .screen-pass-counter { background-color: #fff; border-radius: 0.25rem; color: #0d0e16; font-weight: 900; margin-right: 0.125em; padding: 0.125em 0.3125em; }
-
 h1 .gradient-text { font-weight: 900; }
 
 h2 { font-size: calc(22px + (32 - 22) * ((100vw - 320px) / (1900 - 320))); font-weight: 900; }
@@ -249,9 +245,7 @@ input[type='checkbox'], input[type='radio'] { height: 0; left: 0; opacity: 0; po
 
 @media screen and (min-width: 72rem) { .movie-card-title-preload { padding: 1.5rem; } }
 
-.movie-card-watch { border-bottom: 1px solid rgba(255, 255, 255, 0.2); display: -webkit-box; display: -ms-flexbox; display: flex; font-size: 0.75rem; -ms-flex-wrap: wrap; flex-wrap: wrap; margin: 1.25rem 0 0 0; }
-
-@media screen and (min-width: 42rem) { .movie-card-watch { margin-top: 1.5rem; } }
+.movie-card-watch { border-bottom: 1px solid rgba(255, 255, 255, 0.2); display: -webkit-box; display: -ms-flexbox; display: flex; font-size: 0.75rem; -ms-flex-wrap: wrap; flex-wrap: wrap; margin: 1rem 0 0 0; }
 
 .movie-card-watch dt, .movie-card-watch dd { border-top: 1px solid rgba(255, 255, 255, 0.2); -webkit-box-flex: 1; -ms-flex: 1 1 50%; flex: 1 1 50%; margin: 0; padding: 0.5em 0; }
 
@@ -264,30 +258,6 @@ input[type='checkbox'], input[type='radio'] { height: 0; left: 0; opacity: 0; po
 .movie-card-rating { background-color: #fff; border-radius: 2px; color: #0d0e16; display: inline-block; font-size: 0.625rem; font-weight: 900; margin-right: 0.375em; padding: 0.125em 0.375em; vertical-align: middle; }
 
 .movie-card-year { display: inline-block; font-size: 0.625rem; font-weight: 900; vertical-align: middle; }
-
-.screen-pass-form { bottom: 0; cursor: auto; display: none; font-size: 0.75rem; left: 0; position: absolute; width: 100%; }
-
-.screen-pass-form input { background: rgba(255, 255, 255, 0.1); border-bottom: none; border-radius: 0.25rem; color: #fff; font-size: 0.75rem; margin-top: 0.25rem; padding: 0.625em 1em; text-align: center; -webkit-transition: 200ms -webkit-box-shadow ease-out; transition: 200ms -webkit-box-shadow ease-out; transition: 200ms box-shadow ease-out; transition: 200ms box-shadow ease-out, 200ms -webkit-box-shadow ease-out; }
-
-@media screen and (min-width: 42rem) { .screen-pass-form input { font-size: 0.625rem; } }
-
-.screen-pass-form input:focus { -webkit-box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.2); box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.2); }
-
-.screen-pass-form button { display: block; font-size: 0.625rem; margin-top: 0.25rem; position: relative; width: 100%; }
-
-@media screen and (min-width: 72rem) { .screen-pass-form button:hover, .screen-pass-form button:focus { -webkit-box-shadow: inset 0 0 0 1px #fff; box-shadow: inset 0 0 0 1px #fff; color: #fff; } }
-
-.screen-pass-form button .btn-title, .screen-pass-form button .loader { -webkit-transition: 200ms opacity ease-out; transition: 200ms opacity ease-out; }
-
-.screen-pass-form button .loader { font-size: 0.25rem; left: 50%; margin: -1.5em 0 0 -1.5em; opacity: 0; position: absolute; top: 50%; }
-
-.screen-pass-form button:disabled { background: transparent; cursor: auto; }
-
-.screen-pass-form button:disabled .btn-title { opacity: 0; }
-
-.screen-pass-form button:disabled .loader { opacity: 1; }
-
-@media screen and (min-width: 72rem) { .screen-pass-form button:disabled:hover, .screen-pass-form button:disabled:focus { -webkit-box-shadow: none; box-shadow: none; } }
 
 .movies.card-expanded .movie-card { opacity: 0.3; }
 
@@ -304,8 +274,6 @@ input[type='checkbox'], input[type='radio'] { height: 0; left: 0; opacity: 0; po
 .movie-card.active .movie-card-img { -webkit-filter: blur(4px); filter: blur(4px); -webkit-transform: scale(1.05); transform: scale(1.05); }
 
 .movie-card.active .movie-card-content { opacity: 1; -webkit-transform: none; transform: none; -webkit-transition-delay: 200ms; transition-delay: 200ms; }
-
-.movie-card.active .screen-pass-form { display: block; }
 
 @-webkit-keyframes fadeIn { 0% { opacity: 0; }
   100% { opacity: 1; } }

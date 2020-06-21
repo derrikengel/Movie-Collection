@@ -60,22 +60,6 @@ h1 {
 	z-index: 110;
 }
 
-h1 .screen-pass-availability {
-	color: $color-turquoise;
-	display: block;
-	font-size: calc(14px + (22 - 14) * ((100vw - 320px) / (1900 - 320)));
-	margin-top: 0.25em;
-}
-
-h1 .screen-pass-counter {
-	background-color: #fff;
-	border-radius: 0.25rem;
-	color: $color-cinder;
-	font-weight: $font-weight-bold;
-	margin-right: 0.125em;
-	padding: 0.125em 0.3125em;
-}
-
 h1 .gradient-text {
 	font-weight: $font-weight-bold;
 }

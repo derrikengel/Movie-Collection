@@ -136,11 +136,7 @@
 	display: flex;
 	font-size: 0.75rem;
 	flex-wrap: wrap;
-	margin: 1.25rem 0 0 0;
-
-	@include query(sm) {
-		margin-top: 1.5rem;
-	}
+	margin: 1rem 0 0 0;
 }
 
 .movie-card-watch dt,
@@ -181,87 +177,6 @@
 	font-weight: $font-weight-bold;
 	vertical-align: middle;
 }
-
-.screen-pass-form {
-	bottom: 0;
-	cursor: auto;
-	display: none;
-	font-size: 0.75rem;
-	left: 0;
-	position: absolute;
-	width: 100%;
-}
-
-.screen-pass-form input {
-    background: rgba(#fff, 0.1);
-    border-bottom: none;
-    border-radius: 0.25rem;
-	color: #fff;
-	font-size: 0.75rem;
-	margin-top: 0.25rem;
-    padding: 0.625em 1em;
-	text-align: center;
-	transition: 200ms box-shadow ease-out;
-	
-	@include query(sm) {
-		font-size: 0.625rem;
-	}
-
-	&:focus {
-		box-shadow: inset 0 0 0 1px rgba(#fff, 0.2);
-	}
-}
-
-.screen-pass-form button {
-	display: block;
-	font-size: 0.625rem;
-	margin-top: 0.25rem;
-	position: relative;
-	width: 100%;
-
-	&:hover,
-	&:focus {
-		@include query(lg) {
-			box-shadow: inset 0 0 0 1px #fff;
-			color: #fff;
-		}
-	}
-}
-
-.screen-pass-form button .btn-title,
-.screen-pass-form button .loader {
-	transition: 200ms opacity ease-out;
-}
-
-.screen-pass-form button .loader {
-	font-size: 0.25rem;
-	left: 50%;
-	margin: -1.5em 0 0 -1.5em;
-	opacity: 0;
-	position: absolute;
-	top: 50%;
-}
-
-.screen-pass-form button:disabled {
-	background: transparent;
-	cursor: auto;
-
-	.btn-title {
-		opacity: 0;
-	}
-	
-	.loader {
-		opacity: 1;
-	}
-
-	&:hover,
-	&:focus {
-		@include query(lg) {
-			box-shadow: none;
-		}
-	}
-}
-
 
 .movies.card-expanded {
 	.movie-card {
@@ -307,10 +222,6 @@
 		opacity: 1;
 		transform: none;
 		transition-delay: 200ms;
-	}
-
-	.screen-pass-form {
-		display: block;
 	}
 }
 
