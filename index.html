@@ -174,7 +174,7 @@
 							<span class="movie-card-title">{{ movie.gsx$movietitle.$t }}</span>
 							<span class="movie-card-rating" title="Rating">{{ movie.gsx$rating.$t }}</span>
 							<span class="movie-card-year" title="Release Year">{{ movie.gsx$year.$t }}</span>
-							<dl class="movie-card-watch">
+							<dl class="movie-card-watch" v-if="movie.gsx$vudu.$t || movie.gsx$googleplay.$t || movie.gsx$disc.$t">
 								<template v-if="movie.gsx$vudu.$t">
 									<dt>Vudu</dt>
 									<dd>{{ movie.gsx$vudu.$t }}</dd>
@@ -190,6 +190,7 @@
 									<dd>{{ movie.gsx$disc.$t }}</dd>
 								</template>
 							</dl>
+							<span class="movie-card-note" title="Notes">{{ movie.gsx$notes.$t }}</span>
 						</div>
 					</div>
 				</div>

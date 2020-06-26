@@ -4,12 +4,12 @@
 	bottom: 0;
 	box-shadow: 0 1rem 6rem $color-cinder, 0 1rem 3rem $color-cinder;
 	color: $color-cinder;
+	left: 1.25rem;
 	overflow: hidden;
 	position: fixed;
-	right: 0.5rem;
+	right: 1.25rem;
 	transform: translateY(100%) translateY(-3rem);
 	transition: 300ms transform ease-out;
-	width: 16rem;
 	z-index: 400;
 	
 	&.active {
@@ -17,7 +17,13 @@
 	}
 
 	@include query(sm) {
+		left: auto;
 		right: 3rem;
+		width: 16rem;
+	}
+
+	@include query(lg) {
+		right: 5rem;
 	}
 }
 
