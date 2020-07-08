@@ -1,7 +1,3 @@
-Vue.use(VueLazyload, {
-    preLoad: 1.6
-})
-
 var movies = new Vue({
     el: '#movies',
     data() {
@@ -9,6 +5,10 @@ var movies = new Vue({
             movieData: null,
             loading: true,
             errored: false,
+            busy: false,
+            totalShown: 0,
+            scrollIncrement: 30,
+            movieCount: 0,
             activeCard: null,
             panelActive: false,
             activeFilter: null,
@@ -46,16 +46,20 @@ var movies = new Vue({
                 return search && format && rating && genre && year
             })
 
-            this.activeCard = null
+            self.movieCount = filteredMovies.length
+
+            self.activeCard = null
 
             var randomNum = _.random(filteredMovies.length - 1)
 
-            if (self.randomMovie && randomNum > -1)
+            if (self.randomMovie && randomNum > -1) {
+                self.movieCount = 1
                 return [filteredMovies[randomNum]]
-            else if (self.sort == 'alpha')
-                return _.orderBy(filteredMovies)
-            else
-                return _.orderBy(filteredMovies, m => m.gsx$acquired.$t ? new Date(m.gsx$acquired.$t) : '', ['desc'])
+            } else if (self.sort == 'alpha') {
+                return _.take(_.orderBy(filteredMovies), self.totalShown)
+            } else {
+                return _.take(_.orderBy(filteredMovies, m => m.gsx$acquired.$t ? new Date(m.gsx$acquired.$t) : '', ['desc']), self.totalShown)
+            }
         }
     },
     mounted() {
@@ -94,6 +98,13 @@ var movies = new Vue({
             .finally(() => this.loading = false)
     },
     methods: {
+        loadMore() {
+            this.busy = true
+
+            this.totalShown += this.scrollIncrement
+
+            this.busy = false
+        },
         selectItem(index) {
             // handle click for movie cards
             index === this.activeCard ? this.activeCard = null : this.activeCard = index

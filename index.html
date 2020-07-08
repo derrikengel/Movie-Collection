@@ -17,7 +17,7 @@
 </head>
 
 <body>
-	<div id="movies" v-cloak>
+	<div id="movies" v-cloak v-infinite-scroll="loadMore" infinite-scroll-disabled="busy" infinite-scroll-distance="200">
 
 		<h1>
 			<span class="gradient-text">Movie</span> Collection
@@ -31,7 +31,7 @@
 			<div class="filters" :class="{ active: panelActive }" >
 
 				<div class="movie-count">
-					<h2><span>{{ movies.length}}</span> movies</h2>
+					<h2><span>{{ movieCount }}</span> movies</h2>
 				</div> <!-- /movie-count -->
 				
 				<button type="button" class="filter-btn" @click="toggleFilters" ref="filterPanelBtn">
@@ -47,7 +47,7 @@
 					<button type="button" class="filter-close-btn" @click="toggleFilters" title="Close">&times;</button>
 					
 					<div class="filter-option search">
-						<input type="search" placeholder="Search by movie title" id="search" v-model.lazy="search" autocomplete="off">
+						<input type="search" placeholder="Search by movie title" id="search" v-model="search" autocomplete="off">
 						<svg class="search-icon" width="14px" height="14px" viewBox="0 0 14 14" xmlns="http://www.w3.org/2000/svg">
 							<path d="M13.7,12.3l-3-3c0.7-1,1.1-2.2,1.1-3.5c0-1.6-0.6-3.1-1.7-4.2C9,0.6,7.5,0,5.9,0C4.4,0,2.9,0.6,1.7,1.7 C0.6,2.9,0,4.4,0,5.9S0.6,9,1.7,10.1c1.1,1.1,2.6,1.7,4.2,1.7c1.3,0,2.5-0.4,3.5-1.1l3,3c0.2,0.2,0.4,0.3,0.7,0.3 c0.2,0,0.5-0.1,0.7-0.3C14.1,13.3,14.1,12.7,13.7,12.3z M3.1,8.8C2.4,8,1.9,7,1.9,5.9s0.4-2.1,1.2-2.8c0.8-0.8,1.8-1.2,2.8-1.2 S8,2.4,8.8,3.1c0.8,0.8,1.2,1.8,1.2,2.8S9.5,8,8.8,8.8C8,9.5,7,9.9,5.9,9.9S3.9,9.5,3.1,8.8z"/>
 						</svg>
@@ -133,9 +133,9 @@
 							</span>
 							<div class="filter-option-menu">
 								<div class="filter-field year-range">
-									<input type="number" :min="minYear" :max="maxYear" :placeholder="minYear" v-model.lazy="startYear" @change="validateMinYear()">
+									<input type="number" :min="minYear" :max="maxYear" :placeholder="minYear" v-model="startYear" @change="validateMinYear()">
 									to
-									<input type="number" :min="minYear" :max="maxYear" :placeholder="maxYear" v-model.lazy="endYear" @change="validateMaxYear()">
+									<input type="number" :min="minYear" :max="maxYear" :placeholder="maxYear" v-model="endYear" @change="validateMaxYear()">
 								</div>
 							</div> <!-- /filter-option-menu -->
 						</div> <!-- /filter-option -->
@@ -168,7 +168,7 @@
 			<div class="movies" :class="{ 'card-expanded': activeCard != null }">
 				<div v-for="(movie, index) in movies" :key="index" :class="{ active: index === activeCard }" class="movie-card" tabindex="0" :title="movie.gsx$movietitle.$t" @click="selectItem(index)" v-on:keyup.enter="selectItem(index)" ref="movieCard">
 					<span class="movie-card-title-preload">{{ movie.gsx$movietitle.$t }}</span>
-					<img v-lazy="movie.gsx$image.$t" :alt="movie.gsx$movietitle.$t" class="movie-card-img">
+					<img :src="movie.gsx$image.$t" :alt="movie.gsx$movietitle.$t" class="movie-card-img">
 					<div class="movie-card-overlay">
 						<div class="movie-card-content">
 							<span class="movie-card-title">{{ movie.gsx$movietitle.$t }}</span>
@@ -232,8 +232,7 @@
 	<script src="https://cdn.jsdelivr.net/npm/vue@2.6.11/dist/vue.min.js"></script>
 	<script src="https://cdn.jsdelivr.net/npm/axios@0.19.2/dist/axios.min.js"></script>
 	<script src="https://cdn.jsdelivr.net/npm/lodash@4.17.15/lodash.min.js"></script>
-	<script src="https://cdn.jsdelivr.net/npm/vue-router@3.3.2/dist/vue-router.min.js"></script>
-	<script src="https://cdn.jsdelivr.net/npm/vue-lazyload@1.3.3/vue-lazyload.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/vue-infinite-scroll@2.0.2/vue-infinite-scroll.min.js"></script>
 	<script src="assets/main.min.js"></script>
 </body>
 
