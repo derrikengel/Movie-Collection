@@ -5,7 +5,6 @@ firebase.initializeApp({
 });
 
 var db = firebase.firestore();
-var moviesRef = db.collection('movies');
 
 var addMovie = new Vue({
     el: '#add-movie',
@@ -37,7 +36,7 @@ var addMovie = new Vue({
     },
     mounted() {
         var vm = this
-        firebase.auth().onAuthStateChanged(function (user) {
+        firebase.auth().onAuthStateChanged(user => {
             if (user) {
                 vm.user.authenticated = true
             } else {
@@ -48,7 +47,7 @@ var addMovie = new Vue({
     methods: {
         signIn() {
             var vm = this
-            firebase.auth().signInWithEmailAndPassword(vm.user.email, vm.user.password).catch(function (error) {
+            firebase.auth().signInWithEmailAndPassword(vm.user.email, vm.user.password).catch(error => {
                 vm.user.errorMsg = true
             });
         },
@@ -68,7 +67,7 @@ var addMovie = new Vue({
                 this.$refs.genreLabel.scrollIntoView();
             } else {
                 // add movie to db
-                moviesRef.add({
+                db.collection('movies').add({
                     title: vm.movie.title,
                     year: vm.movie.year,
                     image: vm.movie.imageUrl,
@@ -81,7 +80,7 @@ var addMovie = new Vue({
                     dateAcquired: firebase.firestore.Timestamp.fromDate(new Date()),
                     notes: vm.movie.notes
                 })
-                .then(function (docRef) {
+                .then(() => {
                     // show success message
                     vm.result = 'success'
                     vm.resultMessage = vm.movie.title + ' successfully added!'
@@ -89,7 +88,7 @@ var addMovie = new Vue({
                     // clear form and vm data to easily add another
                     vm.resetForm()
                 })
-                .catch(function (error) {
+                .catch(error => {
                     // show error message
                     vm.result = 'error'
                     vm.resultMessage = 'Error: ' + error

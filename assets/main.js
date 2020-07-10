@@ -6,7 +6,6 @@ firebase.initializeApp({
 
 var db = firebase.firestore();
 var moviesRef = db.collection('movies');
-var requestsRef = db.collection('requests');
 
 var movies = new Vue({
     el: '#movies',
