@@ -216,8 +216,27 @@
 	position: relative;
 }
 
-.filter-field label:hover:before,
-.filter-field label:focus:before {
+.filter-field input[type='checkbox'] + label:hover:before,
+.filter-field input[type='radio'] + label:hover:before,
+.filter-field input[type='checkbox']:focus + label:before,
+.filter-field input[type='radio']:focus + label:before {
+	opacity: 1;
+}
+
+.filter-field input[type='checkbox'] + label:before,
+.filter-field input[type='radio'] + label:before {
+	box-shadow: inset 0 0 0 1px $color-cinder;
+	opacity: 0.35;
+}
+
+.filter-field input[type='checkbox']:focus + label:before,
+.filter-field input[type='radio']:focus + label:before {
+	opacity: 1;
+}
+
+.filter-field input[type='checkbox']:checked + label:before,
+.filter-field input[type='radio']:checked + label:before {
+	box-shadow: none;
 	opacity: 1;
 }
 

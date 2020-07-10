@@ -1,0 +1,65 @@
+.add-form {
+	max-width: 30rem;
+}
+
+.add-form label a {
+	color: #fff;
+	font-size: 0.875rem;
+	margin-left: 0.5rem;
+}
+
+.preview-img {
+	display: block;
+	margin-top: 1rem;
+	width: 100px;
+
+	&[src=''] {
+		display: none;
+	}
+}
+
+.add-form label {
+	font-size: 1.25rem;
+}
+
+.add-form %field {
+	background: rgba(#fff, 0.14);
+	border: none;
+	border-radius: 0.25rem;
+	color: #fff;
+	margin-top: 0.5rem;
+	padding: 0.75em 1em;
+
+	&:focus {
+		box-shadow: inset 0 0 0 1px $color-turquoise;
+	}
+}
+
+.add-form input[type='checkbox'] + label:before,
+.add-form input[type='radio'] + label:before {
+	background: rgba(#fff, 0.14);
+	box-shadow: none;
+}
+
+.add-form input[type='checkbox']:checked + label,
+.add-form input[type='radio']:checked + label {
+	color: $color-turquoise;
+}
+
+.add-form input[type='checkbox'] + label:hover:before,
+.add-form input[type='radio'] + label:hover:before,
+.add-form input[type='checkbox']:focus + label:before,
+.add-form input[type='radio']:focus + label:before {
+	box-shadow: inset 0 0 0 1px $color-turquoise;
+}
+
+.add-form input[type='checkbox']:checked + label:before,
+.add-form input[type='radio']:checked + label:before {
+	background: $gradient;
+	box-shadow: none;
+}
+
+.add-form .select-group label {
+	color: #fff;
+	font-size: 1rem;
+}

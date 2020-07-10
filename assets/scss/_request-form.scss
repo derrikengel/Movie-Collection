@@ -97,7 +97,6 @@
 	top: 50%;
 }
 
-
 .request-form-btn:disabled {
 	background: transparent;
 	cursor: auto;
@@ -116,4 +115,8 @@
 			box-shadow: none;
 		}
 	}
+}
+
+.request-form .success-msg {
+	color: $color-cinder;
 }

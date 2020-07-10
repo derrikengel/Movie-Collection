@@ -23,6 +23,7 @@
 	position: relative;
 	transition: opacity 250ms ease-out, transform 250ms ease-out;
 	will-change: transform;
+	-webkit-tap-highlight-color: rgba($color-cinder, 0.2);
 
 	@include query(sm) {
 		transition: all 250ms ease-out;

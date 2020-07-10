@@ -1,3 +1,13 @@
+firebase.initializeApp({
+    apiKey: 'AIzaSyDzKCN-wjRWLk7ojLlvqgWxi6jfC9e99Wc',
+    authDomain: 'movies-4348d.firebaseapp.com',
+    projectId: 'movies-4348d'
+});
+
+var db = firebase.firestore();
+var moviesRef = db.collection('movies');
+var requestsRef = db.collection('requests');
+
 var movies = new Vue({
     el: '#movies',
     data() {
@@ -37,11 +47,11 @@ var movies = new Vue({
             var self = this
             var movies = self.movieData
             var filteredMovies = _.filter(movies, movie => {
-                var search = self.search ? new RegExp('\\b' + self.search, 'gi').test(movie.gsx$movietitle.$t) : true
-                var format = self.formatFilter.length ? (self.formatFilter.includes(movie.gsx$vudu.$t) || self.formatFilter.includes(movie.gsx$googleplay.$t) || self.formatFilter.includes(movie.gsx$disc.$t)) : true
-                var rating = self.ratingFilter.length ? self.ratingFilter.includes(movie.gsx$rating.$t) : true
-                var genre = self.genreFilter.length ? self.genreFilter.every(item => movie.gsx$genre.$t.includes(item)) : true
-                var year = (self.startYear ? movie.gsx$year.$t >= self.startYear : self.minYear) && (self.endYear ? movie.gsx$year.$t <= self.endYear : self.maxYear)
+                var search = self.search ? new RegExp('\\b' + self.search, 'gi').test(movie.title) : true
+                var format = self.formatFilter.length ? (self.formatFilter.includes(movie.vudu) || self.formatFilter.includes(movie.googlePlay) || self.formatFilter.includes(movie.disc)) : true
+                var rating = self.ratingFilter.length ? self.ratingFilter.includes(movie.rating) : true
+                var genre = self.genreFilter.length ? self.genreFilter.every(item => movie.genre.includes(item)) : true
+                var year = (self.startYear ? movie.year >= self.startYear : self.minYear) && (self.endYear ? movie.year <= self.endYear : self.maxYear)
 
                 return search && format && rating && genre && year
             })
@@ -56,46 +66,44 @@ var movies = new Vue({
                 self.movieCount = 1
                 return [filteredMovies[randomNum]]
             } else if (self.sort == 'alpha') {
-                return _.take(_.orderBy(filteredMovies), self.totalShown)
+                return _.take(_.orderBy(filteredMovies, ['title'], ['asc']), self.totalShown)
             } else {
-                return _.take(_.orderBy(filteredMovies, m => m.gsx$acquired.$t ? new Date(m.gsx$acquired.$t) : '', ['desc']), self.totalShown)
+                return _.take(_.orderBy(filteredMovies, m => m.dateAcquired.toDate(), ['desc']), self.totalShown)
             }
         }
     },
     mounted() {
-        axios.get('https://spreadsheets.google.com/feeds/list/1QrEHAN4o6dQe4PqCXg5_AkQ8u_j1nqt1GCpz90Lv5g4/1/public/values?alt=json')
-            .then(response => {
-                this.movieData = response.data.feed.entry
-                this.movieData = Object.freeze(this.movieData);
+        moviesRef.get().then(querySnapshot => {
+            this.movieData = querySnapshot.docs.map(doc => doc.data())
 
-                // set up filters
-                this.allGenres = [...new Set(this.movieData.flatMap(movie => movie.gsx$genre.$t.split(', ')))].sort()
-                this.minYear = _.min(this.movieData.flatMap(movie => movie.gsx$year.$t))
-                this.maxYear = _.max(this.movieData.flatMap(movie => movie.gsx$year.$t))
-                
-                var vuduFormats = this.movieData.flatMap(movie => movie.gsx$vudu.$t)
-                var gpFormats = this.movieData.flatMap(movie => movie.gsx$googleplay.$t)
-                var mergedFormats = [...vuduFormats, ...gpFormats]
-                this.digitalFormats = [...new Set(mergedFormats)].filter(el => el != '').sort()
-                
-                var discFormats = this.movieData.flatMap(movie => movie.gsx$disc.$t)
-                this.physicalFormats = [...new Set(discFormats)].filter(el => el != '').sort()
-                
-                var ratings = [...new Set(this.movieData.flatMap(movie => movie.gsx$rating.$t))]
-                var ratingsOrder = ['G', 'TV-G', 'PG', 'TV-PG', 'PG-13', 'TV-14', 'R', 'TV-MA', 'NR']
-                var orderedratings = []
-                
-                for (var i = 0; i < ratingsOrder.length; i++)
-                    if (ratings.indexOf(ratingsOrder[i]) > -1)
-                        orderedratings.push(ratingsOrder[i])
-                
-                this.allRatings = orderedratings
-            })
-            .catch(error => {
-                console.log(error)
-                this.errored = true
-            })
-            .finally(() => this.loading = false)
+            // set up filters
+            this.allGenres = [...new Set(this.movieData.flatMap(movie => movie.genre))].sort()
+            this.minYear = _.min(this.movieData.flatMap(movie => movie.year))
+            this.maxYear = _.max(this.movieData.flatMap(movie => movie.year))
+
+            var vuduFormats = this.movieData.flatMap(movie => movie.vudu)
+            var gpFormats = this.movieData.flatMap(movie => movie.googlePlay)
+            var mergedFormats = [...vuduFormats, ...gpFormats]
+            this.digitalFormats = [...new Set(mergedFormats)].filter(el => el != '').sort()
+
+            var discFormats = this.movieData.flatMap(movie => movie.disc)
+            this.physicalFormats = [...new Set(discFormats)].filter(el => el != '').sort()
+
+            var ratings = [...new Set(this.movieData.flatMap(movie => movie.rating))]
+            var ratingsOrder = ['G', 'TV-G', 'PG', 'TV-PG', 'PG-13', 'TV-14', 'R', 'TV-MA', 'NR']
+            var orderedratings = []
+
+            for (var i = 0; i < ratingsOrder.length; i++)
+                if (ratings.indexOf(ratingsOrder[i]) > -1)
+                    orderedratings.push(ratingsOrder[i])
+
+            this.allRatings = orderedratings
+        })
+        .catch(error => {
+            console.log(error)
+            this.errored = true
+        })
+        .finally(() => this.loading = false)
     },
     methods: {
         loadMore() {
@@ -129,7 +137,7 @@ var movies = new Vue({
         validateMinYear() {
             if (this.startYear && this.startYear < this.minYear)
                 this.startYear = this.minYear
-            
+
             if (this.startYear && this.startYear > this.maxYear)
                 this.startYear = this.maxYear
         },
@@ -196,7 +204,7 @@ var movies = new Vue({
         },
         documentClick(e) {
             var target = e.target
-            
+
             // close filter panel (narrow views) on click outside
             var filterPanel = this.$refs.filterPanel
             var filterPanelBtn = this.$refs.filterPanelBtn
@@ -214,9 +222,9 @@ var movies = new Vue({
                     break
                 }
             }
-            
+
             if (!filterClicked)
-                this.activeFilter = null        
+                this.activeFilter = null
         }
     },
     created() {
