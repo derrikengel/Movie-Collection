@@ -11,6 +11,14 @@ var movies = new Vue({
     el: '#movies',
     data() {
         return {
+            user: {
+                id: null,
+                email: null,
+                password: null,
+                name: null,
+                authenticated: false,
+                errorMsg: false
+            },
             movieData: null,
             loading: true,
             errored: false,
@@ -35,10 +43,11 @@ var movies = new Vue({
             minYear: 0,
             maxYear: 0,
             randomMovie: false,
-            requestFormActive: false,
-            requestName: null,
-            requestTitle: null,
-            requestStatus: null
+            request: {
+                formActive: false,
+                title: null,
+                status: null
+            }
         }
     },
     computed: {
@@ -72,6 +81,7 @@ var movies = new Vue({
         }
     },
     mounted() {
+        var vm = this
         moviesRef.get().then(querySnapshot => {
             this.movieData = querySnapshot.docs.map(doc => doc.data())
 
@@ -103,6 +113,19 @@ var movies = new Vue({
             this.errored = true
         })
         .finally(() => this.loading = false)
+
+        firebase.auth().onAuthStateChanged(user => {
+            if (user) {
+                vm.user.authenticated = true
+                vm.user.id = user.uid
+                vm.user.name = user.displayName
+                vm.user.errorMsg = null
+            } else {
+                vm.user.authenticated = false
+                vm.user.id = null
+                vm.user.name = null
+            }
+        });
     },
     methods: {
         loadMore() {
@@ -159,35 +182,35 @@ var movies = new Vue({
             this.activeFilter = null
         },
         toggleRequestForm(e) {
-            this.requestFormActive = !this.requestFormActive
+            this.request.formActive = !this.request.formActive
 
             e.target.blur()
 
-            if (this.requestFormActive && this.requestName)
+            if (this.request.formActive)
                 this.$refs.requestTitle.focus()
-            else if (this.requestFormActive)
-                this.$refs.requestName.focus()
+        },
+        signIn() {
+            var vm = this
+            firebase.auth().signInWithEmailAndPassword(vm.user.email, vm.user.password).catch(error => {
+                vm.user.errorMsg = true
+            });
         },
         submitRequest() {
-            const scriptURL = 'https://script.google.com/macros/s/AKfycbzDLlzElZKNrEPIcrnQNV9P6duLdkufuq_g8QQSSTgi0yHvU3Y/exec'
-            const formData = new FormData()
-            formData.append('Movie Title', this.requestTitle)
-            formData.append('Requester', this.requestName)
+            var scriptURL = 'https://script.google.com/macros/s/AKfycbzDLlzElZKNrEPIcrnQNV9P6duLdkufuq_g8QQSSTgi0yHvU3Y/exec'
+            var formData = new FormData()
+            formData.append('Movie Title', this.request.title)
+            formData.append('Requester', this.user.name)
 
-            this.requestStatus = 'processing'
-
-            var date = new Date();
-            date.setFullYear(date.getFullYear() + 1)
-            setCookie('movieRequester', this.requestName, date)
+            this.request.status = 'processing'
 
             fetch(scriptURL, { method: 'POST', body: formData })
                 .then(result => {
-                    this.requestStatus = 'success'
-                    this.requestTitle = null
+                    this.request.status = 'success'
+                    this.request.title = null
                 })
                 .catch(error => {
                     console.error(error.message)
-                    this.requestStatus = 'error'
+                    this.request.status = 'error'
                 })
         },
         reset() {

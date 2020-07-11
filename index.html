@@ -18,8 +18,7 @@
 </head>
 
 <body>
-	<div id="movies" v-cloak v-infinite-scroll="loadMore" infinite-scroll-disabled="busy"
-		infinite-scroll-distance="200">
+	<div id="movies" v-cloak v-infinite-scroll="loadMore" infinite-scroll-disabled="busy" infinite-scroll-distance="200">
 
 		<h1>
 			<span class="gradient-text">Movie</span> Collection
@@ -57,20 +56,16 @@
 							autocomplete="off">
 						<svg class="search-icon" width="14px" height="14px" viewBox="0 0 14 14"
 							xmlns="http://www.w3.org/2000/svg">
-							<path
-								d="M13.7,12.3l-3-3c0.7-1,1.1-2.2,1.1-3.5c0-1.6-0.6-3.1-1.7-4.2C9,0.6,7.5,0,5.9,0C4.4,0,2.9,0.6,1.7,1.7 C0.6,2.9,0,4.4,0,5.9S0.6,9,1.7,10.1c1.1,1.1,2.6,1.7,4.2,1.7c1.3,0,2.5-0.4,3.5-1.1l3,3c0.2,0.2,0.4,0.3,0.7,0.3 c0.2,0,0.5-0.1,0.7-0.3C14.1,13.3,14.1,12.7,13.7,12.3z M3.1,8.8C2.4,8,1.9,7,1.9,5.9s0.4-2.1,1.2-2.8c0.8-0.8,1.8-1.2,2.8-1.2 S8,2.4,8.8,3.1c0.8,0.8,1.2,1.8,1.2,2.8S9.5,8,8.8,8.8C8,9.5,7,9.9,5.9,9.9S3.9,9.5,3.1,8.8z" />
+							<path d="M13.7,12.3l-3-3c0.7-1,1.1-2.2,1.1-3.5c0-1.6-0.6-3.1-1.7-4.2C9,0.6,7.5,0,5.9,0C4.4,0,2.9,0.6,1.7,1.7 C0.6,2.9,0,4.4,0,5.9S0.6,9,1.7,10.1c1.1,1.1,2.6,1.7,4.2,1.7c1.3,0,2.5-0.4,3.5-1.1l3,3c0.2,0.2,0.4,0.3,0.7,0.3 c0.2,0,0.5-0.1,0.7-0.3C14.1,13.3,14.1,12.7,13.7,12.3z M3.1,8.8C2.4,8,1.9,7,1.9,5.9s0.4-2.1,1.2-2.8c0.8-0.8,1.8-1.2,2.8-1.2 S8,2.4,8.8,3.1c0.8,0.8,1.2,1.8,1.2,2.8S9.5,8,8.8,8.8C8,9.5,7,9.9,5.9,9.9S3.9,9.5,3.1,8.8z" />
 						</svg>
 					</div> <!-- /filter-option -->
 
 					<template v-for="i in 1">
 						<div class="filter-option" :class="{ active: activeFilter === 'sort' }" ref="filterOption">
-							<span class="filter-option-title" tabindex="0" @click="selectFilter('sort')"
-								v-on:keyup.enter="selectFilter('sort')">
+							<span class="filter-option-title" tabindex="0" @click="selectFilter('sort')" v-on:keyup.enter="selectFilter('sort')">
 								Sort
-								<svg class="filter-arrow" width="10px" height="7px" viewBox="0 0 10 7"
-									xmlns="http://www.w3.org/2000/svg">
-									<path
-										d="M4.47,6.24L0.22,1.99c-0.29-0.29-0.29-0.77,0-1.06l0.71-0.71c0.29-0.29,0.77-0.29,1.06,0L5,3.23l3.01-3.01 c0.29-0.29,0.77-0.29,1.06,0l0.71,0.71c0.29,0.29,0.29,0.77,0,1.06L5.53,6.24C5.24,6.53,4.77,6.53,4.47,6.24L4.47,6.24z" />
+								<svg class="filter-arrow" width="10px" height="7px" viewBox="0 0 10 7" xmlns="http://www.w3.org/2000/svg">
+									<path d="M4.47,6.24L0.22,1.99c-0.29-0.29-0.29-0.77,0-1.06l0.71-0.71c0.29-0.29,0.77-0.29,1.06,0L5,3.23l3.01-3.01 c0.29-0.29,0.77-0.29,1.06,0l0.71,0.71c0.29,0.29,0.29,0.77,0,1.06L5.53,6.24C5.24,6.53,4.77,6.53,4.47,6.24L4.47,6.24z" />
 								</svg>
 							</span>
 							<div class="filter-option-menu">
@@ -85,44 +80,32 @@
 							</div> <!-- /filter-option-menu -->
 						</div> <!-- /filter-option -->
 
-						<div class="filter-option"
-							:class="{ active: activeFilter === 'format', 'has-selections' : formatFilter.length > 0 }"
-							ref="filterOption">
-							<span class="filter-option-title" tabindex="0" @click="selectFilter('format')"
-								v-on:keyup.enter="selectFilter('format')">
+						<div class="filter-option" :class="{ active: activeFilter === 'format', 'has-selections' : formatFilter.length > 0 }" ref="filterOption">
+							<span class="filter-option-title" tabindex="0" @click="selectFilter('format')" v-on:keyup.enter="selectFilter('format')">
 								Format &amp; Quality
-								<svg class="filter-arrow" width="10px" height="7px" viewBox="0 0 10 7"
-									xmlns="http://www.w3.org/2000/svg">
-									<path
-										d="M4.47,6.24L0.22,1.99c-0.29-0.29-0.29-0.77,0-1.06l0.71-0.71c0.29-0.29,0.77-0.29,1.06,0L5,3.23l3.01-3.01 c0.29-0.29,0.77-0.29,1.06,0l0.71,0.71c0.29,0.29,0.29,0.77,0,1.06L5.53,6.24C5.24,6.53,4.77,6.53,4.47,6.24L4.47,6.24z" />
+								<svg class="filter-arrow" width="10px" height="7px" viewBox="0 0 10 7" xmlns="http://www.w3.org/2000/svg">
+									<path d="M4.47,6.24L0.22,1.99c-0.29-0.29-0.29-0.77,0-1.06l0.71-0.71c0.29-0.29,0.77-0.29,1.06,0L5,3.23l3.01-3.01 c0.29-0.29,0.77-0.29,1.06,0l0.71,0.71c0.29,0.29,0.29,0.77,0,1.06L5.53,6.24C5.24,6.53,4.77,6.53,4.47,6.24L4.47,6.24z" />
 								</svg>
 							</span>
 							<div class="filter-option-menu">
 								<span class="filter-option-cat">Digital</span>
 								<div class="filter-field" v-for="(digitalFormat, index) in digitalFormats">
-									<input type="checkbox" :id="'digital-' + index" :value="digitalFormat"
-										v-model="formatFilter">
+									<input type="checkbox" :id="'digital-' + index" :value="digitalFormat" v-model="formatFilter">
 									<label :for="'digital-' + index">{{ digitalFormat }}</label>
 								</div>
 								<span class="filter-option-cat">Physical</span>
 								<div class="filter-field" v-for="(physicalFormat, index) in physicalFormats">
-									<input type="checkbox" :id="'physical-' + index" :value="physicalFormat"
-										v-model="formatFilter">
+									<input type="checkbox" :id="'physical-' + index" :value="physicalFormat" v-model="formatFilter">
 									<label :for="'physical-' + index">{{ physicalFormat }}</label>
 								</div>
 							</div> <!-- /filter-option-menu -->
 						</div> <!-- /filter-option -->
 
-						<div class="filter-option"
-							:class="{ active: activeFilter === 'genre', 'has-selections' : genreFilter.length > 0 }"
-							ref="filterOption">
-							<span class="filter-option-title" tabindex="0" @click="selectFilter('genre')"
-								v-on:keyup.enter="selectFilter('genre')">
+						<div class="filter-option" :class="{ active: activeFilter === 'genre', 'has-selections' : genreFilter.length > 0 }" ref="filterOption">
+							<span class="filter-option-title" tabindex="0" @click="selectFilter('genre')" v-on:keyup.enter="selectFilter('genre')">
 								Genre
-								<svg class="filter-arrow" width="10px" height="7px" viewBox="0 0 10 7"
-									xmlns="http://www.w3.org/2000/svg">
-									<path
-										d="M4.47,6.24L0.22,1.99c-0.29-0.29-0.29-0.77,0-1.06l0.71-0.71c0.29-0.29,0.77-0.29,1.06,0L5,3.23l3.01-3.01 c0.29-0.29,0.77-0.29,1.06,0l0.71,0.71c0.29,0.29,0.29,0.77,0,1.06L5.53,6.24C5.24,6.53,4.77,6.53,4.47,6.24L4.47,6.24z">
+								<svg class="filter-arrow" width="10px" height="7px" viewBox="0 0 10 7" xmlns="http://www.w3.org/2000/svg">
+									<path d="M4.47,6.24L0.22,1.99c-0.29-0.29-0.29-0.77,0-1.06l0.71-0.71c0.29-0.29,0.77-0.29,1.06,0L5,3.23l3.01-3.01 c0.29-0.29,0.77-0.29,1.06,0l0.71,0.71c0.29,0.29,0.29,0.77,0,1.06L5.53,6.24C5.24,6.53,4.77,6.53,4.47,6.24L4.47,6.24z">
 								</svg>
 							</span>
 							<div class="filter-option-menu">
@@ -133,46 +116,33 @@
 							</div> <!-- /filter-option-menu -->
 						</div> <!-- /filter-option -->
 
-						<div class="filter-option"
-							:class="{ active: activeFilter === 'rating', 'has-selections' : ratingFilter.length > 0 }"
-							ref="filterOption">
-							<span class="filter-option-title" tabindex="0" @click="selectFilter('rating')"
-								v-on:keyup.enter="selectFilter('rating')">
+						<div class="filter-option" :class="{ active: activeFilter === 'rating', 'has-selections' : ratingFilter.length > 0 }" ref="filterOption">
+							<span class="filter-option-title" tabindex="0" @click="selectFilter('rating')" v-on:keyup.enter="selectFilter('rating')">
 								Rating
-								<svg class="filter-arrow" width="10px" height="7px" viewBox="0 0 10 7"
-									xmlns="http://www.w3.org/2000/svg">
-									<path
-										d="M4.47,6.24L0.22,1.99c-0.29-0.29-0.29-0.77,0-1.06l0.71-0.71c0.29-0.29,0.77-0.29,1.06,0L5,3.23l3.01-3.01 c0.29-0.29,0.77-0.29,1.06,0l0.71,0.71c0.29,0.29,0.29,0.77,0,1.06L5.53,6.24C5.24,6.53,4.77,6.53,4.47,6.24L4.47,6.24z" />
+								<svg class="filter-arrow" width="10px" height="7px" viewBox="0 0 10 7" xmlns="http://www.w3.org/2000/svg">
+									<path d="M4.47,6.24L0.22,1.99c-0.29-0.29-0.29-0.77,0-1.06l0.71-0.71c0.29-0.29,0.77-0.29,1.06,0L5,3.23l3.01-3.01 c0.29-0.29,0.77-0.29,1.06,0l0.71,0.71c0.29,0.29,0.29,0.77,0,1.06L5.53,6.24C5.24,6.53,4.77,6.53,4.47,6.24L4.47,6.24z" />
 								</svg>
 							</span>
 							<div class="filter-option-menu">
 								<div class="filter-field" v-for="(rating, index) in allRatings">
-									<input type="checkbox" :id="'rating-' + index" :value="rating"
-										v-model="ratingFilter">
+									<input type="checkbox" :id="'rating-' + index" :value="rating" v-model="ratingFilter">
 									<label :for="'rating-' + index">{{ rating }}</label>
 								</div>
 							</div> <!-- /filter-option-menu -->
 						</div> <!-- /filter-option -->
 
-						<div class="filter-option"
-							:class="{ active: activeFilter === 'year', 'has-selections' : startYear || endYear }"
-							ref="filterOption">
-							<span class="filter-option-title" tabindex="0" @click="selectFilter('year')"
-								v-on:keyup.enter="selectFilter('year')">
+						<div class="filter-option" :class="{ active: activeFilter === 'year', 'has-selections' : startYear || endYear }" ref="filterOption">
+							<span class="filter-option-title" tabindex="0" @click="selectFilter('year')" v-on:keyup.enter="selectFilter('year')">
 								Year
-								<svg class="filter-arrow" width="10px" height="7px" viewBox="0 0 10 7"
-									xmlns="http://www.w3.org/2000/svg">
-									<path
-										d="M4.47,6.24L0.22,1.99c-0.29-0.29-0.29-0.77,0-1.06l0.71-0.71c0.29-0.29,0.77-0.29,1.06,0L5,3.23l3.01-3.01 c0.29-0.29,0.77-0.29,1.06,0l0.71,0.71c0.29,0.29,0.29,0.77,0,1.06L5.53,6.24C5.24,6.53,4.77,6.53,4.47,6.24L4.47,6.24z">
+								<svg class="filter-arrow" width="10px" height="7px" viewBox="0 0 10 7" xmlns="http://www.w3.org/2000/svg">
+									<path d="M4.47,6.24L0.22,1.99c-0.29-0.29-0.29-0.77,0-1.06l0.71-0.71c0.29-0.29,0.77-0.29,1.06,0L5,3.23l3.01-3.01 c0.29-0.29,0.77-0.29,1.06,0l0.71,0.71c0.29,0.29,0.29,0.77,0,1.06L5.53,6.24C5.24,6.53,4.77,6.53,4.47,6.24L4.47,6.24z">
 								</svg>
 							</span>
 							<div class="filter-option-menu">
 								<div class="filter-field year-range">
-									<input type="number" :min="minYear" :max="maxYear" :placeholder="minYear"
-										v-model="startYear" @change="validateMinYear()">
+									<input type="number" :min="minYear" :max="maxYear" :placeholder="minYear" v-model="startYear" @change="validateMinYear()">
 									to
-									<input type="number" :min="minYear" :max="maxYear" :placeholder="maxYear"
-										v-model="endYear" @change="validateMaxYear()">
+									<input type="number" :min="minYear" :max="maxYear" :placeholder="maxYear" v-model="endYear" @change="validateMaxYear()">
 								</div>
 							</div> <!-- /filter-option-menu -->
 						</div> <!-- /filter-option -->
@@ -180,14 +150,10 @@
 
 					<div class="filter-option">
 						<button class="filter-random-btn" @click="selectRandom()">
-							<svg class="random-icon" width="18px" height="16px" viewBox="0 0 36 32"
-								xmlns="http://www.w3.org/2000/svg">
-								<path
-									d="M10.5,10.44l1.82,2.8l2.38-3.67l-0.85-1.31C12.28,5.83,8.9,4,6,4H0v4h6C7.53,8,9.67,9.16,10.5,10.44z" />
-								<path style="opacity: 0.75;"
-									d="M27,8h3v4l6-6l-6-6v4h-3c-2.9,0-6.28,1.83-7.86,4.26L10.5,21.56C9.67,22.83,7.53,24,6,24H0v4h6c2.9,0,6.28-1.83,7.86-4.26 l8.64-13.29C23.33,9.16,25.47,8,27,8z" />
-								<path
-									d="M30,24h-3c-1.53,0-3.67-1.16-4.5-2.44l-1.82-2.8l-2.39,3.67l0.85,1.31C20.72,26.17,24.1,28,27,28h3v4l6-6l-6-6V24z" />
+							<svg class="random-icon" width="18px" height="16px" viewBox="0 0 36 32" xmlns="http://www.w3.org/2000/svg">
+								<path d="M10.5,10.44l1.82,2.8l2.38-3.67l-0.85-1.31C12.28,5.83,8.9,4,6,4H0v4h6C7.53,8,9.67,9.16,10.5,10.44z" />
+								<path style="opacity: 0.75;" d="M27,8h3v4l6-6l-6-6v4h-3c-2.9,0-6.28,1.83-7.86,4.26L10.5,21.56C9.67,22.83,7.53,24,6,24H0v4h6c2.9,0,6.28-1.83,7.86-4.26 l8.64-13.29C23.33,9.16,25.47,8,27,8z" />
+								<path d="M30,24h-3c-1.53,0-3.67-1.16-4.5-2.44l-1.82-2.8l-2.39,3.67l0.85,1.31C20.72,26.17,24.1,28,27,28h3v4l6-6l-6-6V24z" />
 							</svg>
 							Surprise Me
 						</button>
@@ -195,12 +161,9 @@
 
 					<div class="filter-option">
 						<button class="reset-btn" @click="reset()">
-							<svg class="reset-icon" width="18px" height="18px" viewBox="0 0 36 36"
-								xmlns="http://www.w3.org/2000/svg">
-								<path style="opacity: 0.5;"
-									d="M8.11,8.11C10.64,5.57,14.14,4,18,4c4.27,0,8.23,1.95,10.85,5.15L24,14h12V2l-4.31,4.31C28.32,2.37,23.35,0,18,0 C13.04,0,8.54,2.02,5.28,5.28C2.92,7.64,1.22,10.63,0.46,14h4.11C5.24,11.73,6.47,9.74,8.11,8.11z" />
-								<path
-									d="M27.89,27.89C25.36,30.43,21.86,32,18,32c-4.27,0-8.23-1.95-10.85-5.15L12,22H0v12l4.31-4.31C7.68,33.63,12.65,36,18,36 c4.96,0,9.46-2.02,12.72-5.28c2.35-2.36,4.05-5.36,4.81-8.72h-4.13C30.74,24.25,29.52,26.27,27.89,27.89z" />
+							<svg class="reset-icon" width="18px" height="18px" viewBox="0 0 36 36" xmlns="http://www.w3.org/2000/svg">
+								<path style="opacity: 0.5;" d="M8.11,8.11C10.64,5.57,14.14,4,18,4c4.27,0,8.23,1.95,10.85,5.15L24,14h12V2l-4.31,4.31C28.32,2.37,23.35,0,18,0 C13.04,0,8.54,2.02,5.28,5.28C2.92,7.64,1.22,10.63,0.46,14h4.11C5.24,11.73,6.47,9.74,8.11,8.11z" />
+								<path d="M27.89,27.89C25.36,30.43,21.86,32,18,32c-4.27,0-8.23-1.95-10.85-5.15L12,22H0v12l4.31-4.31C7.68,33.63,12.65,36,18,36 c4.96,0,9.46-2.02,12.72-5.28c2.35-2.36,4.05-5.36,4.81-8.72h-4.13C30.74,24.25,29.52,26.27,27.89,27.89z" />
 							</svg>
 							Reset
 						</button>
@@ -210,9 +173,7 @@
 			</div> <!-- /filters -->
 
 			<div class="movies" :class="{ 'card-expanded': activeCard != null }">
-				<div v-for="(movie, index) in movies" :key="index" :class="{ active: index === activeCard }"
-					class="movie-card" tabindex="0" :title="movie.title" @click="selectItem(index)"
-					v-on:keyup.enter="selectItem(index)" ref="movieCard">
+				<div v-for="(movie, index) in movies" :key="index" :class="{ active: index === activeCard }" class="movie-card" tabindex="0" :title="movie.title" @click="selectItem(index)" v-on:keyup.enter="selectItem(index)" ref="movieCard">
 					<span class="movie-card-title-preload">{{ movie.title }}</span>
 					<img :src="movie.image" :alt="movie.title" class="movie-card-img">
 					<div class="movie-card-overlay">
@@ -242,42 +203,47 @@
 				</div>
 			</div>
 
-			<div class="request-form" :class="{ active: requestFormActive }">
+			<div class="request-form" :class="{ active: request.formActive }">
 				<button type="button" class="request-form-header" @click="toggleRequestForm">
-					<svg class="request-icon" width="18px" height="18px" viewBox="0 0 36 36"
-						xmlns="http://www.w3.org/2000/svg">
-						<path
-							d="M18,0C8.06,0,0,8.06,0,18c0,4.97,2.01,9.47,5.27,12.73L0,36h18c9.94,0,18-8.06,18-18C36,8.06,27.94,0,18,0z M12,20 c-1.1,0-2-0.9-2-2s0.9-2,2-2c1.1,0,2,0.9,2,2S13.1,20,12,20z M18,20c-1.1,0-2-0.9-2-2s0.9-2,2-2c1.1,0,2,0.9,2,2S19.1,20,18,20z M24,20c-1.1,0-2-0.9-2-2s0.9-2,2-2c1.1,0,2,0.9,2,2S25.1,20,24,20z" />
+					<svg class="request-icon" width="18px" height="18px" viewBox="0 0 36 36" xmlns="http://www.w3.org/2000/svg">
+						<path d="M18,0C8.06,0,0,8.06,0,18c0,4.97,2.01,9.47,5.27,12.73L0,36h18c9.94,0,18-8.06,18-18C36,8.06,27.94,0,18,0z M12,20 c-1.1,0-2-0.9-2-2s0.9-2,2-2c1.1,0,2,0.9,2,2S13.1,20,12,20z M18,20c-1.1,0-2-0.9-2-2s0.9-2,2-2c1.1,0,2,0.9,2,2S19.1,20,18,20z M24,20c-1.1,0-2-0.9-2-2s0.9-2,2-2c1.1,0,2,0.9,2,2S25.1,20,24,20z" />
 					</svg>
 					Request a Movie
 				</button>
-				<form @submit.prevent="submitRequest">
-					<p class="success-msg" v-if="requestStatus == 'success'">
-						<svg class="success-icon" width="20px" height="20px" viewBox="0 0 36 36"
-							xmlns="http://www.w3.org/2000/svg">
-							<path
-								d="M18,0C8.08,0,0,8.08,0,18s8.08,18,18,18c9.92,0,18-8.08,18-18S27.92,0,18,0z M18,32c-7.72,0-14-6.28-14-14S10.28,4,18,4 c7.72,0,14,6.28,14,14S25.72,32,18,32z" />
+
+				<form @submit.prevent="submitRequest" v-if="user.authenticated">
+					<p class="success-msg" v-if="request.status == 'success'">
+						<svg class="success-icon" width="20px" height="20px" viewBox="0 0 36 36" xmlns="http://www.w3.org/2000/svg">
+							<path d="M18,0C8.08,0,0,8.08,0,18s8.08,18,18,18c9.92,0,18-8.08,18-18S27.92,0,18,0z M18,32c-7.72,0-14-6.28-14-14S10.28,4,18,4 c7.72,0,14,6.28,14,14S25.72,32,18,32z" />
 							<polygon points="16,19.17 13.41,16.59 10.59,19.41 16,24.83 25.41,15.41 22.59,12.59" />
 						</svg>
 						Sent successfully!
 					</p>
-					<p class="error-msg" v-if="requestStatus == 'error'">
-						<svg class="error-icon" width="20px" height="20px" viewBox="0 0 36 36"
-							xmlns="http://www.w3.org/2000/svg">
-							<path
-								d="M18,0C8.08,0,0,8.08,0,18s8.08,18,18,18c9.92,0,18-8.08,18-18S27.92,0,18,0z M18,32c-7.72,0-14-6.28-14-14S10.28,4,18,4 c7.72,0,14,6.28,14,14S25.72,32,18,32z" />
-							<polygon
-								points="24.36,14.46 21.54,11.64 18,15.17 14.46,11.64 11.64,14.46 15.17,18 11.64,21.54 14.46,24.36 18,20.83 21.54,24.36 24.36,21.54 20.83,18" />
+					<p class="error-msg" v-if="request.status == 'error'">
+						<svg class="error-icon" width="20px" height="20px" viewBox="0 0 36 36" xmlns="http://www.w3.org/2000/svg">
+							<path d="M18,0C8.08,0,0,8.08,0,18s8.08,18,18,18c9.92,0,18-8.08,18-18S27.92,0,18,0z M18,32c-7.72,0-14-6.28-14-14S10.28,4,18,4 c7.72,0,14,6.28,14,14S25.72,32,18,32z" />
+							<polygon points="24.36,14.46 21.54,11.64 18,15.17 14.46,11.64 11.64,14.46 15.17,18 11.64,21.54 14.46,24.36 18,20.83 21.54,24.36 24.36,21.54 20.83,18" />
 						</svg>
 						Sorry, something went wrong.
 					</p>
-					<input type="text" placeholder="First Name" v-model="requestName" ref="requestName" required>
-					<input type="text" placeholder="Movie Title & Year" v-model="requestTitle" ref="requestTitle"
-						required>
-					<button class="request-form-btn" type="submit" :disabled="requestStatus == 'processing'">
+					<input type="text" placeholder="Movie Title & Year" v-model="request.title" ref="requestTitle" required>
+					<button class="request-form-btn" type="submit" :disabled="request.status == 'processing'">
 						<span class="btn-title">Request</span>
 						<span class="loader"></span>
 					</button>
+				</form>
+
+				<form @submit.prevent="signIn" v-else>
+					<p class="error-msg" v-if="user.errorMsg">
+						<svg class="error-icon" width="20px" height="20px" viewBox="0 0 36 36" xmlns="http://www.w3.org/2000/svg">
+							<path d="M18,0C8.08,0,0,8.08,0,18s8.08,18,18,18c9.92,0,18-8.08,18-18S27.92,0,18,0z M18,32c-7.72,0-14-6.28-14-14S10.28,4,18,4 c7.72,0,14,6.28,14,14S25.72,32,18,32z" />
+							<polygon points="24.36,14.46 21.54,11.64 18,15.17 14.46,11.64 11.64,14.46 15.17,18 11.64,21.54 14.46,24.36 18,20.83 21.54,24.36 24.36,21.54 20.83,18" />
+						</svg>
+						Incorrect login
+					</p>
+					<input type="email" id="email" placeholder="Email" v-model="user.email" required>
+					<input type="password" id="password" placeholder="Password" v-model="user.password" required>
+					<button class="request-form-btn" type="submit">Sign In</button>
 				</form>
 			</div> <!-- /request-form -->
 		</template>
