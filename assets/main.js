@@ -60,6 +60,8 @@ var movies = new Vue({
         movies() {
             var self = this
             var movies = self.movieData
+
+            // filter movie data
             var filteredMovies = _.filter(movies, movie => {
                 var search = self.filter.search ? new RegExp('\\b' + self.filter.search, 'gi').test(movie.title) : true
                 var format = self.filter.format.length ? (self.filter.format.includes(movie.vudu) || self.filter.format.includes(movie.googlePlay) || self.filter.format.includes(movie.disc)) : true
@@ -70,18 +72,24 @@ var movies = new Vue({
                 return search && format && rating && genre && year
             })
 
+            // update the filtered movie count
             self.movieCount = filteredMovies.length
 
+            // remove selected state from movie cards
             self.activeCard = null
 
+            // generate a random number based on filtered movies
             var randomNum = _.random(filteredMovies.length - 1)
 
             if (self.filter.randomMovie && randomNum > -1) {
+                // return random movie
                 self.movieCount = 1
                 return [filteredMovies[randomNum]]
             } else if (self.filter.sort == 'alpha') {
+                // return filtered movies, ordered alphabetically
                 return _.take(_.orderBy(filteredMovies, ['title'], ['asc']), self.lazy.totalShown)
             } else {
+                // return filtered movies, ordered by purchase date
                 return _.take(_.orderBy(filteredMovies, m => m.dateAcquired.toDate(), ['desc']), self.lazy.totalShown)
             }
         }
@@ -177,7 +185,7 @@ var movies = new Vue({
                 this.filter.endYear = this.filterData.maxYear
         },
         selectRandom() {
-            // set to false, then back to true to force recomputed
+            // set to false, then back to true to trigger computed property
             this.filter.randomMovie = false
             this.filter.randomMovie = true
 
