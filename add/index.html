@@ -36,19 +36,21 @@
 			</h3>
 
 			<form @submit.prevent="signIn" class="add-form">
-				<div class="form-field">
-					<label for="email">Email</label>
-					<input type="email" id="email" name="email" v-model="user.email" required>
-				</div> <!-- /form-field -->
+				<div class="form-fields">
+					<div class="form-field">
+						<label for="email">Email</label>
+						<input type="email" id="email" name="email" v-model="user.email" required>
+					</div> <!-- /form-field -->
 
-				<div class="form-field">
-					<label for="password">Password</label>
-					<input type="password" id="password" name="password" v-model="user.password" required>
-				</div> <!-- /form-field -->
+					<div class="form-field">
+						<label for="password">Password</label>
+						<input type="password" id="password" name="password" v-model="user.password" required>
+					</div> <!-- /form-field -->
+				</div> <!-- /form-fields -->
 
-				<div class="form-field">
+				<div class="form-btn">
 					<button type="submit">Sign In</button>
-				</div> <!-- /form-field -->
+				</div> <!-- /form-btn -->
 			</form>
 		</template>
 	
