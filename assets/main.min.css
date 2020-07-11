@@ -355,7 +355,7 @@ input[type='checkbox'], input[type='radio'] { height: 0; left: 0; opacity: 0; po
 
 .request-form .success-msg { color: #0d0e16; }
 
-.add-form { max-width: 30rem; }
+@media screen and (min-width: 80rem) { .add-form { -webkit-box-align: start; -ms-flex-align: start; align-items: flex-start; display: -webkit-box; display: -ms-flexbox; display: flex; -ms-flex-wrap: wrap; flex-wrap: wrap; } }
 
 .add-form label a { color: #fff; font-size: 0.875rem; margin-left: 0.5rem; }
 
@@ -378,3 +378,17 @@ input[type='checkbox'], input[type='radio'] { height: 0; left: 0; opacity: 0; po
 .add-form input[type='checkbox']:checked + label:before, .add-form input[type='radio']:checked + label:before { background: linear-gradient(45deg, #f71735, #ff9f1c); -webkit-box-shadow: none; box-shadow: none; }
 
 .add-form .select-group label { color: #fff; font-size: 1rem; }
+
+.add-form .form-fields { max-width: 30rem; }
+
+@media screen and (min-width: 80rem) { .add-form .form-fields { -webkit-box-flex: 1; -ms-flex: 1; flex: 1; margin-right: 6rem; } }
+
+.add-form .form-btn { margin-top: 2rem; }
+
+@media screen and (min-width: 80rem) { .add-form .form-btn { -ms-flex-preferred-size: 100%; flex-basis: 100%; } }
+
+.add-form .movies { margin: 4rem 0; }
+
+@media screen and (min-width: 80rem) { .add-form .movies { -webkit-box-flex: 1; -ms-flex: 1; flex: 1; margin: 0; position: -webkit-sticky; position: sticky; top: 6rem; } }
+
+.add-form .movie-card { margin-bottom: 0; }

@@ -74,248 +74,282 @@
 			</h3>
 
 			<form @submit.prevent="addMovie" class="add-form">
+				<div class="form-fields">
+					<div class="form-field">
+						<label for="title">Movie Title</label>
+						<input type="text" id="title" name="title" v-model="movie.title" required>
+					</div> <!-- /form-field -->
 
-				<div class="form-field">
-					<label for="title">Movie Title</label>
-					<input type="text" id="title" name="title" v-model="movie.title" required>
-				</div> <!-- /form-field -->
+					<div class="form-field">
+						<label for="vudu-url">Vudu URL <a :href="'https://www.vudu.com/content/movies/search?searchString=' + movie.title" target="_blank">Search Vudu</a></label>
+						<input type="url" id="vudu-url" name="vudu-url" v-model="movie.vuduUrl" @change="updateImage" autocomplete="off">
+					</div> <!-- /form-field -->
+					
+					<div class="form-field">
+						<label for="image">Image URL</label>
+						<input type="url" id="image" name="image" v-model="movie.imageUrl" autocomplete="off" required>
+					</div> <!-- /form-field -->
 
-				<div class="form-field">
-					<label for="vudu-url">Vudu URL <a :href="'https://www.vudu.com/content/movies/search?searchString=' + movie.title" target="_blank">Search Vudu</a></label>
-					<input type="url" id="vudu-url" name="vudu-url" v-model="movie.vuduUrl" @change="updateImage" autocomplete="off">
-				</div> <!-- /form-field -->
-				
-				<div class="form-field">
-					<label for="image">Image URL</label>
-					<input type="url" id="image" name="image" v-model="movie.imageUrl" autocomplete="off" required>
-					<img :src="movie.imageUrl" class="preview-img">
-				</div> <!-- /form-field -->
+					<div class="form-field">
+						<label for="year">Year</label>
+						<input type="number" id="year" name="year" min="1900" minlength="4" maxlength="4" v-model="movie.year" autocomplete="off" required>
+					</div> <!-- /form-field -->
 
-				<div class="form-field">
-					<label for="year">Year</label>
-					<input type="number" id="year" name="year" min="1900" minlength="4" maxlength="4" v-model="movie.year" autocomplete="off" required>
-				</div> <!-- /form-field -->
+					<div class="form-field">
+						<label for="genre" ref="genreLabel">Genre</label>
+					
+						<ul class="select-group">
+							<li>
+								<input type="checkbox" id="genre-action" value="Action" v-model="movie.genre">
+								<label for="genre-action">Action</label>
+							</li>
+							<li>
+								<input type="checkbox" id="genre-adventure" value="Adventure" v-model="movie.genre">
+								<label for="genre-adventure">Adventure</label>
+							</li>
+							<li>
+								<input type="checkbox" id="genre-animation" value="Animation" v-model="movie.genre">
+								<label for="genre-animation">Animation</label>
+							</li>
+							<li>
+								<input type="checkbox" id="genre-christmas" value="Christmas" v-model="movie.genre">
+								<label for="genre-christmas">Christmas</label>
+							</li>
+							<li>
+								<input type="checkbox" id="genre-comedy" value="Comedy" v-model="movie.genre">
+								<label for="genre-comedy">Comedy</label>
+							</li>
+							<li>
+								<input type="checkbox" id="genre-crime-thrillers" value="Crime & Thrillers" v-model="movie.genre">
+								<label for="genre-crime-thrillers">Crime &amp; Thrillers</label>
+							</li>
+							<li>
+								<input type="checkbox" id="genre-documentary" value="Documentary" v-model="movie.genre">
+								<label for="genre-documentary">Documentary</label>
+							</li>
+							<li>
+								<input type="checkbox" id="genre-drama" value="Drama" v-model="movie.genre">
+								<label for="genre-drama">Drama</label>
+							</li>
+							<li>
+								<input type="checkbox" id="genre-halloween" value="Halloween" v-model="movie.genre">
+								<label for="genre-halloween">Halloween</label>
+							</li>
+							<li>
+								<input type="checkbox" id="genre-history" value="History" v-model="movie.genre">
+								<label for="genre-history">History</label>
+							</li>
+							<li>
+								<input type="checkbox" id="genre-horror" value="Horror" v-model="movie.genre">
+								<label for="genre-horror">Horror</label>
+							</li>
+							<li>
+								<input type="checkbox" id="genre-kids-family" value="Kids & Family" v-model="movie.genre">
+								<label for="genre-kids-family">Kids &amp; Family</label>
+							</li>
+							<li>
+								<input type="checkbox" id="genre-musicals" value="Musicals" v-model="movie.genre">
+								<label for="genre-musicals">Musicals</label>
+							</li>
+							<li>
+								<input type="checkbox" id="genre-romance" value="Romance" v-model="movie.genre">
+								<label for="genre-romance">Romance</label>
+							</li>
+							<li>
+								<input type="checkbox" id="genre-sci-fi" value="Sci-Fi" v-model="movie.genre">
+								<label for="genre-sci-fi">Sci-Fi</label>
+							</li>
+							<li>
+								<input type="checkbox" id="genre-sports" value="Sports" v-model="movie.genre">
+								<label for="genre-sports">Sports</label>
+							</li>
+							<li>
+								<input type="checkbox" id="genre-teen" value="Teen" v-model="movie.genre">
+								<label for="genre-teen">Teen</label>
+							</li>
+							<li>
+								<input type="checkbox" id="genre-westerns" value="Westerns" v-model="movie.genre">
+								<label for="genre-westerns">Westerns</label>
+							</li>
+						</ul>
+					</div> <!-- /form-field -->
 
-				<div class="form-field">
-					<label for="genre" ref="genreLabel">Genre</label>
-				
-					<ul class="select-group">
-						<li>
-							<input type="checkbox" id="genre-action" value="Action" v-model="movie.genre">
-							<label for="genre-action">Action</label>
-						</li>
-						<li>
-							<input type="checkbox" id="genre-adventure" value="Adventure" v-model="movie.genre">
-							<label for="genre-adventure">Adventure</label>
-						</li>
-						<li>
-							<input type="checkbox" id="genre-animation" value="Animation" v-model="movie.genre">
-							<label for="genre-animation">Animation</label>
-						</li>
-						<li>
-							<input type="checkbox" id="genre-christmas" value="Christmas" v-model="movie.genre">
-							<label for="genre-christmas">Christmas</label>
-						</li>
-						<li>
-							<input type="checkbox" id="genre-comedy" value="Comedy" v-model="movie.genre">
-							<label for="genre-comedy">Comedy</label>
-						</li>
-						<li>
-							<input type="checkbox" id="genre-crime-thrillers" value="Crime & Thrillers" v-model="movie.genre">
-							<label for="genre-crime-thrillers">Crime &amp; Thrillers</label>
-						</li>
-						<li>
-							<input type="checkbox" id="genre-documentary" value="Documentary" v-model="movie.genre">
-							<label for="genre-documentary">Documentary</label>
-						</li>
-						<li>
-							<input type="checkbox" id="genre-drama" value="Drama" v-model="movie.genre">
-							<label for="genre-drama">Drama</label>
-						</li>
-						<li>
-							<input type="checkbox" id="genre-halloween" value="Halloween" v-model="movie.genre">
-							<label for="genre-halloween">Halloween</label>
-						</li>
-						<li>
-							<input type="checkbox" id="genre-history" value="History" v-model="movie.genre">
-							<label for="genre-history">History</label>
-						</li>
-						<li>
-							<input type="checkbox" id="genre-horror" value="Horror" v-model="movie.genre">
-							<label for="genre-horror">Horror</label>
-						</li>
-						<li>
-							<input type="checkbox" id="genre-kids-family" value="Kids & Family" v-model="movie.genre">
-							<label for="genre-kids-family">Kids &amp; Family</label>
-						</li>
-						<li>
-							<input type="checkbox" id="genre-musicals" value="Musicals" v-model="movie.genre">
-							<label for="genre-musicals">Musicals</label>
-						</li>
-						<li>
-							<input type="checkbox" id="genre-romance" value="Romance" v-model="movie.genre">
-							<label for="genre-romance">Romance</label>
-						</li>
-						<li>
-							<input type="checkbox" id="genre-sci-fi" value="Sci-Fi" v-model="movie.genre">
-							<label for="genre-sci-fi">Sci-Fi</label>
-						</li>
-						<li>
-							<input type="checkbox" id="genre-sports" value="Sports" v-model="movie.genre">
-							<label for="genre-sports">Sports</label>
-						</li>
-						<li>
-							<input type="checkbox" id="genre-teen" value="Teen" v-model="movie.genre">
-							<label for="genre-teen">Teen</label>
-						</li>
-						<li>
-							<input type="checkbox" id="genre-westerns" value="Westerns" v-model="movie.genre">
-							<label for="genre-westerns">Westerns</label>
-						</li>
-					</ul>
-				</div> <!-- /form-field -->
+					<div class="form-field">
+						<label for="rating">Rating</label>
+					
+						<ul class="select-group">
+							<li>
+								<input type="radio" id="rating-g" value="G" name="rating" v-model="movie.rating" required>
+								<label for="rating-g">G</label>
+							</li>
+							<li>
+								<input type="radio" id="rating-pg" value="PG" name="rating" v-model="movie.rating" required>
+								<label for="rating-pg">PG</label>
+							</li>
+							<li>
+								<input type="radio" id="rating-pg-13" value="PG-13" name="rating" v-model="movie.rating" required>
+								<label for="rating-pg-13">PG-13</label>
+							</li>
+							<li>
+								<input type="radio" id="rating-r" value="R" name="rating" v-model="movie.rating" required>
+								<label for="rating-r">R</label>
+							</li>
+							<li>
+								<input type="radio" id="rating-nr" value="NR" name="rating" v-model="movie.rating" required>
+								<label for="rating-nr">NR</label>
+							</li>
+							<li>
+								<input type="radio" id="rating-tv-g" value="TV-G" name="rating" v-model="movie.rating" required>
+								<label for="rating-tv-g">TV-G</label>
+							</li>
+							<li>
+								<input type="radio" id="rating-tv-pg" value="TV-PG" name="rating" v-model="movie.rating" required>
+								<label for="rating-tv-pg">TV-PG</label>
+							</li>
+							<li>
+								<input type="radio" id="rating-tv-14" value="TV-14" name="rating" v-model="movie.rating" required>
+								<label for="rating-tv-14">TV-14</label>
+							</li>
+							<li>
+								<input type="radio" id="rating-tv-ma" value="TV-MA" name="rating" v-model="movie.rating" required>
+								<label for="rating-tv-ma">TV-MA</label>
+							</li>
+						</ul>
+					</div> <!-- /form-field -->
 
-				<div class="form-field">
-					<label for="rating">Rating</label>
-				
-					<ul class="select-group">
-						<li>
-							<input type="radio" id="rating-g" value="G" name="rating" v-model="movie.rating" required>
-							<label for="rating-g">G</label>
-						</li>
-						<li>
-							<input type="radio" id="rating-pg" value="PG" name="rating" v-model="movie.rating" required>
-							<label for="rating-pg">PG</label>
-						</li>
-						<li>
-							<input type="radio" id="rating-pg-13" value="PG-13" name="rating" v-model="movie.rating" required>
-							<label for="rating-pg-13">PG-13</label>
-						</li>
-						<li>
-							<input type="radio" id="rating-r" value="R" name="rating" v-model="movie.rating" required>
-							<label for="rating-r">R</label>
-						</li>
-						<li>
-							<input type="radio" id="rating-nr" value="NR" name="rating" v-model="movie.rating" required>
-							<label for="rating-nr">NR</label>
-						</li>
-						<li>
-							<input type="radio" id="rating-tv-g" value="TV-G" name="rating" v-model="movie.rating" required>
-							<label for="rating-tv-g">TV-G</label>
-						</li>
-						<li>
-							<input type="radio" id="rating-tv-pg" value="TV-PG" name="rating" v-model="movie.rating" required>
-							<label for="rating-tv-pg">TV-PG</label>
-						</li>
-						<li>
-							<input type="radio" id="rating-tv-14" value="TV-14" name="rating" v-model="movie.rating" required>
-							<label for="rating-tv-14">TV-14</label>
-						</li>
-						<li>
-							<input type="radio" id="rating-tv-ma" value="TV-MA" name="rating" v-model="movie.rating" required>
-							<label for="rating-tv-ma">TV-MA</label>
-						</li>
-					</ul>
-				</div> <!-- /form-field -->
+					<div class="form-field">
+						<label for="vudu-quality">Vudu Quality <a :href="movie.vuduUrl" target="_blank">Find on Vudu</a></label>
+						<ul class="select-group">
+							<li>
+								<input type="radio" id="vudu-none" value="" v-model="movie.vuduQuality" selected>
+								<label for="vudu-none">N/A</label>
+							</li>
+							<li>
+								<input type="radio" id="vudu-4k" value="4K" v-model="movie.vuduQuality">
+								<label for="vudu-4k">4K</label>
+							</li>
+							<li>
+								<input type="radio" id="vudu-hd" value="HD" v-model="movie.vuduQuality">
+								<label for="vudu-hd">HD</label>
+							</li>
+							<li>
+								<input type="radio" id="vudu-sd" value="SD" v-model="movie.vuduQuality">
+								<label for="vudu-sd">SD</label>
+							</li>
+						</ul>
+					</div> <!-- /form-field -->
 
-				<div class="form-field">
-					<label for="vudu-quality">Vudu Quality <a :href="movie.vuduUrl" target="_blank">Find on Vudu</a></label>
-					<ul class="select-group">
-						<li>
-							<input type="radio" id="vudu-none" value="" v-model="movie.vuduQuality" selected>
-							<label for="vudu-none">N/A</label>
-						</li>
-						<li>
-							<input type="radio" id="vudu-4k" value="4K" v-model="movie.vuduQuality">
-							<label for="vudu-4k">4K</label>
-						</li>
-						<li>
-							<input type="radio" id="vudu-hd" value="HD" v-model="movie.vuduQuality">
-							<label for="vudu-hd">HD</label>
-						</li>
-						<li>
-							<input type="radio" id="vudu-sd" value="SD" v-model="movie.vuduQuality">
-							<label for="vudu-sd">SD</label>
-						</li>
-					</ul>
-				</div> <!-- /form-field -->
+					<div class="form-field">
+						<label for="gp-quality">Google Play Quality <a href="https://www.youtube.com/purchases" target="_blank">Find on YouTube</a></label>
 
-				<div class="form-field">
-					<label for="gp-quality">Google Play Quality <a href="https://www.youtube.com/purchases" target="_blank">Find on YouTube</a></label>
+						<ul class="select-group">
+							<li>
+								<input type="radio" id="gp-none" value="" v-model="movie.gpQuality" selected>
+								<label for="gp-none">N/A</label>
+							</li>
+							<li>
+								<input type="radio" id="gp-4k" value="4K" v-model="movie.gpQuality">
+								<label for="gp-4k">4K</label>
+							</li>
+							<li>
+								<input type="radio" id="gp-hd" value="HD" v-model="movie.gpQuality">
+								<label for="gp-hd">HD</label>
+							</li>
+							<li>
+								<input type="radio" id="gp-sd" value="SD" v-model="movie.gpQuality">
+								<label for="gp-sd">SD</label>
+							</li>
+						</ul>
+					</div> <!-- /form-field -->
 
-					<ul class="select-group">
-						<li>
-							<input type="radio" id="gp-none" value="" v-model="movie.gpQuality" selected>
-							<label for="gp-none">N/A</label>
-						</li>
-						<li>
-							<input type="radio" id="gp-4k" value="4K" v-model="movie.gpQuality">
-							<label for="gp-4k">4K</label>
-						</li>
-						<li>
-							<input type="radio" id="gp-hd" value="HD" v-model="movie.gpQuality">
-							<label for="gp-hd">HD</label>
-						</li>
-						<li>
-							<input type="radio" id="gp-sd" value="SD" v-model="movie.gpQuality">
-							<label for="gp-sd">SD</label>
-						</li>
-					</ul>
-				</div> <!-- /form-field -->
+					<div class="form-field">
+						<label for="ma-quality">Movies Anywhere Quality <a href="https://moviesanywhere.com/my-movies" target="_blank">Find on MA</a></label>
+						<ul class="select-group">
+							<li>
+								<input type="radio" id="ma-none" value="" v-model="movie.maQuality" selected>
+								<label for="ma-none">N/A</label>
+							</li>
+							<li>
+								<input type="radio" id="ma-4k" value="4K" v-model="movie.maQuality">
+								<label for="ma-4k">4K</label>
+							</li>
+							<li>
+								<input type="radio" id="ma-hd" value="HD" v-model="movie.maQuality">
+								<label for="ma-hd">HD</label>
+							</li>
+							<li>
+								<input type="radio" id="ma-sd" value="SD" v-model="movie.maQuality">
+								<label for="ma-sd">SD</label>
+							</li>
+						</ul>
+					</div> <!-- /form-field -->
 
-				<div class="form-field">
-					<label for="ma-quality">Movies Anywhere Quality <a href="https://moviesanywhere.com/my-movies" target="_blank">Find on MA</a></label>
-					<ul class="select-group">
-						<li>
-							<input type="radio" id="ma-none" value="" v-model="movie.maQuality" selected>
-							<label for="ma-none">N/A</label>
-						</li>
-						<li>
-							<input type="radio" id="ma-4k" value="4K" v-model="movie.maQuality">
-							<label for="ma-4k">4K</label>
-						</li>
-						<li>
-							<input type="radio" id="ma-hd" value="HD" v-model="movie.maQuality">
-							<label for="ma-hd">HD</label>
-						</li>
-						<li>
-							<input type="radio" id="ma-sd" value="SD" v-model="movie.maQuality">
-							<label for="ma-sd">SD</label>
-						</li>
-					</ul>
-				</div> <!-- /form-field -->
+					<div class="form-field">
+						<label for="disc-format">Disc Format</label>
 
-				<div class="form-field">
-					<label for="disc-format">Disc Format</label>
+						<ul class="select-group">
+							<li>
+								<input type="radio" id="disc-none" value="" v-model="movie.discFormat" selected>
+								<label for="disc-none">N/A</label>
+							</li>
+							<li>
+								<input type="radio" id="disc-4k-blu-ray" value="4K Blu-Ray" v-model="movie.discFormat">
+								<label for="disc-4k-blu-ray">4K</label>
+							</li>
+							<li>
+								<input type="radio" id="disc-blu-ray" value="Blu-Ray" v-model="movie.discFormat">
+								<label for="disc-blu-ray">HD</label>
+							</li>
+							<li>
+								<input type="radio" id="disc-dvd" value="DVD" v-model="movie.discFormat">
+								<label for="disc-dvd">SD</label>
+							</li>
+						</ul>
+					</div> <!-- /form-field -->
 
-					<ul class="select-group">
-						<li>
-							<input type="radio" id="disc-none" value="" v-model="movie.discFormat" selected>
-							<label for="disc-none">N/A</label>
-						</li>
-						<li>
-							<input type="radio" id="disc-4k-blu-ray" value="4K Blu-Ray" v-model="movie.discFormat">
-							<label for="disc-4k-blu-ray">4K</label>
-						</li>
-						<li>
-							<input type="radio" id="disc-blu-ray" value="Blu-Ray" v-model="movie.discFormat">
-							<label for="disc-blu-ray">HD</label>
-						</li>
-						<li>
-							<input type="radio" id="disc-dvd" value="DVD" v-model="movie.discFormat">
-							<label for="disc-dvd">SD</label>
-						</li>
-					</ul>
-				</div> <!-- /form-field -->
+					<div class="form-field">
+						<label for="notes">Notes</label>
+						<input type="text" id="notes" name="notes" v-model="movie.notes" autocomplete="off">
+					</div> <!-- /form-field -->
+				</div> <!-- /form-fields -->
 
-				<div class="form-field">
-					<label for="notes">Notes</label>
-					<input type="text" id="notes" name="notes" v-model="movie.notes" autocomplete="off">
-				</div> <!-- /form-field -->
+				<div class="movies" v-if="movie.imageUrl">
+					<div class="movie-card" :title="movie.title">
+						<img :src="movie.imageUrl" class="movie-card-img" :alt="movie.title">
+					</div> <!-- movie-card -->
 
-				<div class="form-field">
+					<div class="movie-card active" :title="movie.title">
+						<img :src="movie.imageUrl" class="movie-card-img" :alt="movie.title">
+						<div class="movie-card-overlay">
+							<div class="movie-card-content">
+								<span class="movie-card-title">{{ movie.title }}</span>
+								<span class="movie-card-rating" title="Rating">{{ movie.rating }}</span>
+								<span class="movie-card-year" title="Release Year">{{ movie.year }}</span>
+								<dl class="movie-card-watch" v-if="movie.vuduQuality || movie.gpQuality || movie.discFormat">
+									<template v-if="movie.vuduQuality">
+										<dt>Vudu</dt>
+										<dd>{{ movie.vuduQuality }}</dd>
+									</template>
+
+									<template v-if="movie.gpQuality">
+										<dt>Google Play</dt>
+										<dd>{{ movie.gpQuality }}</dd>
+									</template>
+
+									<template v-if="movie.discFormat">
+										<dt>Disc</dt>
+										<dd>{{ movie.discFormat }}</dd>
+									</template>
+								</dl>
+								<span class="movie-card-note" title="Notes">{{ movie.notes }}</span>
+							</div>
+						</div>
+					</div> <!-- movie-card -->
+				</div> <!-- /movies -->
+
+				<div class="form-btn">
 					<button>Add</button>
-				</div> <!-- /form-field -->
+				</div> <!-- /form-btn -->
 
 				<!-- <div class="form-field">
 					<button class="reset-btn" type="button" @click="firebase.auth().signOut()">Sign Out</button>

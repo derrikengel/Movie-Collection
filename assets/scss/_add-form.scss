@@ -1,5 +1,9 @@
 .add-form {
-	max-width: 30rem;
+	@include query(lg) {
+		align-items: flex-start;
+		display: flex;
+		flex-wrap: wrap;
+	}
 }
 
 .add-form label a {
@@ -62,4 +66,36 @@
 .add-form .select-group label {
 	color: #fff;
 	font-size: 1rem;
+}
+
+.add-form .form-fields {
+	max-width: 30rem;
+
+	@include query(lg) {
+		flex: 1;
+		margin-right: 6rem;
+	}
+}
+
+.add-form .form-btn {
+	margin-top: 2rem;
+
+	@include query(lg) {
+		flex-basis: 100%;
+	}
+}
+
+.add-form .movies {
+	margin: 4rem 0;
+	
+	@include query(lg) {
+		flex: 1;
+		margin: 0;
+		position: sticky;
+		top: 6rem;
+	}
+}
+
+.add-form .movie-card {
+	margin-bottom: 0;
 }
