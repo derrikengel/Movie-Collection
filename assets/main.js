@@ -90,44 +90,24 @@ var movies = new Vue({
                 return _.take(_.orderBy(filteredMovies, ['title'], ['asc']), self.lazy.totalShown)
             } else {
                 // return filtered movies, ordered by purchase date
-                return _.take(_.orderBy(filteredMovies, m => m.dateAcquired.toDate(), ['desc']), self.lazy.totalShown)
+                return _.take(_.orderBy(filteredMovies, m => m.dateAcquired, ['desc']), self.lazy.totalShown)
             }
         }
     },
     mounted() {
         var vm = this
-        moviesRef.get().then(querySnapshot => {
-            this.movieData = querySnapshot.docs.map(doc => doc.data())
 
-            // set up filters
-            this.filterData.genres = [...new Set(this.movieData.flatMap(movie => movie.genre))].sort()
-            this.filterData.minYear = _.min(this.movieData.flatMap(movie => movie.year))
-            this.filterData.maxYear = _.max(this.movieData.flatMap(movie => movie.year))
+        var expiration = localStorage.getItem('expiration')
+        var now = new Date()
+        
+        // get remote firestore data if local storage has not been set or has expired
+        if (!expiration || now.getTime() > expiration) {
+            vm.getRemoteData()
+        } else {
+            vm.getLocalData()
+        }
 
-            var vuduFormats = this.movieData.flatMap(movie => movie.vudu)
-            var gpFormats = this.movieData.flatMap(movie => movie.googlePlay)
-            var mergedFormats = [...vuduFormats, ...gpFormats]
-            this.filterData.digital = [...new Set(mergedFormats)].filter(el => el != '').sort()
-
-            var discFormats = this.movieData.flatMap(movie => movie.disc)
-            this.filterData.physical = [...new Set(discFormats)].filter(el => el != '').sort()
-
-            var ratings = [...new Set(this.movieData.flatMap(movie => movie.rating))]
-            var ratingsOrder = ['G', 'TV-G', 'PG', 'TV-PG', 'PG-13', 'TV-14', 'R', 'TV-MA', 'NR']
-            var orderedratings = []
-
-            for (var i = 0; i < ratingsOrder.length; i++)
-                if (ratings.indexOf(ratingsOrder[i]) > -1)
-                    orderedratings.push(ratingsOrder[i])
-
-            this.filterData.ratings = orderedratings
-        })
-        .catch(error => {
-            console.log(error)
-            this.errored = true
-        })
-        .finally(() => this.loading = false)
-
+        // watch firebase for changes to user authentication
         firebase.auth().onAuthStateChanged(user => {
             if (user) {
                 vm.user.authenticated = true
@@ -139,9 +119,79 @@ var movies = new Vue({
                 vm.user.id = null
                 vm.user.name = null
             }
-        });
+        })
     },
     methods: {
+        getRemoteData() {
+            var vm = this
+
+            moviesRef.get().then(querySnapshot => {
+                vm.movieData = querySnapshot.docs.map(doc => doc.data())
+                
+                // convert firestore timestamp
+                vm.movieData.forEach(movie => {
+                    movie.dateAcquired = movie.dateAcquired.toDate()
+                })
+
+                vm.setLocalData()
+            })
+            .catch(error => {
+                console.log(error)
+                vm.errored = true
+            })
+        },
+        getLocalData() {
+            var vm = this
+
+            var localData = localStorage.getItem('movieData')
+            vm.movieData = JSON.parse(localData)
+
+            vm.initFilters()
+        },
+        setLocalData() {
+            var vm = this
+
+            localStorage.clear()
+            
+            localStorage.setItem('movieData', JSON.stringify(vm.movieData))
+
+            var now = new Date()
+
+            // time to cache data, in minutes
+            var cacheTime = 15
+            var expireDate = now.getTime() + (cacheTime * 60 * 1000)
+
+            localStorage.setItem('expiration', expireDate)
+
+            vm.initFilters()
+        },
+        initFilters() {
+            var vm = this
+
+            vm.filterData.genres = [...new Set(vm.movieData.flatMap(movie => movie.genre))].sort()
+            vm.filterData.minYear = _.min(vm.movieData.flatMap(movie => movie.year))
+            vm.filterData.maxYear = _.max(vm.movieData.flatMap(movie => movie.year))
+
+            var vuduFormats = vm.movieData.flatMap(movie => movie.vudu)
+            var gpFormats = vm.movieData.flatMap(movie => movie.googlePlay)
+            var mergedFormats = [...vuduFormats, ...gpFormats]
+            vm.filterData.digital = [...new Set(mergedFormats)].filter(el => el != '').sort()
+
+            var discFormats = vm.movieData.flatMap(movie => movie.disc)
+            vm.filterData.physical = [...new Set(discFormats)].filter(el => el != '').sort()
+
+            var ratings = [...new Set(vm.movieData.flatMap(movie => movie.rating))]
+            var ratingsOrder = ['G', 'TV-G', 'PG', 'TV-PG', 'PG-13', 'TV-14', 'R', 'TV-MA', 'NR']
+            var orderedRatings = []
+
+            for (var i = 0; i < ratingsOrder.length; i++)
+                if (ratings.indexOf(ratingsOrder[i]) > -1)
+                    orderedRatings.push(ratingsOrder[i])
+            
+            vm.filterData.ratings = orderedRatings
+
+            vm.loading = false
+        },
         loadMore() {
             this.lazy.busy = true
 
