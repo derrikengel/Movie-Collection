@@ -131,7 +131,6 @@ var movies = new Vue({
         getRemoteData() {
             var vm = this
 
-            console.log('calling remote')
             moviesRef.get().then(querySnapshot => {
                 vm.movieData = querySnapshot.docs.map(doc => doc.data())
                 
@@ -150,7 +149,6 @@ var movies = new Vue({
         getLocalData() {
             var vm = this
 
-            console.log('calling local')
             var localData = localStorage.getItem('movieData')
             vm.movieData = JSON.parse(localData)
 
