@@ -5,6 +5,7 @@ firebase.initializeApp({
 });
 
 var db = firebase.firestore();
+var lastUpdateRef = db.collection('lastUpdated').doc('lastUpdated');
 var moviesRef = db.collection('movies');
 
 var movies = new Vue({
@@ -97,15 +98,20 @@ var movies = new Vue({
     mounted() {
         var vm = this
 
-        var expiration = localStorage.getItem('expiration')
-        var now = new Date()
-        
-        // get remote firestore data if local storage has not been set or has expired
-        if (!expiration || now.getTime() > expiration) {
-            vm.getRemoteData()
-        } else {
-            vm.getLocalData()
-        }
+        // get lastUpdated date from db
+        lastUpdateRef.get().then(doc => {
+            var localUpdated = localStorage.getItem('lastUpdated')
+            var remoteUpdated = doc.data().date.toDate()
+            
+            if (localUpdated && new Date(localUpdated) > remoteUpdated) {
+                // if localstorage exists and it is up to date, use it
+                vm.getLocalData()
+            } else {
+                vm.getRemoteData()
+            }    
+        }).catch(error => {
+            console.log('Could not get lastUpdated.');
+        })
 
         // watch firebase for changes to user authentication
         firebase.auth().onAuthStateChanged(user => {
@@ -125,6 +131,7 @@ var movies = new Vue({
         getRemoteData() {
             var vm = this
 
+            console.log('calling remote')
             moviesRef.get().then(querySnapshot => {
                 vm.movieData = querySnapshot.docs.map(doc => doc.data())
                 
@@ -143,6 +150,7 @@ var movies = new Vue({
         getLocalData() {
             var vm = this
 
+            console.log('calling local')
             var localData = localStorage.getItem('movieData')
             vm.movieData = JSON.parse(localData)
 
@@ -157,11 +165,7 @@ var movies = new Vue({
 
             var now = new Date()
 
-            // time to cache data, in minutes
-            var cacheTime = 15
-            var expireDate = now.getTime() + (cacheTime * 60 * 1000)
-
-            localStorage.setItem('expiration', expireDate)
+            localStorage.setItem('lastUpdated', now)
 
             vm.initFilters()
         },

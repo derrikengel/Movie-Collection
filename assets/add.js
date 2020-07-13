@@ -93,6 +93,15 @@ var addMovie = new Vue({
                     vm.result = 'error'
                     vm.resultMessage = 'Error: ' + error
                 })
+
+                // update "lastUpdated" value in db so documents can be cached in local storage until the db has been updated
+                db.collection('lastUpdated').doc('lastUpdated').set({
+                    date: firebase.firestore.Timestamp.fromDate(new Date())
+                })
+                .then(() => {
+                })
+                .catch(error => {
+                })
     
                 // jump back to the top
                 window.scrollTo(0, 0)
