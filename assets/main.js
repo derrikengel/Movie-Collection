@@ -100,14 +100,14 @@ var movies = new Vue({
 
         // get lastUpdated date from db
         lastUpdateRef.get().then(doc => {
-            var localUpdated = localStorage.getItem('lastUpdated')
-            var remoteUpdated = doc.data().date.toDate()
-            
-            if (localUpdated && new Date(localUpdated) > remoteUpdated) {
+            var localUpdated = new Date(localStorage.getItem('lastUpdated')).toISOString()
+            var remoteUpdated = doc.data().date.toDate().toISOString()
+
+            if (localUpdated == remoteUpdated) {
                 // if localstorage exists and it is up to date, use it
                 vm.getLocalData()
             } else {
-                vm.getRemoteData()
+                vm.getRemoteData(remoteUpdated)
             }    
         }).catch(error => {
             console.log('Could not get lastUpdated.');
@@ -128,7 +128,7 @@ var movies = new Vue({
         })
     },
     methods: {
-        getRemoteData() {
+        getRemoteData(remoteUpdated) {
             var vm = this
 
             moviesRef.get().then(querySnapshot => {
@@ -139,7 +139,7 @@ var movies = new Vue({
                     movie.dateAcquired = movie.dateAcquired.toDate()
                 })
 
-                vm.setLocalData()
+                vm.setLocalData(remoteUpdated)
             })
             .catch(error => {
                 console.log(error)
@@ -154,16 +154,14 @@ var movies = new Vue({
 
             vm.initFilters()
         },
-        setLocalData() {
+        setLocalData(remoteUpdated) {
             var vm = this
 
             localStorage.clear()
             
             localStorage.setItem('movieData', JSON.stringify(vm.movieData))
 
-            var now = new Date()
-
-            localStorage.setItem('lastUpdated', now)
+            localStorage.setItem('lastUpdated', remoteUpdated)
 
             vm.initFilters()
         },
