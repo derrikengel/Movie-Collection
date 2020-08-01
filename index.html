@@ -274,7 +274,7 @@
 							<p class="movie-card-note" v-if="movies[activeCard].notes" title="Notes">{{ movies[activeCard].notes }}</p>
 
 							<div v-if="user.authenticated && user.id == 'DfPi2C0mVWVuRq3fYKZHeKzpBep1'">
-								<a class="movie-card-edit btn" :href="'/add/?id=' + movies[activeCard].id">Edit</a>
+								<a class="movie-card-edit btn" :href="'/add/?id=' + movies[activeCard].id" target="_blank">Edit</a>
 							</div>
 						</div>
 					</div>

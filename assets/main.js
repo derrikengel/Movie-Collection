@@ -136,15 +136,20 @@ var movies = new Vue({
                     return { id: doc.id, ...doc.data() }
                 })
                 
-                // convert firestore timestamp and movie length
+                 
                 vm.movieData.forEach(movie => {
+                    // convert firestore timestamp
                     movie.dateAcquired = movie.dateAcquired.toDate()
 
+                    // convert movie length from minutes to hours and minutes
                     if (movie.length) {
                         var hours = Math.floor(movie.length / 60) + 'h '
                         var minutes = movie.length % 60 + 'm'
                         movie.length = hours + minutes
                     }
+
+                    // sort genres
+                    movie.genre = _.sortBy(movie.genre)
                 })
 
                 vm.setLocalData(remoteUpdated)
