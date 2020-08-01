@@ -3,6 +3,7 @@ $color-cinder: #0d0e16;
 $color-torch-red: #f71735;
 $color-tree-poppy: #ff9f1c;
 $color-turquoise: #41ead4;
+$color-nevada: #69747c;
 
 $gradient: linear-gradient(45deg, $color-torch-red, $color-tree-poppy);
 
@@ -16,5 +17,6 @@ $font-stack: 'Roboto', sans-serif;
 // breakpoints
 $breakpoints: (
 	sm: "screen and (min-width: 42rem)",
+	md: "screen and (min-width: 54rem)",
 	lg: "screen and (min-width: 80rem)"
 );

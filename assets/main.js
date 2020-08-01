@@ -4,9 +4,9 @@ firebase.initializeApp({
     projectId: 'movies-4348d'
 });
 
-var db = firebase.firestore();
-var lastUpdateRef = db.collection('lastUpdated').doc('lastUpdated');
-var moviesRef = db.collection('movies');
+var db = firebase.firestore()
+var lastUpdateRef = db.collection('lastUpdated').doc('lastUpdated')
+var moviesRef = db.collection('movies')
 
 var movies = new Vue({
     el: '#movies',
@@ -110,7 +110,7 @@ var movies = new Vue({
                 vm.getRemoteData(remoteUpdated)
             }    
         }).catch(error => {
-            console.log('Could not get lastUpdated.');
+            console.log('Could not get lastUpdated.')
         })
 
         // watch firebase for changes to user authentication
@@ -132,11 +132,19 @@ var movies = new Vue({
             var vm = this
 
             moviesRef.get().then(querySnapshot => {
-                vm.movieData = querySnapshot.docs.map(doc => doc.data())
+                vm.movieData = querySnapshot.docs.map(doc => {
+                    return { id: doc.id, ...doc.data() }
+                })
                 
-                // convert firestore timestamp
+                // convert firestore timestamp and movie length
                 vm.movieData.forEach(movie => {
                     movie.dateAcquired = movie.dateAcquired.toDate()
+
+                    if (movie.length) {
+                        var hours = Math.floor(movie.length / 60) + 'h '
+                        var minutes = movie.length % 60 + 'm'
+                        movie.length = hours + minutes
+                    }
                 })
 
                 vm.setLocalData(remoteUpdated)
@@ -199,14 +207,16 @@ var movies = new Vue({
 
             this.lazy.busy = false
         },
-        selectItem(index) {
-            // handle click for movie cards
-            index === this.activeCard ? this.activeCard = null : this.activeCard = index
+        openModal(index) {
+            this.activeCard = index.toString()
 
             this.filter.active = null
 
             // close the side panel for narrow views
             this.filter.panelActive = false
+        },
+        closeModal() {
+            this.activeCard = null
         },
         toggleFilters() {
             // toggle the filter side panel for narrow screens
@@ -250,14 +260,15 @@ var movies = new Vue({
 
             e.target.blur()
 
-            if (this.request.formActive)
-                this.$refs.requestTitle.focus()
+            if (this.request.formActive) {
+                this.user.authenticated ? this.$refs.requestTitle.focus() : this.$refs.userEmail.focus()
+            }
         },
         signIn() {
             var vm = this
             firebase.auth().signInWithEmailAndPassword(vm.user.email, vm.user.password).catch(error => {
                 vm.user.errorMsg = true
-            });
+            })
         },
         submitRequest() {
             var scriptURL = 'https://script.google.com/macros/s/AKfycbzDLlzElZKNrEPIcrnQNV9P6duLdkufuq_g8QQSSTgi0yHvU3Y/exec'
@@ -319,24 +330,4 @@ var movies = new Vue({
     destroyed() {
         document.removeEventListener('click', this.documentClick)
     }
-});
-
-setCookie = function (name, value, date) {
-    var expires = '; expires=' + date.toString();
-    document.cookie = name + '=' + value + expires + '; path=/';
-};
-
-readCookie = function (name) {
-    var nameEQ = name + '=';
-    var ca = document.cookie.split(';');
-    for (var i = 0; i < ca.length; i++) {
-        var c = ca[i];
-        while (c.charAt(0) == ' ') c = c.substring(1, c.length);
-        if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length, c.length);
-    }
-    return null;
-};
-
-clearCookie = function (name) {
-    setCookie(name, '', -1);
-};
+})

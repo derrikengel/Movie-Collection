@@ -39,6 +39,11 @@
 	}
 }
 
+.add-form textarea {
+	font-size: 0.875rem;
+	min-height: 12rem;
+}
+
 .add-form input[type='checkbox'] + label:before,
 .add-form input[type='radio'] + label:before {
 	background: rgba(#fff, 0.14);
