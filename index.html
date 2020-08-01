@@ -194,7 +194,7 @@
 										<li v-for="genre in movies[activeCard].genre">{{ genre }}</li>
 									</ul>
 								</li>
-								<li class="movie-card-length" title="Length">{{ movies[activeCard].length }}</li>
+								<li class="movie-card-length" title="Length" v-if="movies[activeCard].length">{{ movies[activeCard].length }}</li>
 							</ul>
 
 							<p class="movie-card-teaser" v-if="movies[activeCard].description">{{ movies[activeCard].description }}</p>
