@@ -15,17 +15,14 @@
 	<meta name="theme-color" content="#0d0e16">
 	<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;900&display=swap" rel="stylesheet">
 	<link href="/assets/main.min.css" rel="stylesheet">
-	<script type="text/javascript" data-cfasync="false">
-		var _foxpush = _foxpush || [];
-		_foxpush.push(['_setDomain', 'moviesderrikengelcom']);
-		(function () {
-			var foxscript = document.createElement('script');
-			foxscript.src = '//cdn.foxpush.net/sdk/foxpush_SDK_min.js';
-			foxscript.type = 'text/javascript';
-			foxscript.async = 'true';
-			var fox_s = document.getElementsByTagName('script')[0];
-			fox_s.parentNode.insertBefore(foxscript, fox_s);
-		})();
+	<script src="https://cdn.onesignal.com/sdks/OneSignalSDK.js" async=""></script>
+	<script>
+		window.OneSignal = window.OneSignal || [];
+		OneSignal.push(function () {
+			OneSignal.init({
+				appId: "51371f36-89a9-4233-b288-f7b96ef23684",
+			});
+		});
 	</script>
 </head>
 
