@@ -191,8 +191,8 @@
 		font-size: 2.25rem;
 		height: 3.25rem;
 		position: absolute;
-		right: 0;
-		top: 0;
+		right: 1rem;
+		top: 0.5rem;
 		width: 3.25rem;
 	}
 
@@ -227,7 +227,7 @@
 }
 
 .movie-card-info::-webkit-scrollbar-thumb {
-	background-color: $color-turquoise;
+	background-color: rgba($color-cinder, 0.3);
 	border-radius: 0.5rem;
 	border: 0.25rem solid #fff;
 

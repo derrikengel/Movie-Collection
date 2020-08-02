@@ -294,7 +294,7 @@ input[type='checkbox'], input[type='radio'] { height: 0; left: 0; opacity: 0; po
 
 .movie-card-close-btn { -webkit-box-align: center; -ms-flex-align: center; align-items: center; background: #fff; border-radius: 0; color: rgba(13, 14, 22, 0.3); display: -webkit-box; display: -ms-flexbox; display: flex; font-size: 1.75rem; font-weight: 400; height: 2.5rem; -webkit-box-pack: center; -ms-flex-pack: center; justify-content: center; margin-left: auto; padding: 0; width: 2.5rem; }
 
-@media screen and (min-width: 54rem) { .movie-card-close-btn { background: transparent; font-size: 2.25rem; height: 3.25rem; position: absolute; right: 0; top: 0; width: 3.25rem; } }
+@media screen and (min-width: 54rem) { .movie-card-close-btn { background: transparent; font-size: 2.25rem; height: 3.25rem; position: absolute; right: 1rem; top: 0.5rem; width: 3.25rem; } }
 
 @media screen and (min-width: 80rem) { .movie-card-close-btn:hover, .movie-card-close-btn:focus { -webkit-box-shadow: none; box-shadow: none; color: #f71735; } }
 
@@ -306,7 +306,7 @@ input[type='checkbox'], input[type='radio'] { height: 0; left: 0; opacity: 0; po
 
 .movie-card-info::-webkit-scrollbar { background-color: #fff; width: 1rem; }
 
-.movie-card-info::-webkit-scrollbar-thumb { background-color: #41ead4; border-radius: 0.5rem; border: 0.25rem solid #fff; }
+.movie-card-info::-webkit-scrollbar-thumb { background-color: rgba(13, 14, 22, 0.3); border-radius: 0.5rem; border: 0.25rem solid #fff; }
 
 .movie-card-info::-webkit-scrollbar-thumb:hover { background-color: #0d0e16; }
 
