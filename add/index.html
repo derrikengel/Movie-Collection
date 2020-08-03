@@ -38,10 +38,8 @@
 			
 			<h3 class="error-msg" v-if="user.errorMsg" style="margin-bottom: 3rem;">
 				<svg class="error-icon" width="20px" height="20px" viewBox="0 0 36 36" xmlns="http://www.w3.org/2000/svg">
-					<path
-						d="M18,0C8.08,0,0,8.08,0,18s8.08,18,18,18c9.92,0,18-8.08,18-18S27.92,0,18,0z M18,32c-7.72,0-14-6.28-14-14S10.28,4,18,4 c7.72,0,14,6.28,14,14S25.72,32,18,32z" />
-					<polygon
-						points="24.36,14.46 21.54,11.64 18,15.17 14.46,11.64 11.64,14.46 15.17,18 11.64,21.54 14.46,24.36 18,20.83 21.54,24.36 24.36,21.54 20.83,18" />
+					<path d="M18,0C8.08,0,0,8.08,0,18s8.08,18,18,18c9.92,0,18-8.08,18-18S27.92,0,18,0z M18,32c-7.72,0-14-6.28-14-14S10.28,4,18,4 c7.72,0,14,6.28,14,14S25.72,32,18,32z" />
+					<polygon points="24.36,14.46 21.54,11.64 18,15.17 14.46,11.64 11.64,14.46 15.17,18 11.64,21.54 14.46,24.36 18,20.83 21.54,24.36 24.36,21.54 20.83,18" />
 				</svg>
 				Incorrect login
 			</h3>
@@ -385,8 +383,6 @@
 					<button class="reset-btn" type="button" @click="firebase.auth().signOut()">Sign Out</button>
 				</div> -->
 			</form>
-
-			<button @click="sendNotification">Notify</button>
 		</template>
 	</div>
 
