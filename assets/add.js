@@ -202,6 +202,7 @@ var addMovie = new Vue({
                 headings: { 'en': 'New movie!' },
                 contents: { 'en': vm.movie.title + ' (' + vm.movie.year + ') ' + 'was added to the movie collection.' },
                 chrome_web_icon: vm.movie.imageUrl,
+                chrome_web_badge: 'https://movies.derrikengel.com/assets/chrome-badge.png',
                 included_segments: ['All']
             }
 
