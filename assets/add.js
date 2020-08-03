@@ -124,8 +124,8 @@ var addMovie = new Vue({
                 vm.result = 'success'
                 vm.resultMessage = vm.movie.title + ' successfully added!'
 
-                // clear form and vm data to easily add another
-                vm.resetForm()
+                // notify users of new movie
+                vm.sendNotification()
             })
             .catch(error => {
                 // show error message
@@ -144,9 +144,6 @@ var addMovie = new Vue({
 
             // jump back to the top
             window.scrollTo(0, 0)
-
-            // notify users of new movie
-            vm.sendNotification()
         },
         updateMovie() {
             var vm = this
@@ -200,11 +197,12 @@ var addMovie = new Vue({
         sendNotification() {
             var vm = this
 
-            // api key: YzhmM2M4MzctMGI3Yi00MWI2LTgxODYtZWMyYTQ3NTdkMjAx
-
             var message = {
                 app_id: '51371f36-89a9-4233-b288-f7b96ef23684',
-                contents: { 'en': vm.movie.title },
+                headings: { 'en': 'New movie!' },
+                contents: { 'en': vm.movie.title + ' (' + vm.movie.year + ') ' + ' was added to the movie collection.' },
+                big_picture: vm.movie.image,
+                chrome_web_image: vm.movie.image,
                 included_segments: ['All']
             }
 
@@ -222,7 +220,10 @@ var addMovie = new Vue({
                 .catch(error => {
                     // error
                     // console.error(error.message)
-                })      
+                })
+            
+            // clear form and vm data to easily add another
+            vm.resetForm()
         }
     },
     created() {
