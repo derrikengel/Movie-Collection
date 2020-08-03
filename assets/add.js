@@ -198,7 +198,31 @@ var addMovie = new Vue({
             vm.movie.notes = ''
         },
         sendNotification() {
-            // notify users of new movie
+            var vm = this
+
+            // api key: YzhmM2M4MzctMGI3Yi00MWI2LTgxODYtZWMyYTQ3NTdkMjAx
+
+            var message = {
+                app_id: '5eb5a37e-b458-11e3-ac11-000c2940e62c',
+                contents: { 'en': vm.movie.title },
+                included_segments: ["All"]
+            }
+
+            fetch('https://onesignal.com/api/v1/notifications', {
+                method: 'post',
+                headers: {
+                    'Content-Type': 'application/json; charset=utf-8',
+                    'Authorization': 'Basic YzhmM2M4MzctMGI3Yi00MWI2LTgxODYtZWMyYTQ3NTdkMjAx'
+                },
+                body: JSON.stringify(message)
+            })
+                .then(result => {
+                    // success
+                })
+                .catch(error => {
+                    // error
+                    // console.error(error.message)
+                })      
         }
     },
     created() {
