@@ -203,9 +203,9 @@ var addMovie = new Vue({
             // api key: YzhmM2M4MzctMGI3Yi00MWI2LTgxODYtZWMyYTQ3NTdkMjAx
 
             var message = {
-                app_id: '5eb5a37e-b458-11e3-ac11-000c2940e62c',
+                app_id: '51371f36-89a9-4233-b288-f7b96ef23684',
                 contents: { 'en': vm.movie.title },
-                included_segments: ["All"]
+                included_segments: ['All']
             }
 
             fetch('https://onesignal.com/api/v1/notifications', {
