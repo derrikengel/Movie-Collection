@@ -200,9 +200,9 @@ var addMovie = new Vue({
             var message = {
                 app_id: '51371f36-89a9-4233-b288-f7b96ef23684',
                 headings: { 'en': 'New movie!' },
-                contents: { 'en': vm.movie.title + ' (' + vm.movie.year + ') ' + ' was added to the movie collection.' },
-                big_picture: vm.movie.image,
-                chrome_web_image: vm.movie.image,
+                contents: { 'en': vm.movie.title + ' (' + vm.movie.year + ') ' + 'was added to the movie collection.' },
+                big_picture: vm.movie.imageUrl,
+                chrome_web_image: vm.movie.imageUrl,
                 included_segments: ['All']
             }
 
