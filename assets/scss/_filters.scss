@@ -5,17 +5,20 @@
 }
 
 .filter-close-btn {
-	background: $color-cinder;
-	color: #fff;
-	font-size: 1.25rem;
-	height: 2rem;
-	line-height: 2rem;
-	margin-left: auto;
-	position: absolute;
+	align-items: center;
+	background: #fff;
+	border-radius: 0;
+	color: rgba($color-cinder, 0.3);
+	display: inline-flex;
+	font-size: 1.75rem;
+	font-weight: $font-weight-regular;
+	height: 2.5rem;
+	justify-content: center;
 	padding: 0;
-	right: 0.5rem;
-	top: 0.5rem;
-    width: 2rem;
+	position: absolute;
+	right: 0;
+	top: 0;
+	width: 2.5rem;
     
     @include query(lg) {
         display: none;
@@ -60,7 +63,7 @@
 	height: 100%;
 	max-width: 18rem;
 	overflow: auto;
-	padding: 3rem 1.5rem 1.5rem 1.5rem;
+	padding: 2.5rem 1.5rem 1.5rem 1.5rem;
 	position: fixed;
 	right: 0;
 	top: 0;

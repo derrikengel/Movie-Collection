@@ -192,7 +192,11 @@
 							<img :src="movies[activeCard].image" :alt="movies[activeCard].title">
 						</div>
 
-						<button type="button" class="movie-card-close-btn" @click.stop="closeModal()" title="Close">&times;</button>
+						<div class="movie-card-utilities">
+							<a class="movie-card-edit" :href="'/add/?id=' + movies[activeCard].id" v-if="user.authenticated && user.id == 'DfPi2C0mVWVuRq3fYKZHeKzpBep1'" target="_blank">Edit</a>
+							
+							<button type="button" class="movie-card-close-btn" @click.stop="closeModal()" title="Close">&times;</button>
+						</div>
 
 						<div class="movie-card-info">
 							<h3 class="movie-card-title">{{ movies[activeCard].title }}</h3>
@@ -283,10 +287,6 @@
 							</div>
 
 							<p class="movie-card-note" v-if="movies[activeCard].notes" title="Notes">{{ movies[activeCard].notes }}</p>
-
-							<div v-if="user.authenticated && user.id == 'DfPi2C0mVWVuRq3fYKZHeKzpBep1'">
-								<a class="movie-card-edit btn" :href="'/add/?id=' + movies[activeCard].id" target="_blank">Edit</a>
-							</div>
 						</div>
 					</div>
 				</div>

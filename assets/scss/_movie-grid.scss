@@ -172,11 +172,19 @@
 	}
 }
 
+.movie-card-utilities {
+	align-items: center;
+	display: flex;
+	justify-content: space-between;
+	position: absolute;
+	right: 0.5rem;
+	top: 0.5rem;
+}
+
 .movie-card-close-btn {
 	align-items: center;
-	background: #fff;
-	border-radius: 0;
-	color: rgba($color-cinder, 0.3);
+	background: $color-cinder;
+	color: $color-turquoise;
 	display: flex;
 	font-size: 1.75rem;
 	font-weight: $font-weight-regular;
@@ -188,21 +196,34 @@
 	
 	@include query(md) {
 		background: transparent;
+		color: rgba($color-cinder, 0.3);
 		font-size: 2.25rem;
-		height: 3.25rem;
-		position: absolute;
-		right: 1rem;
-		top: 0.5rem;
-		width: 3.25rem;
 	}
 
     &:hover,
     &:focus {
-        @include query(lg) {
+        @include query(md) {
             box-shadow: none;
             color: $color-torch-red;
         }
     }
+}
+
+.movie-card-edit {
+	align-items: center;
+	background: $color-cinder;
+	border-radius: 0.25rem;
+	display: flex;
+	height: 2.5rem;
+	margin-right: 0.5rem;
+	padding: 0 1rem;
+	text-decoration: none;
+
+	@include query(md) {
+		background: transparent;
+		color: rgba($color-cinder, 0.3);
+		padding: 0 0.5rem;
+	}
 }
 
 .movie-card-info {
@@ -210,7 +231,7 @@
 	flex: 1 0 100%;
 	flex-direction: column;
 	overflow: auto;
-	padding: 0 2rem 2rem 2rem;
+	padding: 2rem;
 
 	@include query(sm) {
 		padding: 3rem 3.5rem;
@@ -243,7 +264,12 @@
 .movie-card-title {
 	color: $color-cinder;
 	font-size: calc(22px + (32 - 22) * ((100vw - 320px) / (1900 - 320)));
+	line-height: 1.35;
 	margin: 0;
+
+	@include query(md) {
+		line-height: 1.25;
+	}
 }
 
 .movie-card-stats {
@@ -251,20 +277,21 @@
 	font-weight: $font-weight-bold;
 	letter-spacing: 0.01em;
 	list-style: none;
-	margin: 0.5rem 0 0 0;
+	margin: 0.5rem 0 1.5rem 0;
 	padding: 0;
 }
 
 .movie-card-stats > li {
 	display: inline;
-	line-height: 2.25;
+	line-height: 2;
 }
 
 .movie-card-stats > li:not(:last-child) {
 	padding-right: 0.5em;
 }
 
-.movie-card-stats > li:not(:first-child) + li:before {
+.movie-card-stats > li + li:before {
+	color: rgba($color-nevada, 0.65);
 	content: '\2022';
 	padding-right: 0.75em;
 }
@@ -291,11 +318,12 @@
 .movie-card-teaser {
 	font-size: 0.875rem;
 	line-height: 1.75;
-	margin: 1.75rem 0 2.5rem 0;
+	margin: 0 0 1.5rem 0;
 }
 
 .movie-card-watch {
 	margin-top: auto;
+	padding-top: 1.5rem;
 }
 
 .movie-card-watch-list {
@@ -351,22 +379,17 @@
 }
 
 .movie-card-rating {
-	background-color: $color-nevada;
+	// background-color: $color-nevada;
 	border-radius: 0.25rem;
-	color: #fff;
+	box-shadow: inset 0 0 0 1px rgba($color-cinder, 0.2);
 	line-height: 1;
-	margin-right: 0.25em;
-	padding: 0.375em 0.625em;
+	padding: 0.3125em 0.625em;
 }
 
 .movie-card-note {
 	color: $color-cinder;
 	font-size: 0.875rem;
 	font-weight: $font-weight-bold;
-}
-
-.movie-card-edit {
-	margin-top: 1.75rem;
 }
 
 
