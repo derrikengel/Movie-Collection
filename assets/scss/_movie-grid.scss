@@ -156,7 +156,7 @@
 	color: $color-nevada;
 	display: flex;
 	flex-direction: column;
-	max-width: 900px;
+	max-width: 60rem;
 	min-height: 100%;
 	position: relative;
 	width: 100%;
@@ -318,7 +318,7 @@
 .movie-card-teaser {
 	font-size: 0.875rem;
 	line-height: 1.75;
-	margin: 0 0 1.5rem 0;
+	margin: 0 0 1rem 0;
 }
 
 .movie-card-watch {
@@ -366,10 +366,10 @@
 	color: $color-cinder;
 	border-bottom: 1px solid rgba($color-cinder, 0.1);
 	margin: 0;
-	padding-bottom: 0.625rem;
+	padding-bottom: 0.5rem;
 
 	@include query(md) {
-		margin-bottom: 1.625rem;
+		margin-bottom: 1.5rem;
 	}
 }
 

@@ -288,7 +288,7 @@ input[type='checkbox'], input[type='radio'] { height: 0; left: 0; opacity: 0; po
 
 @media screen and (min-width: 54rem) { .movie-card-overlay-img img { height: auto !important; max-height: none; min-height: auto; -o-object-fit: fill; object-fit: fill; width: auto; } }
 
-.movie-card-content { background: #fff; -webkit-box-shadow: 0 0 6rem #0d0e16, 0 0 3rem #0d0e16; box-shadow: 0 0 6rem #0d0e16, 0 0 3rem #0d0e16; color: #69747c; display: -webkit-box; display: -ms-flexbox; display: flex; -webkit-box-orient: vertical; -webkit-box-direction: normal; -ms-flex-direction: column; flex-direction: column; max-width: 900px; min-height: 100%; position: relative; width: 100%; }
+.movie-card-content { background: #fff; -webkit-box-shadow: 0 0 6rem #0d0e16, 0 0 3rem #0d0e16; box-shadow: 0 0 6rem #0d0e16, 0 0 3rem #0d0e16; color: #69747c; display: -webkit-box; display: -ms-flexbox; display: flex; -webkit-box-orient: vertical; -webkit-box-direction: normal; -ms-flex-direction: column; flex-direction: column; max-width: 60rem; min-height: 100%; position: relative; width: 100%; }
 
 @media screen and (min-width: 54rem) { .movie-card-content { -webkit-box-orient: horizontal; -webkit-box-direction: normal; -ms-flex-direction: row; flex-direction: row; max-height: 540px; min-height: auto; } }
 
@@ -340,7 +340,7 @@ input[type='checkbox'], input[type='radio'] { height: 0; left: 0; opacity: 0; po
 
 .movie-card-length { white-space: nowrap; }
 
-.movie-card-teaser { font-size: 0.875rem; line-height: 1.75; margin: 0 0 1.5rem 0; }
+.movie-card-teaser { font-size: 0.875rem; line-height: 1.75; margin: 0 0 1rem 0; }
 
 .movie-card-watch { margin-top: auto; padding-top: 1.5rem; }
 
@@ -356,9 +356,9 @@ input[type='checkbox'], input[type='radio'] { height: 0; left: 0; opacity: 0; po
 
 .movie-card-watch-list svg { margin-right: 0.75em; }
 
-.movie-card-watch-heading { color: #0d0e16; border-bottom: 1px solid rgba(13, 14, 22, 0.1); margin: 0; padding-bottom: 0.625rem; }
+.movie-card-watch-heading { color: #0d0e16; border-bottom: 1px solid rgba(13, 14, 22, 0.1); margin: 0; padding-bottom: 0.5rem; }
 
-@media screen and (min-width: 54rem) { .movie-card-watch-heading { margin-bottom: 1.625rem; } }
+@media screen and (min-width: 54rem) { .movie-card-watch-heading { margin-bottom: 1.5rem; } }
 
 .movie-card-quality { color: #69747c; font-weight: 400; }
 
