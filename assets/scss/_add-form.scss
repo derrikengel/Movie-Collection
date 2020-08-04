@@ -10,6 +10,11 @@
 	color: #fff;
 	font-size: 0.875rem;
 	margin-left: 0.5rem;
+
+	&:hover,
+	&:focus {
+		color: $color-torch-red;
+	}
 }
 
 .preview-img {
@@ -36,6 +41,35 @@
 
 	&:focus {
 		box-shadow: inset 0 0 0 1px $color-turquoise;
+	}
+}
+
+
+.add-form input[type='text'],
+.add-form input[type='search'],
+.add-form input[type='email'],
+.add-form input[type='password'],
+.add-form input[type='number'],
+.add-form input[type='url'],
+.add-form textarea {
+	&::-webkit-input-placeholder {
+		color: rgba(#fff, 0.2);
+	}
+
+	&:-moz-placeholder {
+		color: rgba(#fff, 0.2);
+	}
+
+	&::-moz-placeholder {
+		color: rgba(#fff, 0.2);
+	}
+
+	&:-ms-input-placeholder {
+		color: rgba(#fff, 0.2);
+	}
+
+	&::placeholder {
+		color: rgba(#fff, 0.2);
 	}
 }
 
@@ -79,6 +113,19 @@
 	@include query(lg) {
 		flex: 1;
 		margin-right: 6rem;
+	}
+}
+
+.add-form .form-field-columns {
+	display: flex;
+
+	.form-field {
+		flex: 1 1 0;
+	}
+
+	.form-field + .form-field {
+		margin-top: 0;
+		margin-left: 2rem;
 	}
 }
 

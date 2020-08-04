@@ -64,6 +64,8 @@ select option { color: #0d0e16; font-family: inherit; font-size: 1rem; font-weig
 
 select[multiple] option { color: #fff; }
 
+input[type=number]::-webkit-inner-spin-button, input[type=number]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+
 input[type='checkbox'] + label:before, input[type='radio'] + label:before { -webkit-box-shadow: inset 0 0 0 1px #41ead4; box-shadow: inset 0 0 0 1px #41ead4; border-radius: 3px; content: ''; display: block; -webkit-box-flex: 0; -ms-flex: 0 0 1em; flex: 0 0 1em; height: 1em; margin: 0.0625em 0.5em 0 0; -webkit-transition: 200ms background ease-out, 200ms opacity ease-out; transition: 200ms background ease-out, 200ms opacity ease-out; width: 1em; }
 
 input[type='checkbox'] + label, input[type='radio'] + label { cursor: pointer; display: -webkit-box; display: -ms-flexbox; display: flex; font-weight: 400; }
@@ -420,6 +422,8 @@ input[type='checkbox'], input[type='radio'] { height: 0; left: 0; opacity: 0; po
 
 .add-form label a { color: #fff; font-size: 0.875rem; margin-left: 0.5rem; }
 
+.add-form label a:hover, .add-form label a:focus { color: #f71735; }
+
 .preview-img { display: block; margin-top: 1rem; width: 100px; }
 
 .preview-img[src=''] { display: none; }
@@ -429,6 +433,14 @@ input[type='checkbox'], input[type='radio'] { height: 0; left: 0; opacity: 0; po
 .add-form input[type='text'], .add-form input[type='search'], .add-form input[type='email'], .add-form input[type='password'], .add-form input[type='number'], .add-form input[type='url'], .add-form textarea, .add-form select { background: rgba(255, 255, 255, 0.14); border: none; border-radius: 0.25rem; color: #fff; margin-top: 0.5rem; padding: 0.75em 1em; }
 
 .add-form input:focus[type='text'], .add-form input:focus[type='search'], .add-form input:focus[type='email'], .add-form input:focus[type='password'], .add-form input:focus[type='number'], .add-form input:focus[type='url'], .add-form textarea:focus, .add-form select:focus { -webkit-box-shadow: inset 0 0 0 1px #41ead4; box-shadow: inset 0 0 0 1px #41ead4; }
+
+.add-form input[type='text']::-webkit-input-placeholder, .add-form input[type='search']::-webkit-input-placeholder, .add-form input[type='email']::-webkit-input-placeholder, .add-form input[type='password']::-webkit-input-placeholder, .add-form input[type='number']::-webkit-input-placeholder, .add-form input[type='url']::-webkit-input-placeholder, .add-form textarea::-webkit-input-placeholder { color: rgba(255, 255, 255, 0.2); }
+
+.add-form input[type='text']:-ms-input-placeholder, .add-form input[type='search']:-ms-input-placeholder, .add-form input[type='email']:-ms-input-placeholder, .add-form input[type='password']:-ms-input-placeholder, .add-form input[type='number']:-ms-input-placeholder, .add-form input[type='url']:-ms-input-placeholder, .add-form textarea:-ms-input-placeholder { color: rgba(255, 255, 255, 0.2); }
+
+.add-form input[type='text']::-ms-input-placeholder, .add-form input[type='search']::-ms-input-placeholder, .add-form input[type='email']::-ms-input-placeholder, .add-form input[type='password']::-ms-input-placeholder, .add-form input[type='number']::-ms-input-placeholder, .add-form input[type='url']::-ms-input-placeholder, .add-form textarea::-ms-input-placeholder { color: rgba(255, 255, 255, 0.2); }
+
+.add-form input[type='text']::placeholder, .add-form input[type='search']::placeholder, .add-form input[type='email']::placeholder, .add-form input[type='password']::placeholder, .add-form input[type='number']::placeholder, .add-form input[type='url']::placeholder, .add-form textarea::placeholder { color: rgba(255, 255, 255, 0.2); }
 
 .add-form textarea { font-size: 0.875rem; min-height: 12rem; }
 
@@ -445,6 +457,12 @@ input[type='checkbox'], input[type='radio'] { height: 0; left: 0; opacity: 0; po
 .add-form .form-fields { max-width: 30rem; }
 
 @media screen and (min-width: 80rem) { .add-form .form-fields { -webkit-box-flex: 1; -ms-flex: 1; flex: 1; margin-right: 6rem; } }
+
+.add-form .form-field-columns { display: -webkit-box; display: -ms-flexbox; display: flex; }
+
+.add-form .form-field-columns .form-field { -webkit-box-flex: 1; -ms-flex: 1 1 0px; flex: 1 1 0; }
+
+.add-form .form-field-columns .form-field + .form-field { margin-top: 0; margin-left: 2rem; }
 
 .add-form .form-btn { margin-top: 2rem; }
 
