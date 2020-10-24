@@ -125,7 +125,7 @@ var addMovie = new Vue({
                 vm.resultMessage = vm.movie.title + ' successfully added!'
 
                 // notify users of new movie
-                vm.sendNotification()
+                //vm.sendNotification()
             })
             .catch(error => {
                 // show error message
