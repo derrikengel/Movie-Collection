@@ -126,6 +126,9 @@ var addMovie = new Vue({
 
                 // notify users of new movie
                 //vm.sendNotification()
+
+                // clear form and vm data to easily add another
+                vm.resetForm()
             })
             .catch(error => {
                 // show error message
@@ -221,9 +224,6 @@ var addMovie = new Vue({
                     // error
                     // console.error(error.message)
                 })
-            
-            // clear form and vm data to easily add another
-            vm.resetForm()
         }
     },
     created() {
