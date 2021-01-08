@@ -194,7 +194,7 @@ var movies = new Vue({
             vm.filterData.physical = [...new Set(discFormats)].filter(el => el != '').sort()
 
             var ratings = [...new Set(vm.movieData.flatMap(movie => movie.rating))]
-            var ratingsOrder = ['G', 'TV-G', 'PG', 'TV-PG', 'PG-13', 'TV-14', 'R', 'TV-MA', 'NR']
+            var ratingsOrder = ['G', 'TV-G', 'PG', 'TV-PG', 'PG-13', 'TV-14', 'R', 'TV-MA', 'NC-17', 'NR']
             var orderedRatings = []
 
             for (var i = 0; i < ratingsOrder.length; i++)
