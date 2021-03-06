@@ -15,17 +15,6 @@
 	<meta name="theme-color" content="#0d0e16">
 	<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;900&display=swap" rel="stylesheet">
 	<link href="assets/main.min.css" rel="stylesheet">
-	<script src="https://cdn.onesignal.com/sdks/OneSignalSDK.js" async=""></script>
-	<script>
-		window.OneSignal = window.OneSignal || [];
-		OneSignal.push(function () {
-			OneSignal.init({
-				appId: "51371f36-89a9-4233-b288-f7b96ef23684",
-			});
-
-			OneSignal.showNativePrompt();
-		});
-	</script>
 </head>
 
 <body>
@@ -186,7 +175,7 @@
 
 			<transition name="modal">
 				<div class="movie-card-overlay" v-if="activeCard" @click.stop="closeModal()">
-					<div class="movie-card-content" @click.stop>
+					<div class="movie-card-content" tabindex="-1" @keydown.esc="closeModal()" @click.stop ref="modalCard">
 
 						<div class="movie-card-overlay-img">
 							<img :src="movies[activeCard].image" :alt="movies[activeCard].title">

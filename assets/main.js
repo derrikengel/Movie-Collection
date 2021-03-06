@@ -219,8 +219,16 @@ var movies = new Vue({
 
             // close the side panel for narrow views
             this.filter.panelActive = false
+
+            // set focus on modal
+            this.$nextTick(() => {
+                this.$refs.modalCard.focus()
+            })
         },
         closeModal() {
+            // set focus back to movie card
+            this.$refs.movieCard[this.activeCard].focus()
+
             this.activeCard = null
         },
         toggleFilters() {
