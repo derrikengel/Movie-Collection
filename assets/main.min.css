@@ -468,8 +468,8 @@ input[type='checkbox'], input[type='radio'] { height: 0; left: 0; opacity: 0; po
 
 @media screen and (min-width: 80rem) { .add-form .form-btn { -ms-flex-preferred-size: 100%; flex-basis: 100%; } }
 
-.add-form .movies { margin: 4rem 0; }
+.add-form .add-preview { margin: 4rem 0; }
 
-@media screen and (min-width: 80rem) { .add-form .movies { -webkit-box-flex: 1; -ms-flex: 1; flex: 1; margin: 0; position: -webkit-sticky; position: sticky; top: 6rem; } }
+@media screen and (min-width: 80rem) { .add-form .add-preview { -webkit-box-flex: 1; -ms-flex: 1; flex: 1; margin: 0; position: -webkit-sticky; position: sticky; top: 1.5rem; } }
 
-.add-form .movie-card { margin-bottom: 0; }
+.add-form .movie-card { max-width: 225px; min-height: 200px; }

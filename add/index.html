@@ -204,48 +204,123 @@
 						<label for="notes">Notes</label>
 						<input type="text" id="notes" name="notes" v-model="movie.notes" autocomplete="off">
 					</div> <!-- /form-field -->
+
+					<div class="form-btn">
+						<button v-if="movie.id">Update</button>
+						<button v-else>Add</button>
+					</div> <!-- /form-btn -->
 				</div> <!-- /form-fields -->
 
-				<!--
-				<div class="movies" v-if="movie.imageUrl">
-					<div class="movie-card" :title="movie.title">
-						<img :src="movie.imageUrl" class="movie-card-img" :alt="movie.title">
-					</div> 
+				<div class="add-preview">
+					<div class="movie-card" tabindex="0" ref="movieCard">
+						<span class="movie-card-title-preload">{{ movie.title }}</span>
+						<img :src="movie.imageUrl" class="movie-card-img" :alt="movie.title" :title="movie.title" v-if="movie.imageUrl">
+					</div>
 
-					<div class="movie-card active" :title="movie.title">
-						<img :src="movie.imageUrl" class="movie-card-img" :alt="movie.title">
-						<div class="movie-card-overlay">
-							<div class="movie-card-content">
-								<span class="movie-card-title">{{ movie.title }}</span>
-								<span class="movie-card-rating" title="Rating">{{ movie.rating }}</span>
-								<span class="movie-card-year" title="Release Year">{{ movie.year }}</span>
-								<dl class="movie-card-watch" v-if="movie.vuduQuality || movie.gpQuality || movie.discFormat">
-									<template v-if="movie.vuduQuality">
-										<dt>Vudu</dt>
-										<dd>{{ movie.vuduQuality }}</dd>
-									</template>
-
-									<template v-if="movie.gpQuality">
-										<dt>Google Play</dt>
-										<dd>{{ movie.gpQuality }}</dd>
-									</template>
-
-									<template v-if="movie.discFormat">
-										<dt>Disc</dt>
-										<dd>{{ movie.discFormat }}</dd>
-									</template>
-								</dl>
-								<span class="movie-card-note" title="Notes">{{ movie.notes }}</span>
+					<div class="movie-card-content" tabindex="-1" @keydown.esc="closeModal()" @click.stop ref="modalCard">
+				
+						<div class="movie-card-overlay-img">
+							<img :src="movie.imageUrl" :alt="movie.title" v-if="movie.imageUrl">
+						</div>
+				
+						<div class="movie-card-utilities">
+							<a class="movie-card-edit" :href="'/add/?id=' + movie.id" v-if="user.authenticated && user.id == 'DfPi2C0mVWVuRq3fYKZHeKzpBep1'" target="_blank">Edit</a>
+				
+							<button type="button" class="movie-card-close-btn" @click.stop="closeModal()" title="Close">&times;</button>
+						</div>
+				
+						<div class="movie-card-info">
+							<h3 class="movie-card-title">{{ movie.title }}</h3>
+				
+							<ul class="movie-card-stats">
+								<li><span class="movie-card-rating" title="Rating" v-if="movie.rating">{{ movie.rating }}</span></li>
+								<li class="movie-card-year" title="Release Year" v-if="movie.year">{{ movie.year }}</li>
+								<li class="movie-card-genre" title="Genre" v-if="movie.genre.length">
+									<ul>
+										<li v-for="genre in movie.genre">{{ genre }}</li>
+									</ul>
+								</li>
+								<li class="movie-card-length" title="Length" v-if="movie.length">{{ movieLength }}</li>
+							</ul>
+				
+							<p class="movie-card-teaser" v-if="movie.description">{{ movie.description }}</p>
+				
+							<div class="movie-card-watch" v-if="movie.vuduQuality || movie.gpQuality || movie.discFormat">
+								<h4 class="movie-card-watch-heading">Where to Watch</h4>
+								<ul class="movie-card-watch-list">
+									<li v-if="movie.vuduQuality">
+										<svg class="vudu" width="24px" height="24px" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" title="Vudu">
+											<linearGradient id="vudu-grad" gradientUnits="userSpaceOnUse" x1="16" y1="32" x2="16" y2="-9.094947e-13">
+												<stop offset="0" style="stop-color:#01639E" />
+												<stop offset="1" style="stop-color:#007BC4" />
+											</linearGradient>
+											<path style="fill:url(#vudu-grad);" d="M28,32H4c-2.21,0-4-1.79-4-4V4c0-2.21,1.79-4,4-4h23c2.76,0,5,2.24,5,5v23 C32,30.21,30.21,32,28,32z" />
+											<path style="fill:#FFFFFF;" d="M25.06,6c-1.22,0-1.97,0-3.17,0h-0.02h-0.01h0h0c-0.55,0.01-1.02,0.35-1.21,0.85 c-0.02,0.03-0.03,0.06-0.04,0.09c-1.21,3.45-2.27,6.41-3.48,9.86c-0.32,0.91-0.63,1.82-0.96,2.73c-0.03,0.07-0.09,0.16-0.16,0.18 c-0.14,0.04-0.14-0.11-0.17-0.19c-0.76-2.15-1.51-4.3-2.26-6.45c-0.77-2.21-1.42-4.04-2.19-6.25c-0.01-0.02-0.02-0.05-0.04-0.07 C11.12,6.3,10.67,6,10.16,6c-0.01,0-0.03,0-0.04,0C8.89,6,8.17,6,6.93,6c-0.41,0-0.61,0.3-0.48,0.69c1.87,5.21,3.73,10.41,5.6,15.62 c0.14,0.39,0.26,0.74,0.38,1.08c0.71,1.65,1.79,2.51,3.7,2.62c0.56,0,0.43,0,0.43,0c0.62-0.02,1.32-0.12,2.12-0.28l1.32-3.77 c1.84-5.1,3.64-10.06,5.51-15.23c0.02-0.06,0.04-0.12,0.05-0.18C25.62,6.23,25.41,6,25.06,6" />
+										</svg>
+										<span>
+											Vudu
+											<span class="movie-card-quality">{{ movie.vuduQuality }}</span>
+										</span>
+									</li>
+				
+									<li v-if="movie.gpQuality">
+										<svg class="google-play" width="21px" height="24px" viewBox="0 0 29 32" xmlns="http://www.w3.org/2000/svg" title="Google Play">
+											<linearGradient id="gp-grad-1" gradientUnits="userSpaceOnUse" x1="14.7161" y1="-0.046" x2="-6.1633" y2="20.8333" gradientTransform="matrix(1 0 0 1 0 2)">
+												<stop offset="0" style="stop-color:#00A0FF" />
+												<stop offset="6.574450e-03" style="stop-color:#00A1FF" />
+												<stop offset="0.2601" style="stop-color:#00BEFF" />
+												<stop offset="0.5122" style="stop-color:#00D2FF" />
+												<stop offset="0.7604" style="stop-color:#00DFFF" />
+												<stop offset="1" style="stop-color:#00E3FF" />
+											</linearGradient>
+											<path style="fill:url(#gp-grad-1);" d="M0.58,0.49C0.21,0.88,0,1.47,0,2.24v27.52c0,0.77,0.21,1.36,0.58,1.75l0.09,0.09l15.41-15.41 V16v-0.18L0.67,0.4L0.58,0.49z" />
+				
+											<linearGradient id="gp-grad-2" gradientUnits="userSpaceOnUse" x1="29.687" y1="14" x2="-0.4169" y2="14" gradientTransform="matrix(1 0 0 1 0 2)">
+												<stop offset="0" style="stop-color:#FFE000" />
+												<stop offset="0.4087" style="stop-color:#FFBD00" />
+												<stop offset="0.7754" style="stop-color:#FFA500" />
+												<stop offset="1" style="stop-color:#FF9C00" />
+											</linearGradient>
+											<path style="fill:url(#gp-grad-2);" d="M21.22,21.32l-5.14-5.14V16v-0.18l5.14-5.14l0.12,0.07l6.09,3.46c1.74,0.99,1.74,2.6,0,3.59 l-6.09,3.46L21.22,21.32z" />
+				
+											<linearGradient id="gp-grad-3" gradientUnits="userSpaceOnUse" x1="18.4826" y1="16.8574" x2="-9.8314" y2="45.1715" gradientTransform="matrix(1 0 0 1 0 2)">
+												<stop offset="0" style="stop-color:#FF3A44" />
+												<stop offset="1" style="stop-color:#C31162" />
+											</linearGradient>
+											<path style="fill:url(#gp-grad-3);" d="M21.34,21.26L16.08,16L0.58,31.51c0.57,0.61,1.52,0.68,2.59,0.08L21.34,21.26" />
+				
+											<linearGradient id="gp-grad-4" gradientUnits="userSpaceOnUse" x1="-3.3265" y1="-10.6663" x2="9.317" y2="1.9771" gradientTransform="matrix(1 0 0 1 0 2)">
+												<stop offset="0" style="stop-color:#32A071" />
+												<stop offset="0.0685" style="stop-color:#2DA771" />
+												<stop offset="0.4762" style="stop-color:#15CF74" />
+												<stop offset="0.8009" style="stop-color:#06E775" />
+												<stop offset="1" style="stop-color:#00F076" />
+											</linearGradient>
+											<path style="fill:url(#gp-grad-4);" d="M21.34,10.74L3.16,0.42C2.1-0.19,1.15-0.11,0.58,0.49L16.08,16L21.34,10.74z" />
+										</svg>
+										<span>
+											Google Play
+											<span class="movie-card-quality">{{ movie.gpQuality }}</span>
+										</span>
+									</li>
+				
+									<li v-if="movie.discFormat">
+										<svg class="vudu" width="24px" height="24px" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" title="Physical Disc">
+											<linearGradient id="disc-grad" gradientUnits="userSpaceOnUse" x1="4.6863" y1="27.3137" x2="27.3137" y2="4.6863">
+												<stop offset="0" style="stop-color:#69747C" />
+												<stop offset="1" style="stop-color:#8C949A" />
+											</linearGradient>
+											<path style="fill:url(#disc-grad);" d="M16,0C7.16,0,0,7.16,0,16s7.16,16,16,16s16-7.16,16-16S24.84,0,16,0z M16,20 c-2.21,0-4-1.79-4-4c0-2.21,1.79-4,4-4s4,1.79,4,4C20,18.21,18.21,20,16,20z" />
+										</svg>
+										{{ movie.discFormat }}
+									</li>
+								</ul>
 							</div>
+				
+							<p class="movie-card-note" v-if="movie.notes" title="Notes">{{ movie.notes }}</p>
 						</div>
 					</div>
-				</div> 
-				-->
-
-				<div class="form-btn">
-					<button v-if="movie.id">Update</button>
-					<button v-else>Add</button>
-				</div> <!-- /form-btn -->
+				</div> <!-- /add-preview -->
 
 				<!-- Log out button for testing: -->
 				<!-- <div class="form-field">

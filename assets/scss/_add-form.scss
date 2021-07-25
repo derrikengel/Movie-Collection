@@ -137,17 +137,18 @@
 	}
 }
 
-.add-form .movies {
+.add-form .add-preview {
 	margin: 4rem 0;
 	
 	@include query(lg) {
 		flex: 1;
 		margin: 0;
 		position: sticky;
-		top: 6rem;
+		top: 1.5rem;
 	}
 }
 
 .add-form .movie-card {
-	margin-bottom: 0;
+	max-width: 225px;
+	min-height: 200px;
 }

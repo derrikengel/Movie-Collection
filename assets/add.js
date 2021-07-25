@@ -72,6 +72,16 @@ var addMovie = new Vue({
             })
         }
     },
+    computed: {
+        movieLength() {
+            // convert movie length from minutes to hours and minutes
+            if (this.movie.length) {
+                var hours = Math.floor(this.movie.length / 60) + 'h '
+                var minutes = this.movie.length % 60 + 'm'
+                return hours + minutes
+            }
+        }
+    },
     methods: {
         signIn() {
             var vm = this
