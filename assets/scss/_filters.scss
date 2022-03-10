@@ -19,7 +19,7 @@
 	right: 0;
 	top: 0;
 	width: 2.5rem;
-    
+
     @include query(lg) {
         display: none;
     }
@@ -37,11 +37,11 @@
 	position: sticky;
 	top: 0;
 	z-index: 300;
-	
+
 	&.active {
 		z-index: 500;
 	}
-	
+
 	@include query(sm) {
 		margin: 0 -3rem 3rem -3rem;
 		padding: 0.5rem 3rem;
@@ -70,7 +70,7 @@
 	transform: translateX(100%);
 	transition: transform 300ms ease-out;
     width: 90%;
-    
+
     @include query(lg) {
         align-items: center;
 		background: transparent;
@@ -102,7 +102,7 @@
 .filter-panel.active {
 	box-shadow: 0 0 6rem $color-cinder, 0 0 3rem $color-cinder;
     transform: none;
-    
+
     @include query(lg) {
         box-shadow: none;
     }
@@ -113,7 +113,7 @@
 	padding: 0.5rem 0;
 	position: relative;
     text-align: center;
-    
+
     @include query(lg) {
         border-bottom: none;
 		margin: 0;
@@ -122,6 +122,7 @@
 }
 
 .filter-option.active {
+
 	.filter-arrow {
 		transform: rotate(180deg);
 	}
@@ -138,27 +139,29 @@
 }
 
 .filter-option-title {
+	background: transparent;
 	align-items: center;
 	color: $color-cinder;
-	cursor: pointer;
 	display: flex;
-	font-weight: $font-weight-bold;
 	justify-content: space-between;
 	padding: 0.5rem 0;
 	position: relative;
 	transition: 200ms all ease-out;
+	width: 100%;
     z-index: 300;
-    
+
     @include query(lg) {
         border: none;
-		border-radius: 3px;
+		border-radius: 0.375rem;
 		color: #fff;
 		display: inline-flex;
 		justify-content: center;
-        padding: 0.5em 1em;
-        
+        padding: 0.625em 1.5em;
+		width: auto;
+
         &:hover,
         &:focus {
+			color: #fff;
             box-shadow: inset 0 0 0 1px $color-turquoise;
         }
     }
@@ -166,7 +169,7 @@
 
 .filter-option.has-selections .filter-option-title {
     color: $color-torch-red;
-    
+
     @include query(lg) {
         color: $color-turquoise;
     }
@@ -174,7 +177,7 @@
 
 .filter-arrow {
 	fill: $color-torch-red;
-	margin-left: 0.5rem;
+	margin: 0 0 0 0.5rem;
 	transition: 200ms all ease-out;
 }
 
@@ -182,10 +185,10 @@
 	color: $color-cinder;
 	display: none;
     text-align: left;
-    
+
     @include query(lg) {
         background: #fff;
-		border-radius: 3px;
+		border-radius: 0.375rem;
 		box-shadow: 0 0 6rem $color-cinder, 0 0 3rem $color-cinder;
 		left: 50%;
 		max-height: calc(95vh - 8rem);
@@ -246,7 +249,7 @@
 .filter-random-btn {
 	margin-top: 0.5rem;
     width: 100%;
-    
+
     @include query(lg) {
         margin-top: 0;
 		width: auto;
@@ -264,24 +267,12 @@
 }
 
 .year-range input {
+	@include field-color-light;
 	-moz-appearance: textfield;
-	background-color: transparent;
-	border: none;
-	border-bottom: 2px solid $color-torch-red;
-	border-radius: 0;
-	box-shadow: none;
-	box-sizing: border-box;
-	color: $color-cinder;
-	display: block;
-	font-family: $font-stack;
-	font-size: 1rem;
-	font-weight: $font-weight-bold;
-	line-height: 1.35;
-	padding: 0.25em 0;
-	position: relative;
-	transition: 200ms all ease-out;
-	width: 3rem;
-	text-align: center;
+	padding-left: 0.5em;
+	padding-right: 0.5em;
+	width: 5rem;
+ 	text-align: center;
 }
 
 .year-range input::-webkit-outer-spin-button,
@@ -298,40 +289,11 @@
 	margin-left: 0.5rem;
 }
 
-.year-range input:focus {
-	border-color: $color-turquoise;
-}
-
-.year-range input::-webkit-input-placeholder {
-	color: $color-placeholder;
-	font-weight: $font-weight-regular;
-}
-
-.year-range input:-moz-placeholder {
-	color: $color-placeholder;
-	font-weight: $font-weight-regular;
-}
-
-.year-range input::-moz-placeholder {
-	color: $color-placeholder;
-	font-weight: $font-weight-regular;
-}
-
-.year-range input:-ms-input-placeholder {
-	color: $color-placeholder;
-	font-weight: $font-weight-regular;
-}
-
-.year-range input::placeholder {
-	color: $color-placeholder;
-	font-weight: $font-weight-regular;
-}
-
 .reset-btn {
 	background: $color-turquoise;
 	color: $color-cinder;
     width: 100%;
-    
+
     @include query(lg) {
         width: auto;
 
@@ -351,66 +313,22 @@
 
 .search-icon {
 	fill: $color-torch-red;
-	left: 0;
-	margin-top: -9px;
+	left: 1em;
+	margin-top: -7px;
 	position: absolute;
 	top: 50%;
 	z-index: 10;
 }
 
 .search input {
-	color: $color-cinder;
-	padding-left: 1.25em;
+	@include field-color-light;
+	padding-left: 2.5em;
 	position: relative;
     z-index: 20;
-    
+
     @include query(lg) {
-        color: $color-turquoise;
+		@include field-color-dark;
 		max-width: 16rem;
-	}
-	
-	&:focus {
-		border-color: $color-turquoise;
-	}
-
-	&::-webkit-input-placeholder {
-		color: $color-placeholder;
-		
-		@include query(lg) {
-			color: #fff;
-		}
-	}
-
-	&:-moz-placeholder {
-		color: $color-placeholder;
-		
-		@include query(lg) {
-			color: #fff;
-		}
-	}
-
-	&::-moz-placeholder {
-		color: $color-placeholder;
-		
-		@include query(lg) {
-			color: #fff;
-		}
-	}
-
-	&:-ms-input-placeholder {
-		color: $color-placeholder;
-		
-		@include query(lg) {
-			color: #fff;
-		}
-	}
-
-	&::placeholder {
-		color: $color-placeholder;
-		
-		@include query(lg) {
-			color: #fff;
-		}
 	}
 }
 

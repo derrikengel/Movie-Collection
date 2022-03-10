@@ -5,3 +5,63 @@
 		@content;
 	}
 }
+
+@mixin field-color-light {
+	background-color: $color-field-bg-light;
+	color: $color-cinder;
+
+	&::-webkit-input-placeholder {
+		color: $color-placeholder-light;
+	}
+
+	&:-moz-placeholder {
+		color: $color-placeholder-light;
+	}
+
+	&::-moz-placeholder {
+		color: $color-placeholder-light;
+	}
+
+	&:-ms-input-placeholder {
+		color: $color-placeholder-light;
+	}
+
+	&::placeholder {
+		color: $color-placeholder-light;
+	}
+
+	&:focus {
+		background-color: transparent;
+		box-shadow: inset 0 0 0 1px $color-cinder;
+	}
+}
+
+@mixin field-color-dark {
+	background-color: $color-field-bg-dark;
+	color: #fff;
+
+	&::-webkit-input-placeholder {
+		color: $color-placeholder-dark;
+	}
+
+	&:-moz-placeholder {
+		color: $color-placeholder-dark;
+	}
+
+	&::-moz-placeholder {
+		color: $color-placeholder-dark;
+	}
+
+	&:-ms-input-placeholder {
+		color: $color-placeholder-dark;
+	}
+
+	&::placeholder {
+		color: $color-placeholder-dark;
+	}
+
+	&:focus {
+		background-color: transparent;
+		box-shadow: inset 0 0 0 1px $color-turquoise;
+	}
+}

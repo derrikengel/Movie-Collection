@@ -223,6 +223,7 @@ var movies = new Vue({
             // set focus on modal
             this.$nextTick(() => {
                 this.$refs.modalCard.focus()
+                this.$refs.modalCardOverlay.scrollTop = 0
             })
         },
         closeModal() {
@@ -242,6 +243,9 @@ var movies = new Vue({
             // handle click for filter dropdowns
             filter === this.filter.active ? this.filter.active = null : this.filter.active = filter
             this.activeCard = null
+        },
+        closeFilter() {
+            this.filter.active = null
         },
         validateMinYear() {
             if (this.filter.startYear && this.filter.startYear < this.filterData.minYear)

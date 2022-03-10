@@ -32,74 +32,11 @@
 }
 
 .add-form %field {
-	background: rgba(#fff, 0.14);
-	border: none;
-	border-radius: 0.25rem;
-	color: #fff;
 	margin-top: 0.5rem;
-	padding: 0.75em 1em;
-
-	&:focus {
-		box-shadow: inset 0 0 0 1px $color-turquoise;
-	}
-}
-
-
-.add-form input[type='text'],
-.add-form input[type='search'],
-.add-form input[type='email'],
-.add-form input[type='password'],
-.add-form input[type='number'],
-.add-form input[type='url'],
-.add-form textarea {
-	&::-webkit-input-placeholder {
-		color: rgba(#fff, 0.2);
-	}
-
-	&:-moz-placeholder {
-		color: rgba(#fff, 0.2);
-	}
-
-	&::-moz-placeholder {
-		color: rgba(#fff, 0.2);
-	}
-
-	&:-ms-input-placeholder {
-		color: rgba(#fff, 0.2);
-	}
-
-	&::placeholder {
-		color: rgba(#fff, 0.2);
-	}
 }
 
 .add-form textarea {
-	font-size: 0.875rem;
 	min-height: 12rem;
-}
-
-.add-form input[type='checkbox'] + label:before,
-.add-form input[type='radio'] + label:before {
-	background: rgba(#fff, 0.14);
-	box-shadow: none;
-}
-
-.add-form input[type='checkbox']:checked + label,
-.add-form input[type='radio']:checked + label {
-	color: $color-turquoise;
-}
-
-.add-form input[type='checkbox'] + label:hover:before,
-.add-form input[type='radio'] + label:hover:before,
-.add-form input[type='checkbox']:focus + label:before,
-.add-form input[type='radio']:focus + label:before {
-	box-shadow: inset 0 0 0 1px $color-turquoise;
-}
-
-.add-form input[type='checkbox']:checked + label:before,
-.add-form input[type='radio']:checked + label:before {
-	background: $gradient;
-	box-shadow: none;
 }
 
 .add-form .select-group label {

@@ -113,7 +113,7 @@ button,
 	background-color: $color-torch-red;
 	background: $gradient;
 	border: none;
-	border-radius: 0.25rem;
+	border-radius: 0.375rem;
 	color: #fff;
 	cursor: pointer;
 	display: inline-flex;
@@ -152,25 +152,19 @@ label {
 }
 
 %field {
-	background-color: transparent;
+	@include field-color-dark;
 	border: none;
-	border-bottom: 2px solid $color-torch-red;
-	border-radius: 0;
+	border-radius: 0.375rem;
 	box-shadow: none;
 	box-sizing: border-box;
-	color: $color-turquoise;
 	display: block;
 	font-family: inherit;
 	font-size: 1rem;
 	font-weight: $font-weight-bold;
 	line-height: 1.35;
-	padding: 0.25em 0;
+	padding: 0.625em 1em;
 	transition: 200ms all ease-out;
 	width: 100%;
-
-	&:focus {
-		border-color: $color-turquoise;
-	}
 }
 
 input[type='text'],
@@ -183,27 +177,22 @@ textarea {
 	@extend %field;
 
 	&::-webkit-input-placeholder {
-		color: #fff;
 		font-weight: $font-weight-regular;
 	}
 
 	&:-moz-placeholder {
-		color: #fff;
 		font-weight: $font-weight-regular;
 	}
 
 	&::-moz-placeholder {
-		color: #fff;
 		font-weight: $font-weight-regular;
 	}
 
 	&:-ms-input-placeholder {
-		color: #fff;
 		font-weight: $font-weight-regular;
 	}
 
 	&::placeholder {
-		color: #fff;
 		font-weight: $font-weight-regular;
 	}
 }

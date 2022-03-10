@@ -7,7 +7,11 @@ $color-nevada: #69747c;
 
 $gradient: linear-gradient(45deg, $color-torch-red, $color-tree-poppy);
 
-$color-placeholder: rgba($color-cinder, 0.4);
+$color-placeholder-dark: rgba(#fff, 0.65);
+$color-placeholder-light: rgba($color-cinder, 0.5);
+
+$color-field-bg-dark: rgba(#fff, 0.14);
+$color-field-bg-light: rgba($color-cinder, 0.06);
 
 // type
 $font-weight-regular: 400;
@@ -18,5 +22,5 @@ $font-stack: 'Roboto', sans-serif;
 $breakpoints: (
 	sm: "screen and (min-width: 42rem)",
 	md: "screen and (min-width: 54rem)",
-	lg: "screen and (min-width: 80rem)"
+	lg: "screen and (min-width: 84rem)"
 );

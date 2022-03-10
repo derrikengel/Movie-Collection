@@ -1,6 +1,6 @@
 .request-form {
 	background: #fff;
-	border-radius: 0.25rem 0.25rem 0 0;
+	border-radius: 0.375rem 0.375rem 0 0;
 	bottom: 0;
 	box-shadow: 0 1rem 6rem $color-cinder, 0 1rem 3rem $color-cinder;
 	color: $color-cinder;
@@ -39,11 +39,9 @@
 	padding: 0.75rem 1.5rem;
 	width: 100%;
 	
-	@include query(lg) {
-		&:hover,
-		&:focus {
-			box-shadow: none;
-		}
+	&:hover,
+	&:focus {
+		box-shadow: none;
 	}
 }
 
@@ -52,28 +50,8 @@
 }
 
 .request-form input {
-	color: $color-cinder;
+	@include field-color-light;
 	margin-top: 1.5rem;
-
-	&::-webkit-input-placeholder {
-		color: $color-placeholder;
-	}
-
-	&:-moz-placeholder {
-		color: $color-placeholder;
-	}
-
-	&::-moz-placeholder {
-		color: $color-placeholder;
-	}
-
-	&:-ms-input-placeholder {
-		color: $color-placeholder;
-	}
-
-	&::placeholder {
-		color: $color-placeholder;
-	}
 }
 
 .request-form-btn {
