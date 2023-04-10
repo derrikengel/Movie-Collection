@@ -65,7 +65,7 @@ var movies = new Vue({
             // filter movie data
             var filteredMovies = _.filter(movies, movie => {
                 var search = self.filter.search ? new RegExp('\\b' + self.filter.search, 'gi').test(movie.title) : true
-                var format = self.filter.format.length ? (self.filter.format.includes(movie.vudu) || self.filter.format.includes(movie.googlePlay) || self.filter.format.includes(movie.disc)) : true
+                var format = self.filter.format.length ? (self.filter.format.includes(movie.vudu) || self.filter.format.includes(movie.googlePlay) || self.filter.format.includes(movie.plex) || self.filter.format.includes(movie.disc)) : true
                 var rating = self.filter.rating.length ? self.filter.rating.includes(movie.rating) : true
                 var genre = self.filter.genre.length ? self.filter.genre.every(item => movie.genre.includes(item)) : true
                 var year = (self.filter.startYear ? movie.year >= self.filter.startYear : self.filterData.minYear) && (self.filter.endYear ? movie.year <= self.filter.endYear : self.filterData.maxYear)
@@ -187,11 +187,12 @@ var movies = new Vue({
 
             var vuduFormats = vm.movieData.flatMap(movie => movie.vudu)
             var gpFormats = vm.movieData.flatMap(movie => movie.googlePlay)
-            var mergedFormats = [...vuduFormats, ...gpFormats]
-            vm.filterData.digital = [...new Set(mergedFormats)].filter(el => el != '').sort()
+            var plexFormats = vm.movieData.flatMap(movie => movie.plex)
+            var mergedFormats = [...vuduFormats, ...gpFormats, ...plexFormats]
+            vm.filterData.digital = [...new Set(mergedFormats)].filter(el => el && el != '').sort()
 
             var discFormats = vm.movieData.flatMap(movie => movie.disc)
-            vm.filterData.physical = [...new Set(discFormats)].filter(el => el != '').sort()
+            vm.filterData.physical = [...new Set(discFormats)].filter(el => el && el != '').sort()
 
             var ratings = [...new Set(vm.movieData.flatMap(movie => movie.rating))]
             var ratingsOrder = ['G', 'TV-G', 'PG', 'TV-PG', 'PG-13', 'TV-14', 'R', 'TV-MA', 'NC-17', 'NR']

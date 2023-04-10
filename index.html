@@ -199,7 +199,7 @@
 
 							<p class="movie-card-teaser" v-if="movies[activeCard].description">{{ movies[activeCard].description }}</p>
 
-							<div class="movie-card-watch" v-if="movies[activeCard].vudu || movies[activeCard].googlePlay || movies[activeCard].disc">
+							<div class="movie-card-watch" v-if="movies[activeCard].vudu || movies[activeCard].googlePlay || movies[activeCard].plex || movies[activeCard].disc">
 								<h4 class="movie-card-watch-heading">Where to Watch</h4>
 								<ul class="movie-card-watch-list">
 									<li v-if="movies[activeCard].vudu">
@@ -255,6 +255,17 @@
 										<span>
 											Google Play
 											<span class="movie-card-quality">{{ movies[activeCard].googlePlay }}</span>
+										</span>
+									</li>
+
+									<li v-if="movies[activeCard].plex">
+										<svg class="plex" width="24px" height="24px" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" title="Plex">
+											<path style="fill: #000;" d="M28,32H4c-2.21,0-4-1.79-4-4V4c0-2.21,1.79-4,4-4h23c2.76,0,5,2.24,5,5v23C32,30.21,30.21,32,28,32z"/>
+											<path style="fill: #E5A00D;" d="M16.1,26H9.16l6.74-10L9.16,6h6.94l6.74,10L16.1,26z"/>
+										</svg>
+										<span>
+											Plex
+											<span class="movie-card-quality">{{ movies[activeCard].plex }}</span>
 										</span>
 									</li>
 
