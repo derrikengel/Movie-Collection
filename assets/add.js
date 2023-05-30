@@ -21,12 +21,19 @@ var addMovie = new Vue({
                 title: '',
                 year: '',
                 imageUrl: '',
-                vuduUrl: '',
+                heroUrl: '',
+                trailerId: '',
                 genre: [],
                 genreValid: false,
                 rating: '',
+                vuduUrl: '',
                 vuduQuality: '',
+                gpUrl: '',
                 gpQuality: '',
+                itunesUrl: '',
+                itunesQuality: '',
+                plexUrl: '',
+                plexQuality: '',
                 maQuality: '',
                 discFormat: '',
                 length: '',
@@ -52,18 +59,26 @@ var addMovie = new Vue({
                 if (doc.exists) {
                     var movie = doc.data()
 
-                    vm.movie.title = movie.title
-                    vm.movie.year = movie.year
-                    vm.movie.imageUrl = movie.image
-                    vm.movie.vuduQuality = movie.vudu
-                    vm.movie.gpQuality = movie.googlePlay
-                    vm.movie.maQuality = movie.moviesAnywhere
-                    vm.movie.discFormat = movie.disc
-                    vm.movie.genre = movie.genre
-                    vm.movie.rating = movie.rating
-                    vm.movie.length = movie.length
-                    vm.movie.description = movie.description
-                    vm.movie.notes = movie.notes
+                    vm.movie.title = movie.title || ''
+                    vm.movie.year = movie.year || ''
+                    vm.movie.imageUrl = movie.image || ''
+                    vm.movie.heroUrl = movie.hero || ''
+                    vm.movie.trailerId = movie.trailerId || ''
+                    vm.movie.vuduUrl = movie.vuduUrl || ''
+                    vm.movie.vuduQuality = movie.vudu || ''
+                    vm.movie.gpUrl = movie.gpUrl || ''
+                    vm.movie.gpQuality = movie.googlePlay || ''
+                    vm.movie.itunesUrl = movie.itunesUrl || ''
+                    vm.movie.itunesQuality = movie.itunes || ''
+                    vm.movie.plexUrl = movie.plexUrl || ''
+                    vm.movie.plexQuality = movie.plex || ''
+                    vm.movie.maQuality = movie.moviesAnywhere || ''
+                    vm.movie.discFormat = movie.disc || ''
+                    vm.movie.genre = movie.genre || ''
+                    vm.movie.rating = movie.rating || ''
+                    vm.movie.length = movie.length || ''
+                    vm.movie.description = movie.description || ''
+                    vm.movie.notes = movie.notes || ''
                 } else {
                     console.log('Document does not exist.');
                 }
@@ -76,9 +91,9 @@ var addMovie = new Vue({
         movieLength() {
             // convert movie length from minutes to hours and minutes
             if (this.movie.length) {
-                var hours = Math.floor(this.movie.length / 60) + 'h '
-                var minutes = this.movie.length % 60 + 'm'
-                return hours + minutes
+                var hours = Math.floor(this.movie.length / 60)
+                var minutes = this.movie.length % 60
+                return (hours > 0 ? hours + 'h ' : '' ) + minutes + 'm'
             }
         }
     },
@@ -89,16 +104,26 @@ var addMovie = new Vue({
                 vm.user.errorMsg = true
             })
         },
-        updateImage() {
+        updateImages() {
             var vm = this
-            if (vm.movie.vuduUrl && !vm.movie.imageUrl) {
+            if (vm.movie.vuduUrl) {
                 var movieId = vm.movie.vuduUrl.substring(vm.movie.vuduUrl.lastIndexOf('/') + 1)
-                vm.movie.imageUrl = 'https://images2.vudu.com/poster2/' + movieId + '-360'
+
+                if (!vm.movie.imageUrl) {
+                    vm.movie.imageUrl = 'https://images2.vudu.com/poster2/' + movieId + '-360'
+                }
+
+                if (!vm.movie.heroUrl) {
+                    vm.movie.heroUrl = 'https://images2.vudu.com/background/' + movieId + '-1280a.jpg'
+                }
             }
         },
         submitForm() {
             var vm = this
             // check if at least 1 genre is selected
+
+            console.log(vm.movie.itunesUrl)
+
             if (vm.movie.genre < 1) {
                 // scroll up to genre
                 this.$refs.genreLabel.scrollIntoView({ behavior: 'smooth' })
@@ -118,8 +143,16 @@ var addMovie = new Vue({
                 title: vm.movie.title,
                 year: vm.movie.year,
                 image: vm.movie.imageUrl,
+                hero: vm.movie.heroUrl,
+                trailerId: vm.movie.trailerId,
+                vuduUrl: vm.movie.vuduUrl,
                 vudu: vm.movie.vuduQuality,
+                gpUrl: vm.movie.gpUrl,
                 googlePlay: vm.movie.gpQuality,
+                itunesUrl: vm.movie.itunesUrl,
+                itunes: vm.movie.itunesQuality,
+                plexUrl: vm.movie.plexUrl,
+                plex: vm.movie.plexQuality,
                 moviesAnywhere: vm.movie.maQuality,
                 disc: vm.movie.discFormat,
                 genre: vm.movie.genre,
@@ -166,8 +199,16 @@ var addMovie = new Vue({
                 title: vm.movie.title,
                 year: vm.movie.year,
                 image: vm.movie.imageUrl,
+                hero: vm.movie.heroUrl,
+                trailerId: vm.movie.trailerId,
+                vuduUrl: vm.movie.vuduUrl,
                 vudu: vm.movie.vuduQuality,
+                gpUrl: vm.movie.gpUrl,
                 googlePlay: vm.movie.gpQuality,
+                itunesUrl: vm.movie.itunesUrl,
+                itunes: vm.movie.itunesQuality,
+                plexUrl: vm.movie.plexUrl,
+                plex: vm.movie.plexQuality,
                 moviesAnywhere: vm.movie.maQuality,
                 disc: vm.movie.discFormat,
                 genre: vm.movie.genre,
@@ -196,11 +237,18 @@ var addMovie = new Vue({
             vm.movie.title = ''
             vm.movie.year = ''
             vm.movie.imageUrl = ''
-            vm.movie.vuduUrl = ''
+            vm.movie.heroUrl = ''
+            vm.movie.trailerId = ''
             vm.movie.genre = []
             vm.movie.rating = ''
+            vm.movie.vuduUrl = ''
             vm.movie.vuduQuality = ''
+            vm.movie.gpUrl = ''
             vm.movie.gpQuality = ''
+            vm.movie.itunesUrl = ''
+            vm.movie.itunesQuality = ''
+            vm.movie.plexUrl = ''
+            vm.movie.plexQuality = ''
             vm.movie.maQuality = ''
             vm.movie.discFormat = ''
             vm.movie.length = ''

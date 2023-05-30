@@ -1,25 +1,17 @@
-.add-form {
-	@include query(lg) {
-		align-items: flex-start;
-		display: flex;
-		flex-wrap: wrap;
-	}
+.add-movie {
+	padding: 5vw;
 }
 
-.add-form label a {
-	color: #fff;
-	font-size: 0.875rem;
-	margin-left: 0.5rem;
-
-	&:hover,
-	&:focus {
-		color: $color-torch-red;
-	}
+.add-form {
+	align-items: flex-start;
+	display: flex;
+	gap: 5vw;
+	flex-wrap: wrap;
 }
 
 .preview-img {
 	display: block;
-	margin-top: 1rem;
+	margin-top: $size-base;
 	width: 100px;
 
 	&[src=''] {
@@ -27,12 +19,10 @@
 	}
 }
 
-.add-form label {
-	font-size: 1.25rem;
-}
+
 
 .add-form %field {
-	margin-top: 0.5rem;
+	margin-top: $size--3;
 }
 
 .add-form textarea {
@@ -41,20 +31,20 @@
 
 .add-form .select-group label {
 	color: #fff;
-	font-size: 1rem;
+	font-size: $fs-base;
 }
 
 .add-form .form-fields {
-	max-width: 30rem;
+	max-width: 40rem;
 
-	@include query(lg) {
+	@include query($bp-lg) {
 		flex: 1;
-		margin-right: 6rem;
 	}
 }
 
 .add-form .form-field-columns {
 	display: flex;
+	gap: $size-1;
 
 	.form-field {
 		flex: 1 1 0;
@@ -62,30 +52,29 @@
 
 	.form-field + .form-field {
 		margin-top: 0;
-		margin-left: 2rem;
 	}
 }
 
 .add-form .form-btn {
-	margin-top: 2rem;
+	margin-top: $size-2;
 
-	@include query(lg) {
+	@include query($bp-lg) {
 		flex-basis: 100%;
 	}
 }
 
 .add-form .add-preview {
-	margin: 4rem 0;
+	margin: $size-3 0;
 	
-	@include query(lg) {
+	@include query($bp-lg) {
 		flex: 1;
 		margin: 0;
 		position: sticky;
-		top: 1.5rem;
+		top: $size-1;
 	}
 }
 
-.add-form .movie-card {
+.add-form .movie-btn {
 	max-width: 225px;
 	min-height: 200px;
 }

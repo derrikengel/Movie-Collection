@@ -1,67 +1,26 @@
-@mixin query($breakpoint) {
-	$q: map-get($breakpoints, $breakpoint);
+@use 'sass:math';
 
-	@media #{$q} {
+@mixin query($breakpoint) {
+	@media screen and (min-width: #{$breakpoint}) {
 		@content;
 	}
 }
 
-@mixin field-color-light {
-	background-color: $color-field-bg-light;
-	color: $color-cinder;
+@function rnd($number, $places: 0) {
+	$n: 1;
 
-	&::-webkit-input-placeholder {
-		color: $color-placeholder-light;
+	@if $places >0 {
+		@for $i from 1 through $places {
+			$n: $n * 10;
+		}
 	}
 
-	&:-moz-placeholder {
-		color: $color-placeholder-light;
-	}
-
-	&::-moz-placeholder {
-		color: $color-placeholder-light;
-	}
-
-	&:-ms-input-placeholder {
-		color: $color-placeholder-light;
-	}
-
-	&::placeholder {
-		color: $color-placeholder-light;
-	}
-
-	&:focus {
-		background-color: transparent;
-		box-shadow: inset 0 0 0 1px $color-cinder;
-	}
+	@return math.div(math.round($number * $n), $n);
 }
 
-@mixin field-color-dark {
-	background-color: $color-field-bg-dark;
-	color: #fff;
+@function fluid($min-value, $max-value, $min-bp: $bp-sm, $max-bp: $bp-xl) {
+	$factor: 1 / ($max-bp - $min-bp) * ($max-value - $min-value);
+	$calc-value: unquote('#{ $min-value - ($min-bp * $factor) } + #{ 100vw * $factor }');
 
-	&::-webkit-input-placeholder {
-		color: $color-placeholder-dark;
-	}
-
-	&:-moz-placeholder {
-		color: $color-placeholder-dark;
-	}
-
-	&::-moz-placeholder {
-		color: $color-placeholder-dark;
-	}
-
-	&:-ms-input-placeholder {
-		color: $color-placeholder-dark;
-	}
-
-	&::placeholder {
-		color: $color-placeholder-dark;
-	}
-
-	&:focus {
-		background-color: transparent;
-		box-shadow: inset 0 0 0 1px $color-turquoise;
-	}
+	@return clamp(#{if($min-value > $max-value, $max-value, $min-value)}, #{$calc-value}, #{if($min-value > $max-value, $min-value, $max-value)});
 }

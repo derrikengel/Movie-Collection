@@ -1,24 +1,16 @@
 html {
-	background: $color-cinder;
+	background: $color-dark;
 	box-sizing: border-box;
 	color: #fff;
-	font-family: $font-stack;
-	font-size: 1rem;
-	line-height: 1.35;
-	overflow-x: hidden;
+	font-family: $primary-font-stack;
+	font-size: $fs-base;
+	font-weight: $primary-font-weight;
+	line-height: 2;
 	scroll-behavior: smooth;
 }
 
 body {
-	margin: 1.25rem;
-	
-	@include query(sm) {
-		margin: 3rem;
-	}
-
-	@include query(lg) {
-		margin: 5rem;
-	}
+	margin: 0;
 }
 
 *,
@@ -32,24 +24,29 @@ body {
 }
 
 ::selection {
-	background-color: $color-turquoise;
-	color: $color-cinder;
+	background-color: $color-accent;
+	color: $color-dark;
 }
 
 ::-moz-selection {
-	background-color: $color-turquoise;
-	color: $color-cinder;
+	background-color: $color-accent;
+	color: $color-dark;
 }
 
-html::-webkit-scrollbar {
-	background-color: $color-cinder;
-	width: 1rem;
+* {
+	scrollbar-color: $color-accent;
+	scrollbar-width: thin
 }
 
-html::-webkit-scrollbar-thumb {
-	background-color: $color-turquoise;
-	border-radius: 0.5rem;
-	border: 0.25rem solid $color-cinder;
+::-webkit-scrollbar {
+	background-color: $color-dark;
+	width: 0.75rem;
+}
+
+::-webkit-scrollbar-thumb {
+	background-color: $color-accent;
+	border-radius: 1.5rem;
+	border: 0.25rem solid $color-dark;
 
 	&:hover {
 		background-color: #fff;
@@ -61,110 +58,235 @@ img {
 	max-width: 100%;
 }
 
-h1 {
-	color: #fff;
-	font-size: calc(40px + (92 - 40) * ((100vw - 320px) / (1900 - 320)));
-	font-weight: $font-weight-regular;
-	line-height: 1.15;
-	margin: 0.75em 0;
-	position: relative;
-	z-index: 110;
+@mixin heading {
+	font-family: $secondary-font-stack;
+	font-weight: $secondary-font-weight-bold;
+	letter-spacing: 0.1em;
+	line-height: 1.1;
+	margin: 0;
+	text-transform: uppercase;
 }
 
-h1 .gradient-text {
-	font-weight: $font-weight-bold;
+@mixin h1 {
+	@include heading;
+	font-size: $fs-4;
+}
+
+@mixin h2 {
+	@include heading;
+	font-size: $fs-3;
+}
+
+@mixin h3 {
+	@include heading;
+	font-size: $fs-2;
+}
+
+@mixin h4 {
+	font-size: $fs-1;
+}
+
+h1 {
+	@include h1;
 }
 
 h2 {
-	font-size: calc(22px + (32 - 22) * ((100vw - 320px) / (1900 - 320)));
-	font-weight: $font-weight-bold;
-	line-height: 1.2;
+	@include h2;
 }
 
 h3 {
-	font-size: calc(18px + (24 - 18) * ((100vw - 320px) / (1900 - 320)));
-	font-weight: $font-weight-bold;
-	line-height: 1.2;
+	@include h3;
 }
 
 h4 {
-	font-size: calc(16px + (20 - 16) * ((100vw - 320px) / (1900 - 320)));
-	font-weight: $font-weight-bold;
-	line-height: 1.25;
+	@include h4;
+}
+
+@mixin small-caps {
+	@include heading;
+	font-size: $fs--2;
+
+	@include query($bp-md) {
+		font-size: $fs--1;
+	}
 }
 
 a {
-	color: $color-turquoise;
-	font-weight: $font-weight-bold;
-	text-decoration: underline;
+	color: $color-accent;
 	transition: 200ms all ease-out;
 
-	@include query(md) {
+	@include query($bp-md) {
 		&:hover,
 		&:focus {
-			color: $color-torch-red;
+			color: $color-primary;
 		}
 	}
+}
+
+svg {
+	fill: currentColor;
 }
 
 button,
 .btn {
 	align-items: center;
-	background-color: $color-torch-red;
-	background: $gradient;
+	background-color: $color-primary;
 	border: none;
-	border-radius: 0.375rem;
+	border-radius: 10rem;
 	color: #fff;
 	cursor: pointer;
 	display: inline-flex;
-	font-family: inherit;
-	font-size: 1rem;
-	font-weight: $font-weight-bold;
-	line-height: 1.35;
+	font-family: $secondary-font-stack;
+	font-size: $fs--1;
+	font-weight: $secondary-font-weight-bold;
+	letter-spacing: 0.1em;
+	line-height: 1.25;
 	justify-content: center;
-	padding: 0.625em 1.5em;
+	overflow: hidden;
+	padding: 1em 2.5em;
 	text-align: center;
 	text-decoration: none;
-	transition: 200ms all ease-out;
-	-webkit-tap-highlight-color: rgba($color-cinder, 0.2);
+	text-transform: uppercase;
+	transition: 150ms all ease-out;
+	-webkit-tap-highlight-color: rgba($color-dark, 0.4);
     
-    &:hover,
-    &:focus {
-        @include query(md) {
+    &:hover {
+        @include query($bp-md) {
             background: transparent;
-            box-shadow: inset 0 0 0 1px $color-torch-red;
-            color: $color-torch-red;
+            color: $color-primary;
         }
     }
+
+	&:disabled {
+		cursor: auto;
+		opacity: 0.4;
+		pointer-events: none;
+		-webkit-tap-highlight-color: transparent;
+	}
 }
 
 button svg,
 .btn svg {
-	fill: currentColor;
 	flex: 0 0 auto;
-	margin-right: 0.5rem;
+}
+
+.icon-btn {
+	background: transparent;
+	border: 0.125rem solid;
+	color: $color-accent;
+	height: 3rem;
+	padding: 0;
+	transition: none;
+	width: 3rem;
+	
+	&.rotate {
+		svg {
+			animation-duration: 300ms;
+			animation-name: rotateBtn;
+			animation-timing-function: ease-in-out;
+		}
+	}
+
+	&.shake {
+		svg {
+			animation-duration: 1000ms;
+			animation-name: shakeBtn;
+		}
+	}
+
+	&.has-selections {
+		border-color: $color-primary;
+		color: $color-primary;
+	}
+	
+	&:hover {
+		@include query($bp-md) {
+			background: $color-accent;
+			border-color: $color-accent;
+			color: $color-dark;
+		}
+	}
+}
+
+@keyframes rotateBtn {
+	from {
+		transform: none;
+	}
+
+	to {
+		transform: rotate(360deg);
+	}
+}
+
+@keyframes shakeBtn {
+    0% {
+        transform: rotate(-15deg)
+    }
+
+    4% {
+        transform: rotate(15deg)
+    }
+
+    8%,24% {
+        transform: rotate(-18deg)
+    }
+
+    12%,28% {
+        transform: rotate(18deg)
+    }
+
+    16% {
+        transform: rotate(-22deg)
+    }
+
+    20% {
+        transform: rotate(22deg)
+    }
+
+    32% {
+        transform: rotate(-12deg)
+    }
+
+    36% {
+        transform: rotate(12deg)
+    }
+
+    40%,to {
+        transform: rotate(0deg)
+    }
+}
+
+.icon-btn.active {
+	background: $color-primary;
+	border-color: $color-primary;
+	color: $color-dark;
+}
+
+.icon-btn svg {
+	margin-right: 0;
+	transition: 150ms transform ease-out;
 }
 
 label {
-	color: $color-turquoise;
-	font-weight: $font-weight-bold;
-	-webkit-tap-highlight-color: rgba($color-turquoise, 0.2);
+	color: $color-accent;
+	font-family: $secondary-font-stack;
+	font-size: $fs-1;
+	font-weight: $secondary-font-weight-bold;
+	line-height: 1.25;
+	-webkit-tap-highlight-color: rgba($color-accent, 0.1);
 }
 
-%field {
-	@include field-color-dark;
-	border: none;
-	border-radius: 0.375rem;
-	box-shadow: none;
-	box-sizing: border-box;
-	display: block;
-	font-family: inherit;
-	font-size: 1rem;
-	font-weight: $font-weight-bold;
-	line-height: 1.35;
-	padding: 0.625em 1em;
-	transition: 200ms all ease-out;
-	width: 100%;
+label a {
+	color: #fff;
+	font-family: $primary-font-stack;
+	font-size: $fs--1;
+	font-weight: $primary-font-weight;
+	margin-left: $size--3;
+
+	&:hover,
+	&:focus {
+		color: $color-primary;
+	}
 }
 
 input[type='text'],
@@ -173,45 +295,62 @@ input[type='email'],
 input[type='password'],
 input[type='number'],
 input[type='url'],
-textarea {
-	@extend %field;
+textarea,
+select {
+	background-color: $color-field-bg;
+	color: #fff;
+	border: none;
+	border-radius: $border-radius;
+	box-shadow: none;
+	box-sizing: border-box;
+	display: block;
+	font-family: $primary-font-stack;
+	font-weight: $primary-font-weight;
+	font-size: $fs-base;
+	line-height: 2;
+	padding: 0.5em 1em;
+	transition: 200ms all ease-out;
+	width: 100%;
 
 	&::-webkit-input-placeholder {
-		font-weight: $font-weight-regular;
+		color: $color-placeholder;
+		font-weight: $primary-font-weight;
 	}
 
 	&:-moz-placeholder {
-		font-weight: $font-weight-regular;
+		color: $color-placeholder;
+		font-weight: $primary-font-weight;
 	}
 
 	&::-moz-placeholder {
-		font-weight: $font-weight-regular;
+		color: $color-placeholder;
+		font-weight: $primary-font-weight;
 	}
 
 	&:-ms-input-placeholder {
-		font-weight: $font-weight-regular;
+		color: $color-placeholder;
+		font-weight: $primary-font-weight;
 	}
 
 	&::placeholder {
-		font-weight: $font-weight-regular;
+		color: $color-placeholder;
+		font-weight: $primary-font-weight;
+	}
+
+	&:focus {
+		background-color: rgba($color-accent, 0.2);
 	}
 }
 
 textarea {
-	font-weight: $font-weight-regular;
-	line-height: 1.75;
 	resize: vertical;
 }
 
-select {
-	@extend %field;
-}
-
 select option {
-	color: $color-cinder;
+	color: $color-dark;
 	font-family: inherit;
-	font-size: 1rem;
-	font-weight: $font-weight-regular;
+	font-size: $fs-base;
+	font-weight: $primary-font-weight;
 	line-height: 1.35;
 	padding: 0.25em 0;
 }
@@ -226,48 +365,52 @@ input[type=number]::-webkit-outer-spin-button {
 	margin: 0; 
 }
 
-input[type='checkbox'] + label:before,
-input[type='radio'] + label:before {
-	box-shadow: inset 0 0 0 1px $color-turquoise;
-	border-radius: 3px;
-	content: '';
-	display: block;
-	flex: 0 0 1em;
-	height: 1em;
-	margin: 0.0625em 0.5em 0 0;
-	transition: 200ms background ease-out, 200ms opacity ease-out;
-	width: 1em;
-}
+// input[type='checkbox'] + label:before,
+// input[type='radio'] + label:before {
+// 	box-shadow: inset 0 0 0 1px $color-accent;
+// 	border-radius: $border-radius;
+// 	content: '';
+// 	display: block;
+// 	flex: 0 0 1em;
+// 	height: 1em;
+// 	margin: 0.0625em 0.75em 0 0;
+// 	transition: 200ms background ease-out, 200ms opacity ease-out;
+// 	width: 1em;
+// }
 
 input[type='checkbox'] + label,
 input[type='radio'] + label {
+	border-radius: $border-radius;
 	cursor: pointer;
-	display: flex;
-	font-weight: $font-weight-regular;
+	display: block;
+	font-weight: $primary-font-weight;
+	overflow: hidden;
+	padding: $size--2 $size-base;
 }
 
-input[type='radio'] + label:before {
-	border-radius: 100%;
-}
+// input[type='radio'] + label:before {
+// 	border-radius: 100%;
+// }
 
 input[type='checkbox']:checked + label,
 input[type='radio']:checked + label {
-	font-weight: $font-weight-bold;
+	background: rgba($color-accent, 0.2);
+	color: $color-accent;
 }
 
-input[type='checkbox'] + label:hover:before,
-input[type='radio'] + label:hover:before,
-input[type='checkbox']:focus + label:before,
-input[type='radio']:focus + label:before {
-	box-shadow: inset 0 0 0 1px #fff;
-}
+// input[type='checkbox'] + label:hover:before,
+// input[type='radio'] + label:hover:before,
+// input[type='checkbox']:focus + label:before,
+// input[type='radio']:focus + label:before {
+// 	box-shadow: inset 0 0 0 1px #fff;
+// }
 
-input[type='checkbox']:checked + label:before,
-input[type='radio']:checked + label:before {
-	background: $gradient;
-	box-shadow: none;
-	opacity: 1;
-}
+// input[type='checkbox']:checked + label:before,
+// input[type='radio']:checked + label:before {
+// 	background: green;
+// 	box-shadow: none;
+// 	opacity: 1;
+// }
 
 input[type='checkbox'],
 input[type='radio'] {
@@ -280,7 +423,7 @@ input[type='radio'] {
 }
 
 .form-field + .form-field {
-	margin-top: 2rem;
+	margin-top: $size-2;
 }
 
 .select-group {
@@ -297,18 +440,11 @@ input[type='radio'] {
 	padding: 0.5rem 0;
 }
 
-.gradient-text {
-	color: $color-torch-red;
-	background: $gradient;
-	-webkit-background-clip: text;
-	-webkit-text-fill-color: transparent;
-}
-
 .error-msg {
 	align-items: flex-start;
-	color: $color-torch-red;
+	color: $color-primary;
 	display: flex;
-	font-weight: $font-weight-bold;
+	font-weight: $secondary-font-weight-bold;
 	
 	.error-icon {
 		fill: currentColor;
@@ -321,9 +457,9 @@ input[type='radio'] {
 
 .success-msg {
 	align-items: flex-start;
-	color: $color-turquoise;
+	color: $color-accent;
 	display: flex;
-	font-weight: $font-weight-bold;
+	font-weight: $secondary-font-weight-bold;
 
 	.success-icon {
 		fill: currentColor;

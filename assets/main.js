@@ -17,6 +17,7 @@ var movies = new Vue({
             errored: false,
             movieCount: 0,
             activeCard: null,
+            highlight: null,
             user: {
                 id: null,
                 email: null,
@@ -60,12 +61,11 @@ var movies = new Vue({
     computed: {
         movies() {
             var self = this
-            var movies = self.movieData
 
             // filter movie data
-            var filteredMovies = _.filter(movies, movie => {
+            var filteredMovies = _.filter(self.movieData, movie => {
                 var search = self.filter.search ? new RegExp('\\b' + self.filter.search, 'gi').test(movie.title) : true
-                var format = self.filter.format.length ? (self.filter.format.includes(movie.vudu) || self.filter.format.includes(movie.googlePlay) || self.filter.format.includes(movie.disc)) : true
+                var format = self.filter.format.length ? (self.filter.format.includes(movie.vudu) || self.filter.format.includes(movie.googlePlay) || self.filter.format.includes(movie.itunes) || self.filter.format.includes(movie.plex) || self.filter.format.includes(movie.disc)) : true
                 var rating = self.filter.rating.length ? self.filter.rating.includes(movie.rating) : true
                 var genre = self.filter.genre.length ? self.filter.genre.every(item => movie.genre.includes(item)) : true
                 var year = (self.filter.startYear ? movie.year >= self.filter.startYear : self.filterData.minYear) && (self.filter.endYear ? movie.year <= self.filter.endYear : self.filterData.maxYear)
@@ -93,6 +93,22 @@ var movies = new Vue({
                 // return filtered movies, ordered by purchase date
                 return _.take(_.orderBy(filteredMovies, m => m.dateAcquired, ['desc']), self.lazy.totalShown)
             }
+        },
+        isFiltering() {
+            return this.filter.format.length > 0 ||
+                this.filter.genre.length > 0 ||
+                this.filter.rating.length > 0 ||
+                this.filter.startYear ||
+                this.filter.endYear
+        },
+        canReset() {
+            return this.filter.randomMovie ||
+                this.filter.search ||
+                this.filter.format.length > 0 ||
+                this.filter.genre.length > 0 ||
+                this.filter.rating.length > 0 ||
+                this.filter.startYear ||
+                this.filter.endYear
         }
     },
     mounted() {
@@ -135,7 +151,6 @@ var movies = new Vue({
                 vm.movieData = querySnapshot.docs.map(doc => {
                     return { id: doc.id, ...doc.data() }
                 })
-                
                  
                 vm.movieData.forEach(movie => {
                     // convert firestore timestamp
@@ -187,11 +202,13 @@ var movies = new Vue({
 
             var vuduFormats = vm.movieData.flatMap(movie => movie.vudu)
             var gpFormats = vm.movieData.flatMap(movie => movie.googlePlay)
-            var mergedFormats = [...vuduFormats, ...gpFormats]
-            vm.filterData.digital = [...new Set(mergedFormats)].filter(el => el != '').sort()
+            var itunesFormats = vm.movieData.flatMap(movie => movie.itunes)
+            var plexFormats = vm.movieData.flatMap(movie => movie.plex)
+            var mergedFormats = [...vuduFormats, ...gpFormats, ...itunesFormats, ...plexFormats]
+            vm.filterData.digital = [...new Set(mergedFormats)].filter(el => el && el != '').sort()
 
             var discFormats = vm.movieData.flatMap(movie => movie.disc)
-            vm.filterData.physical = [...new Set(discFormats)].filter(el => el != '').sort()
+            vm.filterData.physical = [...new Set(discFormats)].filter(el => el && el != '').sort()
 
             var ratings = [...new Set(vm.movieData.flatMap(movie => movie.rating))]
             var ratingsOrder = ['G', 'TV-G', 'PG', 'TV-PG', 'PG-13', 'TV-14', 'R', 'TV-MA', 'NC-17', 'NR']
@@ -272,6 +289,16 @@ var movies = new Vue({
             // hide filter menus
             this.filter.active = null
         },
+        highlightEl(el) {
+            var self = this
+
+            self.highlight = el
+
+            // wait for button animation
+            setTimeout(function () {
+                self.highlight = null
+            }, 300);
+        },
         toggleRequestForm(e) {
             this.request.formActive = !this.request.formActive
 
@@ -306,45 +333,50 @@ var movies = new Vue({
                 })
         },
         reset() {
-            this.activeCard = null
-            this.filter.active = null
-            this.filter.search = ''
-            this.filter.format = []
-            this.filter.rating = []
-            this.filter.genre = []
-            this.filter.startYear = null
-            this.filter.endYear = null
-            this.filter.randomMovie = false
+            var self = this
+            self.activeCard = null
+            // this.filter.active = null
+            self.filter.search = ''
+            self.filter.format = []
+            self.filter.rating = []
+            self.filter.genre = []
+            self.filter.startYear = null
+            self.filter.endYear = null
+            
+            // wait for button animation
+            setTimeout(function () {
+                self.filter.randomMovie = false
+            }, 250);
         },
         documentClick(e) {
-            var target = e.target
+            // var target = e.target
 
-            // close filter panel (narrow views) on click outside
-            var filterPanel = this.$refs.filterPanel
-            var filterPanelBtn = this.$refs.filterPanelBtn
+            // // close filter panel (narrow views) on click outside
+            // var filterPanel = this.$refs.filterPanel
+            // var filterPanelBtn = this.$refs.filterPanelBtn
 
-            if (filterPanel !== target && !filterPanel.contains(target) && filterPanelBtn !== target && !filterPanelBtn.contains(target))
-                this.filter.panelActive = false
+            // if (filterPanel !== target && !filterPanel.contains(target) && filterPanelBtn !== target && !filterPanelBtn.contains(target))
+            //     this.filter.panelActive = false
 
-            // close all filters on click outside
-            var filters = this.$refs.filterOption
-            var filterClicked = false
+            // // close all filters on click outside
+            // var filters = this.$refs.filterOption
+            // var filterClicked = false
 
-            for (var filter of filters) {
-                if (filter == target || filter.contains(target)) {
-                    filterClicked = true
-                    break
-                }
-            }
+            // for (var filter of filters) {
+            //     if (filter == target || filter.contains(target)) {
+            //         filterClicked = true
+            //         break
+            //     }
+            // }
 
-            if (!filterClicked)
-                this.filter.active = null
+            // if (!filterClicked)
+            //     this.filter.active = null
         }
     },
     created() {
-        document.addEventListener('click', this.documentClick)
+        // document.addEventListener('click', this.documentClick)
     },
     destroyed() {
-        document.removeEventListener('click', this.documentClick)
+        // document.removeEventListener('click', this.documentClick)
     }
 })

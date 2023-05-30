@@ -7,56 +7,79 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<meta name="robots" content="noindex, nofollow">
 	<title>Engel Movie Collection</title>
-	<meta name="theme-color" content="#0d0e16">
-	<link rel="manifest" href="manifest.json">
-	<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;900&display=swap" rel="stylesheet">
-	<link href="assets/main.min.css" rel="stylesheet">
+	<meta name="theme-color" content="#0f121a">
+	<link rel="manifest" href="/manifest.json">
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@400;700&family=Poppins:wght@400&display=swap" rel="stylesheet">
+	<link href="/assets/main.min.css" rel="stylesheet">	
 </head>
 
 <body>
-	<div id="movies" v-cloak v-infinite-scroll="loadMore" infinite-scroll-disabled="lazy.busy" infinite-scroll-distance="200">
 
-		<h1>
-			<span class="gradient-text">Movie</span> Collection
-		</h1>
+	<div id="movies" v-cloak v-infinite-scroll="loadMore" infinite-scroll-disabled="lazy.busy" infinite-scroll-distance="200">
 
 		<div v-if="loading" class="loader"></div>
 
-		<h2 v-else-if="errored">Movie data could not be retrieved. Try again later.</h2>
+		<div v-else-if="errored">
+			<h1>Oh, no.</h1>
+			<p>The movie data couldn't be loaded. Try again later.</p>
+		</div>
 
 		<template v-else>
-			<div class="filters" :class="{ active: filter.panelActive }">
+			
+			<header class="header" :class="{ active: filter.panelActive }">
+				<h1 class="movie-count">
+					<span class="movie-count-num">{{ movieCount }}</span>
+					{{ movieCount == 1 ? 'movie' : 'movies' }}
+				</h1> <!-- /movie-count -->
+				
+				<div class="filters" :class="{ active: filter.panelActive }">
+					<div class="search">
+						<input type="search" placeholder="Search by movie title" id="search" v-model="filter.search" autocomplete="off">
+						<svg class="search-icon" width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+							<path d="M10.6875 1.6875C7.587 1.6875 5.0625 4.212 5.0625 7.3125C5.0625 8.65969 5.535 9.89437 6.32813 10.8636L1.84557 15.345L2.655 16.155L7.137 11.6724C8.138 12.4931 9.39311 12.9403 10.6875 12.9375C13.788 12.9375 16.3125 10.413 16.3125 7.3125C16.3125 4.212 13.788 1.6875 10.6875 1.6875ZM10.6875 2.8125C13.1794 2.8125 15.1875 4.82063 15.1875 7.3125C15.1875 9.80437 13.1794 11.8125 10.6875 11.8125C8.19563 11.8125 6.1875 9.80437 6.1875 7.3125C6.1875 4.82063 8.19563 2.8125 10.6875 2.8125Z" />
+						</svg>
+					</div> <!-- /search -->
 
-				<div class="movie-count">
-					<h2><span>{{ movieCount }}</span> movies</h2>
-				</div> <!-- /movie-count -->
+					<button type="button" class="icon-btn filter-btn" :class="{ 'active': filter.panelActive, 'has-selections': isFiltering }" @click="toggleFilters" ref="filterPanelBtn" :title="filter.panelActive ? 'Close Filters' : 'Filter Movies'">
+						<svg v-show="!filter.panelActive" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+							<path d="M0,16.2C0,15.6,0.6,15,1.2,15h2.1c0.5-1.1,1.6-1.9,2.9-1.9s2.3,0.8,2.9,1.9h9.6c0.7,0,1.2,0.6,1.2,1.2 c0,0.7-0.6,1.2-1.2,1.2H9.1c-0.5,1.1-1.6,1.9-2.9,1.9s-2.4-0.8-2.9-1.9H1.2C0.6,17.5,0,16.9,0,16.2z M7.5,16.2 c0-0.7-0.6-1.2-1.2-1.2S5,15.6,5,16.2c0,0.7,0.6,1.2,1.2,1.2S7.5,16.9,7.5,16.2z M13.8,6.9c1.3,0,2.3,0.8,2.9,1.9h2.1 c0.7,0,1.2,0.6,1.2,1.2c0,0.7-0.6,1.2-1.2,1.2h-2.1c-0.5,1.1-1.6,1.9-2.9,1.9s-2.4-0.8-2.9-1.9H1.2C0.6,11.2,0,10.7,0,10 c0-0.7,0.6-1.2,1.2-1.2h9.6C11.4,7.6,12.5,6.9,13.8,6.9z M15,10c0-0.7-0.6-1.2-1.2-1.2s-1.2,0.6-1.2,1.2c0,0.7,0.6,1.2,1.2,1.2 S15,10.7,15,10z M18.8,2.5c0.7,0,1.2,0.6,1.2,1.2C20,4.4,19.4,5,18.8,5h-8.4C9.8,6.1,8.8,6.9,7.5,6.9S5.1,6.1,4.6,5H1.2 C0.6,5,0,4.4,0,3.8c0-0.7,0.6-1.2,1.2-1.2h3.4c0.5-1.1,1.6-1.9,2.9-1.9s2.3,0.8,2.9,1.9H18.8z M6.2,3.8C6.2,4.4,6.8,5,7.5,5 s1.2-0.6,1.2-1.2c0-0.7-0.6-1.2-1.2-1.2S6.2,3.1,6.2,3.8z" />
+						</svg>
+						<svg v-show="filter.panelActive" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+							<path d="M16.1357 6.13574C16.624 5.64746 16.624 4.85449 16.1357 4.36621C15.6475 3.87793 14.8545 3.87793 14.3662 4.36621L10.2529 8.4834L6.13574 4.37012C5.64746 3.88184 4.85449 3.88184 4.36621 4.37012C3.87793 4.8584 3.87793 5.65137 4.36621 6.13965L8.4834 10.2529L4.37012 14.3701C3.88184 14.8584 3.88184 15.6514 4.37012 16.1396C4.8584 16.6279 5.65137 16.6279 6.13965 16.1396L10.2529 12.0225L14.3701 16.1357C14.8584 16.624 15.6514 16.624 16.1396 16.1357C16.6279 15.6475 16.6279 14.8545 16.1396 14.3662L12.0225 10.2529L16.1357 6.13574Z" />
+						</svg>
+					</button>
 
-				<button type="button" class="filter-btn" @click="toggleFilters" ref="filterPanelBtn">
-					<svg class="filter-icon" width="18px" height="18px" viewBox="0 0 36 36" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-						<path d="M35,4H15.65C14.83,1.67,12.61,0,10,0C7.39,0,5.17,1.67,4.35,4H1C0.45,4,0,4.45,0,5v2c0,0.55,0.45,1,1,1h3.35 c0.82,2.33,3.04,4,5.65,4c2.61,0,4.83-1.67,5.65-4H35c0.55,0,1-0.45,1-1V5C36,4.45,35.55,4,35,4z M10,9C8.34,9,7,7.66,7,6 s1.34-3,3-3c1.66,0,3,1.34,3,3S11.66,9,10,9z" />
-						<path d="M35,16h-3.35c-0.82-2.33-3.04-4-5.65-4c-2.61,0-4.83,1.67-5.65,4H1c-0.55,0-1,0.45-1,1v2c0,0.55,0.45,1,1,1h19.35 c0.82,2.33,3.04,4,5.65,4c2.61,0,4.83-1.67,5.65-4H35c0.55,0,1-0.45,1-1v-2C36,16.45,35.55,16,35,16z M26,21c-1.66,0-3-1.34-3-3 s1.34-3,3-3c1.66,0,3,1.34,3,3S27.66,21,26,21z" />
-						<path d="M35,28H19.65c-0.82-2.33-3.04-4-5.65-4c-2.61,0-4.83,1.67-5.65,4H1c-0.55,0-1,0.45-1,1v2c0,0.55,0.45,1,1,1h7.35 c0.82,2.33,3.04,4,5.65,4c2.61,0,4.83-1.67,5.65-4H35c0.55,0,1-0.45,1-1v-2C36,28.45,35.55,28,35,28z M14,33c-1.66,0-3-1.34-3-3 s1.34-3,3-3c1.66,0,3,1.34,3,3S15.66,33,14,33z" />
-					</svg>
-					Filter
-				</button>
+					<button type="button" class="icon-btn" :class="{ shake: highlight === 'random', 'has-selections': filter.randomMovie }" @click="selectRandom(); highlightEl('random')" title="Random Movie!">
+						<svg width="26" height="20" viewBox="0 0 26 20" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+							<path d="M23.625 7.5H18.9867C19.4824 8.65586 19.2648 10.0469 18.3227 10.9891L13 16.3117V18.125C13 19.1605 13.8395 20 14.875 20H23.625C24.6605 20 25.5 19.1605 25.5 18.125V9.375C25.5 8.33945 24.6605 7.5 23.625 7.5ZM19.25 14.6875C18.7324 14.6875 18.3125 14.2676 18.3125 13.75C18.3125 13.232 18.7324 12.8125 19.25 12.8125C19.7676 12.8125 20.1875 13.232 20.1875 13.75C20.1875 14.2676 19.7676 14.6875 19.25 14.6875ZM17.4387 7.39453L10.6055 0.561328C9.85703 -0.187109 8.64336 -0.187109 7.89492 0.561328L1.06133 7.39453C0.312891 8.14297 0.312891 9.35664 1.06133 10.1051L7.89453 16.9387C8.64297 17.6871 9.85664 17.6871 10.6051 16.9387L17.4387 10.1055C18.1871 9.35664 18.1871 8.14297 17.4387 7.39453ZM4.25 9.6875C3.73242 9.6875 3.3125 9.26758 3.3125 8.75C3.3125 8.23203 3.73242 7.8125 4.25 7.8125C4.76758 7.8125 5.1875 8.23203 5.1875 8.75C5.1875 9.26758 4.76758 9.6875 4.25 9.6875ZM9.25 14.6875C8.73242 14.6875 8.3125 14.2676 8.3125 13.75C8.3125 13.232 8.73242 12.8125 9.25 12.8125C9.76758 12.8125 10.1875 13.232 10.1875 13.75C10.1875 14.2676 9.76758 14.6875 9.25 14.6875ZM9.25 9.6875C8.73242 9.6875 8.3125 9.26758 8.3125 8.75C8.3125 8.23203 8.73242 7.8125 9.25 7.8125C9.76758 7.8125 10.1875 8.23203 10.1875 8.75C10.1875 9.26758 9.76758 9.6875 9.25 9.6875ZM9.25 4.6875C8.73242 4.6875 8.3125 4.26758 8.3125 3.75C8.3125 3.23203 8.73242 2.8125 9.25 2.8125C9.76758 2.8125 10.1875 3.23203 10.1875 3.75C10.1875 4.26758 9.76758 4.6875 9.25 4.6875ZM14.25 9.6875C13.7324 9.6875 13.3125 9.26758 13.3125 8.75C13.3125 8.23203 13.7324 7.8125 14.25 7.8125C14.7676 7.8125 15.1875 8.23203 15.1875 8.75C15.1875 9.26758 14.7676 9.6875 14.25 9.6875Z" />
+						</svg>
+					</button>
+
+					<button type="button" class="icon-btn" :class="{ rotate: highlight === 'reset' }" @click="reset(); highlightEl('reset')" title="Reset Filters" :disabled="!canReset">
+						<svg width="20" height="20" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+							<path d="M5.58203 5.58204C8.01172 3.15235 11.9375 3.14063 14.3828 5.54297L12.7734 7.14844C12.5039 7.41797 12.4258 7.82032 12.5703 8.17188C12.7148 8.52344 13.0586 8.75 13.4375 8.75H18.4375C18.957 8.75 19.375 8.33204 19.375 7.8125V2.81251C19.375 2.4336 19.1484 2.08985 18.7969 1.94532C18.4453 1.80079 18.043 1.87891 17.7734 2.14844L16.1484 3.77344C12.7266 0.394536 7.21484 0.406255 3.8125 3.81251C2.85937 4.76563 2.17187 5.88672 1.75 7.08594C1.51953 7.73829 1.86328 8.44922 2.51172 8.67969C3.16016 8.91016 3.875 8.56641 4.10547 7.91797C4.40625 7.06641 4.89453 6.26563 5.58203 5.58204ZM0.625 12.1875V17.1875C0.625 17.5664 0.851562 17.9102 1.20312 18.0547C1.55469 18.1992 1.95703 18.1211 2.22656 17.8516L3.85156 16.2266C7.27344 19.6055 12.7852 19.5938 16.1875 16.1875C17.1406 15.2344 17.832 14.1133 18.2539 12.918C18.4844 12.2656 18.1406 11.5547 17.4922 11.3242C16.8437 11.0938 16.1289 11.4375 15.8984 12.0859C15.5977 12.9375 15.1094 13.7383 14.4219 14.4219C11.9922 16.8516 8.06641 16.8633 5.62109 14.4609L7.22656 12.8516C7.49609 12.582 7.57422 12.1797 7.42969 11.8281C7.28516 11.4766 6.94141 11.25 6.5625 11.25H1.5625C1.04297 11.25 0.625 11.668 0.625 12.1875Z" />
+						</svg>
+					</button>
+
+					<button type="button" class="icon-btn" :class="{ active: request.formActive }" @click="toggleRequestForm" title="Request a Movie">
+						<svg width="20" height="20" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+							<path d="M10 1.21484C4.47656 1.21484 0.0351564 4.85234 0.0351564 9.33984C0.0351564 11.2781 0.869141 13.05 2.26055 14.4453C1.77227 16.4129 0.140625 18.1668 0.121094 18.1863C0.0332033 18.2742 0.00878922 18.4103 0.0625002 18.5275C0.111289 18.6447 0.21957 18.7137 0.346524 18.7137C2.93441 18.7137 4.84262 17.473 5.83871 16.7062C7.11332 17.1848 8.5348 17.4637 10.034 17.4637C15.5575 17.4637 19.9989 13.8258 19.9989 9.37383C19.9989 4.92187 15.5234 1.21484 10 1.21484ZM4.96484 10.5898C4.27148 10.5898 3.71484 10.0332 3.71484 9.375C3.71484 8.7168 4.27148 8.125 4.96484 8.125C5.6582 8.125 6.21484 8.68164 6.21484 9.375C6.21484 10.0684 5.69141 10.5898 4.96484 10.5898ZM10 10.5898C9.30664 10.5898 8.78516 10.0332 8.78516 9.375C8.78516 8.7168 9.3418 8.125 10 8.125C10.6582 8.125 11.2148 8.68164 11.2148 9.375C11.2148 10.0684 10.6953 10.5898 10 10.5898ZM14.9648 10.5898C14.2715 10.5898 13.7148 10.0332 13.7148 9.375C13.7148 8.7168 14.2715 8.125 14.9648 8.125C15.6582 8.125 16.2148 8.68164 16.2148 9.375C16.2148 10.0684 15.6914 10.5898 14.9648 10.5898Z" />
+						</svg>
+					</button>
+
+				</div> <!-- /filters -->
 
 				<div class="filter-panel" :class="{ active: filter.panelActive }" ref="filterPanel">
-					<button type="button" class="filter-close-btn" @click="toggleFilters" title="Close">&times;</button>
-
-					<div class="filter-option search">
-						<input type="search" placeholder="Search by movie title" id="search" v-model="filter.search" autocomplete="off">
-						<svg class="search-icon" width="14px" height="14px" viewBox="0 0 14 14" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-							<path d="M13.7,12.3l-3-3c0.7-1,1.1-2.2,1.1-3.5c0-1.6-0.6-3.1-1.7-4.2C9,0.6,7.5,0,5.9,0C4.4,0,2.9,0.6,1.7,1.7 C0.6,2.9,0,4.4,0,5.9S0.6,9,1.7,10.1c1.1,1.1,2.6,1.7,4.2,1.7c1.3,0,2.5-0.4,3.5-1.1l3,3c0.2,0.2,0.4,0.3,0.7,0.3 c0.2,0,0.5-0.1,0.7-0.3C14.1,13.3,14.1,12.7,13.7,12.3z M3.1,8.8C2.4,8,1.9,7,1.9,5.9s0.4-2.1,1.2-2.8c0.8-0.8,1.8-1.2,2.8-1.2 S8,2.4,8.8,3.1c0.8,0.8,1.2,1.8,1.2,2.8S9.5,8,8.8,8.8C8,9.5,7,9.9,5.9,9.9S3.9,9.5,3.1,8.8z" />
-						</svg>
-					</div> <!-- /filter-option -->
 
 					<template v-for="i in 1">
 						<div class="filter-option" :class="{ active: filter.active === 'sort' }" @keydown.esc="closeFilter()" ref="filterOption">
 							<button type="button" class="filter-option-title" @click="selectFilter('sort')">
-								Sort
-								<svg class="filter-arrow" width="10px" height="7px" viewBox="0 0 10 7" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-									<path d="M4.47,6.24L0.22,1.99c-0.29-0.29-0.29-0.77,0-1.06l0.71-0.71c0.29-0.29,0.77-0.29,1.06,0L5,3.23l3.01-3.01 c0.29-0.29,0.77-0.29,1.06,0l0.71,0.71c0.29,0.29,0.29,0.77,0,1.06L5.53,6.24C5.24,6.53,4.77,6.53,4.47,6.24L4.47,6.24z" />
+								<svg class="filter-arrow" width="16" height="16" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+									<path d="M9.11719 15.8828C9.60547 16.3711 10.3984 16.3711 10.8867 15.8828L18.3867 8.38281C18.875 7.89453 18.875 7.10156 18.3867 6.61328C17.8984 6.125 17.1055 6.125 16.6172 6.61328L10 13.2305L3.38281 6.61719C2.89453 6.12891 2.10156 6.12891 1.61328 6.61719C1.125 7.10547 1.125 7.89844 1.61328 8.38672L9.11328 15.8867L9.11719 15.8828Z" />
 								</svg>
+								Sort
 							</button>
 							<div class="filter-option-menu">
 								<div class="filter-field">
@@ -72,10 +95,10 @@
 
 						<div class="filter-option" :class="{ active: filter.active === 'format', 'has-selections' : filter.format.length > 0 }" @keydown.esc="closeFilter()" ref="filterOption">
 							<button type="button" class="filter-option-title" tabindex="0" @click="selectFilter('format')">
-								Format &amp; Quality
-								<svg class="filter-arrow" width="10px" height="7px" viewBox="0 0 10 7" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-									<path d="M4.47,6.24L0.22,1.99c-0.29-0.29-0.29-0.77,0-1.06l0.71-0.71c0.29-0.29,0.77-0.29,1.06,0L5,3.23l3.01-3.01 c0.29-0.29,0.77-0.29,1.06,0l0.71,0.71c0.29,0.29,0.29,0.77,0,1.06L5.53,6.24C5.24,6.53,4.77,6.53,4.47,6.24L4.47,6.24z" />
+								<svg class="filter-arrow" width="16" height="16" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+									<path d="M9.11719 15.8828C9.60547 16.3711 10.3984 16.3711 10.8867 15.8828L18.3867 8.38281C18.875 7.89453 18.875 7.10156 18.3867 6.61328C17.8984 6.125 17.1055 6.125 16.6172 6.61328L10 13.2305L3.38281 6.61719C2.89453 6.12891 2.10156 6.12891 1.61328 6.61719C1.125 7.10547 1.125 7.89844 1.61328 8.38672L9.11328 15.8867L9.11719 15.8828Z" />
 								</svg>
+								Format &amp; Quality
 							</button>
 							<div class="filter-option-menu">
 								<span class="filter-option-cat">Digital</span>
@@ -93,10 +116,10 @@
 
 						<div class="filter-option" :class="{ active: filter.active === 'genre', 'has-selections' : filter.genre.length > 0 }" @keydown.esc="closeFilter()" ref="filterOption">
 							<button type="button" class="filter-option-title" tabindex="0" @click="selectFilter('genre')">
-								Genre
-								<svg class="filter-arrow" width="10px" height="7px" viewBox="0 0 10 7" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-									<path d="M4.47,6.24L0.22,1.99c-0.29-0.29-0.29-0.77,0-1.06l0.71-0.71c0.29-0.29,0.77-0.29,1.06,0L5,3.23l3.01-3.01 c0.29-0.29,0.77-0.29,1.06,0l0.71,0.71c0.29,0.29,0.29,0.77,0,1.06L5.53,6.24C5.24,6.53,4.77,6.53,4.47,6.24L4.47,6.24z">
+								<svg class="filter-arrow" width="16" height="16" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+									<path d="M9.11719 15.8828C9.60547 16.3711 10.3984 16.3711 10.8867 15.8828L18.3867 8.38281C18.875 7.89453 18.875 7.10156 18.3867 6.61328C17.8984 6.125 17.1055 6.125 16.6172 6.61328L10 13.2305L3.38281 6.61719C2.89453 6.12891 2.10156 6.12891 1.61328 6.61719C1.125 7.10547 1.125 7.89844 1.61328 8.38672L9.11328 15.8867L9.11719 15.8828Z" />
 								</svg>
+								Genre
 							</button>
 							<div class="filter-option-menu">
 								<div class="filter-field" v-for="(genre, index) in filterData.genres">
@@ -108,10 +131,10 @@
 
 						<div class="filter-option" :class="{ active: filter.active === 'rating', 'has-selections' : filter.rating.length > 0 }" @keydown.esc="closeFilter()" ref="filterOption">
 							<button type="button" class="filter-option-title" tabindex="0" @click="selectFilter('rating')">
-								Rating
-								<svg class="filter-arrow" width="10px" height="7px" viewBox="0 0 10 7" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-									<path d="M4.47,6.24L0.22,1.99c-0.29-0.29-0.29-0.77,0-1.06l0.71-0.71c0.29-0.29,0.77-0.29,1.06,0L5,3.23l3.01-3.01 c0.29-0.29,0.77-0.29,1.06,0l0.71,0.71c0.29,0.29,0.29,0.77,0,1.06L5.53,6.24C5.24,6.53,4.77,6.53,4.47,6.24L4.47,6.24z" />
+								<svg class="filter-arrow" width="16" height="16" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+									<path d="M9.11719 15.8828C9.60547 16.3711 10.3984 16.3711 10.8867 15.8828L18.3867 8.38281C18.875 7.89453 18.875 7.10156 18.3867 6.61328C17.8984 6.125 17.1055 6.125 16.6172 6.61328L10 13.2305L3.38281 6.61719C2.89453 6.12891 2.10156 6.12891 1.61328 6.61719C1.125 7.10547 1.125 7.89844 1.61328 8.38672L9.11328 15.8867L9.11719 15.8828Z" />
 								</svg>
+								Rating
 							</button>
 							<div class="filter-option-menu">
 								<div class="filter-field" v-for="(rating, index) in filterData.ratings">
@@ -123,10 +146,10 @@
 
 						<div class="filter-option" :class="{ active: filter.active === 'year', 'has-selections' : filter.startYear || filter.endYear }" @keydown.esc="closeFilter()" ref="filterOption">
 							<button type="button" class="filter-option-title" tabindex="0" @click="selectFilter('year')">
-								Year
-								<svg class="filter-arrow" width="10px" height="7px" viewBox="0 0 10 7" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-									<path d="M4.47,6.24L0.22,1.99c-0.29-0.29-0.29-0.77,0-1.06l0.71-0.71c0.29-0.29,0.77-0.29,1.06,0L5,3.23l3.01-3.01 c0.29-0.29,0.77-0.29,1.06,0l0.71,0.71c0.29,0.29,0.29,0.77,0,1.06L5.53,6.24C5.24,6.53,4.77,6.53,4.47,6.24L4.47,6.24z">
+								<svg class="filter-arrow" width="16" height="16" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+									<path d="M9.11719 15.8828C9.60547 16.3711 10.3984 16.3711 10.8867 15.8828L18.3867 8.38281C18.875 7.89453 18.875 7.10156 18.3867 6.61328C17.8984 6.125 17.1055 6.125 16.6172 6.61328L10 13.2305L3.38281 6.61719C2.89453 6.12891 2.10156 6.12891 1.61328 6.61719C1.125 7.10547 1.125 7.89844 1.61328 8.38672L9.11328 15.8867L9.11719 15.8828Z" />
 								</svg>
+								Year
 							</button>
 							<div class="filter-option-menu">
 								<div class="filter-field year-range">
@@ -138,152 +161,147 @@
 						</div> <!-- /filter-option -->
 					</template>
 
-					<div class="filter-option">
-						<button class="filter-random-btn" @click="selectRandom()">
-							<svg class="random-icon" width="18px" height="16px" viewBox="0 0 36 32" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-								<path d="M10.5,10.44l1.82,2.8l2.38-3.67l-0.85-1.31C12.28,5.83,8.9,4,6,4H0v4h6C7.53,8,9.67,9.16,10.5,10.44z" />
-								<path style="opacity: 0.75;" d="M27,8h3v4l6-6l-6-6v4h-3c-2.9,0-6.28,1.83-7.86,4.26L10.5,21.56C9.67,22.83,7.53,24,6,24H0v4h6c2.9,0,6.28-1.83,7.86-4.26 l8.64-13.29C23.33,9.16,25.47,8,27,8z" />
-								<path d="M30,24h-3c-1.53,0-3.67-1.16-4.5-2.44l-1.82-2.8l-2.39,3.67l0.85,1.31C20.72,26.17,24.1,28,27,28h3v4l6-6l-6-6V24z" />
-							</svg>
-							Surprise Me
-						</button>
-					</div> <!-- /filter-option -->
-
-					<div class="filter-option">
-						<button class="reset-btn" @click="reset()">
-							<svg class="reset-icon" width="18px" height="18px" viewBox="0 0 36 36" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-								<path style="opacity: 0.5;" d="M8.11,8.11C10.64,5.57,14.14,4,18,4c4.27,0,8.23,1.95,10.85,5.15L24,14h12V2l-4.31,4.31C28.32,2.37,23.35,0,18,0 C13.04,0,8.54,2.02,5.28,5.28C2.92,7.64,1.22,10.63,0.46,14h4.11C5.24,11.73,6.47,9.74,8.11,8.11z" />
-								<path d="M27.89,27.89C25.36,30.43,21.86,32,18,32c-4.27,0-8.23-1.95-10.85-5.15L12,22H0v12l4.31-4.31C7.68,33.63,12.65,36,18,36 c4.96,0,9.46-2.02,12.72-5.28c2.35-2.36,4.05-5.36,4.81-8.72h-4.13C30.74,24.25,29.52,26.27,27.89,27.89z" />
-							</svg>
-							Reset
-						</button>
-					</div> <!-- /filter-option -->
-
 				</div> <!-- /filter-panel -->
-			</div> <!-- /filters -->
+			</header> <!-- /header -->
 
-			<div class="movies" :class="{ 'card-expanded': activeCard != null }">
-				<button type="button" v-for="(movie, index) in movies" :key="index" class="movie-card" tabindex="0" @click="openModal(index)" v-on:keyup.enter="openModal(index)" ref="movieCard">
-					<span class="movie-card-title-preload">{{ movie.title }}</span>
-					<img :src="movie.image" :alt="movie.title" class="movie-card-img" :title="movie.title">
-				</button>
-			</div>
+			<div class="movies">
+				<div class="movie-list" :class="{ 'card-expanded': activeCard != null }">
+					<button type="button" v-for="(movie, index) in movies" :key="index" class="movie-btn" tabindex="0" :title="movie.title + ' (' + movie.year + ')'" @click="openModal(index)" v-on:keyup.enter="openModal(index)" ref="movieCard">
+						<span class="movie-btn-title-preload" aria-hidden="true">{{ movie.title }}<br>{{ movie.year }}</span>
+						<img :src="movie.image" class="movie-btn-img" :alt="movie.title + ' (' + movie.year + ')'">
+					</button>
+				</div> <!-- /movie-list -->
+			</div> <!-- /movies -->
 
 			<transition name="modal">
 				<div class="movie-card-overlay" v-if="activeCard" @click.stop="closeModal()" ref="modalCardOverlay">
-					<div class="movie-card-content" tabindex="-1" @keydown.esc="closeModal()" @click.stop ref="modalCard">
+					<div class="movie-card" tabindex="-1" @keydown.esc="closeModal()" @click.stop ref="modalCard">
 
-						<div class="movie-card-overlay-img">
-							<img :src="movies[activeCard].image" :alt="movies[activeCard].title">
+						<div class="movie-card-hero" :style="'background-image: url(' + (movies[activeCard].hero || movies[activeCard].image) + ')'" :class="{ 'no-img' : !movies[activeCard].hero, 'no-trailer': !movies[activeCard].trailerId }">
+							<div class="movie-card-utilities">
+								<button type="button" class="movie-card-close-btn" @click.stop="closeModal()" title="Close">
+									<svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+										<path d="M5.41421 4.33576L4.33496 5.41501L10.9222 12L4.33496 18.5858L5.41496 19.665L12 13.0778L18.5857 19.6643L19.6642 18.5858L13.0777 12L19.6642 5.41426L18.585 4.33501L12 10.9223L5.41421 4.33576Z" />
+									</svg>
+								</button>
+							</div>
+							<iframe class="movie-card-trailer" v-if="movies[activeCard].trailerId" :src="'https://www.youtube.com/embed/' + movies[activeCard].trailerId + '?playlist=' + movies[activeCard].trailerId + '&controls=0&modestbranding=1&autoplay=1&loop=1&rel=0'" width="1280" height="720" :title="movies[activeCard].title + ' Trailer'" frameborder="0" allow="autoplay" tabindex="-1"></iframe>
 						</div>
 
-						<div class="movie-card-utilities">
-							<a class="movie-card-edit" :href="'/add/?id=' + movies[activeCard].id" v-if="user.authenticated && user.id == 'DfPi2C0mVWVuRq3fYKZHeKzpBep1'" target="_blank">Edit</a>
-							
-							<button type="button" class="movie-card-close-btn" @click.stop="closeModal()" title="Close">&times;</button>
-						</div>
+						<div class="movie-card-content">
 
-						<div class="movie-card-info">
-							<h3 class="movie-card-title">{{ movies[activeCard].title }}</h3>
-
-							<ul class="movie-card-stats">
-								<li><span class="movie-card-rating" title="Rating">{{ movies[activeCard].rating }}</span></li>
-								<li class="movie-card-year" title="Release Year">{{ movies[activeCard].year }}</li>
-								<li class="movie-card-genre" title="Genre">
-									<ul>
-										<li v-for="genre in movies[activeCard].genre">{{ genre }}</li>
-									</ul>
-								</li>
-								<li class="movie-card-length" title="Length" v-if="movies[activeCard].length">{{ movies[activeCard].length }}</li>
-							</ul>
-
-							<p class="movie-card-teaser" v-if="movies[activeCard].description">{{ movies[activeCard].description }}</p>
-
-							<div class="movie-card-watch" v-if="movies[activeCard].vudu || movies[activeCard].googlePlay || movies[activeCard].disc">
-								<h4 class="movie-card-watch-heading">Where to Watch</h4>
-								<ul class="movie-card-watch-list">
-									<li v-if="movies[activeCard].vudu">
-										<svg class="vudu" width="24px" height="24px" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" title="Vudu">
-											<linearGradient id="vudu-grad" gradientUnits="userSpaceOnUse" x1="16" y1="32" x2="16" y2="-9.094947e-13">
-												<stop offset="0" style="stop-color:#01639E" />
-												<stop offset="1" style="stop-color:#007BC4" />
-											</linearGradient>
-											<path style="fill:url(#vudu-grad);" d="M28,32H4c-2.21,0-4-1.79-4-4V4c0-2.21,1.79-4,4-4h23c2.76,0,5,2.24,5,5v23 C32,30.21,30.21,32,28,32z" />
-											<path style="fill:#FFFFFF;" d="M25.06,6c-1.22,0-1.97,0-3.17,0h-0.02h-0.01h0h0c-0.55,0.01-1.02,0.35-1.21,0.85 c-0.02,0.03-0.03,0.06-0.04,0.09c-1.21,3.45-2.27,6.41-3.48,9.86c-0.32,0.91-0.63,1.82-0.96,2.73c-0.03,0.07-0.09,0.16-0.16,0.18 c-0.14,0.04-0.14-0.11-0.17-0.19c-0.76-2.15-1.51-4.3-2.26-6.45c-0.77-2.21-1.42-4.04-2.19-6.25c-0.01-0.02-0.02-0.05-0.04-0.07 C11.12,6.3,10.67,6,10.16,6c-0.01,0-0.03,0-0.04,0C8.89,6,8.17,6,6.93,6c-0.41,0-0.61,0.3-0.48,0.69c1.87,5.21,3.73,10.41,5.6,15.62 c0.14,0.39,0.26,0.74,0.38,1.08c0.71,1.65,1.79,2.51,3.7,2.62c0.56,0,0.43,0,0.43,0c0.62-0.02,1.32-0.12,2.12-0.28l1.32-3.77 c1.84-5.1,3.64-10.06,5.51-15.23c0.02-0.06,0.04-0.12,0.05-0.18C25.62,6.23,25.41,6,25.06,6" />
-										</svg>
-										<span>
-											Vudu
-											<span class="movie-card-quality">{{ movies[activeCard].vudu }}</span>
-										</span>
-									</li>
-
-									<li v-if="movies[activeCard].googlePlay">
-										<svg class="google-play" width="21px" height="24px" viewBox="0 0 29 32" xmlns="http://www.w3.org/2000/svg" title="Google Play">
-											<linearGradient id="gp-grad-1" gradientUnits="userSpaceOnUse" x1="14.7161" y1="-0.046" x2="-6.1633" y2="20.8333" gradientTransform="matrix(1 0 0 1 0 2)">
-												<stop offset="0" style="stop-color:#00A0FF" />
-												<stop offset="6.574450e-03" style="stop-color:#00A1FF" />
-												<stop offset="0.2601" style="stop-color:#00BEFF" />
-												<stop offset="0.5122" style="stop-color:#00D2FF" />
-												<stop offset="0.7604" style="stop-color:#00DFFF" />
-												<stop offset="1" style="stop-color:#00E3FF" />
-											</linearGradient>
-											<path style="fill:url(#gp-grad-1);" d="M0.58,0.49C0.21,0.88,0,1.47,0,2.24v27.52c0,0.77,0.21,1.36,0.58,1.75l0.09,0.09l15.41-15.41 V16v-0.18L0.67,0.4L0.58,0.49z" />
-											
-											<linearGradient id="gp-grad-2" gradientUnits="userSpaceOnUse" x1="29.687" y1="14" x2="-0.4169" y2="14" gradientTransform="matrix(1 0 0 1 0 2)">
-												<stop offset="0" style="stop-color:#FFE000" />
-												<stop offset="0.4087" style="stop-color:#FFBD00" />
-												<stop offset="0.7754" style="stop-color:#FFA500" />
-												<stop offset="1" style="stop-color:#FF9C00" />
-											</linearGradient>
-											<path style="fill:url(#gp-grad-2);" d="M21.22,21.32l-5.14-5.14V16v-0.18l5.14-5.14l0.12,0.07l6.09,3.46c1.74,0.99,1.74,2.6,0,3.59 l-6.09,3.46L21.22,21.32z" />
-											
-											<linearGradient id="gp-grad-3" gradientUnits="userSpaceOnUse" x1="18.4826" y1="16.8574" x2="-9.8314" y2="45.1715" gradientTransform="matrix(1 0 0 1 0 2)">
-												<stop offset="0" style="stop-color:#FF3A44" />
-												<stop offset="1" style="stop-color:#C31162" />
-											</linearGradient>
-											<path style="fill:url(#gp-grad-3);" d="M21.34,21.26L16.08,16L0.58,31.51c0.57,0.61,1.52,0.68,2.59,0.08L21.34,21.26" />
-											
-											<linearGradient id="gp-grad-4" gradientUnits="userSpaceOnUse" x1="-3.3265" y1="-10.6663" x2="9.317" y2="1.9771" gradientTransform="matrix(1 0 0 1 0 2)">
-												<stop offset="0" style="stop-color:#32A071" />
-												<stop offset="0.0685" style="stop-color:#2DA771" />
-												<stop offset="0.4762" style="stop-color:#15CF74" />
-												<stop offset="0.8009" style="stop-color:#06E775" />
-												<stop offset="1" style="stop-color:#00F076" />
-											</linearGradient>
-											<path style="fill:url(#gp-grad-4);" d="M21.34,10.74L3.16,0.42C2.1-0.19,1.15-0.11,0.58,0.49L16.08,16L21.34,10.74z" />
-										</svg>
-										<span>
-											Google Play
-											<span class="movie-card-quality">{{ movies[activeCard].googlePlay }}</span>
-										</span>
-									</li>
-
-									<li v-if="movies[activeCard].disc">
-										<svg class="vudu" width="24px" height="24px" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" title="Physical Disc">
-											<linearGradient id="disc-grad" gradientUnits="userSpaceOnUse" x1="4.6863" y1="27.3137" x2="27.3137" y2="4.6863">
-												<stop offset="0" style="stop-color:#69747C" />
-												<stop offset="1" style="stop-color:#8C949A" />
-											</linearGradient>
-											<path style="fill:url(#disc-grad);" d="M16,0C7.16,0,0,7.16,0,16s7.16,16,16,16s16-7.16,16-16S24.84,0,16,0z M16,20 c-2.21,0-4-1.79-4-4c0-2.21,1.79-4,4-4s4,1.79,4,4C20,18.21,18.21,20,16,20z" />
-										</svg>
-										{{ movies[activeCard].disc }}
-									</li>
-								</ul>
+							<div class="movie-card-img">
+								<img :src="movies[activeCard].image" :alt="movies[activeCard].title" width="300" height="450">
 							</div>
 
-							<p class="movie-card-note" v-if="movies[activeCard].notes" title="Notes">{{ movies[activeCard].notes }}</p>
+							<div class="movie-card-info">
+								<h2 class="movie-card-title">{{ movies[activeCard].title }}</h2>
+
+								<ul class="movie-card-stats">
+									<li><span class="movie-card-rating" title="Rating">{{ movies[activeCard].rating }}</span></li>
+									<li class="movie-card-year" title="Release Year">{{ movies[activeCard].year }}</li>
+									<li class="movie-card-length" title="Length" v-if="movies[activeCard].length">{{ movies[activeCard].length }}</li>
+									<li class="movie-card-genre" title="Genre(s)">
+										<ul>
+											<li v-for="genre in movies[activeCard].genre">{{ genre }}</li>
+										</ul>
+									</li>
+								</ul>
+
+								<p class="movie-card-teaser" v-if="movies[activeCard].description">{{ movies[activeCard].description }}</p>
+
+								<div class="movie-card-watch">
+
+									<ul class="movie-card-watch-list">
+										<li v-if="movies[activeCard].vudu">
+											<a v-if="movies[activeCard].vuduUrl" :href="movies[activeCard].vuduUrl" class="btn movie-card-provider btn-vudu" title="Watch on Vudu">
+												<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+													<rect width="16" height="16" rx="2" fill="white"/>
+													<path fill-rule="evenodd" clip-rule="evenodd" d="M11.8838 4.00087C11.3622 3.9998 11.0405 4.00022 10.5223 4.00022H10.5093L10.5088 4.00039C10.2717 4.0034 10.0703 4.14208 9.9901 4.33776C9.98232 4.34972 9.97548 4.36251 9.97112 4.37413C9.45195 5.7543 8.99926 6.93862 8.48015 8.31973C8.34382 8.68227 8.20867 9.04527 8.07004 9.40763C8.05858 9.4371 8.02926 9.47476 8.00038 9.48225C7.93969 9.49757 7.93875 9.43887 7.92593 9.40492C7.60197 8.5447 7.2792 7.68473 6.95593 6.82498C6.62352 5.94125 6.34793 5.20888 6.01551 4.32497C6.01203 4.31578 6.00655 4.30593 5.99964 4.29609C5.90825 4.12092 5.71602 4.00022 5.49335 4.00022C5.48744 4.00022 5.48215 4.00039 5.47661 4.00081C4.95133 3.99998 4.64226 3.99939 4.1107 4.0011C3.93478 4.00175 3.8485 4.12175 3.90776 4.27558C4.70756 6.35754 5.5073 8.43997 6.30691 10.522C6.36667 10.6776 6.41983 10.817 6.47113 10.9517C6.77678 11.6098 7.24092 11.9551 8.05883 11.9995C8.29981 11.9993 8.24559 12 8.24559 12C8.51102 11.9907 8.81207 11.9532 9.15507 11.8897L9.72118 10.3789C10.5127 8.3396 11.2832 6.35447 12.0852 4.28648C12.0944 4.26279 12.1047 4.23933 12.1086 4.21517C12.1267 4.09252 12.033 4.00122 11.8838 4.00087Z" fill="#3478C1"/>
+												</svg>
+												<span>Vudu</span>
+												<span class="movie-card-quality">{{ movies[activeCard].vudu }}</span>
+											</a>
+
+											<span v-if="!movies[activeCard].vuduUrl" class="movie-card-provider">
+												<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+													<rect width="16" height="16" rx="2" fill="white" />
+													<path fill-rule="evenodd" clip-rule="evenodd" d="M11.8838 4.00087C11.3622 3.9998 11.0405 4.00022 10.5223 4.00022H10.5093L10.5088 4.00039C10.2717 4.0034 10.0703 4.14208 9.9901 4.33776C9.98232 4.34972 9.97548 4.36251 9.97112 4.37413C9.45195 5.7543 8.99926 6.93862 8.48015 8.31973C8.34382 8.68227 8.20867 9.04527 8.07004 9.40763C8.05858 9.4371 8.02926 9.47476 8.00038 9.48225C7.93969 9.49757 7.93875 9.43887 7.92593 9.40492C7.60197 8.5447 7.2792 7.68473 6.95593 6.82498C6.62352 5.94125 6.34793 5.20888 6.01551 4.32497C6.01203 4.31578 6.00655 4.30593 5.99964 4.29609C5.90825 4.12092 5.71602 4.00022 5.49335 4.00022C5.48744 4.00022 5.48215 4.00039 5.47661 4.00081C4.95133 3.99998 4.64226 3.99939 4.1107 4.0011C3.93478 4.00175 3.8485 4.12175 3.90776 4.27558C4.70756 6.35754 5.5073 8.43997 6.30691 10.522C6.36667 10.6776 6.41983 10.817 6.47113 10.9517C6.77678 11.6098 7.24092 11.9551 8.05883 11.9995C8.29981 11.9993 8.24559 12 8.24559 12C8.51102 11.9907 8.81207 11.9532 9.15507 11.8897L9.72118 10.3789C10.5127 8.3396 11.2832 6.35447 12.0852 4.28648C12.0944 4.26279 12.1047 4.23933 12.1086 4.21517C12.1267 4.09252 12.033 4.00122 11.8838 4.00087Z" fill="#3478C1" />
+												</svg>
+												<span>Vudu</span>
+												<span class="movie-card-quality">{{ movies[activeCard].vudu }}</span>
+											</span>
+										</li>
+
+										<li v-if="movies[activeCard].googlePlay">
+											<a v-if="movies[activeCard].gpUrl" :href="movies[activeCard].gpUrl" class="btn movie-card-provider btn-youtube" title="Watch on YouTube">
+												<svg width="20" height="14" viewBox="0 0 20 14" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+													<path d="M19.5826 2.18956C19.4683 1.7659 19.2449 1.37964 18.9346 1.06937C18.6244 0.759095 18.2381 0.535683 17.8144 0.421452C16.2538 0.00329605 9.99953 0.0032959 9.99953 0.0032959C9.99953 0.0032959 3.74365 0.00329605 2.18626 0.421452C1.76246 0.53538 1.37603 0.758691 1.06571 1.06901C0.755395 1.37933 0.532084 1.76575 0.418156 2.18956C1.49012e-07 3.74859 0 7.0033 0 7.0033C0 7.0033 1.49012e-07 10.258 0.418156 11.817C0.533089 12.2396 0.756848 12.6247 1.0671 12.9338C1.37735 13.2429 1.76324 13.4652 2.18626 13.5786C3.7453 13.9967 9.99953 13.9967 9.99953 13.9967C9.99953 13.9967 16.2554 13.9967 17.8144 13.5786C18.2381 13.4643 18.6244 13.2409 18.9346 12.9306C19.2449 12.6204 19.4683 12.2341 19.5826 11.8104C20.0007 10.2514 20.0007 6.99671 20.0007 6.99671C20.0007 6.99671 20.0007 3.74859 19.5826 2.18956Z" fill="#ff0000" />
+													<path d="M7.99929 10.0028L13.1966 7.00329L7.99929 4.00376V10.0028Z" fill="#fff" />
+												</svg>
+												<span>YouTube</span>
+												<span class="movie-card-quality">{{ movies[activeCard].googlePlay }}</span>
+											</a>
+
+											<span v-if="!movies[activeCard].gpUrl" class="movie-card-provider">
+												<svg width="20" height="14" viewBox="0 0 20 14" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+													<path d="M19.5826 2.18956C19.4683 1.7659 19.2449 1.37964 18.9346 1.06937C18.6244 0.759095 18.2381 0.535683 17.8144 0.421452C16.2538 0.00329605 9.99953 0.0032959 9.99953 0.0032959C9.99953 0.0032959 3.74365 0.00329605 2.18626 0.421452C1.76246 0.53538 1.37603 0.758691 1.06571 1.06901C0.755395 1.37933 0.532084 1.76575 0.418156 2.18956C1.49012e-07 3.74859 0 7.0033 0 7.0033C0 7.0033 1.49012e-07 10.258 0.418156 11.817C0.533089 12.2396 0.756848 12.6247 1.0671 12.9338C1.37735 13.2429 1.76324 13.4652 2.18626 13.5786C3.7453 13.9967 9.99953 13.9967 9.99953 13.9967C9.99953 13.9967 16.2554 13.9967 17.8144 13.5786C18.2381 13.4643 18.6244 13.2409 18.9346 12.9306C19.2449 12.6204 19.4683 12.2341 19.5826 11.8104C20.0007 10.2514 20.0007 6.99671 20.0007 6.99671C20.0007 6.99671 20.0007 3.74859 19.5826 2.18956Z" fill="#ff0000" />
+													<path d="M7.99929 10.0028L13.1966 7.00329L7.99929 4.00376V10.0028Z" fill="#fff" />
+												</svg>
+												<span>YouTube</span>
+												<span class="movie-card-quality">{{ movies[activeCard].googlePlay }}</span>
+											</span>
+										</li>
+
+										<li v-if="movies[activeCard].itunes">
+											<a :href="movies[activeCard].itunesUrl" class="btn movie-card-provider btn-apple" title="Watch on Apple TV">
+												<svg width="14" height="16" viewBox="0 0 14 16" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+													<path d="M11.2421 8.45511C11.2349 7.14416 11.8279 6.15469 13.0281 5.42599C12.3565 4.4651 11.3421 3.93643 10.0025 3.83284C8.73446 3.73282 7.3485 4.57226 6.84126 4.57226C6.30545 4.57226 5.07665 3.86856 4.11219 3.86856C2.11897 3.90071 0.000732422 5.45814 0.000732422 8.62657C0.000732422 9.56245 0.172192 10.5293 0.515112 11.5271C0.972338 12.8381 2.62264 16.0529 4.34438 15.9993C5.24454 15.9779 5.88037 15.3599 7.05201 15.3599C8.18793 15.3599 8.77733 15.9993 9.78108 15.9993C11.5171 15.9743 13.0102 13.0524 13.446 11.7378C11.117 10.6412 11.2421 8.52298 11.2421 8.45511ZM9.22026 2.58976C10.1954 1.4324 10.1061 0.37864 10.0776 0C9.21669 0.0500091 8.22008 0.585821 7.65212 1.24666C7.02701 1.95393 6.65909 2.82909 6.73767 3.81498C7.66998 3.88642 8.52014 3.40776 9.22026 2.58976Z" fill="white" />
+												</svg>
+												<span>Apple TV</span>
+												<span class="movie-card-quality">{{ movies[activeCard].itunes }}</span>
+											</a>
+										</li>
+
+										<li v-if="movies[activeCard].plex">
+											<a v-if="movies[activeCard].plexUrl" :href="movies[activeCard].plexUrl" class="btn movie-card-provider btn-plex" title="Watch on Plex">
+												<svg width="19" height="18" viewBox="0 0 19 18" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+													<rect x="0.446045" width="18" height="18" rx="9" fill="#282A2D" />
+													<path d="M9.49725 14H6.02502L9.39527 9.00208L6.02502 4H9.49725L12.8671 9.00208L9.49725 14Z" fill="#E5A00D" />
+												</svg>
+												<span>Plex</span>
+												<span class="movie-card-quality">{{ movies[activeCard].plex }}</span>
+											</a>
+										
+											<span v-if="!movies[activeCard].plexUrl" class="movie-card-provider">
+												<svg width="19" height="18" viewBox="0 0 19 18" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+													<rect x="0.446045" width="18" height="18" rx="9" fill="#282A2D" />
+													<path d="M9.49725 14H6.02502L9.39527 9.00208L6.02502 4H9.49725L12.8671 9.00208L9.49725 14Z" fill="#E5A00D" />
+												</svg>
+												<span>Plex</span>
+												<span class="movie-card-quality">{{ movies[activeCard].plex }}</span>
+											</span>
+										</li>
+
+										<li v-if="movies[activeCard].disc">
+											<svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+												<path d="M8.00073 0C3.58198 0 0.000732422 3.58125 0.000732422 8C0.000732422 12.4187 3.58198 16 8.00073 16C12.4195 16 16.0007 12.4187 16.0007 8C16.0007 3.58125 12.4195 0 8.00073 0ZM2.52323 8H2.48917C2.20548 8 1.97667 7.74966 2.00292 7.45813C2.26198 4.5625 4.57886 2.25187 7.47886 2.00187C7.76011 1.9775 8.00073 2.21094 8.00073 2.50281C8.00073 2.76375 7.80651 2.98031 7.55479 3.0025C5.14761 3.21563 3.22261 5.13437 3.00542 7.54375C2.98198 7.8 2.7748 8 2.52323 8ZM8.00073 10.9719C6.34386 10.9719 5.00073 9.62813 5.00073 8C5.00073 6.37187 6.34386 5 8.00073 5C9.65761 5 11.0007 6.34375 11.0007 8C11.0007 9.65625 9.65698 10.9719 8.00073 10.9719ZM8.00073 7C7.44761 7 7.00073 7.44375 7.00073 8C7.00073 8.55625 7.44761 9 8.00073 9C8.55386 9 9.00073 8.55469 9.00073 8C9.00073 7.44531 8.55386 7 8.00073 7Z" fill="white" />
+											</svg>
+											{{ movies[activeCard].disc }}
+										</li>
+									</ul>
+								</div>
+
+								<p class="movie-card-note" v-if="movies[activeCard].notes" title="Notes">{{ movies[activeCard].notes }}</p>
+
+								<a class="movie-card-edit" :href="'/add/?id=' + movies[activeCard].id" v-if="user.authenticated && user.id == 'DfPi2C0mVWVuRq3fYKZHeKzpBep1'" target="_blank">Edit</a>
+							</div>
 						</div>
 					</div>
 				</div>
 			</transition>
 
 			<div class="request-form" :class="{ active: request.formActive }">
-				<button type="button" class="request-form-header" @click="toggleRequestForm">
-					<svg class="request-icon" width="18px" height="18px" viewBox="0 0 36 36" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-						<path d="M18,0C8.06,0,0,8.06,0,18c0,4.97,2.01,9.47,5.27,12.73L0,36h18c9.94,0,18-8.06,18-18C36,8.06,27.94,0,18,0z M12,20 c-1.1,0-2-0.9-2-2s0.9-2,2-2c1.1,0,2,0.9,2,2S13.1,20,12,20z M18,20c-1.1,0-2-0.9-2-2s0.9-2,2-2c1.1,0,2,0.9,2,2S19.1,20,18,20z M24,20c-1.1,0-2-0.9-2-2s0.9-2,2-2c1.1,0,2,0.9,2,2S25.1,20,24,20z" />
-					</svg>
-					Request a Movie
-				</button>
 
 				<form @submit.prevent="submitRequest" v-if="user.authenticated">
 					<p class="success-msg" v-if="request.status == 'success'">
@@ -323,7 +341,7 @@
 		</template>
 	</div>
 
-	<script src="https://cdn.jsdelivr.net/npm/vue@2.6.11/dist/vue.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/vue@2.6.11/dist/vue.js"></script>
 	<script src="https://cdn.jsdelivr.net/npm/lodash@4.17.15/lodash.min.js"></script>
 	<script src="https://cdn.jsdelivr.net/npm/vue-infinite-scroll@2.0.2/vue-infinite-scroll.min.js"></script>
 	<script src="https://www.gstatic.com/firebasejs/7.15.4/firebase-app.js"></script>

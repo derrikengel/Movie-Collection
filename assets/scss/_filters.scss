@@ -1,56 +1,70 @@
-.filter-btn {
-    @include query(lg) {
-        display: none;
-    }
-}
-
-.filter-close-btn {
-	align-items: center;
-	background: #fff;
-	border-radius: 0;
-	color: rgba($color-cinder, 0.3);
-	display: inline-flex;
-	font-size: 1.75rem;
-	font-weight: $font-weight-regular;
-	height: 2.5rem;
-	justify-content: center;
-	padding: 0;
-	position: absolute;
-	right: 0;
+.header {
+	background: $color-dark;
+	box-shadow: 0 1rem 6rem $color-dark, 0 1rem 3rem $color-dark;
+	display: flex;
+	flex-direction: column;
+	gap: 0.25rem;
+	padding: 0.75rem 5vw;
+	position: sticky;
 	top: 0;
-	width: 2.5rem;
+	z-index: 50;
 
-    @include query(lg) {
+	@include query($bp-md) {
+		padding-bottom: 1rem;
+		padding-top: max(0.75rem, 5vmin);
+	}
+}
+
+.header.active {
+	height: 100vh;
+}
+
+.movie-count {
+	@include h4;
+
+	@include query($bp-xs) {
+		@include h2;
+	}
+}
+
+.movie-count-num {
+	@include h3;
+	color: $color-primary;
+
+	@include query($bp-xs) {
+		@include h1;
+	}
+}
+
+.filter-btn {
+	@include query($bp-xs) {
+		margin-left: auto;
+	}
+
+    @include query($bp-lg) {
         display: none;
     }
+
+	&.active {
+		color: $color-dark;
+	}
 }
+
 
 .filters {
 	align-items: center;
-	background: $color-cinder;
-	box-shadow: 0 1rem 6rem $color-cinder, 0 1rem 3rem $color-cinder;
 	display: flex;
 	flex-wrap: wrap;
+	gap: 0.75rem;
 	justify-content: space-between;
-	margin: 0 -1.25rem 3rem -1.25rem;
-	padding: 0.5rem 1.25rem;
-	position: sticky;
-	top: 0;
-	z-index: 300;
+	position: relative;
 
 	&.active {
 		z-index: 500;
 	}
 
-	@include query(sm) {
-		margin: 0 -3rem 3rem -3rem;
-		padding: 0.5rem 3rem;
-	}
-
-    @include query(lg) {
+    @include query($bp-lg) {
         display: block;
-		margin: 0 -5rem 5rem -5rem;
-		padding: 1rem 5rem;
 
 		&.active {
 			z-index: 300;
@@ -59,19 +73,18 @@
 }
 
 .filter-panel {
-	background: #fff;
-	height: 100%;
-	max-width: 18rem;
+	background: $color-dark;
+	border-radius: $border-radius;
+	display: none;
+	flex: 1;
+	margin-top: 0.75rem;
 	overflow: auto;
-	padding: 2.5rem 1.5rem 1.5rem 1.5rem;
-	position: fixed;
-	right: 0;
-	top: 0;
-	transform: translateX(100%);
+	padding: 1.5rem;
+	position: relative;
+	transform: translateY(100vh);
 	transition: transform 300ms ease-out;
-    width: 90%;
 
-    @include query(lg) {
+    @include query($bp-lg) {
         align-items: center;
 		background: transparent;
 		display: flex;
@@ -87,50 +100,20 @@
     }
 }
 
-.filter-panel::-webkit-scrollbar {
-	background-color: #fff;
-}
-
-.filter-panel::-webkit-scrollbar-thumb {
-	border: 0.25rem solid #fff;
-
-	&:hover {
-		background-color: $color-cinder;
-	}
-}
-
 .filter-panel.active {
-	box-shadow: 0 0 6rem $color-cinder, 0 0 3rem $color-cinder;
+	box-shadow: $shadow-lg;
+	display: block;
+	overscroll-behavior: contain;
     transform: none;
 
-    @include query(lg) {
+    @include query($bp-lg) {
         box-shadow: none;
     }
 }
 
 .filter-option {
-	border-bottom: 1px solid rgba($color-cinder, 0.1);
-	padding: 0.5rem 0;
 	position: relative;
     text-align: center;
-
-    @include query(lg) {
-        border-bottom: none;
-		margin: 0;
-		padding: 0;
-    }
-}
-
-.filter-option.active {
-
-	.filter-arrow {
-		transform: rotate(180deg);
-	}
-
-	.filter-option-menu {
-		display: block;
-		z-index: 200;
-	}
 }
 
 .filter-option:last-child,
@@ -141,18 +124,19 @@
 .filter-option-title {
 	background: transparent;
 	align-items: center;
-	color: $color-cinder;
+	color: #fff;
 	display: flex;
-	justify-content: space-between;
-	padding: 0.5rem 0;
+	gap: 0.75rem;
+	justify-content: flex-start;
+	padding: 1rem 0;
 	position: relative;
 	transition: 200ms all ease-out;
 	width: 100%;
     z-index: 300;
 
-    @include query(lg) {
+    @include query($bp-lg) {
         border: none;
-		border-radius: 0.375rem;
+		border-radius: $border-radius;
 		color: #fff;
 		display: inline-flex;
 		justify-content: center;
@@ -162,34 +146,51 @@
         &:hover,
         &:focus {
 			color: #fff;
-            box-shadow: inset 0 0 0 1px $color-turquoise;
+            box-shadow: inset 0 0 0 1px $color-accent;
         }
     }
 }
 
-.filter-option.has-selections .filter-option-title {
-    color: $color-torch-red;
+.filter-option.active {
+	.filter-option-title {
+		color: $color-accent;
+	}
 
-    @include query(lg) {
-        color: $color-turquoise;
-    }
+	.filter-arrow {
+		color: currentColor;
+		transform: rotate(180deg);
+	}
+
+	.filter-option-menu {
+		display: block;
+		z-index: 200;
+	}
 }
 
+.filter-option.has-selections {
+	.filter-option-title,
+	.filter-arrow {
+		color: $color-primary;
+	}
+}
+
+
+
 .filter-arrow {
-	fill: $color-torch-red;
-	margin: 0 0 0 0.5rem;
+	color: $color-accent;
+	margin-top: -0.25rem;
 	transition: 200ms all ease-out;
 }
 
 .filter-option-menu {
-	color: $color-cinder;
 	display: none;
+	padding: 0 0.75rem;
     text-align: left;
 
-    @include query(lg) {
+    @include query($bp-lg) {
         background: #fff;
-		border-radius: 0.375rem;
-		box-shadow: 0 0 6rem $color-cinder, 0 0 3rem $color-cinder;
+		border-radius: $border-radius;
+		box-shadow: 0 0 6rem $color-dark, 0 0 3rem $color-dark;
 		left: 50%;
 		max-height: calc(95vh - 8rem);
 		margin: 0.25rem 0 0 -8rem;
@@ -203,54 +204,58 @@
 }
 
 .filter-option-cat {
-	font-size: 0.875rem;
-	font-weight: $font-weight-bold;
+	@include small-caps;
+	color: rgba(#fff, 0.5);
 	display: block;
-	margin-bottom: 0.25rem;
+	font-size: $fs--3;
+	margin: 0.5rem 1rem;
 }
 
 .filter-field + .filter-option-cat {
-	margin-top: 1rem;
+	margin-top: 1.5rem;
+}
+
+.filter-field + .filter-field {
+	margin-top: 0.25rem;
 }
 
 .filter-field label {
-	color: $color-cinder;
+	color: #fff;
 	cursor: pointer;
 	display: flex;
-	font-size: 0.875rem;
-	padding: 0.375em 0;
+	font-size: $fs--1;
 	position: relative;
 }
 
-.filter-field input[type='checkbox'] + label:hover:before,
-.filter-field input[type='radio'] + label:hover:before,
-.filter-field input[type='checkbox']:focus + label:before,
-.filter-field input[type='radio']:focus + label:before {
-	opacity: 1;
-}
+// .filter-field input[type='checkbox'] + label:hover:before,
+// .filter-field input[type='radio'] + label:hover:before,
+// .filter-field input[type='checkbox']:focus + label:before,
+// .filter-field input[type='radio']:focus + label:before {
+// 	opacity: 1;
+// }
 
-.filter-field input[type='checkbox'] + label:before,
-.filter-field input[type='radio'] + label:before {
-	box-shadow: inset 0 0 0 1px $color-cinder;
-	opacity: 0.35;
-}
+// .filter-field input[type='checkbox'] + label:before,
+// .filter-field input[type='radio'] + label:before {
+// 	box-shadow: inset 0 0 0 1px $color-dark;
+// 	opacity: 0.35;
+// }
 
-.filter-field input[type='checkbox']:focus + label:before,
-.filter-field input[type='radio']:focus + label:before {
-	opacity: 1;
-}
+// .filter-field input[type='checkbox']:focus + label:before,
+// .filter-field input[type='radio']:focus + label:before {
+// 	opacity: 1;
+// }
 
-.filter-field input[type='checkbox']:checked + label:before,
-.filter-field input[type='radio']:checked + label:before {
-	box-shadow: none;
-	opacity: 1;
-}
+// .filter-field input[type='checkbox']:checked + label:before,
+// .filter-field input[type='radio']:checked + label:before {
+// 	box-shadow: none;
+// 	opacity: 1;
+// }
 
 .filter-random-btn {
 	margin-top: 0.5rem;
     width: 100%;
 
-    @include query(lg) {
+    @include query($bp-lg) {
         margin-top: 0;
 		width: auto;
     }
@@ -259,15 +264,18 @@
 .year-range {
 	align-items: center;
 	display: flex;
-    font-weight: $font-weight-bold;
+	font-family: $secondary-font-stack;
+	font-size: $fs--1;
+	font-weight: $secondary-font-weight-bold;
+	letter-spacing: 0.1em;
+	text-transform: uppercase;
 
-    @include query(lg) {
+    @include query($bp-lg) {
         justify-content: center;
     }
 }
 
 .year-range input {
-	@include field-color-light;
 	-moz-appearance: textfield;
 	padding-left: 0.5em;
 	padding-right: 0.5em;
@@ -290,54 +298,43 @@
 }
 
 .reset-btn {
-	background: $color-turquoise;
-	color: $color-cinder;
+	background: $color-accent;
+	color: $color-dark;
     width: 100%;
 
-    @include query(lg) {
+    @include query($bp-lg) {
         width: auto;
 
         &:hover,
         &:focus {
             background: transparent;
-            color: $color-turquoise;
-            box-shadow: inset 0 0 0 1px $color-turquoise;
+            color: $color-accent;
+            box-shadow: inset 0 0 0 1px $color-accent;
         }
     }
 }
 
 .search {
-	border-bottom: none;
+	flex: 100%;
 	position: relative;
+
+	@include query($bp-xs) {
+		flex: 1;
+		max-width: 20rem;
+	}
 }
 
 .search-icon {
-	fill: $color-torch-red;
+	color: $color-accent;
 	left: 1em;
-	margin-top: -7px;
 	position: absolute;
 	top: 50%;
+	transform: translateY(-50%);
 	z-index: 10;
 }
 
 .search input {
-	@include field-color-light;
-	padding-left: 2.5em;
+	padding-left: 2.75em;
 	position: relative;
     z-index: 20;
-
-    @include query(lg) {
-		@include field-color-dark;
-		max-width: 16rem;
-	}
-}
-
-.movie-count h2 {
-	font-weight: $font-weight-regular;
-	margin: 0;
-}
-
-.movie-count h2 span {
-	color: $color-turquoise;
-	font-weight: $font-weight-bold;
 }

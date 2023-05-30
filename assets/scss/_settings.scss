@@ -1,26 +1,47 @@
 // color
-$color-cinder: #0d0e16;
-$color-torch-red: #f71735;
-$color-tree-poppy: #ff9f1c;
-$color-turquoise: #41ead4;
-$color-nevada: #69747c;
+$color-dark: #0f121a;
+$color-primary: #e94135;
+$color-accent: #63d2e3;
 
-$gradient: linear-gradient(45deg, $color-torch-red, $color-tree-poppy);
+// forms
+$color-field-bg: rgba($color-accent, 0.1);
+$color-placeholder: $color-accent;
 
-$color-placeholder-dark: rgba(#fff, 0.65);
-$color-placeholder-light: rgba($color-cinder, 0.5);
+$shadow-lg: 0 1rem 6rem -1rem #000, 0 1rem 8rem -1rem #000;
 
-$color-field-bg-dark: rgba(#fff, 0.14);
-$color-field-bg-light: rgba($color-cinder, 0.06);
-
-// type
-$font-weight-regular: 400;
-$font-weight-bold: 900;
-$font-stack: 'Roboto', sans-serif;
+$border-radius: 0.375rem;
 
 // breakpoints
-$breakpoints: (
-	sm: "screen and (min-width: 42rem)",
-	md: "screen and (min-width: 54rem)",
-	lg: "screen and (min-width: 84rem)"
-);
+$bp-xs: 30rem;
+$bp-sm: 42rem;
+$bp-md: 54rem;
+$bp-lg: 84rem;
+$bp-xl: 100rem;
+
+// sizes
+$size--3: 0.625rem;
+$size--2: 0.75rem;
+$size--1: 0.875rem;
+$size-base: 1rem;
+$size-1: 1.5rem;
+$size-2: 2.25rem;
+$size-3: 3.375rem;
+$size-4: 7.59375rem;
+
+// type
+$primary-font-stack: 'Poppins', sans-serif;
+$primary-font-weight: 400;
+
+$secondary-font-stack: 'Josefin Sans', sans-serif;
+$secondary-font-weight: 400;
+$secondary-font-weight-bold: 700;
+
+// font sizes
+$fs--3: $size--3;
+$fs--2: $size--2;
+$fs--1: $size--1;
+$fs-base: $size-base;
+$fs-1: fluid($size-base, $size-1);
+$fs-2: fluid($size-1, $size-2);
+$fs-3: fluid($size-2, $size-3);
+$fs-4: fluid($size-3, $size-4);

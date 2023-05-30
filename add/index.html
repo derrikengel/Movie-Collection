@@ -7,13 +7,11 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<meta name="robots" content="noindex, nofollow">
 	<title>Engel Movie Collection</title>
-	<link rel="apple-touch-icon" href="/assets/favicon-228.png">
-	<link rel="icon" type="image/png" href="/assets/favicon-228.png">
-	<link rel="shortcut icon" href="/assets/favicon-228.png">
-	<meta name="msapplication-TileColor" content="#0d0e16">
-	<meta name="msapplication-TileImage" content="assets/favicon-144.png">
 	<meta name="theme-color" content="#0d0e16">
-	<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;900&display=swap" rel="stylesheet">
+	<link rel="manifest" href="/manifest.json">
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@400;700&family=Poppins:wght@400&display=swap" rel="stylesheet">
 	<link href="/assets/main.min.css" rel="stylesheet">
 </head>
 
@@ -85,13 +83,18 @@
 					</div> <!-- /form-field -->
 
 					<div class="form-field">
-						<label for="vudu-url">Vudu URL <a :href="'https://www.vudu.com/content/movies/search?searchString=' + movie.title" target="_blank">Search Vudu</a></label>
-						<input type="url" id="vudu-url" name="vudu-url" v-model="movie.vuduUrl" @change="updateImage" autocomplete="off">
+						<label for="vudu-link">Vudu Link <a :href="'https://www.vudu.com/content/movies/search?searchString=' + movie.title" target="_blank">Search Vudu</a></label>
+						<input type="url" id="vudu-link" name="vudu-link" v-model="movie.vuduUrl" @change="updateImages" autocomplete="off">
 					</div> <!-- /form-field -->
 					
 					<div class="form-field">
-						<label for="image">Image URL</label>
+						<label for="image">Poster Link <a :href="'https://www.moviefone.com/search/?q=' + movie.title" target="_blank">Moviefone fallback</a></label>
 						<input type="url" id="image" name="image" v-model="movie.imageUrl" autocomplete="off" required>
+					</div> <!-- /form-field -->
+
+					<div class="form-field">
+						<label for="hero">Hero Image Link</label>
+						<input type="url" id="hero" name="hero" v-model="movie.heroUrl" autocomplete="off">
 					</div> <!-- /form-field -->
 
 					<div class="form-field form-field-columns">
@@ -150,15 +153,20 @@
 							<option value="Westerns">Westerns</option>
 						</select>
 					</div> <!-- /form-field -->
-
+					
 					<div class="form-field">
-						<label for="description">Description <a :href="'https://www.google.com/search?q=' + movie.title + ' (' + movie.year + ')'" target="_blank">Find on Google</a></label>
+						<label for="description">Description <a :href="'https://www.rottentomatoes.com/search?search=' + movie.title + ' (' + movie.year + ')'" target="_blank">Find on Rotten Tomatoes</a></label>
 						<textarea type="text" id="description" name="description" v-model="movie.description" required></textarea>
 					</div> <!-- /form-field -->
-
+					
 					<div class="form-field">
-						<label for="vudu-quality">Vudu Quality <a :href="movie.vuduUrl" target="_blank">Find on Vudu</a></label>
+						<label for="trailer-id">YouTube Trailer Id <a :href="'https://www.youtube.com/results?search_query=' + movie.title + ' (' + movie.year + ') trailer'" target="_blank">Find on YouTube</a></label>
+						<input type="text" id="trailer-id" name="trailer-id" v-model="movie.trailerId" autocomplete="off">
+					</div> <!-- /form-field -->
 
+					<div class="form-field" v-show="movie.vuduUrl">
+						<label for="vudu-quality">Vudu Quality <a :href="movie.vuduUrl" target="_blank">Find on Vudu</a></label>
+						
 						<select id="vudu-quality" v-model="movie.vuduQuality">
 							<option value=""></option>
 							<option value="4K">4K</option>
@@ -166,17 +174,60 @@
 							<option value="SD">SD</option>
 						</select>
 					</div> <!-- /form-field -->
+					
+					<div class="form-field form-field-columns">
+						<div class="form-field">
+							<label for="gp-link">YouTube Link <a :href="'https://www.youtube.com/results?search_query=' + movie.title + ' (' + movie.year + ')'" target="_blank">Search YouTube</a></label>
+							<input type="url" id="gp-link" name="gp-link" v-model="movie.gpUrl" autocomplete="off">
+						</div> <!-- /form-field -->
+						
+						<div class="form-field" v-show="movie.gpUrl">
+							<label for="gp-quality">YouTube Quality</label>
 
-					<div class="form-field">
-						<label for="gp-quality">Google Play Quality <a href="https://www.youtube.com/purchases" target="_blank">Find on YouTube</a></label>
+							<select id="gp-quality" v-model="movie.gpQuality">
+								<option value=""></option>
+								<option value="4K">4K</option>
+								<option value="HD">HD</option>
+								<option value="SD">SD</option>
+							</select>
+						</div> <!-- /form-field -->
+					</div> <!-- /form-field-columns -->
 
-						<select id="gp-quality" v-model="movie.gpQuality">
-							<option value=""></option>
-							<option value="4K">4K</option>
-							<option value="HD">HD</option>
-							<option value="SD">SD</option>
-						</select>
-					</div> <!-- /form-field -->
+					<div class="form-field form-field-columns">
+						<div class="form-field">
+							<label for="itunes-link">iTunes Link <a :href="'https://www.google.com/search?q=' + movie.title + ' (' + movie.year + ') iTunes'" target="_blank">Find on iTunes</a></label>
+							<input type="url" id="itunes-link" name="itunes-link" v-model="movie.itunesUrl" autocomplete="off">
+						</div> <!-- /form-field -->
+
+						<div class="form-field" v-show="movie.itunesUrl">
+							<label for="itunes-quality">iTunes Quality</label>
+						
+							<select id="itunes-quality" v-model="movie.itunesQuality">
+								<option value=""></option>
+								<option value="4K">4K</option>
+								<option value="HD">HD</option>
+								<option value="SD">SD</option>
+							</select>
+						</div> <!-- /form-field -->
+					</div> <!-- /form-field-columns -->
+
+					<div class="form-field form-field-columns">
+						<div class="form-field">
+							<label for="plex-link">Plex Link <a href="https://app.plex.tv" target="_blank">Search Plex</a></label>
+							<input type="url" id="plex-link" name="plex-link" v-model="movie.plexUrl" autocomplete="off">
+						</div> <!-- /form-field -->
+
+						<div class="form-field" v-show="movie.plexUrl">
+							<label for="plex-quality">Plex Quality</label>
+						
+							<select id="plex-quality" v-model="movie.plexQuality">
+								<option value=""></option>
+								<option value="4K">4K</option>
+								<option value="HD">HD</option>
+								<option value="SD">SD</option>
+							</select>
+						</div> <!-- /form-field -->
+					</div> <!-- /form-field-columns -->
 
 					<div class="form-field">
 						<label for="ma-quality">Movies Anywhere Quality <a href="https://moviesanywhere.com/my-movies" target="_blank">Find on MA</a></label>
@@ -212,13 +263,19 @@
 				</div> <!-- /form-fields -->
 
 				<div class="add-preview">
-					<div class="movie-card" tabindex="0" ref="movieCard">
-						<span class="movie-card-title-preload">{{ movie.title }}</span>
-						<img :src="movie.imageUrl" class="movie-card-img" :alt="movie.title" :title="movie.title" v-if="movie.imageUrl">
+					<div class="movie-btn" tabindex="0" ref="movieCard">
+						<span class="movie-btn-title-preload">{{ movie.title }}</span>
+						<img :src="movie.imageUrl" class="movie-btn-img" :alt="movie.title" :title="movie.title" v-if="movie.imageUrl">
 					</div>
 
 					<div class="movie-card-content" tabindex="-1" @keydown.esc="closeModal()" @click.stop ref="modalCard">
-				
+
+						<div class="movie-card-trailer">
+							<div class="movie-card-trailer-video">
+								<iframe v-if="movie.trailerId" :src="'https://www.youtube.com/embed/' + movie.trailerId + '?playlist=' + movie.trailerId + '&controls=0&modestbranding=1&autoplay=1&loop=1&rel=0'" width="1280" height="720" :title="movie.title + 'Trailer'" frameborder="0" allow="autoplay" tabindex="-1"></iframe>
+							</div>
+						</div>
+
 						<div class="movie-card-overlay-img">
 							<img :src="movie.imageUrl" :alt="movie.title" v-if="movie.imageUrl">
 						</div>
@@ -235,12 +292,12 @@
 							<ul class="movie-card-stats">
 								<li><span class="movie-card-rating" title="Rating" v-if="movie.rating">{{ movie.rating }}</span></li>
 								<li class="movie-card-year" title="Release Year" v-if="movie.year">{{ movie.year }}</li>
+								<li class="movie-card-length" title="Length" v-if="movie.length">{{ movieLength }}</li>
 								<li class="movie-card-genre" title="Genre" v-if="movie.genre.length">
 									<ul>
 										<li v-for="genre in movie.genre">{{ genre }}</li>
 									</ul>
 								</li>
-								<li class="movie-card-length" title="Length" v-if="movie.length">{{ movieLength }}</li>
 							</ul>
 				
 							<p class="movie-card-teaser" v-if="movie.description">{{ movie.description }}</p>

@@ -1,14 +1,14 @@
 .request-form {
 	background: #fff;
-	border-radius: 0.375rem 0.375rem 0 0;
+	border-radius: $border-radius $border-radius 0 0;
 	bottom: 0;
-	box-shadow: 0 1rem 6rem $color-cinder, 0 1rem 3rem $color-cinder;
-	color: $color-cinder;
+	box-shadow: $shadow-lg;
+	color: $color-dark;
 	left: 1.25rem;
 	overflow: hidden;
 	position: fixed;
 	right: 1.25rem;
-	transform: translateY(100%) translateY(-3rem);
+	transform: translateY(100%);
 	transition: 300ms transform ease-out;
 	z-index: 400;
 	
@@ -16,24 +16,24 @@
 		transform: none;
 	}
 
-	@include query(sm) {
+	@include query($bp-sm) {
 		left: auto;
 		right: 3rem;
 		width: 16rem;
 	}
 
-	@include query(lg) {
+	@include query($bp-lg) {
 		right: 5rem;
 	}
 }
 
 .request-form-header {
 	align-items: center;
-	background: $color-turquoise;
+	background: $color-accent;
 	border-radius: 0;
-	color: $color-cinder;
+	color: $color-dark;
 	display: flex;
-	font-weight: $font-weight-bold;
+	// font-weight: $font-weight-bold;
 	height: 3rem;
 	justify-content: center;
 	padding: 0.75rem 1.5rem;
@@ -50,7 +50,6 @@
 }
 
 .request-form input {
-	@include field-color-light;
 	margin-top: 1.5rem;
 }
 
@@ -67,7 +66,7 @@
 }
 
 .request-form-btn .loader {
-	font-size: 0.5rem;
+	font-size: $size--3;
 	left: 50%;
 	margin: -1.5em 0 0 -1.5em;
 	opacity: 0;
@@ -89,12 +88,12 @@
 
 	&:hover,
 	&:focus {
-		@include query(lg) {
+		@include query($bp-lg) {
 			box-shadow: none;
 		}
 	}
 }
 
 .request-form .success-msg {
-	color: $color-cinder;
+	color: $color-dark;
 }
