@@ -1,0 +1,97 @@
+@import 'normalize.css';
+
+:root {
+    --color-base: #0f121a;
+    --color-details-bg: #151d28;
+    --color-link: #63d2e3;
+    --color-text: #fff;
+    --color-accent: #63d2e3;
+    --color-primary: #e94135;
+    --color-backdrop: hsla(224, 27%, 8%, 0.5);
+    --color-border-light: rgba(255, 255, 255, 0.22);
+    --color-border-dark: rgba(0, 0, 0, 0.22);
+
+    --font-primary: 'Poppins', sans-serif;
+    --font-secondary: 'Josefin Sans', sans-serif;
+    --font-weight-regular: 400;
+    --font-weight-bold: 700;
+
+    --ratio: 1.5;
+    --size-5: calc(var(--size-4) / var(--ratio));
+    --size-4: calc(var(--size-3) / var(--ratio));
+    --size-3: calc(var(--size-2) / var(--ratio));
+    --size-2: calc(var(--size-1) / var(--ratio));
+    --size-1: calc(var(--size-base) / var(--ratio));
+    --size-base: 1rem;
+    --size1: calc(var(--size-base) * var(--ratio));
+    --size2: calc(var(--size1) * var(--ratio));
+    --size3: calc(var(--size2) * var(--ratio));
+    --size4: calc(var(--size3) * var(--ratio));
+    --size5: calc(var(--size4) * var(--ratio));
+
+    --font-size-sm: 0.875rem;
+}
+
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+html {
+    background: var(--color-base);
+    color: var(--color-text);
+    font-family: var(--font-primary);
+    font-weight: var(--font-weight-regular);
+    font-size: var(--size-base);
+    line-height: 1.5;
+}
+
+a {
+    color: var(--color-link);
+    text-decoration: none;
+}
+
+h1 {
+    font-size: var(--size3);
+}
+
+@media screen and (min-width: 42rem) {
+    h1 {
+        font-size: var(--size4);
+    }
+}
+
+h2 {
+    font-size: var(--size2);
+}
+
+@media screen and (min-width: 42rem) {
+    h2 {
+        font-size: var(--size3);
+    }
+}
+
+img {
+    height: auto !important;
+    max-width: 100%;
+}
+
+.btn {
+    border-radius: 10rem;
+    padding: var(--size-base) var(--size1);
+}
+
+.scroll-locked {
+    overflow: hidden;
+}
+
+.small-caps {
+    font-family: var(--font-secondary);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-bold);
+    letter-spacing: 0.1em;
+    line-height: 1.25;
+    margin: 0;
+    text-transform: uppercase;
+}
