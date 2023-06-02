@@ -8,7 +8,7 @@
     import WatchListItem from './WatchListItem.vue'
 
     defineProps({
-        movie: {
+        watchOptions: {
             type: Object,
             required: true
         }
@@ -25,17 +25,17 @@
 
 <template>
     <div class="movie-watch-list small-caps">
-        <WatchListItem v-if="movie.vudu" name="Vudu" :icon="IconVudu" :quality="movie.vudu" :link="updateVuduUrl(movie.vuduUrl)" />
+        <WatchListItem v-if="watchOptions.vudu" name="Vudu" :icon="IconVudu" :quality="watchOptions.vudu.quality" :link="updateVuduUrl(watchOptions.vudu.link)" />
 
-        <WatchListItem v-if="movie.googlePlay" name="YouTube" :icon="IconYouTube" :quality="movie.googlePlay" :link="movie.gpUrl" />
+        <WatchListItem v-if="watchOptions.youtube" name="YouTube" :icon="IconYouTube" :quality="watchOptions.youtube.quality" :link="watchOptions.youtube.link" />
 
-        <WatchListItem v-if="movie.itunes" name="Apple TV" :icon="IconiTunes" :quality="movie.itunes" :link="movie.itunesUrl" />
+        <WatchListItem v-if="watchOptions.itunes" name="Apple TV" :icon="IconiTunes" :quality="watchOptions.itunes.quality" :link="watchOptions.itunes.link" />
 
-        <WatchListItem v-if="movie.plex" name="Plex" :icon="IconPlex" :quality="movie.plex" :link="movie.plexUrl" />
+        <WatchListItem v-if="watchOptions.plex" name="Plex" :icon="IconPlex" :quality="watchOptions.plex.quality" :link="watchOptions.plex.link" />
 
-        <WatchListItem v-if="movie.moviesAnywhere" name="Movies Anywhere" :icon="IconMA" :quality="movie.moviesAnywhere" :link="movie.maUrl" />
+        <WatchListItem v-if="watchOptions.moviesAnywhere" name="Movies Anywhere" :icon="IconMA" :quality="watchOptions.moviesAnywhere.quality" :link="watchOptions.moviesAnywhere.link" />
 
-        <WatchListItem v-if="movie.disc" name="Disc" :icon="IconDisc" :quality="movie.disc" />
+        <WatchListItem v-if="watchOptions.disc" name="Disc" :icon="IconDisc" :quality="watchOptions.disc.quality" />
     </div>
 </template>
 
@@ -43,9 +43,17 @@
     .movie-watch-list {
         display: flex;
         flex-direction: column;
-        /* gap: var(--size-2); */
     	list-style: none;
     	margin: 0;
     	padding: 0;
+    }
+
+    @media screen and (min-width: 54rem) {
+        .movie-watch-list {
+            align-items: center;
+            flex-direction: row;
+            flex-wrap: wrap;
+            gap: var(--size-base);
+        }
     }
 </style>

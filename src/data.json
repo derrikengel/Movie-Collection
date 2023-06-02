@@ -3,6 +3,20 @@
         "id": "0320siu1FrSNLdiy76Jd",
         "dateAcquired": "2022-05-21T21:10:31.369Z",
         "hero": "https://images2.vudu.com/background/608656-1280a.jpg",
+        "watchOptions": {
+            "vudu": {
+                "quality": "HD",
+                "link": "https://www.vudu.com/content/movies/details/The-Theory-of-Everything/608656"
+            },
+            "youtube": {
+                "quality": "HD",
+                "link": "https://www.youtube.com/watch?v=VcKLrLwE8-A" 
+            },
+            "moviesAnywhere": {
+                "quality": "HD",
+                "link": "https://moviesanywhere.com/movie/the-theory-of-everything" 
+            }
+        },
         "vuduUrl": "https://www.vudu.com/content/movies/details/The-Theory-of-Everything/608656",
         "length": "2h 3m",
         "moviesAnywhere": "HD",
@@ -38,6 +52,7 @@
         "rating": "PG-13",
         "disc": "",
         "dateAcquired": "2019-05-08T05:00:00.000Z",
+        "hero": "https://images2.vudu.com/background/720333-1280a.jpg",
         "genre": [
             "Action",
             "Adventure",
@@ -79,6 +94,7 @@
         "image": "https://images2.vudu.com/poster2/524900-360",
         "disc": "",
         "title": "Rio 2",
+        "hero": "https://images2.vudu.com/background/524900-1280a.jpg",
         "genre": [
             "Adventure",
             "Animation",
@@ -2951,7 +2967,7 @@
         "notes": "",
         "length": "1h 36m",
         "itunes": "",
-        "trailerId": "p74bzf-beGc",
+        "trailerId": "",
         "itunesUrl": "",
         "moviesAnywhere": "",
         "description": "Celebrating the joy of being back together with your best friends and a perfectly executed shot to the dingdong, the original jackass crew return for another round of hilarious, wildly absurd, and often dangerous displays of comedy with a little help from some exciting new cast.",

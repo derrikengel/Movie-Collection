@@ -1,6 +1,6 @@
 {
-    "name": "movies",
-    "version": "0.0.0",
+    "name": "movies-collection",
+    "version": "1.0.0",
     "private": true,
     "scripts": {
         "dev": "vite",
@@ -10,6 +10,7 @@
         "format": "prettier --write src/"
     },
     "dependencies": {
+        "@vue-youtube/core": "^0.0.4",
         "autoprefixer": "^10.4.14",
         "normalize.css": "^8.0.1",
         "postcss": "^8.4.23",
@@ -23,6 +24,7 @@
         "@vue/eslint-config-prettier": "^7.1.0",
         "eslint": "^8.39.0",
         "eslint-plugin-vue": "^9.11.0",
+        "install": "^0.13.0",
         "prettier": "^2.8.8",
         "vite": "^4.3.5"
     }

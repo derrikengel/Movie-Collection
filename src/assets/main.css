@@ -7,9 +7,9 @@
     --color-text: #fff;
     --color-accent: #63d2e3;
     --color-primary: #e94135;
-    --color-backdrop: hsla(224, 27%, 8%, 0.5);
-    --color-border-light: rgba(255, 255, 255, 0.22);
-    --color-border-dark: rgba(0, 0, 0, 0.22);
+    --color-backdrop: hsla(224, 27%, 8%, 0.85);
+    --color-border-light: hsla(0, 0%, 100%, 0.22);
+    --color-border-dark: hsla(0, 0%, 0%, 0.22);
 
     --font-primary: 'Poppins', sans-serif;
     --font-secondary: 'Josefin Sans', sans-serif;
@@ -28,8 +28,16 @@
     --size3: calc(var(--size2) * var(--ratio));
     --size4: calc(var(--size3) * var(--ratio));
     --size5: calc(var(--size4) * var(--ratio));
+    --size6: calc(var(--size5) * var(--ratio));
+    --size7: calc(var(--size6) * var(--ratio));
 
     --font-size-sm: 0.875rem;
+
+    --transition: 150ms ease-out;
+    --transition2: 250ms ease-out;
+
+    --shadow-sm: 0 var(--size-1) var(--size3) calc(-1 * var(--size-1)) #000, 0 var(--size-1) var(--size2) calc(-1 * var(--size-1)) #000;
+    --shadow-lg: 0 var(--size-base) var(--size5) calc(-1 * var(--size-base)) #000, 0 var(--size-base) var(--size4) calc(-1 * var(--size-base)) #000;
 }
 
 *,
@@ -47,9 +55,23 @@ html {
     line-height: 1.5;
 }
 
+#movie-collection {
+    overflow: hidden;
+    padding: clamp(var(--size1), 5vw, var(--size5));
+}
+
 a {
     color: var(--color-link);
     text-decoration: none;
+}
+
+button {
+    background: none;
+    border: none;
+    color: inherit;
+    font: inherit;
+    font-weight: inherit;
+    padding: 0;
 }
 
 h1 {
@@ -80,6 +102,25 @@ img {
 .btn {
     border-radius: 10rem;
     padding: var(--size-base) var(--size1);
+}
+
+.icon-btn {
+    align-items: center;
+    border: 2px solid currentColor;
+    border-radius: 100%;
+    color: var(--color-accent);
+    cursor: pointer;
+    display: flex;
+    height: var(--size2);
+    justify-content: center;
+    width: var(--size2);
+}
+
+.icon-btn svg {
+    display: block;
+    fill: currentColor;
+    height: var(--size-base);
+    width: var(--size-base);
 }
 
 .scroll-locked {

@@ -42,16 +42,14 @@
 <style>
     .movie-provider {
         align-items: center;
-        /* border-radius: 10rem; */
         display: flex;
         flex: 1;
         justify-content: center;
-        padding: var(--size-base) var(--size1);
+        padding: var(--size-base) var(--size2);
     }
 
     .movie-provider:not(a) + .movie-provider {
         border-top: 1px solid rgba(255, 255, 255, 0.12);
-        /* margin-top: var(--size-2); */
     }
 
     .movie-provider:not(a):first-child {
@@ -61,10 +59,6 @@
     .movie-provider:not(a):last-child {
         border-bottom: 1px solid rgba(255, 255, 255, 0.12);
     }
-
-    /* span.movie-provider {
-        border: 1px dashed var(--color-border-light);
-    } */
 
     .movie-quality {
         align-items: center;
@@ -87,23 +81,30 @@
 
     .movie-provider svg .brand-fg {
         fill: var(--color-brand-fg);
-        transition: fill 150ms ease-out;
+        transition: fill var(--transition);
     }
 
     .movie-provider svg .brand-bg {
         fill: var(--color-brand-bg);
-        transition: fill 150ms ease-out;
+        transition: fill var(--transition);
     }
 
     a.movie-provider {
         background-color: var(--color-brand-fg);
+        box-shadow: 0 0 0 #000;
         color: var(--color-base);
-        transition: background-color 150ms ease-out, color 150ms ease-out;
+        transition: box-shadow var(--transition), transform var(--transition);
+    }
+
+    a.movie-provider:hover {
+        box-shadow: var(--shadow-sm);
+        position: relative;
+        transform: translateY(calc(-1 * var(--size-4)));
     }
 
     a.movie-provider + .movie-provider,
     .movie-provider:not(a) + a.movie-provider {
-        margin-top: var(--size-2);
+        margin-top: var(--size-1);
     }
 
     .brand-vudu {
@@ -158,5 +159,26 @@
         --color-brand-fg: #9800D3;
         --color-brand-bg: #fff;
         color: var(--color-brand-bg);
+    }
+
+    @media screen and (min-width: 42rem) {
+        .movie-provider {
+            flex: 0 1 auto;
+        }
+
+        .movie-provider:not(a) {
+            padding: 0;
+        }
+
+        .movie-provider:not(a):first-child,
+        .movie-provider:not(a) + .movie-provider,
+        .movie-provider:not(a):last-child {
+            border: none;
+        }
+
+        a.movie-provider + .movie-provider,
+        .movie-provider:not(a) + a.movie-provider {
+            margin-top: 0;
+        }
     }
 </style>
