@@ -2,18 +2,18 @@
 <html lang="en">
 
 <head>
-	<meta charset="utf-8">
-	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<meta name="robots" content="noindex, nofollow">
-	<title>Engel Movie Collection</title>
-	<meta name="theme-color" content="#0d0e16">
-	<link rel="icon" href="/favicon.ico" sizes="any">
-	<link rel="icon" href="/assets/icon.svg" type="image/svg+xml">
-	<link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
-	<link rel="manifest" href="/manifest.json">
-	<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;900&display=swap" rel="stylesheet">
-	<link href="/assets/main.min.css" rel="stylesheet">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="robots" content="noindex, nofollow">
+    <title>Engel Movie Collection</title>
+    <meta name="theme-color" content="#0d0e16">
+    <link rel="icon" href="/favicon.ico" sizes="any">
+    <link rel="icon" href="/assets/icon.svg" type="image/svg+xml">
+    <link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
+    <link rel="manifest" href="/manifest.json">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;900&display=swap" rel="stylesheet">
+    <link href="/assets/main.min.css" rel="stylesheet">
 </head>
 
 <body>
@@ -192,12 +192,12 @@
 							<ul class="movie-card-stats">
 								<li><span class="movie-card-rating" title="Rating">{{ movies[activeCard].rating }}</span></li>
 								<li class="movie-card-year" title="Release Year">{{ movies[activeCard].year }}</li>
+                                <li class="movie-card-length" title="Length" v-if="movies[activeCard].length">{{ movies[activeCard].length }}</li>
 								<li class="movie-card-genre" title="Genre">
 									<ul>
 										<li v-for="genre in movies[activeCard].genre">{{ genre }}</li>
 									</ul>
 								</li>
-								<li class="movie-card-length" title="Length" v-if="movies[activeCard].length">{{ movies[activeCard].length }}</li>
 							</ul>
 
 							<p class="movie-card-teaser" v-if="movies[activeCard].description">{{ movies[activeCard].description }}</p>
