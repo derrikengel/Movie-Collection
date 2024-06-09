@@ -9,7 +9,6 @@
     <title>Engel Movie Collection</title>
     <meta name="theme-color" content="#0d0e16">
     <link rel="icon" href="/favicon.ico" sizes="any">
-    <link rel="icon" href="/assets/icon.svg" type="image/svg+xml">
     <link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
     <link rel="manifest" href="/manifest.json">
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;900&display=swap" rel="stylesheet">
@@ -177,6 +176,12 @@
 					<div class="movie-card-content" tabindex="-1" @keydown.esc="closeModal()" @click.stop ref="modalCard">
 
 						<div class="movie-card-overlay-img">
+                            <a class="movie-card-trailer-btn btn" v-if="movies[activeCard].trailerId" :href="'https://youtu.be/' + movies[activeCard].trailerId" target="_blank">
+                                <svg width="21" height="21" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M9.125 7.184C9.01095 7.11815 8.88157 7.0835 8.74988 7.08352C8.61819 7.08354 8.48882 7.11824 8.37479 7.18412C8.26076 7.25 8.16609 7.34475 8.1003 7.45883C8.03451 7.57291 7.99992 7.70231 8 7.834V12.167C7.99992 12.2987 8.03451 12.4281 8.1003 12.5422C8.16609 12.6563 8.26076 12.751 8.37479 12.8169C8.48882 12.8828 8.61819 12.9175 8.74988 12.9175C8.88157 12.9175 9.01095 12.8828 9.125 12.817L13.25 10.433C13.326 10.3891 13.3891 10.326 13.433 10.25C13.4769 10.174 13.5 10.0878 13.5 10C13.5 9.91224 13.4769 9.82602 13.433 9.75001C13.3891 9.674 13.326 9.61089 13.25 9.567L9.125 7.184ZM2 10C2 7.87827 2.84285 5.84344 4.34315 4.34315C5.84344 2.84285 7.87827 2 10 2C12.1217 2 14.1566 2.84285 15.6569 4.34315C17.1571 5.84344 18 7.87827 18 10C18 12.1217 17.1571 14.1566 15.6569 15.6569C14.1566 17.1571 12.1217 18 10 18C7.87827 18 5.84344 17.1571 4.34315 15.6569C2.84285 14.1566 2 12.1217 2 10ZM10 3C9.08075 3 8.1705 3.18106 7.32122 3.53284C6.47194 3.88463 5.70026 4.40024 5.05025 5.05025C4.40024 5.70026 3.88463 6.47194 3.53284 7.32122C3.18106 8.1705 3 9.08075 3 10C3 10.9193 3.18106 11.8295 3.53284 12.6788C3.88463 13.5281 4.40024 14.2997 5.05025 14.9497C5.70026 15.5998 6.47194 16.1154 7.32122 16.4672C8.1705 16.8189 9.08075 17 10 17C11.8565 17 13.637 16.2625 14.9497 14.9497C16.2625 13.637 17 11.8565 17 10C17 8.14348 16.2625 6.36301 14.9497 5.05025C13.637 3.7375 11.8565 3 10 3Z" />
+                                </svg>
+                                Trailer
+                            </a>
 							<img :src="movies[activeCard].image" :alt="movies[activeCard].title">
 						</div>
 

@@ -20,6 +20,7 @@
 
 .movie-card {
 	background: $color-cinder;
+    border-radius: 0.375rem;
 	cursor: pointer;
 	display: block;
 	margin-bottom: 1.5rem;
@@ -152,6 +153,30 @@
 	}
 }
 
+.movie-card-trailer-btn {
+    background: rgba($color-cinder, 0.8);
+    color: #fff;
+    font-size: 0.875rem;
+    left: 50%;
+    position: absolute;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 20;
+    
+    @include query(md) {
+        bottom: 3rem;
+        top: auto;
+        transform: translateX(-50%);
+
+        &:hover,
+        &:focus {
+            background: $color-cinder;
+            color: $color-turquoise;
+            box-shadow: none;
+        }
+    }
+}
+
 .movie-card-content {
 	border-radius: 0.375rem;
 	box-shadow: 0 0 6rem $color-cinder, 0 0 3rem $color-cinder;
@@ -186,7 +211,7 @@
 
 .movie-card-close-btn {
 	align-items: center;
-	background: $color-cinder;
+	background: rgba($color-cinder, 0.8);
 	color: $color-turquoise;
 	display: flex;
 	font-size: 1.75rem;
@@ -214,12 +239,12 @@
 
 .movie-card-edit {
 	align-items: center;
-	background: $color-cinder;
-	border-radius: 0.375rem;
+	background: rgba($color-cinder, 0.8);
+	border-radius: 100rem;
 	display: flex;
 	height: 2.5rem;
 	margin-right: 0.5rem;
-	padding: 0 1rem;
+	padding: 0 1.5em;
 	text-decoration: none;
 
 	@include query(md) {
@@ -404,11 +429,17 @@
 
 .movie-card-provider {
     align-items: center;
+    border-radius: 100rem;
     display: flex;
+    font-size: 0.875rem;
     gap: 0.5rem;
     height: 100%;
     justify-content: center;
+    line-height: 1.35;
     margin: 0 0.75em;
+    text-align: center;
+    text-decoration: none;
+    transition: 200ms all ease-out;
 }
 
 .movie-card-watch-list li:first-child .movie-card-provider {
@@ -419,7 +450,7 @@ a.movie-card-provider {
     background-color: #fff;
     border-radius: 100rem;
     margin: 0;
-    padding: 0.75em 1.75em;
+    padding: 0.625em 1.5em;
     text-decoration: none;
 }
 

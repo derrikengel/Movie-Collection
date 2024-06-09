@@ -111,9 +111,8 @@ button,
 .btn {
 	align-items: center;
 	background-color: $color-torch-red;
-	background: $gradient;
 	border: none;
-	border-radius: 0.375rem;
+	border-radius: 100rem;
 	color: #fff;
 	cursor: pointer;
 	display: inline-flex;
@@ -264,7 +263,7 @@ input[type='radio']:focus + label:before {
 
 input[type='checkbox']:checked + label:before,
 input[type='radio']:checked + label:before {
-	background: $gradient;
+	background: $color-torch-red;
 	box-shadow: none;
 	opacity: 1;
 }
@@ -277,6 +276,10 @@ input[type='radio'] {
 	position: absolute;
 	top: 0;
 	width: 0;
+}
+
+.form-field:has(:disabled) {
+    opacity: 0.3;
 }
 
 .form-field + .form-field {
@@ -299,9 +302,6 @@ input[type='radio'] {
 
 .gradient-text {
 	color: $color-torch-red;
-	background: $gradient;
-	-webkit-background-clip: text;
-	-webkit-text-fill-color: transparent;
 }
 
 .error-msg {
