@@ -330,6 +330,17 @@
 	padding-top: 1.5rem;
 }
 
+.movie-card-watch-heading {
+    color: $color-cinder;
+    border-bottom: 1px solid rgba($color-cinder, 0.1);
+    margin: 0;
+    padding-bottom: 0.5rem;
+
+    @include query(md) {
+        margin-bottom: 1.5rem;
+    }
+}
+
 .movie-card-watch-list {
 	color: $color-cinder;
 	font-size: 0.875rem;
@@ -339,51 +350,152 @@
 	padding: 0;
 
 	@include query(md) {
+        border-bottom: none;
 		display: flex;
+        gap: 0.75rem;
 	}
 }
 
-.movie-card-watch-list li {
-	align-items: center;
-	border-bottom: 1px solid rgba($color-cinder, 0.1);
-	display: flex;
-	padding: 1rem 0;
+.movie-card-watch-list li {	
+    padding: 1rem;
 
 	@include query(md) {
-		border-bottom: none;
 		padding: 0;
 	}
+
+    &:has(a) {
+        border-bottom: none;
+        padding: 0;
+    }
+
+    &:has(a) + li:has(a) {
+        margin-top: 0.5rem;
+
+        @include query(md) {
+            margin-top: 0;
+        }
+    }
+
+    &:first-child:has(a) {
+        margin-top: 1rem;
+
+        @include query(md) {
+            margin-top: 0;
+        }
+    }
+
+    &:last-child:not(:has(a)) {
+        border-bottom: 1px solid rgba($color-cinder, 0.1);
+
+        @include query(md) {
+            border-bottom: none;
+        }
+    }
+
+    &:not(:has(a)) + li:not(:has(a)) {
+        border-top: 1px solid rgba($color-cinder, 0.1);
+
+        @include query(md) {
+            border-top: none;
+        }
+    }
 }
 
-.movie-card-watch-list li + li {
 
-	@include query(md) {
-		margin-left: 2.5rem;
-	}
+.movie-card-provider {
+    align-items: center;
+    display: flex;
+    gap: 0.5rem;
+    height: 100%;
+    justify-content: center;
+    margin: 0 0.75em;
 }
 
-.movie-card-watch-list svg {
-	margin-right: 0.75em;
+.movie-card-watch-list li:first-child .movie-card-provider {
+    margin-left: 0;
 }
 
-.movie-card-watch-heading {
-	color: $color-cinder;
-	border-bottom: 1px solid rgba($color-cinder, 0.1);
-	margin: 0;
-	padding-bottom: 0.5rem;
+a.movie-card-provider {
+    background-color: #fff;
+    border-radius: 100rem;
+    margin: 0;
+    padding: 0.75em 1.75em;
+    text-decoration: none;
+}
 
-	@include query(md) {
-		margin-bottom: 1.5rem;
-	}
+.icon-vudu-bg {
+    fill: #3478C1;
+}
+
+.icon-vudu-fg {
+    fill: #fff;
+}
+
+.icon-youtube-bg {
+    fill: #ff0000;
+}
+
+.icon-youtube-fg {
+    fill: #fff;
+}
+
+.icon-plex-bg {
+    fill: #191919;
+}
+
+.icon-plex-fg {
+    fill: #ebaf00;
+}
+
+a.movie-card-provider.provider-vudu {
+    background-color: #3478c1;
+    color: #fff;
+
+    .movie-card-quality {
+        border-color: #599ac5;
+    }
+
+    .icon-vudu-bg {
+        fill: #fff;
+    }
+    
+    .icon-vudu-fg {
+        fill: #3478C1;
+    }
+}
+
+a.movie-card-provider.provider-plex {
+    background-color: #ebaf00;
+    color: #191919;
+    
+    .movie-card-quality {
+        border-color: #cd8b36;
+    }
+}
+
+a.movie-card-provider.provider-youtube {
+    background-color: #282828;
+    color: #fff;
+
+    .movie-card-quality {
+        border-color: #555;
+    }
+}
+
+.movie-card-provider-name {
+    align-items: baseline;
+    display: flex;
+    gap: 0.5rem;
 }
 
 .movie-card-quality {
-	color: $color-nevada;
+    border-left: 1px solid rgba($color-cinder, 0.1);
+    font-size: 0.75rem;
 	font-weight: $font-weight-regular;
+    padding-left: 0.5rem;
 }
 
 .movie-card-rating {
-	// background-color: $color-nevada;
 	border-radius: 0.25rem;
 	box-shadow: inset 0 0 0 1px rgba($color-cinder, 0.2);
 	line-height: 1;
