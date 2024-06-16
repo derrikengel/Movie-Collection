@@ -245,6 +245,13 @@ input[type='radio'] + label {
 	font-weight: $font-weight-regular;
 }
 
+input[type='checkbox'] + label:before {
+    background-image: url("data:image/svg+xml,%3Csvg width='9' height='6' viewBox='0 0 9 6' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M8.14581 0.1832C8.26298 0.300405 8.3288 0.459347 8.3288 0.625075C8.3288 0.790803 8.26298 0.949745 8.14581 1.06695L3.46122 5.75153C3.39931 5.81346 3.32581 5.86258 3.24492 5.89609C3.16403 5.9296 3.07732 5.94685 2.98976 5.94685C2.9022 5.94685 2.8155 5.9296 2.73461 5.89609C2.65371 5.86258 2.58021 5.81346 2.51831 5.75153L0.190805 3.42445C0.131111 3.3668 0.0834974 3.29783 0.0507418 3.22158C0.0179862 3.14533 0.000744733 3.06331 2.35979e-05 2.98033C-0.000697537 2.89734 0.0151161 2.81504 0.0465416 2.73823C0.0779672 2.66142 0.124375 2.59164 0.183058 2.53295C0.241741 2.47427 0.311524 2.42786 0.388334 2.39644C0.465144 2.36501 0.547444 2.3492 0.630431 2.34992C0.713418 2.35064 0.795431 2.36788 0.871683 2.40064C0.947936 2.43339 1.0169 2.48101 1.07456 2.5407L2.98956 4.4557L7.26164 0.1832C7.31968 0.125121 7.3886 0.0790478 7.46445 0.0476136C7.54031 0.0161793 7.62161 0 7.70372 0C7.78583 0 7.86714 0.0161793 7.94299 0.0476136C8.01885 0.0790478 8.08776 0.125121 8.14581 0.1832Z' fill='white' /%3E%3C/svg%3E");
+    background-size: 0 0;
+    background-repeat: no-repeat;
+    background-position: 50% 50%;
+}
+
 input[type='radio'] + label:before {
 	border-radius: 100%;
 }
@@ -263,9 +270,13 @@ input[type='radio']:focus + label:before {
 
 input[type='checkbox']:checked + label:before,
 input[type='radio']:checked + label:before {
-	background: $color-torch-red;
+	background-color: $color-torch-red;
 	box-shadow: none;
 	opacity: 1;
+}
+
+input[type='checkbox']:checked + label:before {
+    background-size: 9px 6px;
 }
 
 input[type='checkbox'],

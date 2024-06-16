@@ -20,6 +20,11 @@
 	top: 0;
 	width: 2.5rem;
 
+    &:hover,
+    &:focus {
+        box-shadow: none;
+    }
+
     @include query(lg) {
         display: none;
     }
@@ -133,9 +138,16 @@
 	}
 }
 
-.filter-option:last-child,
-.filter-option:nth-last-child(2) {
+.filter-actions {
 	border-bottom: none;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+
+    @include query(md) {
+        flex-direction: row;
+        gap: 0.75rem;
+    }
 }
 
 .filter-option-title {
@@ -149,6 +161,15 @@
 	transition: 200ms all ease-out;
 	width: 100%;
     z-index: 300;
+    
+    @include query(md) {
+        &:hover,
+        &:focus {
+            background: transparent;
+            box-shadow: none;
+            color: $color-cinder;
+        }
+    }
 
     @include query(lg) {
         border: none;

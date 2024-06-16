@@ -275,6 +275,13 @@ input[type=radio] + label {
   font-weight: 400;
 }
 
+input[type=checkbox] + label:before {
+  background-image: url("data:image/svg+xml,%3Csvg width='9' height='6' viewBox='0 0 9 6' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M8.14581 0.1832C8.26298 0.300405 8.3288 0.459347 8.3288 0.625075C8.3288 0.790803 8.26298 0.949745 8.14581 1.06695L3.46122 5.75153C3.39931 5.81346 3.32581 5.86258 3.24492 5.89609C3.16403 5.9296 3.07732 5.94685 2.98976 5.94685C2.9022 5.94685 2.8155 5.9296 2.73461 5.89609C2.65371 5.86258 2.58021 5.81346 2.51831 5.75153L0.190805 3.42445C0.131111 3.3668 0.0834974 3.29783 0.0507418 3.22158C0.0179862 3.14533 0.000744733 3.06331 2.35979e-05 2.98033C-0.000697537 2.89734 0.0151161 2.81504 0.0465416 2.73823C0.0779672 2.66142 0.124375 2.59164 0.183058 2.53295C0.241741 2.47427 0.311524 2.42786 0.388334 2.39644C0.465144 2.36501 0.547444 2.3492 0.630431 2.34992C0.713418 2.35064 0.795431 2.36788 0.871683 2.40064C0.947936 2.43339 1.0169 2.48101 1.07456 2.5407L2.98956 4.4557L7.26164 0.1832C7.31968 0.125121 7.3886 0.0790478 7.46445 0.0476136C7.54031 0.0161793 7.62161 0 7.70372 0C7.78583 0 7.86714 0.0161793 7.94299 0.0476136C8.01885 0.0790478 8.08776 0.125121 8.14581 0.1832Z' fill='white' /%3E%3C/svg%3E");
+  background-size: 0 0;
+  background-repeat: no-repeat;
+  background-position: 50% 50%;
+}
+
 input[type=radio] + label:before {
   border-radius: 100%;
 }
@@ -293,9 +300,13 @@ input[type=radio]:focus + label:before {
 
 input[type=checkbox]:checked + label:before,
 input[type=radio]:checked + label:before {
-  background: #ff2c25;
+  background-color: #ff2c25;
   box-shadow: none;
   opacity: 1;
+}
+
+input[type=checkbox]:checked + label:before {
+  background-size: 9px 6px;
 }
 
 input[type=checkbox],
@@ -407,6 +418,9 @@ input[type=radio] {
   right: 0;
   top: 0;
   width: 2.5rem;
+}
+.filter-close-btn:hover, .filter-close-btn:focus {
+  box-shadow: none;
 }
 @media screen and (min-width: 84rem) {
   .filter-close-btn {
@@ -520,9 +534,17 @@ input[type=radio] {
   z-index: 200;
 }
 
-.filter-option:last-child,
-.filter-option:nth-last-child(2) {
+.filter-actions {
   border-bottom: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+@media screen and (min-width: 54rem) {
+  .filter-actions {
+    flex-direction: row;
+    gap: 0.75rem;
+  }
 }
 
 .filter-option-title {
@@ -536,6 +558,13 @@ input[type=radio] {
   transition: 200ms all ease-out;
   width: 100%;
   z-index: 300;
+}
+@media screen and (min-width: 54rem) {
+  .filter-option-title:hover, .filter-option-title:focus {
+    background: transparent;
+    box-shadow: none;
+    color: #0d0e16;
+  }
 }
 @media screen and (min-width: 84rem) {
   .filter-option-title {
@@ -1147,6 +1176,7 @@ input[type=radio] {
   .movie-card-watch-list {
     border-bottom: none;
     display: flex;
+    flex-wrap: wrap;
     gap: 0.75rem;
   }
 }
@@ -1206,7 +1236,6 @@ input[type=radio] {
   justify-content: center;
   line-height: 1.35;
   margin: 0 0.75em;
-  text-align: center;
   text-decoration: none;
   transition: 200ms all ease-out;
 }
@@ -1223,6 +1252,10 @@ a.movie-card-provider {
   text-decoration: none;
 }
 
+.movie-card-provider [class^=icon-] {
+  flex: 0 0 auto;
+}
+
 .icon-vudu-bg {
   fill: #3478C1;
 }
@@ -1231,8 +1264,16 @@ a.movie-card-provider {
   fill: #fff;
 }
 
+.icon-fah-bg {
+  fill: #ff7300;
+}
+
+.icon-fah-fg {
+  fill: #fff;
+}
+
 .icon-youtube-bg {
-  fill: #ff0000;
+  fill: #f00;
 }
 
 .icon-youtube-fg {
@@ -1261,6 +1302,14 @@ a.movie-card-provider.provider-vudu .icon-vudu-fg {
   fill: #3478C1;
 }
 
+a.movie-card-provider.provider-fah {
+  background-color: #3478c1;
+  color: #fff;
+}
+a.movie-card-provider.provider-fah .movie-card-quality {
+  border-color: #599ac5;
+}
+
 a.movie-card-provider.provider-plex {
   background-color: #ebaf00;
   color: #191919;
@@ -1270,15 +1319,21 @@ a.movie-card-provider.provider-plex .movie-card-quality {
 }
 
 a.movie-card-provider.provider-youtube {
-  background-color: #282828;
+  background-color: #f00;
   color: #fff;
 }
 a.movie-card-provider.provider-youtube .movie-card-quality {
-  border-color: #555;
+  border-color: #ff7474;
+}
+a.movie-card-provider.provider-youtube .icon-youtube-bg {
+  fill: #fff;
+}
+a.movie-card-provider.provider-youtube .icon-youtube-fg {
+  fill: #f00;
 }
 
 .movie-card-provider-name {
-  align-items: baseline;
+  align-items: center;
   display: flex;
   gap: 0.5rem;
 }

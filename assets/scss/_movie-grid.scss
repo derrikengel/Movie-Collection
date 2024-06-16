@@ -377,6 +377,7 @@
 	@include query(md) {
         border-bottom: none;
 		display: flex;
+        flex-wrap: wrap;
         gap: 0.75rem;
 	}
 }
@@ -437,7 +438,6 @@
     justify-content: center;
     line-height: 1.35;
     margin: 0 0.75em;
-    text-align: center;
     text-decoration: none;
     transition: 200ms all ease-out;
 }
@@ -454,6 +454,10 @@ a.movie-card-provider {
     text-decoration: none;
 }
 
+.movie-card-provider [class^="icon-"] {
+    flex: 0 0 auto;
+}
+
 .icon-vudu-bg {
     fill: #3478C1;
 }
@@ -462,8 +466,16 @@ a.movie-card-provider {
     fill: #fff;
 }
 
+.icon-fah-bg {
+    fill: #ff7300;
+}
+
+.icon-fah-fg {
+    fill: #fff;
+}
+
 .icon-youtube-bg {
-    fill: #ff0000;
+    fill: #f00;
 }
 
 .icon-youtube-fg {
@@ -495,6 +507,15 @@ a.movie-card-provider.provider-vudu {
     }
 }
 
+a.movie-card-provider.provider-fah {
+    background-color: #3478c1;
+    color: #fff;
+
+    .movie-card-quality {
+        border-color: #599ac5;
+    }
+}
+
 a.movie-card-provider.provider-plex {
     background-color: #ebaf00;
     color: #191919;
@@ -505,16 +526,24 @@ a.movie-card-provider.provider-plex {
 }
 
 a.movie-card-provider.provider-youtube {
-    background-color: #282828;
+    background-color: #f00;
     color: #fff;
 
     .movie-card-quality {
-        border-color: #555;
+        border-color: #ff7474;
+    }
+
+    .icon-youtube-bg {
+        fill: #fff;
+    }
+
+    .icon-youtube-fg {
+        fill: #f00;
     }
 }
 
 .movie-card-provider-name {
-    align-items: baseline;
+    align-items: center;
     display: flex;
     gap: 0.5rem;
 }

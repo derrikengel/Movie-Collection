@@ -83,8 +83,8 @@
 					</div> <!-- /form-field -->
 
 					<div class="form-field">
-						<label for="vudu-link">Vudu Link <a :href="'https://www.vudu.com/content/movies/search?searchString=' + movie.title" target="_blank">Search Vudu</a></label>
-						<input type="url" id="vudu-link" name="vudu-link" v-model="movie.vuduUrl" @change="updateImages" autocomplete="off">
+						<label for="fah-link">Fandango at Home Link <a :href="'https://www.vudu.com/content/movies/search?searchString=' + movie.title" target="_blank">Search Fandango at Home</a></label>
+						<input type="url" id="fah-link" name="fah-link" v-model="movie.vuduUrl" @change="updateImages" autocomplete="off">
 					</div> <!-- /form-field -->
 					
 					<div class="form-field">
@@ -93,7 +93,7 @@
 					</div> <!-- /form-field -->
 
                     <div class="form-field">
-                        <label for="hero">Hero Image Link</label>
+                        <label for="hero">Hero Image Link <a :href="'https://www.flixster.com/at-home#search=' + movie.title" target="_blank">Flixster fallback</a></label>
                         <input type="url" id="hero" name="hero" v-model="movie.heroUrl" autocomplete="off">
                     </div> <!-- /form-field -->
 
@@ -165,7 +165,7 @@
                     </div> <!-- /form-field -->
 
 					<div class="form-field">
-						<label for="vudu-quality">Vudu Quality <a :href="movie.vuduUrl" target="_blank">Find on Vudu</a></label>
+						<label for="vudu-quality">Fandango at Home Quality <a :href="movie.vuduUrl" target="_blank">Find on Fandango at Home</a></label>
 
 						<select id="vudu-quality" v-model="movie.vuduQuality" :disabled="!movie.vuduUrl">
 							<option value=""></option>
@@ -260,7 +260,7 @@
 
                     <div class="movie-card-trailer" v-if="movie.trailerId">
                         <div class="movie-card-trailer-video">
-                            <iframe  :src="'https://www.youtube.com/embed/' + movie.trailerId + '?playlist=' + movie.trailerId + '&modestbranding=1&autoplay=1&loop=1&rel=0'" width="1280" height="720" :title="movie.title + 'Trailer'" frameborder="0" allow="autoplay" tabindex="-1"></iframe>
+                            <iframe :src="'https://www.youtube.com/embed/' + movie.trailerId + '?playlist=' + movie.trailerId + '&modestbranding=1&autoplay=1&loop=1&rel=0'" width="1280" height="720" :title="movie.title + 'Trailer'" frameborder="0" allow="autoplay" tabindex="-1"></iframe>
                         </div>
                     </div>
 
@@ -272,6 +272,12 @@
 					<div class="movie-card-content" tabindex="-1" @keydown.esc="closeModal()" @click.stop ref="modalCard">
 				
 						<div class="movie-card-overlay-img">
+                            <a class="movie-card-trailer-btn btn" v-if="movie.trailerId" :href="'https://youtu.be/' + movie.trailerId" target="_blank">
+                                <svg width="21" height="21" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                                    <path d="M9.125 7.184C9.01095 7.11815 8.88157 7.0835 8.74988 7.08352C8.61819 7.08354 8.48882 7.11824 8.37479 7.18412C8.26076 7.25 8.16609 7.34475 8.1003 7.45883C8.03451 7.57291 7.99992 7.70231 8 7.834V12.167C7.99992 12.2987 8.03451 12.4281 8.1003 12.5422C8.16609 12.6563 8.26076 12.751 8.37479 12.8169C8.48882 12.8828 8.61819 12.9175 8.74988 12.9175C8.88157 12.9175 9.01095 12.8828 9.125 12.817L13.25 10.433C13.326 10.3891 13.3891 10.326 13.433 10.25C13.4769 10.174 13.5 10.0878 13.5 10C13.5 9.91224 13.4769 9.82602 13.433 9.75001C13.3891 9.674 13.326 9.61089 13.25 9.567L9.125 7.184ZM2 10C2 7.87827 2.84285 5.84344 4.34315 4.34315C5.84344 2.84285 7.87827 2 10 2C12.1217 2 14.1566 2.84285 15.6569 4.34315C17.1571 5.84344 18 7.87827 18 10C18 12.1217 17.1571 14.1566 15.6569 15.6569C14.1566 17.1571 12.1217 18 10 18C7.87827 18 5.84344 17.1571 4.34315 15.6569C2.84285 14.1566 2 12.1217 2 10ZM10 3C9.08075 3 8.1705 3.18106 7.32122 3.53284C6.47194 3.88463 5.70026 4.40024 5.05025 5.05025C4.40024 5.70026 3.88463 6.47194 3.53284 7.32122C3.18106 8.1705 3 9.08075 3 10C3 10.9193 3.18106 11.8295 3.53284 12.6788C3.88463 13.5281 4.40024 14.2997 5.05025 14.9497C5.70026 15.5998 6.47194 16.1154 7.32122 16.4672C8.1705 16.8189 9.08075 17 10 17C11.8565 17 13.637 16.2625 14.9497 14.9497C16.2625 13.637 17 11.8565 17 10C17 8.14348 16.2625 6.36301 14.9497 5.05025C13.637 3.7375 11.8565 3 10 3Z" />
+                                </svg>
+                                Trailer
+                            </a>
 							<img :src="movie.imageUrl" :alt="movie.title" v-if="movie.imageUrl">
 						</div>
 				
@@ -297,74 +303,63 @@
 				
 							<p class="movie-card-teaser" v-if="movie.description">{{ movie.description }}</p>
 				
-							<div class="movie-card-watch" v-if="movie.vuduQuality || movie.gpQuality || movie.discFormat">
+							<div class="movie-card-watch" v-if="movie.vuduQuality || movie.gpQuality || movie.plexQuality ||movie.discFormat">
 								<h4 class="movie-card-watch-heading">Where to Watch</h4>
 								<ul class="movie-card-watch-list">
 									<li v-if="movie.vuduQuality">
-										<svg class="vudu" width="24px" height="24px" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" title="Vudu">
-											<linearGradient id="vudu-grad" gradientUnits="userSpaceOnUse" x1="16" y1="32" x2="16" y2="-9.094947e-13">
-												<stop offset="0" style="stop-color:#01639E" />
-												<stop offset="1" style="stop-color:#007BC4" />
-											</linearGradient>
-											<path style="fill:url(#vudu-grad);" d="M28,32H4c-2.21,0-4-1.79-4-4V4c0-2.21,1.79-4,4-4h23c2.76,0,5,2.24,5,5v23 C32,30.21,30.21,32,28,32z" />
-											<path style="fill:#FFFFFF;" d="M25.06,6c-1.22,0-1.97,0-3.17,0h-0.02h-0.01h0h0c-0.55,0.01-1.02,0.35-1.21,0.85 c-0.02,0.03-0.03,0.06-0.04,0.09c-1.21,3.45-2.27,6.41-3.48,9.86c-0.32,0.91-0.63,1.82-0.96,2.73c-0.03,0.07-0.09,0.16-0.16,0.18 c-0.14,0.04-0.14-0.11-0.17-0.19c-0.76-2.15-1.51-4.3-2.26-6.45c-0.77-2.21-1.42-4.04-2.19-6.25c-0.01-0.02-0.02-0.05-0.04-0.07 C11.12,6.3,10.67,6,10.16,6c-0.01,0-0.03,0-0.04,0C8.89,6,8.17,6,6.93,6c-0.41,0-0.61,0.3-0.48,0.69c1.87,5.21,3.73,10.41,5.6,15.62 c0.14,0.39,0.26,0.74,0.38,1.08c0.71,1.65,1.79,2.51,3.7,2.62c0.56,0,0.43,0,0.43,0c0.62-0.02,1.32-0.12,2.12-0.28l1.32-3.77 c1.84-5.1,3.64-10.06,5.51-15.23c0.02-0.06,0.04-0.12,0.05-0.18C25.62,6.23,25.41,6,25.06,6" />
-										</svg>
-										<span>
-											Vudu
-											<span class="movie-card-quality">{{ movie.vuduQuality }}</span>
-										</span>
+                                        <component :is="movie.vuduUrl ? 'a' : 'div'" :href="movie.vuduUrl" v-bind="{ target: movie.vuduUrl ? '_blank' : undefined }" class="movie-card-provider provider-fah">
+                                            <svg class="icon-fah" width="21" height="21" viewBox="0 0 21 21" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                                                <path class="icon-fah-bg" d="M17.635 6.23583L16.1669 0.777771L0.774719 4.88638L2.24277 10.3464V10.3483C3.1625 10.535 3.94611 11.2233 4.20472 12.1878C4.46527 13.1542 4.13083 14.138 3.42889 14.7583V14.7603L4.89694 20.2203L20.2911 16.1136L18.8231 10.6555C17.8975 10.4708 17.11 9.78249 16.8494 8.81416C16.5889 7.84388 16.9253 6.8561 17.635 6.23583Z" />
+                                                <path class="icon-fah-fg" d="M11.8931 6.42637L7.31194 7.64943L8.23167 11.0736L12.8128 9.85054L13.7325 13.2747L9.15139 14.4978L10.0711 17.92L5.49 19.143L4.37583 15.0014C5.04472 14.1828 5.32472 13.0686 5.02917 11.97C4.73361 10.8733 3.9325 10.045 2.94278 9.66971L1.80722 5.45026L10.9694 3.00415L11.8931 6.42637Z" />
+                                            </svg>
+
+                                            <span class="movie-card-provider-name">
+                                                Fandango at Home
+                                                <span class="movie-card-quality">{{ movie.vuduQuality }}</span>
+                                            </span>
+                                        </component>
 									</li>
 				
 									<li v-if="movie.gpQuality">
-										<svg class="google-play" width="21px" height="24px" viewBox="0 0 29 32" xmlns="http://www.w3.org/2000/svg" title="Google Play">
-											<linearGradient id="gp-grad-1" gradientUnits="userSpaceOnUse" x1="14.7161" y1="-0.046" x2="-6.1633" y2="20.8333" gradientTransform="matrix(1 0 0 1 0 2)">
-												<stop offset="0" style="stop-color:#00A0FF" />
-												<stop offset="6.574450e-03" style="stop-color:#00A1FF" />
-												<stop offset="0.2601" style="stop-color:#00BEFF" />
-												<stop offset="0.5122" style="stop-color:#00D2FF" />
-												<stop offset="0.7604" style="stop-color:#00DFFF" />
-												<stop offset="1" style="stop-color:#00E3FF" />
-											</linearGradient>
-											<path style="fill:url(#gp-grad-1);" d="M0.58,0.49C0.21,0.88,0,1.47,0,2.24v27.52c0,0.77,0.21,1.36,0.58,1.75l0.09,0.09l15.41-15.41 V16v-0.18L0.67,0.4L0.58,0.49z" />
-				
-											<linearGradient id="gp-grad-2" gradientUnits="userSpaceOnUse" x1="29.687" y1="14" x2="-0.4169" y2="14" gradientTransform="matrix(1 0 0 1 0 2)">
-												<stop offset="0" style="stop-color:#FFE000" />
-												<stop offset="0.4087" style="stop-color:#FFBD00" />
-												<stop offset="0.7754" style="stop-color:#FFA500" />
-												<stop offset="1" style="stop-color:#FF9C00" />
-											</linearGradient>
-											<path style="fill:url(#gp-grad-2);" d="M21.22,21.32l-5.14-5.14V16v-0.18l5.14-5.14l0.12,0.07l6.09,3.46c1.74,0.99,1.74,2.6,0,3.59 l-6.09,3.46L21.22,21.32z" />
-				
-											<linearGradient id="gp-grad-3" gradientUnits="userSpaceOnUse" x1="18.4826" y1="16.8574" x2="-9.8314" y2="45.1715" gradientTransform="matrix(1 0 0 1 0 2)">
-												<stop offset="0" style="stop-color:#FF3A44" />
-												<stop offset="1" style="stop-color:#C31162" />
-											</linearGradient>
-											<path style="fill:url(#gp-grad-3);" d="M21.34,21.26L16.08,16L0.58,31.51c0.57,0.61,1.52,0.68,2.59,0.08L21.34,21.26" />
-				
-											<linearGradient id="gp-grad-4" gradientUnits="userSpaceOnUse" x1="-3.3265" y1="-10.6663" x2="9.317" y2="1.9771" gradientTransform="matrix(1 0 0 1 0 2)">
-												<stop offset="0" style="stop-color:#32A071" />
-												<stop offset="0.0685" style="stop-color:#2DA771" />
-												<stop offset="0.4762" style="stop-color:#15CF74" />
-												<stop offset="0.8009" style="stop-color:#06E775" />
-												<stop offset="1" style="stop-color:#00F076" />
-											</linearGradient>
-											<path style="fill:url(#gp-grad-4);" d="M21.34,10.74L3.16,0.42C2.1-0.19,1.15-0.11,0.58,0.49L16.08,16L21.34,10.74z" />
-										</svg>
-										<span>
-											Google Play
-											<span class="movie-card-quality">{{ movie.gpQuality }}</span>
-										</span>
+                                        <component :is="movie.gpUrl ? 'a' : 'div'" :href="movie.gpUrl" v-bind="{ target: movie.gpUrl ? '_blank' : undefined }" class="movie-card-provider provider-youtube">
+                                            <svg class="icon-youtube" width="22" height="21" viewBox="0 0 22 21" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                                                <path class="icon-youtube-bg" d="M20.8122 5.68956C20.698 5.2659 20.4745 4.87964 20.1643 4.56937C19.854 4.2591 19.4677 4.03568 19.0441 3.92145C17.4834 3.5033 11.2292 3.5033 11.2292 3.5033C11.2292 3.5033 4.97329 3.5033 3.41591 3.92145C2.9921 4.03538 2.60567 4.25869 2.29536 4.56901C1.98504 4.87933 1.76173 5.26575 1.6478 5.68956C1.22964 7.24859 1.22964 10.5033 1.22964 10.5033C1.22964 10.5033 1.22964 13.758 1.6478 15.317C1.76273 15.7396 1.98649 16.1247 2.29674 16.4338C2.607 16.7429 2.99289 16.9652 3.41591 17.0786C4.97494 17.4967 11.2292 17.4967 11.2292 17.4967C11.2292 17.4967 17.4851 17.4967 19.0441 17.0786C19.4677 16.9643 19.854 16.7409 20.1643 16.4306C20.4745 16.1204 20.698 15.7341 20.8122 15.3104C21.2304 13.7514 21.2303 10.4967 21.2303 10.4967C21.2303 10.4967 21.2304 7.24859 20.8122 5.68956Z" />
+                                                <path class="icon-youtube-fg" d="M9.22916 13.5028L14.4265 10.5033L9.22916 7.50378V13.5028Z" />
+                                            </svg>
+
+                                            <span class="movie-card-provider-name">
+                                                YouTube
+                                                <span class="movie-card-quality">{{ movie.gpQuality }}</span>
+                                            </span>
+                                        </component>
 									</li>
+
+                                    <li v-if="movie.plexQuality">
+                                        <component :is="movie.plexUrl ? 'a' : 'div'" :href="movie.plexUrl" v-bind="{ target: movie.plexUrl ? '_blank' : undefined }" class="movie-card-provider provider-plex">
+                                            <svg class="icon-plex" width="22" height="21" viewBox="0 0 22 21" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                                                <rect class="icon-plex-bg" x="2.18994" y="1.5" width="18" height="18" rx="9" />
+                                                <path class="icon-plex-fg" d="M11.2412 15.5H7.76892L11.1392 10.5021L7.76892 5.5H11.2412L14.611 10.5021L11.2412 15.5Z" />
+                                            </svg>
+                                    
+                                            <span class="movie-card-provider-name">
+                                                Plex
+                                                <span class="movie-card-quality">{{ movie.plexQuality }}</span>
+                                            </span>
+                                        </component>
+                                    </li>
 				
 									<li v-if="movie.discFormat">
-										<svg class="vudu" width="24px" height="24px" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" title="Physical Disc">
-											<linearGradient id="disc-grad" gradientUnits="userSpaceOnUse" x1="4.6863" y1="27.3137" x2="27.3137" y2="4.6863">
-												<stop offset="0" style="stop-color:#69747C" />
-												<stop offset="1" style="stop-color:#8C949A" />
-											</linearGradient>
-											<path style="fill:url(#disc-grad);" d="M16,0C7.16,0,0,7.16,0,16s7.16,16,16,16s16-7.16,16-16S24.84,0,16,0z M16,20 c-2.21,0-4-1.79-4-4c0-2.21,1.79-4,4-4s4,1.79,4,4C20,18.21,18.21,20,16,20z" />
-										</svg>
-										{{ movie.discFormat }}
+                                        <div class="movie-card-provider">
+                                            <svg width="21px" height="21px" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" title="Physical Disc">
+                                                <linearGradient id="disc-grad" gradientUnits="userSpaceOnUse" x1="4.6863" y1="27.3137" x2="27.3137" y2="4.6863">
+                                                    <stop offset="0" style="stop-color:#69747C" />
+                                                    <stop offset="1" style="stop-color:#8C949A" />
+                                                </linearGradient>
+                                                <path style="fill:url(#disc-grad);" d="M16,0C7.16,0,0,7.16,0,16s7.16,16,16,16s16-7.16,16-16S24.84,0,16,0z M16,20 c-2.21,0-4-1.79-4-4c0-2.21,1.79-4,4-4s4,1.79,4,4C20,18.21,18.21,20,16,20z" />
+                                            </svg>
+                                            
+                                            {{ movie.discFormat }}
+                                        </div>
 									</li>
 								</ul>
 							</div>
