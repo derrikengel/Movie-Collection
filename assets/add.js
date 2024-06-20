@@ -38,6 +38,7 @@ var addMovie = new Vue({
                 discFormat: '',
                 length: '',
                 description: '',
+                dateAcquired: new Date(),
                 notes: ''
             },
             result: '',
@@ -78,6 +79,7 @@ var addMovie = new Vue({
                     vm.movie.rating = movie.rating || ''
                     vm.movie.length = movie.length || ''
                     vm.movie.description = movie.description || ''
+                    vm.movie.dateAcquired = movie.dateAcquired.toDate() || ''
                     vm.movie.notes = movie.notes || ''
                 } else {
                     console.log('Document does not exist.');
@@ -94,6 +96,15 @@ var addMovie = new Vue({
                 var hours = Math.floor(this.movie.length / 60)
                 var minutes = this.movie.length % 60
                 return (hours > 0 ? hours + 'h ' : '') + minutes + 'm'
+            }
+        },
+        formattedDate: {
+            get() {
+                return this.formatDate(this.movie.dateAcquired);
+            },
+            set(value) {
+                console.log(value);
+                this.movie.dateAcquired = new Date(value);
             }
         }
     },
@@ -156,7 +167,7 @@ var addMovie = new Vue({
                 rating: vm.movie.rating,
                 length: vm.movie.length,
                 description: vm.movie.description,
-                dateAcquired: firebase.firestore.Timestamp.fromDate(new Date()),
+                dateAcquired: firebase.firestore.Timestamp.fromDate(vm.movie.dateAcquired),
                 notes: vm.movie.notes
             })
             .then(() => {
@@ -212,6 +223,7 @@ var addMovie = new Vue({
                 rating: vm.movie.rating,
                 length: vm.movie.length,
                 description: vm.movie.description,
+                dateAcquired: firebase.firestore.Timestamp.fromDate(vm.movie.dateAcquired),
                 notes: vm.movie.notes
             })
             .then(() => {
@@ -227,6 +239,11 @@ var addMovie = new Vue({
 
             // jump back to the top
             window.scrollTo(0, 0)
+        },
+        formatDate(date) {
+            var dateAcquired = new Date(date);
+            dateAcquired.setMinutes(dateAcquired.getMinutes() - dateAcquired.getTimezoneOffset());
+            return dateAcquired.toISOString().slice(0, 16);
         },
         resetForm() {
             var vm = this

@@ -250,6 +250,11 @@
 						<input type="text" id="notes" name="notes" v-model="movie.notes" autocomplete="off">
 					</div> <!-- /form-field -->
 
+                    <div class="form-field">
+                        <label for="date">Date &amp; Time Acquired</label>
+                        <input type="datetime-local" id="date" name="date" v-model="formattedDate" autocomplete="off">
+                    </div> <!-- /form-field -->
+
 					<div class="form-btn">
 						<button v-if="movie.id">Update</button>
 						<button v-else>Add</button>

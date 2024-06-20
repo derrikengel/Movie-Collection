@@ -156,6 +156,7 @@ label {
 	border-radius: 0.375rem;
 	box-shadow: none;
 	box-sizing: border-box;
+    color-scheme: dark;
 	display: block;
 	font-family: inherit;
 	font-size: 1rem;
@@ -172,6 +173,7 @@ input[type='email'],
 input[type='password'],
 input[type='number'],
 input[type='url'],
+input[type='datetime-local'],
 textarea {
 	@extend %field;
 
