@@ -866,6 +866,8 @@ h1.error-msg {
   align-items: center;
   color: rgba(255, 255, 255, 0.35);
   display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
   font-weight: 900;
   height: 100%;
   justify-content: center;
@@ -883,6 +885,9 @@ h1.error-msg {
   .movie-card-title-preload {
     padding: 1.5rem;
   }
+}
+.movie-card-title-preload .movie-card-year-preload {
+  font-size: 0.75rem;
 }
 
 .movie-card-overlay {

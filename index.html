@@ -166,9 +166,12 @@
 			</div> <!-- /filters -->
 
 			<div class="movies" :class="{ 'card-expanded': activeCard != null }">
-				<button type="button" v-for="(movie, index) in movies" :key="index" class="movie-card" tabindex="0" @click="openModal(index)" v-on:keyup.enter="openModal(index)" ref="movieCard">
-					<span class="movie-card-title-preload">{{ movie.title }}</span>
-					<img :src="movie.image" :alt="movie.title" class="movie-card-img" :title="movie.title">
+				<button type="button" v-for="(movie, index) in movies" :key="index" class="movie-card" tabindex="0" @click="openModal(index)" v-on:keyup.enter="openModal(index)" ref="movieCard" :title="`${movie.title} (${movie.year})`">
+					<span class="movie-card-title-preload">
+                        {{ movie.title }}
+                        <span class="movie-card-year-preload">{{ movie.year }}</span>
+                    </span>
+					<img :src="movie.image" :alt="movie.title" class="movie-card-img">
 				</button>
 			</div>
 
