@@ -1,6 +1,6 @@
 .movies {
 	display: grid;
-	gap: 0.5rem;
+	gap: 1.25rem 0.5rem;
 	grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
 	margin-bottom: 1rem;
 
@@ -23,7 +23,6 @@
     border-radius: 0.375rem;
 	cursor: pointer;
 	display: block;
-	margin-bottom: 1.5rem;
 	overflow: hidden;
 	padding: 0;
 	position: relative;

@@ -18,20 +18,23 @@
 <body>
 	<div id="movies" v-cloak v-infinite-scroll="loadMore" infinite-scroll-disabled="lazy.busy" infinite-scroll-distance="200">
 
-		<h1>
-			<span class="gradient-text">Movie</span> Collection
-		</h1>
-
 		<div v-if="loading" class="loader"></div>
 
-		<h2 v-else-if="errored">Movie data could not be retrieved. Try again later.</h2>
+		<h1 class="error-msg" v-else-if="errored">
+            <svg class="error-icon" width="20px" height="20px" viewBox="0 0 36 36" xmlns="http://www.w3.org/2000/svg">
+                <path d="M18,0C8.08,0,0,8.08,0,18s8.08,18,18,18c9.92,0,18-8.08,18-18S27.92,0,18,0z M18,32c-7.72,0-14-6.28-14-14S10.28,4,18,4 c7.72,0,14,6.28,14,14S25.72,32,18,32z" />
+                <polygon points="24.36,14.46 21.54,11.64 18,15.17 14.46,11.64 11.64,14.46 15.17,18 11.64,21.54 14.46,24.36 18,20.83 21.54,24.36 24.36,21.54 20.83,18" />
+            </svg>
+            Movie data could not be retrieved. Try again later.
+        </h1>
 
 		<template v-else>
 			<div class="filters" :class="{ active: filter.panelActive }">
 
-				<div class="movie-count">
-					<h2><span>{{ movieCount }}</span> movies</h2>
-				</div> <!-- /movie-count -->
+                <h1 class="movie-count">
+                    <span class="movie-count-num">{{ movieCount }}</span>
+                    movies
+                </h1>
 
 				<button type="button" class="filter-btn" @click="toggleFilters" ref="filterPanelBtn">
 					<svg class="filter-icon" width="18px" height="18px" viewBox="0 0 36 36" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
