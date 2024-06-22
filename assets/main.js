@@ -28,7 +28,7 @@ var movies = new Vue({
             lazy: {
                 busy: false,
                 totalShown: 0,
-                scrollIncrement: 30
+                scrollIncrement: 40
             },
             filter: {
                 active: null,
@@ -93,6 +93,15 @@ var movies = new Vue({
                 // return filtered movies, ordered by purchase date
                 return _.take(_.orderBy(filteredMovies, m => m.dateAcquired, ['desc']), self.lazy.totalShown)
             }
+        },
+        filtersActive() {
+            return this.filter.search ||
+                this.filter.format.length > 0 ||
+                this.filter.rating.length > 0 ||
+                this.filter.genre.length > 0 ||
+                this.filter.startYear ||
+                this.filter.endYear ||
+                this.filter.randomMovie
         }
     },
     mounted() {

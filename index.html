@@ -36,8 +36,8 @@
                     movies
                 </h1>
 
-				<button type="button" class="filter-btn" @click="toggleFilters" ref="filterPanelBtn">
-					<svg class="filter-icon" width="18px" height="18px" viewBox="0 0 36 36" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+				<button type="button" class="filter-btn" :class="{ 'is-active' : filtersActive }" @click="toggleFilters" ref="filterPanelBtn">
+					<svg class="filter-icon" width="16px" height="16px" viewBox="0 0 36 36" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
 						<path d="M35,4H15.65C14.83,1.67,12.61,0,10,0C7.39,0,5.17,1.67,4.35,4H1C0.45,4,0,4.45,0,5v2c0,0.55,0.45,1,1,1h3.35 c0.82,2.33,3.04,4,5.65,4c2.61,0,4.83-1.67,5.65-4H35c0.55,0,1-0.45,1-1V5C36,4.45,35.55,4,35,4z M10,9C8.34,9,7,7.66,7,6 s1.34-3,3-3c1.66,0,3,1.34,3,3S11.66,9,10,9z" />
 						<path d="M35,16h-3.35c-0.82-2.33-3.04-4-5.65-4c-2.61,0-4.83,1.67-5.65,4H1c-0.55,0-1,0.45-1,1v2c0,0.55,0.45,1,1,1h19.35 c0.82,2.33,3.04,4,5.65,4c2.61,0,4.83-1.67,5.65-4H35c0.55,0,1-0.45,1-1v-2C36,16.45,35.55,16,35,16z M26,21c-1.66,0-3-1.34-3-3 s1.34-3,3-3c1.66,0,3,1.34,3,3S27.66,21,26,21z" />
 						<path d="M35,28H19.65c-0.82-2.33-3.04-4-5.65-4c-2.61,0-4.83,1.67-5.65,4H1c-0.55,0-1,0.45-1,1v2c0,0.55,0.45,1,1,1h7.35 c0.82,2.33,3.04,4,5.65,4c2.61,0,4.83-1.67,5.65-4H35c0.55,0,1-0.45,1-1v-2C36,28.45,35.55,28,35,28z M14,33c-1.66,0-3-1.34-3-3 s1.34-3,3-3c1.66,0,3,1.34,3,3S15.66,33,14,33z" />
@@ -144,7 +144,7 @@
 					</template>
 
 					<div class="filter-option filter-actions">
-                        <button class="filter-random-btn" @click="selectRandom()">
+                        <button class="filter-random-btn" :class="{ 'is-active' : filter.randomMovie  }" @click="selectRandom()">
                             <svg class="random-icon" width="18px" height="16px" viewBox="0 0 36 32" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
                                 <path d="M10.5,10.44l1.82,2.8l2.38-3.67l-0.85-1.31C12.28,5.83,8.9,4,6,4H0v4h6C7.53,8,9.67,9.16,10.5,10.44z" />
                                 <path style="opacity: 0.75;" d="M27,8h3v4l6-6l-6-6v4h-3c-2.9,0-6.28,1.83-7.86,4.26L10.5,21.56C9.67,22.83,7.53,24,6,24H0v4h6c2.9,0,6.28-1.83,7.86-4.26 l8.64-13.29C23.33,9.16,25.47,8,27,8z" />
