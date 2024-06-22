@@ -491,7 +491,7 @@ h1.error-msg {
 .filters.active {
   z-index: 500;
 }
-@media screen and (min-width: 42rem) {
+@media screen and (min-width: 54rem) {
   .filters {
     margin: 0 -3rem 3rem -3rem;
     padding: 0.5rem 3rem;

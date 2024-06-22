@@ -47,7 +47,7 @@
 		z-index: 500;
 	}
 
-	@include query(sm) {
+	@include query(md) {
 		margin: 0 -3rem 3rem -3rem;
 		padding: 0.5rem 3rem;
 	}
