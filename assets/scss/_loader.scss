@@ -27,9 +27,9 @@
 }
 
 #movies > .loader {
-    left: 50%;
+    left: calc(50% - 1.5em);
     position: absolute;
-    top: 50%;
+    top: calc(50% - 1.5em);
     transform: translate(-50%, -50%);
 }
 
