@@ -1,11 +1,13 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
 import { supabase } from '@/lib/supabase'
+import Fuse from 'fuse.js'
 
 export const useMoviesStore = defineStore('movies', () => {
   const movies = ref([])
   const loading = ref(false)
   const error = ref(null)
+  let fuse = null
 
   async function fetchMovies() {
     loading.value = true
@@ -20,10 +22,20 @@ export const useMoviesStore = defineStore('movies', () => {
       error.value = err.message
     } else {
       movies.value = data
+      fuse = new Fuse(data, {
+        keys: ['title', 'search_keywords'],
+        threshold: 0.3,
+        minMatchCharLength: 2,
+      })
     }
 
     loading.value = false
   }
 
-  return { movies, loading, error, fetchMovies }
+  function search(query) {
+    if (!query || !fuse) return movies.value
+    return fuse.search(query).map(r => r.item)
+  }
+
+  return { movies, loading, error, fetchMovies, search }
 })

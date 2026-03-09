@@ -6,13 +6,13 @@ const router = createRouter({
   routes: [
     { path: '/', component: () => import('@/views/HomeView.vue') },
     { path: '/login', component: () => import('@/views/LoginView.vue') },
-    { path: '/lists', component: () => import('@/views/lists/ListsView.vue'), meta: { requiresAuth: true } },
-    { path: '/lists/watchlist', component: () => import('@/views/lists/WatchlistView.vue'), meta: { requiresAuth: true } },
-    { path: '/lists/favorites', component: () => import('@/views/lists/FavoritesView.vue'), meta: { requiresAuth: true } },
-    { path: '/lists/watched', component: () => import('@/views/lists/WatchedView.vue'), meta: { requiresAuth: true } },
-    { path: '/lists/ignored', component: () => import('@/views/lists/IgnoredView.vue'), meta: { requiresAuth: true } },
-    { path: '/admin/add', component: () => import('@/views/admin/AddMovieView.vue'), meta: { requiresAdmin: true } },
-    { path: '/admin/edit/:slug', component: () => import('@/views/admin/EditMovieView.vue'), meta: { requiresAdmin: true } },
+{ path: '/profile', component: () => import('@/views/lists/ProfileView.vue'), meta: { requiresAuth: true } },
+{ path: '/profile/watchlist', component: () => import('@/views/lists/WatchlistView.vue'), meta: { requiresAuth: true } },
+{ path: '/profile/favorites', component: () => import('@/views/lists/FavoritesView.vue'), meta: { requiresAuth: true } },
+{ path: '/profile/watched', component: () => import('@/views/lists/WatchedView.vue'), meta: { requiresAuth: true } },
+{ path: '/profile/ignored', component: () => import('@/views/lists/IgnoredView.vue'), meta: { requiresAuth: true } },
+    { path: '/admin/add', component: () => import('@/views/admin/MovieFormView.vue'), meta: { requiresAdmin: true } },
+    { path: '/admin/edit/:slug', component: () => import('@/views/admin/MovieFormView.vue'), meta: { requiresAdmin: true } },
     { path: '/:slug', component: () => import('@/views/MovieDetailView.vue') },
   ],
 })
@@ -20,13 +20,19 @@ const router = createRouter({
 router.beforeEach(async (to) => {
   const auth = useAuthStore()
 
-  if (to.meta.requiresAuth && !auth.user) {
-    return '/login'
+  if (!auth.initialized) {
+    await new Promise(resolve => {
+      const unwatch = setInterval(() => {
+        if (auth.initialized) {
+          clearInterval(unwatch)
+          resolve()
+        }
+      }, 10)
+    })
   }
 
-  if (to.meta.requiresAdmin && !auth.isAdmin) {
-    return '/'
-  }
+  if (to.meta.requiresAuth && !auth.user) return '/login'
+  if (to.meta.requiresAdmin && !auth.isAdmin) return '/'
 })
 
 export default router

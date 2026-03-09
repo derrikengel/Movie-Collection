@@ -1,3 +1,20 @@
 <template>
-  <div>{{ $route.path }}</div>
+  <MovieList title="Watched" :movies="movies" />
 </template>
+
+<script setup>
+import { computed } from 'vue'
+import MovieList from '@/components/MovieList.vue'
+import { useMoviesStore } from '@/stores/movies'
+import { useUserMoviesStore } from '@/stores/userMovies'
+
+const moviesStore = useMoviesStore()
+const userMoviesStore = useUserMoviesStore()
+
+const movies = computed(() => {
+  const ids = new Set(
+    userMoviesStore.userMovies.filter(m => m.watched).map(m => m.movie_id)
+  )
+  return moviesStore.movies.filter(m => ids.has(m.id))
+})
+</script>

@@ -23,27 +23,45 @@ export const useUserMoviesStore = defineStore('userMovies', () => {
     const currentValue = existing?.[field] ?? false
     const newValue = !currentValue
 
+    // Build the full row to upsert
+    const row = {
+        user_id: userId,
+        movie_id: movieId,
+        watchlist: existing?.watchlist ?? false,
+        watched: existing?.watched ?? false,
+        favorite: existing?.favorite ?? false,
+        ignored: existing?.ignored ?? false,
+        updated_at: new Date().toISOString(),
+        [field]: newValue,
+    }
+
     // Optimistic update
     if (existing) {
-      existing[field] = newValue
+        existing[field] = newValue
     } else {
-      userMovies.value.push({ user_id: userId, movie_id: movieId, watchlist: false, watched: false, favorite: false, ignored: false, [field]: newValue })
+        userMovies.value.push({ ...row })
     }
 
-    const { error } = await supabase
-      .from('user_movies')
-      .upsert({ user_id: userId, movie_id: movieId, [field]: newValue, updated_at: new Date().toISOString() }, { onConflict: 'user_id,movie_id' })
+    const { data, error } = await supabase
+        .from('user_movies')
+        .upsert(row, { onConflict: 'user_id,movie_id' })
+        .select()
+        .single()
 
-    // Rollback on failure
     if (error) {
-      if (existing) {
+        if (existing) {
         existing[field] = currentValue
-      } else {
+        } else {
         userMovies.value = userMovies.value.filter(m => m.movie_id !== movieId)
-      }
-      throw error
+        }
+        throw error
     }
-  }
+
+    if (!existing) {
+        const optimistic = getForMovie(movieId)
+        if (optimistic) Object.assign(optimistic, data)
+    }
+    }
 
   function clear() {
     userMovies.value = []

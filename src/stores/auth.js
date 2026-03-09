@@ -5,6 +5,7 @@ import { supabase } from '@/lib/supabase'
 export const useAuthStore = defineStore('auth', () => {
   const user = ref(null)
   const profile = ref(null)
+  const initialized = ref(false)
 
   const isAdmin = computed(() => profile.value?.is_admin === true)
   const displayName = computed(() => profile.value?.display_name ?? null)
@@ -24,13 +25,20 @@ export const useAuthStore = defineStore('auth', () => {
       user.value = session.user
       await fetchProfile(session.user.id)
     }
+    initialized.value = true
 
     supabase.auth.onAuthStateChange(async (_event, session) => {
       user.value = session?.user ?? null
       if (session?.user) {
         await fetchProfile(session.user.id)
+        const { useUserMoviesStore } = await import('@/stores/userMovies')
+        const userMovies = useUserMoviesStore()
+        await userMovies.fetchUserMovies(session.user.id)
       } else {
         profile.value = null
+        const { useUserMoviesStore } = await import('@/stores/userMovies')
+        const userMovies = useUserMoviesStore()
+        userMovies.clear()
       }
     })
   }
@@ -44,5 +52,5 @@ export const useAuthStore = defineStore('auth', () => {
     await supabase.auth.signOut()
   }
 
-  return { user, profile, isAdmin, displayName, init, login, logout }
+  return { user, profile, initialized, isAdmin, displayName, init, login, logout }
 })
