@@ -21,19 +21,7 @@ These are currently placeholder files that just render the route path.
 
 ---
 
-### PWA Configuration
-**File:** `vite.config.js` + public icons
-
-Configure `vite-plugin-pwa`:
-- App name: to be decided (something short, e.g. "Movies")
-- `display: standalone`
-- Theme color: `#0d0d0f` (matches --color-bg-base)
-- Background color: `#0d0d0f`
-- Icons: need 192x192 and 512x512 PNG (maskable)
-- Start URL: `/`
-- Scope: `/`
-- Service worker: minimal, no data caching, just installability
-- iOS splash screens via meta tags in `index.html`
+### ~~PWA Configuration~~ ✅ Done
 
 ---
 

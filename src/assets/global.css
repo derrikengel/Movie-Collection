@@ -225,7 +225,7 @@
         --color-warning: var(--amber-400);
 
         /* Frosted glass */
-        --color-bg-frosted: oklch(from var(--gray-900) l c h / 0.85);
+        --color-bg-frosted: oklch(from var(--gray-900) l c h / 0.9);
         --color-border-frosted: oklch(from var(--gray-50) l c h / 0.06);
         --bg-frosted-xs: blur(0.25rem);
         --bg-frosted-sm: blur(0.5rem);
@@ -348,5 +348,23 @@
         clip: rect(0, 0, 0, 0);
         white-space: nowrap;
         border: 0;
+    }
+}
+
+/* Page transitions */
+.page-enter-active,
+.page-leave-active {
+    transition: opacity 150ms ease;
+}
+
+.page-enter-from,
+.page-leave-to {
+    opacity: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .page-enter-active,
+    .page-leave-active {
+        transition: none;
     }
 }

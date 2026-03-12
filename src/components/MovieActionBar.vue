@@ -37,6 +37,7 @@
         background: var(--color-bg-frosted);
         backdrop-filter: var(--bg-frosted-md);
         border: 1px solid var(--color-border-frosted);
+        border-bottom: none;
         border-top-left-radius: var(--radius-xl);
         border-top-right-radius: var(--radius-xl);
         bottom: 0;

@@ -52,7 +52,11 @@
         </header>
 
         <main :class="s.main">
-            <RouterView />
+            <RouterView v-slot="{ Component }">
+                <Transition name="page" mode="out-in">
+                    <component :is="Component" :key="$route.path" />
+                </Transition>
+            </RouterView>
         </main>
 
         <!-- Mobile bottom tab bar -->

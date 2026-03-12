@@ -90,12 +90,12 @@
         --tab-bar-height: var(--space-15);
         --footer-height: calc(var(--tab-bar-height) + var(--space-6));
         background: var(--color-bg-frosted);
-        backdrop-filter: var(--bg-frosted-md);
-        border: 1px solid var(--color-border-frosted);
+        backdrop-filter: var(--bg-frosted-lg);
+        border-top: 1px solid var(--color-border-frosted);
         border-top-left-radius: var(--radius-xl);
         border-top-right-radius: var(--radius-xl);
         bottom: 0;
-        box-shadow: var(--shadow-lg);
+        /* box-shadow: var(--shadow-lg); */
         display: flex;
         height: var(--tab-bar-height);
         left: 0;

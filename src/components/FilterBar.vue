@@ -1,44 +1,25 @@
 <!-- src/components/FilterBar.vue -->
 <template>
-    <div :class="s.wrap">
+    <div :class="s.filterBar">
+
         <!-- Search -->
-        <div :class="s.searchRow">
-            <div :class="s.searchInputWrap">
-                <span :class="s.searchIcon" v-html="magnifyingGlass" />
-                <input v-model="filters.search" type="search" placeholder="Search by movie title…"
-                    :class="s.searchInput" aria-label="Search movies" />
-            </div>
+        <div :class="s.searchInputWrap">
+            <span :class="s.searchIcon" v-html="searchIcon" />
+            <input v-model="filters.search" type="text" inputmode="search" placeholder="Search by title"
+                :class="s.searchInput" aria-label="Search movies" />
         </div>
 
-        <!-- Mobile button row -->
+        <!-- Narrow buttons -->
         <div :class="s.mobileRow">
             <button :class="[s.mobileBtn, filters.activeFilterCount > 0 && s.mobileBtnActive]" @click="sheetOpen = true"
-                aria-label="Open filters">
-                <svg width="24" height="24" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640">
-                    <path
-                        d="M64 480C64 471.2 71.2 464 80 464L145.6 464C153 427.5 185.3 400 224 400C262.7 400 295 427.5 302.4 464L560 464C568.8 464 576 471.2 576 480C576 488.8 568.8 496 560 496L302.4 496C295 532.5 262.7 560 224 560C185.3 560 153 532.5 145.6 496L80 496C71.2 496 64 488.8 64 480zM272 480C272 453.5 250.5 432 224 432C197.5 432 176 453.5 176 480C176 506.5 197.5 528 224 528C250.5 528 272 506.5 272 480zM464 320C464 293.5 442.5 272 416 272C389.5 272 368 293.5 368 320C368 346.5 389.5 368 416 368C442.5 368 464 346.5 464 320zM416 240C454.7 240 487 267.5 494.4 304L560 304C568.8 304 576 311.2 576 320C576 328.8 568.8 336 560 336L494.4 336C487 372.5 454.7 400 416 400C377.3 400 345 372.5 337.6 336L80 336C71.2 336 64 328.8 64 320C64 311.2 71.2 304 80 304L337.6 304C345 267.5 377.3 240 416 240zM256 112C229.5 112 208 133.5 208 160C208 186.5 229.5 208 256 208C282.5 208 304 186.5 304 160C304 133.5 282.5 112 256 112zM334.4 144L560 144C568.8 144 576 151.2 576 160C576 168.8 568.8 176 560 176L334.4 176C327 212.5 294.7 240 256 240C217.3 240 185 212.5 177.6 176L80 176C71.2 176 64 168.8 64 160C64 151.2 71.2 144 80 144L177.6 144C185 107.5 217.3 80 256 80C294.7 80 327 107.5 334.4 144z" />
-                </svg>
-                <span v-if="filters.activeFilterCount > 0" :class="s.mobileBtnBadge">
-                    {{ filters.activeFilterCount }}
-                </span>
-            </button>
+                aria-label="Open filters" v-html="filterIcon" />
 
-            <button :class="s.mobileBtn" @click="filters.reset()" aria-label="Reset filters">
-                <svg width="24" height="24" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640">
-                    <path
-                        d="M96.5 305.1C100 252.8 121.7 201.6 161.6 161.6C205.3 117.9 262.6 96 320 96C382 96 441.2 121.5 483.8 166.6L522.9 208L416 208C407.2 208 400 215.2 400 224C400 232.8 407.2 240 416 240L560 240C568.8 240 576 232.8 576 224L576 80C576 71.2 568.8 64 560 64C551.2 64 544 71.2 544 80L544 183.8L507 144.7C458.4 93.2 390.8 64 320 64C254.5 64 189 89 139 139C93.3 184.6 68.5 243.2 64.6 302.9C64 311.8 70.7 319.4 79.5 320C88.3 320.6 95.9 313.9 96.5 305.1zM543.5 335C540 387.3 518.3 438.5 478.4 478.4C434.7 522.1 377.4 544 320 544C258 544 198.8 518.5 156.2 473.4L117.1 432L224 432C232.8 432 240 424.8 240 416C240 407.2 232.8 400 224 400L80 400C71.2 400 64 407.2 64 416L64 560C64 568.8 71.2 576 80 576C88.8 576 96 568.8 96 560L96 456.2L133 495.3C181.6 546.8 249.3 575.9 320 575.9C385.5 575.9 451 550.9 501 500.9C546.6 455.3 571.4 396.6 575.4 336.9C576 328.1 569.3 320.5 560.5 319.9C551.7 319.3 544.1 326 543.5 334.8z" />
-                </svg>
-            </button>
+            <button :class="s.mobileBtn" @click="handleRandom" aria-label="Random movie" v-html="randomIcon" />
 
-            <button :class="s.mobileBtn" @click="handleRandom" aria-label="Random movie">
-                <svg width="24" height="24" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640">
-                    <path
-                        d="M518.7 256.3C551 259.6 576.2 286.8 576.2 320L576.2 512L575.9 518.5C572.8 548.6 548.9 572.6 518.8 575.6L512.3 575.9L320.3 575.9L313.8 575.6C283.7 572.5 259.7 548.6 256.7 518.5L256.4 512L256.4 481.8L288.4 490.4L288.4 512.1C288.4 529.8 302.7 544.1 320.4 544.1L512.4 544.1C530.1 544.1 544.4 529.8 544.4 512.1L544.4 320.1C544.4 302.4 530.1 288.1 512.4 288.1L473.6 288.1L482.2 256.1L512.4 256.1L518.9 256.4zM119.5 110.2C131.6 78.4 164.6 59.3 198.2 64.8L205.4 66.3L394.9 117.1L401.9 119.4C436 132.4 455.4 169.3 445.8 205.3L395 394.8L392.8 401.8C380.7 433.6 347.7 452.7 314.1 447.2L306.9 445.7L117.3 394.9C81.3 385.2 59 349.9 64.9 313.9L66.4 306.7L117.2 117.2L119.4 110.2zM192.5 96.3C174.3 93.6 156.4 103.9 149.6 121.1L148 126.2L97.4 315C91.7 336.3 104.4 358.3 125.7 364L315.2 414.8L315.2 414.8C335.2 420.2 355.7 409.4 362.9 390.4L364.2 386.5L415 197L415.8 193.2C418.9 174.5 408.5 156.2 390.9 149.4L386 147.8L198.3 97.5L192.5 96.3zM316.1 365.8C304.6 372.4 289.9 368.5 283.3 357C276.7 345.5 280.6 330.8 292.1 324.2C303.6 317.6 318.3 321.5 324.9 333C331.5 344.5 327.6 359.2 316.1 365.8zM179.1 324.8C167.6 331.4 152.9 327.5 146.3 316C139.7 304.5 143.6 289.8 155.1 283.2C166.6 276.6 181.3 280.5 187.9 292C194.5 303.5 190.6 318.2 179.1 324.8zM268.1 276.8C260.7 281.6 251.2 281.9 243.4 277.6C235.7 273.3 230.9 265.1 231.1 256.3C231.2 247.4 236.2 239.3 244.1 235.3C251.5 230.5 261 230.2 268.8 234.5C276.5 238.8 281.3 247 281.1 255.8C281 264.7 276 272.8 268.1 276.8zM357.1 228.8C345.6 235.4 330.9 231.5 324.3 220C317.7 208.5 321.6 193.8 333.1 187.2C344.6 180.6 359.3 184.5 365.9 196C372.5 207.5 368.6 222.2 357.1 228.8zM220.1 187.8C208.6 194.4 193.9 190.5 187.3 179C180.7 167.5 184.6 152.8 196.1 146.2C207.6 139.6 222.3 143.5 228.9 155C235.5 166.5 231.6 181.2 220.1 187.8z" />
-                </svg>
-            </button>
+            <button :class="s.mobileBtn" @click="filters.reset()" aria-label="Reset filters" v-html="resetIcon" />
         </div>
 
-        <!-- Desktop filter row -->
+        <!-- Wide filters -->
         <div :class="s.desktopRow">
             <!-- Sort -->
             <div :class="s.desktopFilter">
@@ -78,7 +59,7 @@
                     popovertarget="filter-mpaa">
                     Rating
                     <span v-if="filters.mpaaGroups.length" :class="s.desktopBadge">{{ filters.mpaaGroups.length
-                        }}</span>
+                    }}</span>
                     <svg width="12" height="12" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"
                         :class="s.chevron">
                         <path fill-rule="evenodd"
@@ -254,7 +235,10 @@
     import FilterOptionList from '@/components/FilterOptionList.vue'
     import FilterRangeSlider from '@/components/FilterRangeSlider.vue'
     import ToggleSwitch from '@/components/ToggleSwitch.vue'
-    import magnifyingGlass from '@/assets/icons/magnifying-glass.svg?raw'
+    import searchIcon from '@/assets/icons/magnifying-glass.svg?raw'
+    import filterIcon from '@/assets/icons/filters.svg?raw'
+    import resetIcon from '@/assets/icons/reset.svg?raw'
+    import randomIcon from '@/assets/icons/dice.svg?raw'
     import { mpaaGroupOptions, sortOptions } from '@/lib/filterOptions'
 
     const filters = useFiltersStore()
@@ -296,17 +280,21 @@
 </script>
 
 <style module="s">
-    .wrap {
-        position: sticky;
-        top: var(--header-height);
-        z-index: 40;
+    .filterBar {
         background: var(--color-bg-frosted);
-        backdrop-filter: var(--bg-frosted-md);
+        backdrop-filter: var(--bg-frosted-lg);
         border-bottom: 1px solid var(--color-border-frosted);
-        padding: var(--space-3) var(--content-padding);
+        border-bottom-left-radius: var(--radius-xl);
+        border-bottom-right-radius: var(--radius-xl);
+        /* box-shadow: var(--shadow-lg); */
         display: flex;
-        flex-direction: column;
         gap: var(--space-2);
+        padding: var(--space-3) var(--content-padding);
+        /* padding-top: env(safe-area-inset-bottom); */
+        position: sticky;
+        /* top: var(--header-height); */
+        top: 0;
+        z-index: 90;
     }
 
     /* ── Search ── */
@@ -316,8 +304,8 @@
     }
 
     .searchInputWrap {
-        position: relative;
         flex: 1;
+        position: relative;
     }
 
     .searchIcon {
@@ -339,6 +327,7 @@
         border-radius: var(--radius-full);
         color: var(--color-text);
         font-size: var(--text-sm);
+        height: 100%;
         outline: none;
         padding: var(--space-3) var(--space-4) var(--space-3) var(--space-10);
         transition: border-color var(--transition-fast);
@@ -357,7 +346,7 @@
     .mobileRow {
         align-items: center;
         display: flex;
-        gap: var(--space-2);
+        gap: var(--space-1);
         justify-content: space-between;
     }
 
