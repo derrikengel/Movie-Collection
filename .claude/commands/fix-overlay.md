@@ -1,0 +1,1 @@
+This component has a bottom sheet or modal that isn't positioning correctly. The likely cause is backdrop-filter on an ancestor creating a containing block for position:fixed children. Apply the Teleport fix described in PATTERNS.md.

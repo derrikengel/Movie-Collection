@@ -1,0 +1,1 @@
+Create a new Vue component. Use CSS Modules with `module="s"`, camelCase class names, and Composition API with `<script setup>`. Follow the structure in PATTERNS.md. Ask me for the component name and purpose before starting.

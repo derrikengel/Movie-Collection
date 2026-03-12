@@ -19,11 +19,11 @@ const auth = useAuthStore()
 const movies = useMoviesStore()
 
 auth.init().then(() => {
-  if (auth.user) {
-    const userMovies = useUserMoviesStore()
-    userMovies.fetchUserMovies(auth.user.id)
-  }
-  app.mount('#app')
+    if (auth.user) {
+        const userMovies = useUserMoviesStore()
+        userMovies.fetchUserMovies(auth.user.id)
+    }
+    app.mount('#app')
 })
 
 // Fetch movies immediately, independent of auth

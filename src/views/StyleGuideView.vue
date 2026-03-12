@@ -1,0 +1,99 @@
+<template>
+    <div :class="s.page">
+        <h1 :class="s.heading">Style Guide</h1>
+
+        <section :class="s.section">
+            <h2 :class="s.sectionHeading">Color Palettes</h2>
+
+            <div v-for="palette in palettes" :key="palette.name" :class="s.palette">
+                <h3 :class="s.paletteLabel">{{ palette.name }}</h3>
+                <div :class="s.swatches">
+                    <div v-for="step in steps" :key="step" :class="s.swatch"
+                        :style="{ background: `var(--${palette.name}-${step})` }">
+                        <span :class="s.swatchLabel">{{ step }}</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+</template>
+
+<script setup>
+    const palettes = [
+        { name: 'gray' },
+        { name: 'amber' },
+        { name: 'green' },
+        { name: 'red' },
+    ]
+
+    const steps = [50, 100, 200, 300, 400, 500, 600, 700, 800, 900, 950]
+</script>
+
+<style module="s">
+    .page {
+        container-type: inline-size;
+        margin-inline: auto;
+    }
+
+    .heading {
+        font-size: var(--text-2xl);
+        font-weight: var(--font-weight-bold);
+        color: var(--color-text);
+        margin-bottom: var(--space-8);
+    }
+
+    .section {
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-6);
+    }
+
+    .sectionHeading {
+        font-size: var(--text-lg);
+        font-weight: var(--font-weight-semibold);
+        color: var(--color-text-secondary);
+        margin-bottom: var(--space-2);
+    }
+
+    .palette {
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-2);
+    }
+
+    .paletteLabel {
+        font-size: var(--text-sm);
+        font-weight: var(--font-weight-medium);
+        color: var(--color-text-muted);
+        text-transform: capitalize;
+    }
+
+    .swatches {
+        display: grid;
+        grid-template-columns: repeat(11, 1fr);
+        border-radius: var(--radius-md);
+        overflow: hidden;
+    }
+
+    .swatch {
+        aspect-ratio: 1;
+        display: flex;
+        align-items: flex-end;
+        padding: var(--space-1);
+    }
+
+    .swatchLabel {
+        font-size: 10px;
+        font-weight: var(--font-weight-medium);
+        mix-blend-mode: difference;
+        color: white;
+        opacity: 0.6;
+        line-height: 1;
+    }
+
+    @container (max-width: 600px) {
+        .swatches {
+            grid-template-columns: repeat(6, 1fr);
+        }
+    }
+</style>

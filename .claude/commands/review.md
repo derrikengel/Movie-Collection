@@ -1,0 +1,1 @@
+Review the file I specify for: consistency with PATTERNS.md conventions, any missing accessibility attributes, correct CSS Modules usage, and any obvious bugs. Don't rewrite it — just give me a numbered list of issues.

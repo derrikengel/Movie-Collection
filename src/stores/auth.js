@@ -3,54 +3,61 @@ import { ref, computed } from 'vue'
 import { supabase } from '@/lib/supabase'
 
 export const useAuthStore = defineStore('auth', () => {
-  const user = ref(null)
-  const profile = ref(null)
-  const initialized = ref(false)
+    const user = ref(null)
+    const profile = ref(null)
+    const initialized = ref(false)
 
-  const isAdmin = computed(() => profile.value?.is_admin === true)
-  const displayName = computed(() => profile.value?.display_name ?? null)
+    const isAdmin = computed(() => profile.value?.is_admin === true)
+    const displayName = computed(() => profile.value?.display_name ?? null)
 
-  async function fetchProfile(userId) {
-    const { data } = await supabase
-      .from('profiles')
-      .select('*')
-      .eq('id', userId)
-      .single()
-    profile.value = data
-  }
-
-  async function init() {
-    const { data: { session } } = await supabase.auth.getSession()
-    if (session?.user) {
-      user.value = session.user
-      await fetchProfile(session.user.id)
+    async function fetchProfile(userId) {
+        const { data } = await supabase
+            .from('profiles')
+            .select('*')
+            .eq('id', userId)
+            .single()
+        profile.value = data
     }
-    initialized.value = true
 
-    supabase.auth.onAuthStateChange(async (_event, session) => {
-      user.value = session?.user ?? null
-      if (session?.user) {
-        await fetchProfile(session.user.id)
-        const { useUserMoviesStore } = await import('@/stores/userMovies')
-        const userMovies = useUserMoviesStore()
-        await userMovies.fetchUserMovies(session.user.id)
-      } else {
-        profile.value = null
-        const { useUserMoviesStore } = await import('@/stores/userMovies')
-        const userMovies = useUserMoviesStore()
-        userMovies.clear()
-      }
-    })
-  }
+    async function init() {
+        const { data: { session } } = await supabase.auth.getSession()
+        if (session?.user) {
+            user.value = session.user
+            await fetchProfile(session.user.id)
+        }
+        initialized.value = true
 
-  async function login(email, password) {
-    const { error } = await supabase.auth.signInWithPassword({ email, password })
-    if (error) throw error
-  }
+        supabase.auth.onAuthStateChange((_event, session) => {
+            user.value = session?.user ?? null
+            if (session?.user) {
+                // Defer async Supabase calls via setTimeout to break out of the auth lock context.
+                // In Supabase JS v2, onAuthStateChange fires while a navigator.locks lock is held.
+                // Awaiting supabase queries inside the callback tries to re-acquire that same lock → deadlock.
+                setTimeout(async () => {
+                    await fetchProfile(session.user.id)
+                    const { useUserMoviesStore } = await import('@/stores/userMovies')
+                    const userMovies = useUserMoviesStore()
+                    await userMovies.fetchUserMovies(session.user.id)
+                }, 0)
+            } else {
+                profile.value = null
+                setTimeout(async () => {
+                    const { useUserMoviesStore } = await import('@/stores/userMovies')
+                    const userMovies = useUserMoviesStore()
+                    userMovies.clear()
+                }, 0)
+            }
+        })
+    }
 
-  async function logout() {
-    await supabase.auth.signOut()
-  }
+    async function login(email, password) {
+        const { error } = await supabase.auth.signInWithPassword({ email, password })
+        if (error) throw error
+    }
 
-  return { user, profile, initialized, isAdmin, displayName, init, login, logout }
+    async function logout() {
+        await supabase.auth.signOut()
+    }
+
+    return { user, profile, initialized, isAdmin, displayName, init, login, logout }
 })
