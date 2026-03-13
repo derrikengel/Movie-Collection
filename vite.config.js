@@ -12,6 +12,7 @@ export default defineConfig({
         VitePWA({
             registerType: 'autoUpdate',
             manifest: {
+                id: "/",
                 name: 'Movies',
                 short_name: 'Movies',
                 description: 'Browse and manage the movie collection.',
@@ -24,36 +25,12 @@ export default defineConfig({
                     {
                         src: '/icon-192.png',
                         sizes: '192x192',
-                        type: 'image/png',
-                        purpose: 'any'
-                    },
-                    {
-                        src: '/icon-192.png',
-                        sizes: '192x192',
-                        type: 'image/png',
-                        purpose: 'maskable'
+                        type: 'image/png'
                     },
                     {
                         src: '/icon-512.png',
                         sizes: '512x512',
-                        type: 'image/png',
-                        purpose: 'any'
-                    },
-                    {
-                        src: '/icon-512.png',
-                        sizes: '512x512',
-                        type: 'image/png',
-                        purpose: 'maskable'
-                    }
-                ]
-            },
-            workbox: {
-                globPatterns: [],
-                navigateFallback: null,
-                runtimeCaching: [
-                    {
-                        urlPattern: ({ request }) => request.mode === 'navigate',
-                        handler: 'NetworkOnly'
+                        type: 'image/png'
                     }
                 ]
             }
