@@ -12,7 +12,7 @@ export default defineConfig({
         VitePWA({
             registerType: 'autoUpdate',
             manifest: {
-                id: "/",
+                id: '/',
                 name: 'Movies',
                 short_name: 'Movies',
                 description: 'Browse and manage the movie collection.',
