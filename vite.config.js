@@ -48,7 +48,8 @@ export default defineConfig({
                 ]
             },
             workbox: {
-                globPatterns: []
+                globPatterns: [],
+                navigateFallback: null
             }
         }),
     ],
