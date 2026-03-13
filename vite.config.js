@@ -49,7 +49,13 @@ export default defineConfig({
             },
             workbox: {
                 globPatterns: [],
-                navigateFallback: null
+                navigateFallback: null,
+                runtimeCaching: [
+                    {
+                        urlPattern: ({ request }) => request.mode === 'navigate',
+                        handler: 'NetworkOnly'
+                    }
+                ]
             }
         }),
     ],
