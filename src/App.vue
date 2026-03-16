@@ -2,12 +2,28 @@
 <template>
     <div :class="s.app">
 
-        <header :class="s.header">
+        <header :class="[s.header, isMovieDetail && s.headerOverlay]">
             <nav :class="s.nav">
-                <RouterLink to="/" :class="s.brand">
-                    <span :class="s.brandCount">{{ moviesStore.movies.length }}</span>
-                    <span :class="s.brandLabel">Movies</span>
-                </RouterLink>
+
+                <!-- Any listing page: filtered count + list name -->
+                <div v-if="isListPage" :class="s.countHeader">
+                    <span :class="s.countHeaderNumber">{{ filters.visibleMovies.length }}</span>
+                    <span :class="s.countHeaderLabel">
+                        {{ filters.visibleMovies.length === 1 ? 'movie' : 'movies' }}
+                    </span>
+                </div>
+
+                <!-- Movie detail: back button on mobile only, nothing on desktop -->
+                <button v-else-if="isMovieDetail" :class="s.backBtn" @click="router.back()" aria-label="Go back">
+                    <span v-html="arrowLeft" :class="s.backIcon" />
+                    <span :class="s.backLabel">Back</span>
+                </button>
+
+                <!-- Profile: display name -->
+                <div v-else-if="isProfile" :class="s.headerTitle">{{ auth.displayName }}</div>
+
+                <!-- All other pages: route meta title -->
+                <div v-else :class="s.headerTitle">{{ route.meta.title }}</div>
 
                 <!-- Desktop nav -->
                 <div :class="s.desktopNav">
@@ -20,13 +36,15 @@
                         <RouterLink to="/profile/watchlist" :class="s.navLink" :active-class="s.navLinkActive">
                             <span v-html="bookmark" :class="s.navIcon" />
                             My Watchlist
-                            <span v-if="watchlistCount !== null" :class="s.navBadge">{{ watchlistCount }}</span>
+                            <span v-if="watchlistCount !== null" class="badge" :class="s.navBadge">{{ watchlistCount
+                            }}</span>
                         </RouterLink>
 
                         <RouterLink to="/profile/favorites" :class="s.navLink" :active-class="s.navLinkActive">
                             <span v-html="heart" :class="s.navIcon" />
                             My Favorites
-                            <span v-if="favoritesCount !== null" :class="s.navBadge">{{ favoritesCount }}</span>
+                            <span v-if="favoritesCount !== null" class="badge" :class="s.navBadge">{{ favoritesCount
+                            }}</span>
                         </RouterLink>
 
                         <RouterLink v-if="auth.isAdmin" to="/admin/add" :class="s.navLink"
@@ -51,7 +69,7 @@
             </nav>
         </header>
 
-        <main :class="s.main">
+        <main :class="[s.main, isMovieDetail && s.mainOverlay]">
             <RouterView v-slot="{ Component }">
                 <Transition name="page" mode="out-in">
                     <component :is="Component" :key="$route.path" />
@@ -59,16 +77,23 @@
             </RouterView>
         </main>
 
-        <!-- Mobile bottom tab bar -->
+        <!-- Mobile bottom tab bar (hidden on movie detail — action bar takes its place) -->
         <AppTabBar />
+
+        <ToastStack />
+        <ConfirmDialog />
 
     </div>
 </template>
 
 <script setup>
+    import { computed } from 'vue'
+    import { useRoute, useRouter } from 'vue-router'
     import { useAuthStore } from '@/stores/auth'
-    import { useMoviesStore } from '@/stores/movies'
+    import { useFiltersStore } from '@/stores/filters'
     import AppTabBar from '@/components/AppTabBar.vue'
+    import ToastStack from '@/components/ToastStack.vue'
+    import ConfirmDialog from '@/components/ConfirmDialog.vue'
     import { useListCounts } from '@/composables/useListCounts'
     import film from '@/assets/icons/film.svg?raw'
     import bookmark from '@/assets/icons/bookmark.svg?raw'
@@ -76,10 +101,18 @@
     import userGear from '@/assets/icons/user-gear.svg?raw'
     import userCircle from '@/assets/icons/user-circle.svg?raw'
     import plus from '@/assets/icons/plus.svg?raw'
+    import arrowLeft from '@/assets/icons/arrow-left.svg?raw'
 
+    const route = useRoute()
+    const router = useRouter()
     const auth = useAuthStore()
-    const moviesStore = useMoviesStore()
+    const filters = useFiltersStore()
     const { watchlistCount, favoritesCount } = useListCounts()
+
+    const listingPaths = ['/', '/profile/watchlist', '/profile/watched', '/profile/favorites', '/profile/ignored']
+    const isListPage = computed(() => listingPaths.includes(route.path))
+    const isMovieDetail = computed(() => !route.meta?.title && route.path !== '/')
+    const isProfile = computed(() => route.path === '/profile')
 </script>
 
 <style module="s">
@@ -90,7 +123,12 @@
     }
 
     .header {
-        border-bottom: 1px solid var(--color-border);
+        background: var(--color-bg-frosted);
+        backdrop-filter: var(--bg-frosted-lg);
+        /* border-bottom: 1px solid var(--color-border); */
+        position: sticky;
+        top: 0;
+        z-index: 100;
     }
 
     .nav {
@@ -103,38 +141,60 @@
         width: 100%;
     }
 
-    .brand {
+    /* Overlay header on mobile movie detail — hero fills the top */
+    .headerOverlay {
+        background: transparent;
+        backdrop-filter: none;
+        border: none;
+        pointer-events: none;
+
+        @media (min-width: 60rem) {
+            background: var(--color-bg-frosted);
+            backdrop-filter: var(--bg-frosted-lg);
+            border-bottom-color: var(--color-border);
+            pointer-events: auto;
+        }
+    }
+
+    /* Re-enable pointer events on the back button itself */
+    .headerOverlay .backBtn {
+        pointer-events: auto;
+    }
+
+    .countHeader {
         display: flex;
         align-items: baseline;
-        gap: var(--space-2);
-        text-decoration: none;
+        gap: var(--size-2);
     }
 
-    .brandCount {
-        font-size: var(--text-2xl);
-        font-weight: var(--font-weight-bold);
-        color: var(--color-accent);
-        line-height: 1;
-        letter-spacing: -0.02em;
-    }
-
-    .brandLabel {
-        font-size: var(--text-xs);
+    .countHeaderNumber {
+        font-size: var(--text-3xl);
         font-weight: var(--font-weight-semibold);
-        color: var(--color-text-muted);
+        color: var(--color-primary);
+
+        @media (min-width: 60rem) {
+            font-size: var(--text-5xl);
+        }
+    }
+
+    .countHeaderLabel {
+        color: var(--color-text);
+        font-size: var(--text-xs);
         text-transform: uppercase;
-        letter-spacing: 0.1em;
+        letter-spacing: var(--tracking-widest);
+
+        @media (min-width: 60rem) {
+            font-size: var(--text-lg);
+        }
     }
 
     /* Desktop nav — hidden on mobile */
     .desktopNav {
         display: none;
         align-items: center;
-        gap: var(--space-1);
-    }
+        gap: var(--size-1);
 
-    @media (min-width: 768px) {
-        .desktopNav {
+        @media (min-width: 60rem) {
             display: flex;
         }
     }
@@ -142,11 +202,10 @@
     .navLink {
         display: inline-flex;
         align-items: center;
-        gap: var(--space-2);
-        padding: var(--space-2) var(--space-3);
+        gap: var(--size-2);
+        padding: var(--size-2) var(--size-3);
         font-size: var(--text-sm);
-        font-weight: var(--font-weight-extrabold);
-        color: var(--color-text-secondary);
+        color: var(--color-text-muted);
         border-radius: var(--radius-md);
         transition: color var(--transition-fast), background var(--transition-fast);
         white-space: nowrap;
@@ -159,7 +218,7 @@
 
     .navLinkActive {
         color: var(--color-text);
-        background: oklch(100% 0 0 / 0.08);
+        background: var(--color-surface-raised);
     }
 
     .navIcon {
@@ -170,7 +229,7 @@
     }
 
     .navUser {
-        margin-left: var(--space-2);
+        margin-left: var(--size-2);
         border: 1px solid var(--color-border);
         border-radius: var(--radius-full);
     }
@@ -179,29 +238,62 @@
         border-color: var(--color-border-strong);
     }
 
-    .navBadge {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        min-width: 18px;
-        height: 18px;
-        padding: 0 var(--space-1);
-        font-size: 10px;
+    .headerTitle {
+        color: var(--color-text);
+        font-size: var(--text-lg);
         font-weight: var(--font-weight-bold);
-        background: var(--color-accent);
-        color: var(--color-text-on-accent);
+    }
+
+    .backBtn {
+        align-items: center;
+        background: var(--color-bg-frosted-subtle);
+        backdrop-filter: var(--bg-frosted-xs);
+        border: none;
         border-radius: var(--radius-full);
-        line-height: 1;
+        color: var(--color-text);
+        display: flex;
+        gap: var(--size-2);
+        height: var(--size-8);
+        padding: 0 var(--size-4);
+        transition: background var(--transition-fast);
+
+        @media (min-width: 60rem) {
+            display: none;
+        }
+    }
+
+    .backBtn:hover {
+        background: var(--color-bg-frosted);
+    }
+
+    .backIcon {
+        align-items: center;
+        display: flex;
+        font-size: var(--text-sm);
+        justify-content: center;
+    }
+
+    .backLabel {
+        font-size: var(--text-xs);
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+    }
+
+    .mainOverlay {
+        margin-top: calc(-1 * var(--header-height));
+
+        @media (min-width: 60rem) {
+            margin-top: 0;
+        }
     }
 
     .main {
         flex: 1;
         padding-bottom: var(--footer-space);
-    }
 
-    @media (min-width: 768px) {
-        .main {
+        @media (min-width: 60rem) {
             --footer-space: 0;
         }
     }
+
 </style>

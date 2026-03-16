@@ -1,38 +1,45 @@
 <!-- src/components/MovieServicesSheet.vue -->
 <template>
-    <Transition name="fade">
-        <div v-if="modelValue" :class="s.backdrop" @click="$emit('update:modelValue', false)" aria-hidden="true" />
-    </Transition>
+    <dialog ref="dialogEl" :class="s.sheet" @close="$emit('update:modelValue', false)" @click="onBackdropClick">
+        <h2 :class="s.sheetTitle">Watch</h2>
 
-    <Transition name="sheet">
-        <div v-if="modelValue" :class="s.sheet" role="dialog" aria-modal="true" aria-label="Watch options">
-            <div :class="s.sheetHandle" />
-            <h2 :class="s.sheetTitle">Watch</h2>
+        <div :class="s.sheetServices">
+            <a v-for="service in movie.movie_services" :key="service.id" :href="service.url" target="_blank"
+                rel="noopener noreferrer" :class="s.sheetService">
+                <span :class="s.sheetServiceName">{{ formatService(service.service) }}</span>
+                <span v-if="service.quality" :class="s.sheetServiceQuality">{{ service.quality }}</span>
+            </a>
 
-            <div :class="s.sheetServices">
-                <a v-for="service in movie.movie_services" :key="service.id" :href="service.url" target="_blank"
-                    rel="noopener noreferrer" :class="s.sheetService">
-                    <span :class="s.sheetServiceName">{{ formatService(service.service) }}</span>
-                    <span v-if="service.quality" :class="s.sheetServiceQuality">{{ service.quality }}</span>
-                </a>
-
-                <div v-if="movie.disc_format" :class="s.sheetDisc">
-                    <span :class="s.sheetServiceName">{{ movie.disc_format }}</span>
-                    <span :class="s.sheetServiceQuality">Disc</span>
-                </div>
+            <div v-if="movie.disc_format" :class="s.sheetDisc">
+                <span :class="s.sheetServiceName">{{ movie.disc_format }}</span>
+                <span :class="s.sheetServiceQuality">Disc</span>
             </div>
-
-            <button :class="s.sheetClose" @click="$emit('update:modelValue', false)">Dismiss</button>
         </div>
-    </Transition>
+
+        <button :class="s.sheetClose" @click="$emit('update:modelValue', false)">Dismiss</button>
+    </dialog>
 </template>
 
 <script setup>
-    defineProps({
+    import { ref, watch } from 'vue'
+
+    const props = defineProps({
         movie: Object,
         modelValue: Boolean,
     })
-    defineEmits(['update:modelValue'])
+    const emit = defineEmits(['update:modelValue'])
+
+    const dialogEl = ref(null)
+
+    watch(() => props.modelValue, (val) => {
+        if (!dialogEl.value) return
+        if (val) dialogEl.value.showModal()
+        else dialogEl.value.close()
+    })
+
+    function onBackdropClick(e) {
+        if (e.target === dialogEl.value) emit('update:modelValue', false)
+    }
 
     function formatService(slug) {
         const names = {
@@ -47,62 +54,77 @@
 </script>
 
 <style module="s">
-    .backdrop {
-        position: fixed;
-        inset: 0;
-        background: oklch(0% 0 0 / 0.6);
-        z-index: 60;
-        backdrop-filter: var(--bg-frosted-xs);
-    }
-
     .sheet {
+        border: none;
+        margin: 0 auto;
+        padding: var(--size-3) var(--size-5) calc(var(--size-6) + env(safe-area-inset-bottom));
         position: fixed;
         bottom: 0;
         left: 0;
         right: 0;
-        background: oklch(11% 0.006 265 / 0.85);
+        width: 100%;
+        max-width: 40rem;
+        background: var(--color-bg-frosted);
         backdrop-filter: var(--bg-frosted-lg);
-        border-top: 1px solid oklch(100% 0 0 / 0.08);
         border-radius: var(--radius-xl) var(--radius-xl) 0 0;
-        padding: var(--space-3) var(--space-5) var(--space-6);
-        padding-bottom: calc(var(--space-6) + env(safe-area-inset-bottom));
-        z-index: 70;
-        max-width: 600px;
-        margin: 0 auto;
+        border-top: 1px solid var(--color-border-frosted);
+        transform: translateY(0);
+        transition:
+            transform var(--transition-normal),
+            overlay var(--transition-normal) allow-discrete,
+            display var(--transition-normal) allow-discrete;
+
+        @starting-style {
+            transform: translateY(100%);
+        }
     }
 
-    .sheetHandle {
-        width: 36px;
-        height: 4px;
-        border-radius: var(--radius-full);
-        background: var(--color-border-strong);
-        margin: 0 auto var(--space-4);
+    .sheet:not([open]) {
+        transform: translateY(100%);
+    }
+
+    .sheet::backdrop {
+        background: var(--color-backdrop);
+        backdrop-filter: var(--bg-frosted-lg);
+        opacity: 1;
+        transition:
+            opacity var(--transition-normal),
+            overlay var(--transition-normal) allow-discrete,
+            display var(--transition-normal) allow-discrete;
+
+        @starting-style {
+            opacity: 0;
+        }
+    }
+
+    .sheet:not([open])::backdrop {
+        opacity: 0;
     }
 
     .sheetTitle {
-        font-size: var(--text-xs);
-        font-weight: var(--font-weight-semibold);
-        text-transform: uppercase;
-        letter-spacing: 0.08em;
         color: var(--color-text-muted);
-        margin-bottom: var(--space-3);
+        font-size: var(--text-xs);
+        font-weight: var(--font-weight-bold);
+        letter-spacing: 0.08em;
+        margin-bottom: var(--size-3);
+        text-transform: uppercase;
     }
 
     .sheetServices {
         display: flex;
         flex-direction: column;
-        gap: var(--space-2);
-        margin-bottom: var(--space-4);
+        gap: var(--size-2);
+        margin-bottom: var(--size-4);
     }
 
     .sheetService {
-        display: flex;
         align-items: center;
-        justify-content: space-between;
-        padding: var(--space-3) var(--space-4);
         background: var(--color-surface-raised);
         border: 1px solid var(--color-border);
         border-radius: var(--radius-md);
+        display: flex;
+        justify-content: space-between;
+        padding: var(--size-3) var(--size-4);
         transition: border-color var(--transition-fast);
     }
 
@@ -111,38 +133,38 @@
     }
 
     .sheetDisc {
-        display: flex;
         align-items: center;
-        justify-content: space-between;
-        padding: var(--space-3) var(--space-4);
         background: var(--color-surface-raised);
         border: 1px solid var(--color-border);
         border-radius: var(--radius-md);
         color: var(--color-text-secondary);
+        display: flex;
+        justify-content: space-between;
+        padding: var(--size-3) var(--size-4);
     }
 
     .sheetServiceName {
-        font-size: var(--text-sm);
-        font-weight: var(--font-weight-semibold);
         color: var(--color-text);
+        font-size: var(--text-sm);
+        font-weight: var(--font-weight-bold);
     }
 
     .sheetServiceQuality {
-        font-size: var(--text-xs);
-        font-weight: var(--font-weight-semibold);
         color: var(--color-accent);
+        font-size: var(--text-xs);
+        font-weight: var(--font-weight-bold);
     }
 
     .sheetClose {
-        width: 100%;
-        padding: var(--space-3);
-        font-size: var(--text-sm);
-        font-weight: var(--font-weight-medium);
         background: none;
         border: 1px solid var(--color-border);
         border-radius: var(--radius-md);
         color: var(--color-text-secondary);
+        font-size: var(--text-sm);
+        font-weight: var(--font-weight-medium);
+        padding: var(--size-3);
         transition: border-color var(--transition-fast), color var(--transition-fast);
+        width: 100%;
     }
 
     .sheetClose:hover {

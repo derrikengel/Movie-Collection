@@ -22,7 +22,7 @@
         align-items: center;
         justify-content: space-between;
         width: 100%;
-        padding: var(--space-2) var(--space-3);
+        padding: var(--size-2) var(--size-3);
         font-size: var(--text-sm);
         color: var(--color-text-secondary);
         background: none;

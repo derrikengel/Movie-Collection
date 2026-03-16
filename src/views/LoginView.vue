@@ -30,7 +30,9 @@
     import { ref } from 'vue'
     import { useRouter } from 'vue-router'
     import { useAuthStore } from '@/stores/auth'
+    import { useToastStore } from '@/stores/toast'
     const auth = useAuthStore()
+    const toast = useToastStore()
     const router = useRouter()
 
     const email = ref('')
@@ -43,6 +45,7 @@
         errorMsg.value = ''
         try {
             await auth.login(email.value, password.value)
+            toast.show(`Signed in as ${auth.displayName}`)
             router.push('/')
         } catch (err) {
             errorMsg.value = 'Invalid email or password.'
@@ -71,19 +74,19 @@
         font-size: var(--text-2xl);
         font-weight: var(--font-weight-bold);
         color: var(--color-text);
-        margin-bottom: var(--space-6);
+        margin-bottom: var(--size-6);
     }
 
     .form {
         display: flex;
         flex-direction: column;
-        gap: var(--space-4);
+        gap: var(--size-4);
     }
 
     .field {
         display: flex;
         flex-direction: column;
-        gap: var(--space-2);
+        gap: var(--size-2);
     }
 
     .label {
@@ -93,7 +96,7 @@
     }
 
     .input {
-        padding: var(--space-3) var(--space-4);
+        padding: var(--size-3) var(--size-4);
         font-size: var(--text-base);
         background: var(--color-surface);
         border: 1px solid var(--color-border);
@@ -121,9 +124,9 @@
     }
 
     .submit {
-        padding: var(--space-3) var(--space-4);
+        padding: var(--size-3) var(--size-4);
         font-size: var(--text-base);
-        font-weight: var(--font-weight-semibold);
+        font-weight: var(--font-weight-bold);
         background: var(--color-accent);
         color: var(--color-text-on-accent);
         border: none;

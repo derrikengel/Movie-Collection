@@ -1,71 +1,82 @@
-<!-- src/components/MovieActionBar.vue -->
 <template>
-    <div :class="s.bottomBar">
-        <button v-for="action in actions" :key="action.field"
-            :class="[s.barBtn, isActive(action.field) && s.barBtnActive, isGuest && s.barBtnGuest]"
-            @click="$emit('action', action.field)" :aria-label="action.label" :title="action.label">
-            <span :class="s.barBtnIcon" v-html="action.icon" aria-hidden="true" />
-            <span :class="s.barBtnLabel">{{ action.label }}</span>
-        </button>
+    <div :class="s.bar">
+        <div :class="s.barBtns">
+            <button v-for="action in actions" :key="action.field"
+                :class="[s.barBtn, isActive(action.field) && s.barBtnActive, isGuest && s.barBtnGuest]"
+                @click="$emit('action', action.field)" :aria-label="action.label" :title="action.label">
+                <span :class="s.barBtnIcon" v-html="action.icon" aria-hidden="true" />
+                <span :class="s.barBtnLabel">{{ action.label }}</span>
+                <span v-if="isActive(action.field)" class="badge" :class="s.barBtnBadge" v-html="checkmarkIcon" />
+            </button>
 
-        <!-- Center play button -->
-        <button v-if="hasServices" :class="[s.barBtn, s.barBtnPlay]" @click="$emit('open-sheet')"
-            aria-label="Watch options">
-            <span :class="s.playIcon" aria-hidden="true">
-                <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
-                    <path d="M6.5 4.5l9 5.5-9 5.5V4.5z" />
-                </svg>
-            </span>
-        </button>
+            <button v-if="hasServices" :class="s.barBtnPlay" @click="sheetOpen = true" aria-label="Watch options">
+                <span :class="s.playIcon" aria-hidden="true" v-html="playIcon" />
+            </button>
+        </div>
     </div>
+
+    <MovieServicesSheet v-model="sheetOpen" :movie="movie" />
 </template>
 
 <script setup>
+    import { ref } from 'vue'
+    import playIcon from '@/assets/icons/play.svg?raw'
+    import checkmarkIcon from '@/assets/icons/checkmark.svg?raw'
+    import MovieServicesSheet from '@/components/MovieServicesSheet.vue'
+
     defineProps({
         actions: Array,
         isActive: Function,
         hasServices: [Boolean, Number, null],
         isGuest: Boolean,
+        movie: Object,
     })
-    defineEmits(['action', 'open-sheet'])
+
+    defineEmits(['action'])
+
+    const sheetOpen = ref(false)
 </script>
 
 <style module="s">
-    .bottomBar {
-        --tab-bar-height: var(--space-15);
-        --footer-height: calc(var(--tab-bar-height) + var(--space-6));
-        background: var(--color-bg-frosted);
-        backdrop-filter: var(--bg-frosted-md);
-        border: 1px solid var(--color-border-frosted);
-        border-bottom: none;
-        border-top-left-radius: var(--radius-xl);
-        border-top-right-radius: var(--radius-xl);
-        bottom: 0;
-        box-shadow: var(--shadow-lg);
+    .bar {
+        margin-inline: auto;
+        margin-top: var(--size-6);
+        max-width: var(--content-width);
+        padding-inline: var(--content-padding);
+        position: relative;
+    }
+
+    .barBtns {
+        background: var(--color-surface);
+        border: 1px solid var(--color-border);
+        border-radius: var(--radius-xl);
         display: flex;
-        height: var(--tab-bar-height);
-        left: 0;
-        padding-bottom: env(safe-area-inset-bottom);
-        position: fixed;
-        right: 0;
-        z-index: 90;
+        justify-content: space-around;
+
+        /*
+        backdrop-filter: var(--bg-frosted-lg);
+        background: var(--color-bg-frosted-subtle);
+        margin-top: -10%;
+        @media (min-width: 1280px) {
+            margin-top: -16%;
+        } */
     }
 
     .barBtn {
-        display: flex;
-        flex-direction: column;
         align-items: center;
-        gap: var(--space-1);
-        padding: var(--space-2);
-        background: none;
-        border: none;
         color: var(--color-text-muted);
-        font-size: var(--text-2xs, 10px);
-        font-weight: var(--font-weight-medium);
-        letter-spacing: 0.04em;
-        text-transform: uppercase;
+        display: flex;
+        flex: 1;
+        flex-direction: column;
+        gap: var(--size-1);
+        justify-content: center;
+        padding: var(--size-3) 0;
+        position: relative;
         transition: color var(--transition-fast);
-        min-width: 56px;
+
+        @media (min-width: 60rem) {
+            padding: var(--size-4) 0;
+        }
     }
 
     .barBtn:hover {
@@ -73,7 +84,7 @@
     }
 
     .barBtnActive {
-        color: var(--color-accent);
+        color: var(--color-text);
     }
 
     .barBtnGuest {
@@ -84,37 +95,66 @@
         display: flex;
         align-items: center;
         justify-content: center;
+        font-size: var(--text-2xl);
     }
 
     .barBtnLabel {
-        font-size: 10px;
+        font-size: var(--text-2xs);
+        font-weight: var(--font-weight-medium);
+
+        @media (min-width: 60rem) {
+            font-size: var(--text-sm);
+        }
     }
 
-    .barBtnPlay {
-        width: 52px;
-        height: 52px;
-        border-radius: var(--radius-full);
-        background: var(--color-accent);
-        color: var(--color-text-on-accent);
-        min-width: unset;
-        padding: 0;
+    .barBtnBadge {
+        box-shadow: var(--shadow-md);
         display: flex;
         align-items: center;
         justify-content: center;
-        box-shadow: 0 4px 16px var(--color-accent-glow);
-        transition: background var(--transition-fast), transform var(--transition-fast);
+        position: absolute;
+        right: calc(50% - var(--size-5));
+        top: var(--size-1);
+
+        svg {
+            flex-shrink: 0;
+        }
+    }
+
+    .barBtn:nth-child(3) {
+        order: 4;
+    }
+
+    .barBtn:nth-child(4) {
+        order: 5;
+    }
+
+    .barBtnPlay {
+        aspect-ratio: 1 / 1;
+        align-items: center;
+        align-self: center;
+        background: var(--color-primary);
+        border-radius: var(--radius-full);
+        box-shadow: var(--shadow-xl);
+        color: var(--color-text-on-accent);
+        display: flex;
+        justify-content: center;
+        margin: 0 var(--size-1);
+        order: 3;
+        transition: background var(--transition-fast), color var(--transition-fast), scale var(--transition-fast);
+        width: var(--size-16);
+        translate: 0 calc(var(--size-2) * -1);
     }
 
     .barBtnPlay:hover {
-        background: var(--color-accent-bright);
-        transform: scale(1.05);
+        background: var(--color-primary-muted);
+        color: var(--color-heading);
     }
 
     .playIcon {
         display: flex;
+        font-size: var(--text-3xl);
         align-items: center;
         justify-content: center;
-        padding-left: 2px;
-        /* optical centering for play triangle */
     }
 </style>

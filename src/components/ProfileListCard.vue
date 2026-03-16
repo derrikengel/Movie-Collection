@@ -41,10 +41,10 @@
         background: var(--color-surface);
         border: 1px solid var(--color-border);
         border-radius: var(--radius-lg);
-        padding: var(--space-4);
+        padding: var(--size-4);
         display: flex;
         flex-direction: column;
-        gap: var(--space-3);
+        gap: var(--size-3);
         transition: border-color var(--transition-fast), background var(--transition-fast);
     }
 
@@ -62,7 +62,7 @@
     .listCardMeta {
         display: flex;
         align-items: center;
-        gap: var(--space-2);
+        gap: var(--size-2);
         color: var(--color-text-secondary);
     }
 
@@ -74,7 +74,7 @@
 
     .listCardName {
         font-size: var(--text-sm);
-        font-weight: var(--font-weight-semibold);
+        font-weight: var(--font-weight-bold);
         color: var(--color-text);
     }
 
@@ -85,7 +85,7 @@
         background: var(--color-accent-subtle);
         border: 1px solid var(--color-accent-muted);
         border-radius: var(--radius-full);
-        padding: 2px var(--space-2);
+        padding: 2px var(--size-2);
         min-width: 28px;
         text-align: center;
     }
@@ -93,7 +93,7 @@
     .listCardPosters {
         display: flex;
         align-items: center;
-        gap: var(--space-2);
+        gap: var(--size-2);
         min-height: 60px;
     }
 
@@ -107,9 +107,9 @@
 
     .listCardMore {
         font-size: var(--text-xs);
-        font-weight: var(--font-weight-semibold);
+        font-weight: var(--font-weight-bold);
         color: var(--color-text-muted);
-        padding-left: var(--space-1);
+        padding-left: var(--size-1);
     }
 
     .listCardEmpty {

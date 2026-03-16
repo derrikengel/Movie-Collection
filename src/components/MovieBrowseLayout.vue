@@ -62,7 +62,7 @@
     }
 
     .results {
-        padding: var(--space-4) var(--content-padding);
+        padding: var(--content-padding);
         margin: 0 auto;
     }
 
@@ -70,56 +70,59 @@
         text-align: center;
         color: var(--color-text-muted);
         font-size: var(--text-sm);
-        padding: var(--space-12) 0;
+        padding: var(--size-12) 0;
     }
 
     .grid {
         display: grid;
-        grid-template-columns: repeat(2, 1fr);
-        gap: var(--space-2);
+        gap: var(--size-2);
+        grid-template-columns: repeat(auto-fill, minmax(8rem, 1fr));
     }
 
-    @container (min-width: 480px) {
+    @container (min-width: 50rem) {
         .grid {
-            grid-template-columns: repeat(3, 1fr);
+            gap: var(--size-3);
+            grid-template-columns: repeat(auto-fill, minmax(10rem, 1fr));
         }
     }
 
-    @container (min-width: 700px) {
+    @container (min-width: 80rem) {
         .grid {
-            grid-template-columns: repeat(4, 1fr);
-        }
-    }
-
-    @container (min-width: 900px) {
-        .grid {
-            grid-template-columns: repeat(5, 1fr);
-        }
-    }
-
-    @container (min-width: 1100px) {
-        .grid {
-            grid-template-columns: repeat(6, 1fr);
+            gap: var(--size-4);
+            grid-template-columns: repeat(auto-fill, minmax(16rem, 1fr));
         }
     }
 
     .card {
-        display: block;
+        background: var(--color-bg);
         border-radius: var(--radius-md);
+        display: block;
         overflow: hidden;
-        transition: transform var(--transition-fast), opacity var(--transition-fast);
+        transition: transform var(--transition-normal), opacity var(--transition-normal), box-shadow var(--transition-normal), z-index var(--transition-normal);
+        z-index: 0;
+
+        img {
+            aspect-ratio: 2 / 3;
+            display: block;
+            object-fit: cover;
+            width: 100%;
+        }
     }
 
     .card:hover {
-        transform: scale(1.03);
+        box-shadow: var(--shadow-2xl);
+        transform: scale(1.25);
+        z-index: 20;
     }
 
     .cardFaded {
-        opacity: 0.35;
+        img {
+            opacity: 0.4;
+        }
     }
 
     .cardFaded:hover {
-        opacity: 0.7;
+        opacity: 1;
     }
 
     .poster {
@@ -134,7 +137,7 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        padding: var(--space-4);
+        padding: var(--size-4);
         font-size: var(--text-xs);
         color: var(--color-text-muted);
         text-align: center;

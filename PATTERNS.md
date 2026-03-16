@@ -76,7 +76,7 @@ All tokens live in `src/assets/global.css` in a two-layer architecture:
 ```css
 --gray-950: oklch(var(--l-950) calc(var(--gray-c) * var(--c-950)) calc(var(--gray-h) + var(--gray-hue-dir) * var(--arc-950)));
 --amber-400: oklch(var(--l-400) calc(var(--amber-c) * var(--c-400)) calc(var(--amber-h) + var(--amber-hue-dir) * var(--arc-400)));
---space-4: 16px;
+--size-4: 16px;
 --radius-md: 12px;
 ```
 
@@ -90,7 +90,7 @@ All tokens live in `src/assets/global.css` in a two-layer architecture:
 Always use semantic tokens in components, never primitives or hardcoded values:
 ```css
 /* ✅ correct */
-padding: var(--space-4);
+padding: var(--size-4);
 color: var(--color-text);
 border-radius: var(--radius-md);
 background: var(--color-surface);
@@ -159,7 +159,7 @@ Use **container queries** inside components, **media queries** for global layout
 }
 
 /* Global layout in App.vue — media query is fine */
-@media (min-width: 768px) {
+@media (min-width: 60rem) {
   .desktopNav { display: flex; }
 }
 ```
@@ -203,7 +203,7 @@ Pair with **CSS Anchor Positioning** to position the panel relative to its trigg
 .panel {
   position-anchor: --my-anchor;
   position-area: bottom span-left; /* aligns panel below, left-aligned */
-  margin-top: var(--space-2);      /* gap from trigger */
+  margin-top: var(--size-2);      /* gap from trigger */
 
   /* Reset popover UA styles */
   margin-inline: 0;

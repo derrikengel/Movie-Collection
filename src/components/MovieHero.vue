@@ -1,6 +1,8 @@
 <template>
-    <div :class="[s.hero, !hasBackdrop && s.heroFallback]" :style="`background-image: url(${backdropImage})`">
-        <div v-if="movie.trailer_youtube_id" ref="youtubeEl" :class="s.youtubePlayer" />
+    <div :class="[s.hero, !hasBackdrop && s.heroFallback]">
+        <div :class="s.heroMedia" :style="`background-image: url(${backdropImage})`">
+            <div v-if="movie.trailer_youtube_id" ref="youtubeEl" :class="s.youtubePlayer" />
+        </div>
 
         <button v-if="trailerLoaded" :class="s.muteBtn" @click="toggleMute"
             :aria-label="muted ? 'Unmute trailer' : 'Mute trailer'" v-html="muted ? volumeMute : volumeFull" />
@@ -71,48 +73,27 @@
 
 <style module="s">
     .hero {
+        margin-inline: auto;
+        max-width: 90rem;
+        overflow: hidden;
+        position: relative;
+    }
+
+    .heroMedia {
         aspect-ratio: 2/1;
         background-position: 50% 50%;
         background-repeat: no-repeat;
         background-size: cover;
-        margin-inline: auto;
-        mask-image: linear-gradient(to top, transparent, black 50%, black 100%),
-            linear-gradient(to right, transparent, black 30%, black 100%),
-            linear-gradient(to left, transparent, black 30%, black 100%);
+        mask-image: linear-gradient(to top, transparent, black 50%, black 100%);
         mask-composite: intersect;
         mask-repeat: no-repeat;
-        max-width: 90rem;
-        overflow: hidden;
-        position: relative;
-        width: 100%;
-    }
 
-    /* .hero:after {
-        backdrop-filter: blur(200px);
-        bottom: 0;
-        content: '';
-        height: 50%;
-        left: 0;
-        mask: linear-gradient(transparent, #000);
-        position: absolute;
-        width: 100%;
-    } */
-
-    /*
-    .heroFallback {
-        height: 200px;
-    }
-
-    @container (min-width: 600px) {
-        .hero {
-            height: 400px;
+        @media (min-width: 90rem) {
+            mask-image: linear-gradient(to top, transparent, black 50%, black 100%),
+                linear-gradient(to right, transparent, black 30%, black 100%),
+                linear-gradient(to left, transparent, black 30%, black 100%);
         }
-
-        .heroFallback {
-            height: 300px;
-        }
-    } */
-
+    }
 
     /* Tier 3: blurred poster */
     .posterFill {
@@ -153,38 +134,27 @@
         translate: 0 -50%;
     }
 
-    /* Gradient overlay */
-    /* .overlay {
-        position: absolute;
-        inset: 0;
-        background: linear-gradient(to bottom,
-                oklch(0% 0 0 / 0.1) 0%,
-                transparent 40%,
-                var(--color-bg) 100%);
-        pointer-events: none;
-    } */
-
     /* Mute toggle */
     .muteBtn {
         align-items: center;
-        backdrop-filter: var(--bg-frosted-sm);
-        background: var(--color-bg-frosted);
-        border: 1px solid var(--color-border-frosted);
+        backdrop-filter: var(--bg-frosted-xs);
+        background: var(--color-bg-frosted-subtle);
+        border: none;
         border-radius: var(--radius-full);
         color: var(--color-text);
         display: flex;
         font-size: var(--text-xl);
-        height: var(--space-8);
+        height: var(--size-8);
         justify-content: center;
         position: absolute;
-        right: var(--space-4);
-        top: var(--space-4);
+        right: var(--size-4);
+        top: calc((var(--header-height) - var(--size-8)) / 2);
         transition: background var(--transition-fast);
-        width: var(--space-8);
+        width: var(--size-8);
         z-index: 2;
     }
 
     .muteBtn:hover {
-        background: oklch(0% 0 0 / 0.7);
+        background: var(--color-bg-frosted);
     }
 </style>

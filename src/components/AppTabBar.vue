@@ -5,7 +5,7 @@
             :exact="tab.exact">
             <span :class="s.tabIcon" v-html="tab.icon" aria-hidden="true" />
             <span :class="s.tabLabel">{{ tab.label }}</span>
-            <span v-if="tab.badge" :class="s.tabBadge">{{ tab.badge }}</span>
+            <span v-if="tab.badge" class="badge" :class="s.tabBadge">{{ tab.badge }}</span>
         </RouterLink>
     </nav>
 </template>
@@ -87,8 +87,8 @@
 
     /* Only visible on mobile */
     .tabBar {
-        --tab-bar-height: var(--space-15);
-        --footer-height: calc(var(--tab-bar-height) + var(--space-6));
+        --tab-bar-height: var(--size-15);
+        --footer-height: calc(var(--tab-bar-height) + var(--size-6));
         background: var(--color-bg-frosted);
         backdrop-filter: var(--bg-frosted-lg);
         border-top: 1px solid var(--color-border-frosted);
@@ -99,28 +99,27 @@
         display: flex;
         height: var(--tab-bar-height);
         left: 0;
+        overflow: hidden;
         padding-bottom: env(safe-area-inset-bottom);
         position: fixed;
         right: 0;
         z-index: 90;
-    }
 
-    @media (min-width: 768px) {
-        .tabBar {
+        @media (min-width: 60rem) {
             display: none;
         }
     }
 
     .tab {
-        flex: 1;
-        display: flex;
-        flex-direction: column;
         align-items: center;
-        justify-content: center;
-        gap: 3px;
         color: var(--color-text-muted);
-        text-decoration: none;
+        display: flex;
+        flex: 1;
+        flex-direction: column;
+        gap: var(--size-1);
+        justify-content: center;
         position: relative;
+        text-decoration: none;
         transition: color var(--transition-fast);
     }
 
@@ -129,7 +128,21 @@
     }
 
     .tabActive {
-        color: var(--color-accent);
+        color: var(--color-text);
+        position: relative;
+    }
+
+    .tabActive:before {
+        background-color: var(--color-primary);
+        border-top-left-radius: var(--radius-md);
+        border-top-right-radius: var(--radius-md);
+        bottom: 0;
+        content: '';
+        height: var(--size-1);
+        left: 50%;
+        translate: -50% 0;
+        position: absolute;
+        width: var(--size-12);
     }
 
     .tabIcon {
@@ -139,27 +152,17 @@
         font-size: var(--text-2xl);
     }
 
+
+
     .tabLabel {
-        font-size: 10px;
+        font-size: var(--text-2xs);
         font-weight: var(--font-weight-medium);
-        letter-spacing: 0.02em;
     }
 
     .tabBadge {
+        box-shadow: var(--shadow-md);
         position: absolute;
-        top: 6px;
-        right: calc(50% - 18px);
-        min-width: 16px;
-        height: 16px;
-        padding: 0 4px;
-        font-size: 9px;
-        font-weight: var(--font-weight-bold);
-        background: var(--color-accent);
-        color: var(--color-text-on-accent);
-        border-radius: var(--radius-full);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        line-height: 1;
+        right: calc(50% - var(--size-5));
+        top: var(--size-1);
     }
 </style>

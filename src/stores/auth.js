@@ -51,8 +51,9 @@ export const useAuthStore = defineStore('auth', () => {
     }
 
     async function login(email, password) {
-        const { error } = await supabase.auth.signInWithPassword({ email, password })
+        const { data, error } = await supabase.auth.signInWithPassword({ email, password })
         if (error) throw error
+        await fetchProfile(data.user.id)
     }
 
     async function logout() {

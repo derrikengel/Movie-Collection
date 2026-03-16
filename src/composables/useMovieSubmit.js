@@ -2,12 +2,14 @@ import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { supabase } from '@/lib/supabase'
 import { useMoviesStore } from '@/stores/movies'
+import { useToastStore } from '@/stores/toast'
 
 export function useMovieSubmit(form, isEditMode, getRouteSlug) {
     const submitting = ref(false)
     const submitError = ref('')
     const router = useRouter()
     const moviesStore = useMoviesStore()
+    const toast = useToastStore()
 
     function generateSlug(title, year) {
         return `${title}-${year}`
@@ -112,6 +114,10 @@ export function useMovieSubmit(form, isEditMode, getRouteSlug) {
             }
 
             await moviesStore.fetchMovies()
+            toast.show(
+                isEditMode.value ? `${form.title} updated` : `${form.title} added to collection`,
+                { type: 'success' }
+            )
             router.push(`/${slug}`)
         } catch (err) {
             console.error('Movie submit failed:', err)

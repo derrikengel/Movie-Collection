@@ -59,10 +59,12 @@
     import { computed } from 'vue'
     import { useRouter } from 'vue-router'
     import { useAuthStore } from '@/stores/auth'
+    import { useToastStore } from '@/stores/toast'
     import { useUserMoviesStore } from '@/stores/userMovies'
     import { useMoviesStore } from '@/stores/movies'
     import ProfileListCard from '@/components/ProfileListCard.vue'
     const auth = useAuthStore()
+    const toast = useToastStore()
     const userMoviesStore = useUserMoviesStore()
     const moviesStore = useMoviesStore()
     const router = useRouter()
@@ -119,6 +121,7 @@
     ])
 
     async function handleSignOut() {
+        toast.show('Signed out')
         await auth.logout()
         router.push('/')
     }
@@ -129,7 +132,7 @@
         container-type: inline-size;
         display: flex;
         flex-direction: column;
-        gap: var(--space-8);
+        gap: var(--size-8);
         margin: 0 auto;
         max-width: var(--content-max-width);
     }
@@ -138,7 +141,7 @@
     .userHeader {
         display: flex;
         align-items: center;
-        gap: var(--space-4);
+        gap: var(--size-4);
     }
 
     .avatar {
@@ -159,7 +162,7 @@
     .userInfo {
         display: flex;
         flex-direction: column;
-        gap: var(--space-2);
+        gap: var(--size-2);
     }
 
     .displayName {
@@ -171,7 +174,7 @@
     .stats {
         display: flex;
         align-items: center;
-        gap: var(--space-3);
+        gap: var(--size-3);
         flex-wrap: wrap;
     }
 
@@ -207,7 +210,7 @@
     .lists {
         display: grid;
         grid-template-columns: 1fr;
-        gap: var(--space-3);
+        gap: var(--size-3);
     }
 
     @container (min-width: 500px) {
@@ -220,12 +223,12 @@
     .section {
         display: flex;
         flex-direction: column;
-        gap: var(--space-3);
+        gap: var(--size-3);
     }
 
     .sectionTitle {
         font-size: var(--text-xs);
-        font-weight: var(--font-weight-semibold);
+        font-weight: var(--font-weight-bold);
         text-transform: uppercase;
         letter-spacing: 0.08em;
         color: var(--color-text-muted);
@@ -242,8 +245,8 @@
         display: flex;
         align-items: center;
         justify-content: space-between;
-        padding: var(--space-4);
-        gap: var(--space-4);
+        padding: var(--size-4);
+        gap: var(--size-4);
     }
 
     .accountLabel {
@@ -268,7 +271,7 @@
 
     .signOutBtn {
         width: 100%;
-        padding: var(--space-4);
+        padding: var(--size-4);
         text-align: left;
         font-size: var(--text-sm);
         font-weight: var(--font-weight-medium);
@@ -277,9 +280,5 @@
         border: none;
         cursor: pointer;
         transition: background var(--transition-fast);
-    }
-
-    .signOutBtn:hover {
-        background: oklch(70% 0.191 23 / 0.06);
     }
 </style>

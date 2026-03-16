@@ -14,40 +14,40 @@
 
 <style module="s">
     .toggle {
-        position: relative;
-        width: 40px;
-        height: 24px;
+        background: var(--color-bg);
+        border: 1px solid var(--color-border);
         border-radius: var(--radius-full);
-        border: none;
-        background: oklch(35% 0.01 265);
         cursor: pointer;
         flex-shrink: 0;
+        height: var(--size-6);
+        position: relative;
         transition: background var(--transition-fast);
+        width: var(--size-11);
     }
 
     .toggleOn {
-        background: var(--color-accent);
+        background: var(--color-primary);
     }
 
     .thumb {
-        position: absolute;
-        top: 3px;
-        left: 3px;
-        width: 18px;
-        height: 18px;
-        border-radius: var(--radius-full);
-        background: oklch(70% 0.01 265);
-        display: flex;
         align-items: center;
-        justify-content: center;
+        background: var(--color-accent-muted);
+        border-radius: var(--radius-full);
         color: var(--color-accent);
+        display: flex;
+        font-size: var(--text-xs);
+        height: var(--size-5);
+        justify-content: center;
+        left: var(--size-1);
+        position: absolute;
+        top: var(--size-0-5);
         transition: transform var(--transition-fast), background var(--transition-fast);
+        width: var(--size-5);
     }
 
     .toggleOn .thumb {
-        transform: translateX(16px);
-        background: var(--color-text-on-accent);
         color: var(--color-accent);
-        font-size: var(--text-xs);
+        background: var(--color-bg);
+        transform: translateX(var(--size-4));
     }
 </style>

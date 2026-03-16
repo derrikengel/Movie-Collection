@@ -20,10 +20,9 @@
 
 <script setup>
     const palettes = [
-        { name: 'gray' },
-        { name: 'amber' },
-        { name: 'green' },
+        { name: 'blue' },
         { name: 'red' },
+        { name: 'green' }
     ]
 
     const steps = [50, 100, 200, 300, 400, 500, 600, 700, 800, 900, 950]
@@ -33,32 +32,34 @@
     .page {
         container-type: inline-size;
         margin-inline: auto;
+        max-width: var(--content-width);
+        padding-inline: var(--content-padding);
     }
 
     .heading {
         font-size: var(--text-2xl);
         font-weight: var(--font-weight-bold);
         color: var(--color-text);
-        margin-bottom: var(--space-8);
+        margin-bottom: var(--size-8);
     }
 
     .section {
         display: flex;
         flex-direction: column;
-        gap: var(--space-6);
+        gap: var(--size-6);
     }
 
     .sectionHeading {
         font-size: var(--text-lg);
-        font-weight: var(--font-weight-semibold);
+        font-weight: var(--font-weight-bold);
         color: var(--color-text-secondary);
-        margin-bottom: var(--space-2);
+        margin-bottom: var(--size-2);
     }
 
     .palette {
         display: flex;
         flex-direction: column;
-        gap: var(--space-2);
+        gap: var(--size-2);
     }
 
     .paletteLabel {
@@ -79,16 +80,13 @@
         aspect-ratio: 1;
         display: flex;
         align-items: flex-end;
-        padding: var(--space-1);
+        padding: var(--size-1);
     }
 
     .swatchLabel {
-        font-size: 10px;
+        color: oklch(100% 0 0 / 0.65);
         font-weight: var(--font-weight-medium);
-        mix-blend-mode: difference;
-        color: white;
-        opacity: 0.6;
-        line-height: 1;
+        font-size: var(--text-xs);
     }
 
     @container (max-width: 600px) {

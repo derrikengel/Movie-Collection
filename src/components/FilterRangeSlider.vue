@@ -55,10 +55,10 @@
 
 <style module="s">
     .rangeControls {
-        padding: var(--space-3);
+        padding: var(--size-3);
         display: flex;
         flex-direction: column;
-        gap: var(--space-3);
+        gap: var(--size-3);
     }
 
     /* Dual-handle range slider */
@@ -141,7 +141,7 @@
     .rangeField {
         display: flex;
         flex-direction: column;
-        gap: var(--space-1);
+        gap: var(--size-1);
     }
 
     .rangeLabel {
@@ -151,7 +151,7 @@
 
     .rangeInput {
         width: 80px;
-        padding: var(--space-2) var(--space-3);
+        padding: var(--size-2) var(--size-3);
         background: var(--color-surface);
         border: 1px solid var(--color-border);
         border-radius: var(--radius-md);

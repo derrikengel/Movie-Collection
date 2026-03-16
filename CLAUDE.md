@@ -85,9 +85,10 @@ Two-layer architecture: **primitives** (color scales, spacing, radius, typograph
 --color-bg-frosted          /* bg at 85% opacity (frosted glass) */
 --color-border-frosted      /* white at 6% opacity (frosted glass) */
 --color-bg-hover            /* white at 5% opacity (hover states) */
+--color-disabled            /* gray-800 — disabled element backgrounds */
 --color-backdrop            /* black at 50% opacity (modal backdrops) */
 
-/* Spacing: --space-1 through --space-12 (4px increments) */
+/* Spacing: --size-1 through --size-12 (4px increments) */
 /* Radius: --radius-sm(8px) --radius-md(12px) --radius-lg(16px) --radius-xl(24px) --radius-full(9999px) */
 /* Typography: --text-xs through --text-3xl, --font-weight-*, --leading-* */
 /* Layout: --header-height: 56px, --content-max-width: 960px, --content-padding */

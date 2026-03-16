@@ -125,10 +125,12 @@ export const useFiltersStore = defineStore('filters', () => {
         return counts
     })
 
-    // All genres present in the non-genre-filtered set (includes 0-count genres)
+    // All genres across the full collection — never filtered out, so genres
+    // can be shown as disabled (count 0) rather than disappearing entirely
     const allGenres = computed(() => {
         const set = new Set()
-        for (const movie of _withoutGenre.value) {
+        const src = _baseMovies.value ?? moviesStore.movies
+        for (const movie of src) {
             for (const g of movie.genres ?? []) set.add(g)
         }
         return [...set].sort()

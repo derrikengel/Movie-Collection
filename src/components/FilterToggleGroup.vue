@@ -27,7 +27,7 @@
     }
 
     .btn {
-        padding: var(--space-1) var(--space-3);
+        padding: var(--size-1) var(--size-3);
         font-size: var(--text-xs);
         font-weight: var(--font-weight-medium);
         border-radius: var(--radius-full);

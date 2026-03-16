@@ -3,58 +3,57 @@
 
         <MovieHero :movie="movie" />
 
-        <div :class="s.content">
-            <div :class="s.poster">
-                <img v-if="movie.poster_path" :src="posterUrl(movie.poster_path)" :alt="movie.title" />
-            </div>
-
-            <div :class="s.meta">
-                <h1 :class="s.title">{{ movie.title }}</h1>
-
-                <div :class="s.tags">
-                    <span :class="s.tag">{{ movie.year }}</span>
-                    <span v-if="movie.runtime_minutes" :class="s.tag">{{ formattedRuntime }}</span>
-                    <span v-if="movie.mpaa_rating" :class="s.tag">{{ movie.mpaa_rating }}</span>
-                    <span v-if="movie.tmdb_rating" :class="s.tag">
-                        <span v-html="star" :class="s.tagIcon" />
-                        {{ movie.tmdb_rating.toFixed(1) }}
-                    </span>
+        <div :class="s.contentWrap">
+            <div :class="s.content">
+                <div :class="s.poster">
+                    <img v-if="movie.poster_path" :src="posterUrl(movie.poster_path)" :alt="movie.title" />
                 </div>
 
-                <div v-if="movie.genres?.length" :class="s.genres">
-                    <span v-for="genre in movie.genres" :key="genre" :class="s.genre">{{ genre }}</span>
+                <div :class="s.meta">
+                    <dl :class="s.tags">
+                        <dt class="visually-hidden">Release Year</dt>
+                        <dd :class="s.tag">{{ movie.year }}</dd>
+
+                        <dt v-if="movie.mpaa_rating" class="visually-hidden">Rating</dt>
+                        <dd v-if="movie.mpaa_rating" :class="s.tag">{{ movie.mpaa_rating }}</dd>
+
+                        <dt v-if="movie.runtime_minutes" class="visually-hidden">Runtime</dt>
+                        <dd v-if="movie.runtime_minutes" :class="s.tag">{{ formattedRuntime }}</dd>
+
+                        <dt v-if="movie.tmdb_rating" class="visually-hidden">Rating</dt>
+                        <dd v-if="movie.tmdb_rating" :class="s.tag">
+                            <span v-html="star" :class="s.tagIcon" />
+                            {{ movie.tmdb_rating.toFixed(1) }}
+                        </dd>
+                    </dl>
+
+                    <h1 :class="s.title">{{ movie.title }}</h1>
+
+
+
+                    <div v-if="movie.genres?.length" :class="s.genres">
+                        <span v-for="genre in movie.genres" :key="genre" :class="s.genre">{{ genre }}</span>
+                    </div>
+
+                    <p v-if="movie.description" :class="s.description">{{ movie.description }}</p>
+
+                    <p v-if="movie.notes" :class="s.notes">{{ movie.notes }}</p>
+
                 </div>
-
-                <p v-if="movie.description" :class="s.description">{{ movie.description }}</p>
-
-                <p v-if="movie.notes" :class="s.notes">{{ movie.notes }}</p>
-
             </div>
-
         </div>
+
+        <MovieActionBar :actions="actions" :is-active="isActive" :has-services="hasServices" :is-guest="!auth.user"
+            :movie="movie" @action="handleAction" />
 
         <RouterLink v-if="auth.isAdmin" :to="`/admin/edit/${movie.slug}`" :class="s.editLink">
             Edit Movie
         </RouterLink>
 
-        <MovieActionBar :actions="actions" :is-active="isActive" :has-services="hasServices" :is-guest="!auth.user"
-            @action="handleAction" @open-sheet="sheetOpen = true" />
-
-        <MovieServicesSheet v-model="sheetOpen" :movie="movie" />
-
-        <!-- Login prompt toast -->
-        <Transition name="fade">
-            <div v-if="loginPrompt" :class="s.loginPrompt" role="status">
-                <RouterLink to="/login" :class="s.loginPromptLink">Sign in</RouterLink>
-                to save movies to your lists
-            </div>
-        </Transition>
-
     </div>
 
     <div v-else-if="notFound" :class="s.notFound">
         <p>Movie not found.</p>
-        <RouterLink to="/">Back to collection</RouterLink>
     </div>
 </template>
 
@@ -65,7 +64,6 @@
     import { useAuthStore } from '@/stores/auth'
     import MovieHero from '@/components/MovieHero.vue'
     import MovieActionBar from '@/components/MovieActionBar.vue'
-    import MovieServicesSheet from '@/components/MovieServicesSheet.vue'
     import { usePageTitle } from '@/composables/usePageTitle'
     import { posterUrl } from '@/lib/tmdb'
     import { useMovieActions } from '@/composables/useMovieActions'
@@ -95,7 +93,7 @@
         return h > 0 ? `${h}h ${m}m` : `${m}m`
     })
 
-    const { sheetOpen, loginPrompt, actions, isActive, handleAction } = useMovieActions(movie)
+    const { actions, isActive, handleAction } = useMovieActions(movie)
 </script>
 
 <style module="s">
@@ -103,54 +101,59 @@
         container-type: inline-size;
     }
 
-    .content {
-        display: flex;
-        gap: var(--space-4);
-        margin-inline: auto;
-        margin-top: calc(var(--space-16) * -1);
+    .contentWrap {
+        margin: 0 auto;
         max-width: var(--content-width);
-        padding: var(--content-padding);
+        padding-inline: var(--content-padding);
         position: relative;
     }
 
+    .content {
+        display: flex;
+        flex-direction: row-reverse;
+        gap: 5%;
+        margin-top: -14%;
+
+        @media (min-width: 60rem) {
+            margin-top: -20%;
+        }
+    }
+
     .poster {
+        border-radius: var(--radius-lg);
+        box-shadow: var(--shadow-xl);
         flex-shrink: 0;
-        width: 100px;
+        min-width: 7rem;
+        width: 24%;
     }
 
     .poster img {
-        width: 100%;
-        border-radius: var(--radius-md);
-        box-shadow: var(--shadow-lg);
         display: block;
-    }
-
-    @container (min-width: 600px) {
-        .content {
-            margin-top: -100px;
-        }
-
-        .poster {
-            width: 180px;
-        }
     }
 
     .meta {
         flex: 1;
         min-width: 0;
-        padding-top: var(--space-4);
+        padding-top: var(--size-4);
+
+        @container (min-width: 60rem) {
+            padding-top: var(--size-6);
+        }
     }
 
     .title {
-        font-size: var(--text-2xl);
-        font-weight: var(--font-weight-bold);
+        color: var(--color-heading);
+        font-size: var(--text-3xl);
+        font-weight: var(--font-weight-normal);
         line-height: var(--leading-tight);
-        margin-bottom: var(--space-3);
-        color: var(--color-text);
-    }
+        margin-bottom: var(--size-4);
+        text-shadow: var(--text-shadow-lg);
 
-    @container (min-width: 600px) {
-        .title {
+        @container (min-width: 40rem) {
+            font-size: var(--text-5xl);
+        }
+
+        @container (min-width: 60rem) {
             font-size: var(--text-6xl);
         }
     }
@@ -158,67 +161,80 @@
     .tags {
         display: flex;
         flex-wrap: wrap;
-        gap: var(--space-2);
-        margin-bottom: var(--space-3);
+        gap: var(--size-1) var(--size-3);
+        letter-spacing: var(--tracking-wider);
+        margin-bottom: var(--size-2);
     }
 
     .tag {
         align-items: center;
-        background: var(--color-bg-frosted);
-        backdrop-filter: var(--bg-frosted-sm);
-        border: 1px solid var(--color-border-frosted);
-        border-radius: var(--radius-sm);
-        color: var(--color-text-secondary);
+        /* background: var(--color-bg-frosted-subtle);
+        backdrop-filter: var(--bg-frosted-md);
+        border-radius: var(--radius-md); */
+        color: var(--color-heading);
         display: flex;
         font-size: var(--text-xs);
-        font-weight: var(--font-weight-medium);
-        gap: var(--space-1);
+        gap: var(--size-1);
         justify-content: center;
-        padding: var(--space-1) var(--space-2);
+        text-shadow: var(--text-shadow-md);
+        /* padding: var(--size-1) var(--size-2); */
+        /* letter-spacing: var(--tracking-wider); */
+
+        &:not(:first-of-type):before {
+            background: oklch(from var(--blue-300) l c h / 0.4);
+            border-radius: var(--radius-full);
+            content: '';
+            display: block;
+            height: var(--size-1);
+            margin-right: var(--size-2);
+            width: var(--size-1);
+        }
     }
 
     .tagIcon {
         align-items: center;
         display: flex;
         justify-content: center;
+        color: var(--color-text-muted);
     }
 
     .genres {
         display: flex;
         flex-wrap: wrap;
-        gap: var(--space-2);
-        margin-bottom: var(--space-4);
+        gap: var(--size-1);
+        margin-bottom: var(--size-4);
     }
 
     .genre {
-        font-size: var(--text-xs);
-        font-weight: var(--font-weight-medium);
-        color: var(--color-accent);
-        background: var(--color-accent-subtle);
-        backdrop-filter: var(--bg-frosted-sm);
-        border: 1px solid oklch(77% 0.175 72 / 0.25);
+        background: var(--color-surface-raised);
+        /* background: var(--color-bg-frosted-subtle);
+        backdrop-filter: var(--bg-frosted-md); */
+        /* border: 1px solid var(--color-border); */
         border-radius: var(--radius-full);
-        padding: var(--space-1) var(--space-3);
+        color: var(--color-text-muted);
+        font-size: var(--text-2xs);
+        letter-spacing: var(--tracking-wider);
+        padding: var(--size-1) var(--size-3);
     }
 
     .description {
-        font-size: var(--text-sm);
-        line-height: var(--leading-normal);
         color: var(--color-text-secondary);
-        margin-bottom: var(--space-5);
+        font-size: var(--text-sm);
+        line-height: var(--leading-relaxed);
+        text-wrap: pretty;
     }
 
     .notes {
         font-size: var(--text-sm);
         color: var(--color-text-muted);
         font-style: italic;
-        margin-bottom: var(--space-4);
+        margin-bottom: var(--size-4);
     }
 
     .editLink {
         display: flex;
         align-items: center;
-        padding: var(--space-2) var(--space-4);
+        padding: var(--size-2) var(--size-4);
         font-size: var(--text-sm);
         font-weight: var(--font-weight-medium);
         background: none;
@@ -237,58 +253,15 @@
         color: var(--color-text);
     }
 
-    /* ─── Login prompt ─── */
-    .loginPrompt {
-        position: fixed;
-        bottom: 84px;
-        left: 50%;
-        transform: translateX(-50%);
-        white-space: nowrap;
-        background: var(--color-surface-raised);
-        border: 1px solid var(--color-border);
-        border-radius: var(--radius-full);
-        padding: var(--space-2) var(--space-4);
-        font-size: var(--text-sm);
-        color: var(--color-text-secondary);
-        z-index: 55;
-        box-shadow: var(--shadow-lg);
-    }
-
-    .loginPromptLink {
-        color: var(--color-accent);
-        font-weight: var(--font-weight-semibold);
-        margin-right: var(--space-1);
-    }
-
     /* ─── Not found ─── */
     .notFound {
         display: flex;
         flex-direction: column;
         align-items: center;
-        gap: var(--space-4);
-        padding: var(--space-12) var(--content-padding);
+        gap: var(--size-4);
+        padding: var(--size-12) var(--content-padding);
         color: var(--color-text-muted);
         font-size: var(--text-sm);
     }
 
-    /* Sheet transition — global because Vue applies these to the element directly */
-    .sheet-enter-active,
-    .sheet-leave-active {
-        transition: transform 0.3s cubic-bezier(0.32, 0.72, 0, 1);
-    }
-
-    .sheet-enter-from,
-    .sheet-leave-to {
-        transform: translateY(100%);
-    }
-
-    .fade-enter-active,
-    .fade-leave-active {
-        transition: opacity 0.2s ease;
-    }
-
-    .fade-enter-from,
-    .fade-leave-to {
-        opacity: 0;
-    }
 </style>

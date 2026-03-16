@@ -234,7 +234,8 @@
 
 <script setup>
     import { ref, computed, onMounted } from 'vue'
-    import { useRoute } from 'vue-router'
+    import { useRoute, onBeforeRouteLeave } from 'vue-router'
+    import { useConfirm } from '@/composables/useConfirm'
     import { useMoviesStore } from '@/stores/movies'
     import { serviceIcons } from '@/lib/icons'
     import { usePageTitle } from '@/composables/usePageTitle'
@@ -245,8 +246,10 @@
 
     const route = useRoute()
     const moviesStore = useMoviesStore()
+    const { confirm } = useConfirm()
     const isEditMode = computed(() => !!route.params.slug)
     const formReady = ref(false)
+    const submitted = ref(false)
 
     const { tmdbQuery, tmdbResults, tmdbSearching, tmdbSearched, searchTmdb, selectTmdb: _selectTmdb, resetTmdb: _resetTmdb } = useTmdbSearch()
     const { form, genreInput, trailerSearchUrl, populateFromMovie, addGenre, removeGenre, getService, isServiceActive, serviceSearchUrl } = useMovieForm()
@@ -275,6 +278,16 @@
         _resetTmdb()
         formReady.value = false
     }
+
+    onBeforeRouteLeave(async () => {
+        if (submitted.value || !formReady.value) return true
+        const ok = await confirm('You have unsaved changes. Leave anyway?', {
+            title: 'Unsaved Changes',
+            confirmLabel: 'Leave page',
+            cancelLabel: 'Stay',
+        })
+        return ok
+    })
 </script>
 
 <style module="s">
@@ -288,31 +301,31 @@
         font-size: var(--text-2xl);
         font-weight: var(--font-weight-bold);
         color: var(--color-text);
-        margin-bottom: var(--space-6);
+        margin-bottom: var(--size-6);
     }
 
     .section {
-        margin-bottom: var(--space-6);
+        margin-bottom: var(--size-6);
     }
 
     /* TMDB Search */
     .searchRow {
         display: flex;
-        gap: var(--space-2);
+        gap: var(--size-2);
     }
 
     .tmdbResults {
-        margin-top: var(--space-3);
+        margin-top: var(--size-3);
         display: flex;
         flex-direction: column;
-        gap: var(--space-2);
+        gap: var(--size-2);
     }
 
     .tmdbResult {
         display: flex;
         align-items: center;
-        gap: var(--space-3);
-        padding: var(--space-3);
+        gap: var(--size-3);
+        padding: var(--size-3);
         background: var(--color-surface);
         border: 1px solid var(--color-border);
         border-radius: var(--radius-md);
@@ -343,12 +356,12 @@
     .tmdbResultInfo {
         display: flex;
         flex-direction: column;
-        gap: var(--space-1);
+        gap: var(--size-1);
     }
 
     .tmdbResultTitle {
         font-size: var(--text-sm);
-        font-weight: var(--font-weight-semibold);
+        font-weight: var(--font-weight-bold);
         color: var(--color-text);
     }
 
@@ -361,12 +374,12 @@
     .selectedBar {
         display: flex;
         align-items: center;
-        gap: var(--space-3);
-        padding: var(--space-3) var(--space-4);
+        gap: var(--size-3);
+        padding: var(--size-3) var(--size-4);
         background: var(--color-surface);
         border: 1px solid var(--color-border);
         border-radius: var(--radius-md);
-        margin-bottom: var(--space-5);
+        margin-bottom: var(--size-5);
     }
 
     .selectedPoster {
@@ -387,7 +400,7 @@
     .mediaPreview {
         display: flex;
         flex-direction: column;
-        gap: var(--space-3);
+        gap: var(--size-3);
     }
 
     .trailerWrap {
@@ -409,7 +422,7 @@
     .mediaImages {
         display: grid;
         grid-template-columns: 80px 1fr;
-        gap: var(--space-3);
+        gap: var(--size-3);
         align-items: start;
     }
 
@@ -431,24 +444,24 @@
     .form {
         display: flex;
         flex-direction: column;
-        gap: var(--space-5);
+        gap: var(--size-5);
     }
 
     .field {
         display: flex;
         flex-direction: column;
-        gap: var(--space-2);
+        gap: var(--size-2);
     }
 
     .fieldRow {
         display: grid;
         grid-template-columns: 1fr 1fr;
-        gap: var(--space-3);
+        gap: var(--size-3);
     }
 
     .fieldLabel {
         font-size: var(--text-xs);
-        font-weight: var(--font-weight-semibold);
+        font-weight: var(--font-weight-bold);
         color: var(--color-text-secondary);
         text-transform: uppercase;
         letter-spacing: 0.06em;
@@ -462,11 +475,11 @@
     .pills {
         display: flex;
         flex-wrap: wrap;
-        gap: var(--space-2);
+        gap: var(--size-2);
     }
 
     .pill {
-        padding: var(--space-2) var(--space-3);
+        padding: var(--size-2) var(--size-3);
         font-size: var(--text-sm);
         font-weight: var(--font-weight-medium);
         background: none;
@@ -505,7 +518,7 @@
     .servicesStack {
         display: flex;
         flex-direction: column;
-        gap: var(--space-1);
+        gap: var(--size-1);
     }
 
     .serviceCard {
@@ -526,7 +539,7 @@
         align-items: center;
         justify-content: space-between;
         width: 100%;
-        padding: var(--space-3) var(--space-4);
+        padding: var(--size-3) var(--size-4);
         background: none;
         border: none;
         color: var(--color-text-secondary);
@@ -550,13 +563,13 @@
 
     .serviceCardActive>.serviceCardTrigger {
         color: var(--color-text);
-        font-weight: var(--font-weight-semibold);
+        font-weight: var(--font-weight-bold);
     }
 
     .summaryStart {
         display: flex;
         align-items: center;
-        gap: var(--space-3);
+        gap: var(--size-3);
     }
 
     .serviceIcon {
@@ -599,7 +612,7 @@
 
     .cardLabel {
         font-size: var(--text-xs);
-        font-weight: var(--font-weight-semibold);
+        font-weight: var(--font-weight-bold);
         text-transform: uppercase;
         letter-spacing: 0.06em;
         color: var(--color-text-muted);
@@ -612,17 +625,17 @@
     .serviceCardBody {
         display: flex;
         flex-direction: column;
-        gap: var(--space-3);
-        padding: var(--space-3) var(--space-4) var(--space-4);
+        gap: var(--size-3);
+        padding: var(--size-3) var(--size-4) var(--size-4);
         border-top: 1px solid var(--color-border-subtle);
     }
 
     .summaryBadge {
         display: inline-flex;
         align-items: center;
-        padding: 1px var(--space-2);
+        padding: 1px var(--size-2);
         font-size: var(--text-xs);
-        font-weight: var(--font-weight-semibold);
+        font-weight: var(--font-weight-bold);
         color: var(--color-text-on-accent);
         background: var(--color-accent);
         border-radius: var(--radius-full);
@@ -632,7 +645,7 @@
     .urlRow {
         display: flex;
         align-items: center;
-        gap: var(--space-2);
+        gap: var(--size-2);
     }
 
     .urlRow .input {
@@ -642,7 +655,7 @@
     /* Inputs */
     .input {
         width: 100%;
-        padding: var(--space-3) var(--space-4);
+        padding: var(--size-3) var(--size-4);
         font-size: var(--text-base);
         background: var(--color-surface);
         border: 1px solid var(--color-border);
@@ -671,8 +684,8 @@
     .tagInput {
         display: flex;
         flex-wrap: wrap;
-        gap: var(--space-2);
-        padding: var(--space-2) var(--space-3);
+        gap: var(--size-2);
+        padding: var(--size-2) var(--size-3);
         background: var(--color-surface);
         border: 1px solid var(--color-border);
         border-radius: var(--radius-md);
@@ -684,12 +697,12 @@
     .tag {
         display: inline-flex;
         align-items: center;
-        gap: var(--space-1);
+        gap: var(--size-1);
         background: var(--color-accent-subtle);
         border: 1px solid var(--color-accent-muted);
         color: var(--color-accent);
         border-radius: var(--radius-full);
-        padding: var(--space-1) var(--space-3);
+        padding: var(--size-1) var(--size-3);
         font-size: var(--text-xs);
         font-weight: var(--font-weight-medium);
     }
@@ -735,9 +748,9 @@
         display: flex;
         align-items: center;
         justify-content: space-between;
-        padding: var(--space-3) var(--space-4);
+        padding: var(--size-3) var(--size-4);
         font-size: var(--text-sm);
-        font-weight: var(--font-weight-semibold);
+        font-weight: var(--font-weight-bold);
         color: var(--color-text-secondary);
         cursor: pointer;
         list-style: none;
@@ -766,8 +779,8 @@
     .tmdbBody {
         display: flex;
         flex-direction: column;
-        gap: var(--space-4);
-        padding: var(--space-4);
+        gap: var(--size-4);
+        padding: var(--size-4);
         border-top: 1px solid var(--color-border-subtle);
     }
 
@@ -787,7 +800,7 @@
     .inputWithLink {
         display: flex;
         align-items: center;
-        gap: var(--space-3);
+        gap: var(--size-3);
     }
 
     .inputWithLink .input {
@@ -796,9 +809,9 @@
 
     /* Buttons */
     .btnPrimary {
-        padding: var(--space-3) var(--space-5);
+        padding: var(--size-3) var(--size-5);
         font-size: var(--text-base);
-        font-weight: var(--font-weight-semibold);
+        font-weight: var(--font-weight-bold);
         background: var(--color-accent);
         color: var(--color-text-on-accent);
         border: none;
@@ -817,7 +830,7 @@
     }
 
     .btnGhost {
-        padding: var(--space-2) var(--space-4);
+        padding: var(--size-2) var(--size-4);
         font-size: var(--text-sm);
         font-weight: var(--font-weight-medium);
         background: none;
@@ -836,7 +849,7 @@
 
     .btnSubmit {
         width: 100%;
-        padding: var(--space-4);
+        padding: var(--size-4);
         font-size: var(--text-base);
     }
 
@@ -849,6 +862,6 @@
     .emptyMsg {
         font-size: var(--text-sm);
         color: var(--color-text-muted);
-        margin-top: var(--space-2);
+        margin-top: var(--size-2);
     }
 </style>

@@ -15,24 +15,20 @@
                 aria-label="Open filters" v-html="filterIcon" />
 
             <button :class="s.mobileBtn" @click="handleRandom" aria-label="Random movie" v-html="randomIcon" />
-
-            <button :class="s.mobileBtn" @click="filters.reset()" aria-label="Reset filters" v-html="resetIcon" />
         </div>
 
         <!-- Wide filters -->
         <div :class="s.desktopRow">
             <!-- Sort -->
             <div :class="s.desktopFilter">
-                <select v-model="filters.sort" :class="s.desktopSelect" aria-label="Sort">
-                    <option value="acquired-desc">Recently Acquired</option>
-                    <option value="acquired-asc">Oldest Acquired</option>
-                    <option value="title-asc">Title A–Z</option>
-                    <option value="title-desc">Title Z–A</option>
-                    <option value="year-desc">Newest Release</option>
-                    <option value="year-asc">Oldest Release</option>
-                    <option value="rating-desc">Highest Rated</option>
-                    <option value="rating-asc">Lowest Rated</option>
-                </select>
+                <button :class="[s.desktopFilterBtn, s.sortBtn]" popovertarget="filter-sort">
+                    Sort: {{ sortOptions.find(o => o.value === filters.sort)?.label }}
+                    <span :class="s.chevron" v-html="chevronIcon" />
+                </button>
+                <div id="filter-sort" popover="auto" :class="[s.desktopPanel, s.sortPanel]">
+                    <FilterOptionList :options="sortOptions" :active-values="[filters.sort]"
+                        @toggle="filters.sort = $event" />
+                </div>
             </div>
 
             <!-- Genre -->
@@ -40,13 +36,9 @@
                 <button :class="[s.desktopFilterBtn, s.genreBtn, filters.genres.length && s.desktopFilterBtnActive]"
                     popovertarget="filter-genre">
                     Genre
-                    <span v-if="filters.genres.length" :class="s.desktopBadge">{{ filters.genres.length }}</span>
-                    <svg width="12" height="12" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"
-                        :class="s.chevron">
-                        <path fill-rule="evenodd"
-                            d="M5.293 7.293a1 1 0 0 1 1.414 0L10 10.586l3.293-3.293a1 1 0 1 1 1.414 1.414l-4 4a1 1 0 0 1-1.414 0l-4-4a1 1 0 0 1 0-1.414z"
-                            clip-rule="evenodd" />
-                    </svg>
+                    <span v-if="filters.genres.length" class="badge" :class="s.desktopBadge">{{ filters.genres.length
+                    }}</span>
+                    <span :class="s.chevron" v-html="chevronIcon" />
                 </button>
                 <div id="filter-genre" popover="auto" :class="[s.desktopPanel, s.genrePanel]">
                     <FilterOptionList :options="genreOptions" :active-values="filters.genres" @toggle="toggleGenre" />
@@ -58,14 +50,10 @@
                 <button :class="[s.desktopFilterBtn, s.mpaaBtn, filters.mpaaGroups.length && s.desktopFilterBtnActive]"
                     popovertarget="filter-mpaa">
                     Rating
-                    <span v-if="filters.mpaaGroups.length" :class="s.desktopBadge">{{ filters.mpaaGroups.length
+                    <span v-if="filters.mpaaGroups.length" class="badge" :class="s.desktopBadge">{{
+                        filters.mpaaGroups.length
                     }}</span>
-                    <svg width="12" height="12" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"
-                        :class="s.chevron">
-                        <path fill-rule="evenodd"
-                            d="M5.293 7.293a1 1 0 0 1 1.414 0L10 10.586l3.293-3.293a1 1 0 1 1 1.414 1.414l-4 4a1 1 0 0 1-1.414 0l-4-4a1 1 0 0 1 0-1.414z"
-                            clip-rule="evenodd" />
-                    </svg>
+                    <span :class="s.chevron" v-html="chevronIcon" />
                 </button>
                 <div id="filter-mpaa" popover="auto" :class="[s.desktopPanel, s.mpaaPanel]">
                     <FilterOptionList :options="mpaaOptions" :active-values="filters.mpaaGroups" @toggle="toggleMpaa" />
@@ -78,12 +66,7 @@
                     :class="[s.desktopFilterBtn, s.yearBtn, (Number.isFinite(filters.yearMin) || Number.isFinite(filters.yearMax)) && s.desktopFilterBtnActive]"
                     popovertarget="filter-year">
                     Year
-                    <svg width="12" height="12" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"
-                        :class="s.chevron">
-                        <path fill-rule="evenodd"
-                            d="M5.293 7.293a1 1 0 0 1 1.414 0L10 10.586l3.293-3.293a1 1 0 1 1 1.414 1.414l-4 4a1 1 0 0 1-1.414 0l-4-4a1 1 0 0 1 0-1.414z"
-                            clip-rule="evenodd" />
-                    </svg>
+                    <span :class="s.chevron" v-html="chevronIcon" />
                 </button>
                 <div id="filter-year" popover="auto" :class="[s.desktopPanel, s.yearPanel]">
                     <FilterRangeSlider :min="filters.yearBounds.min ?? 1900" :max="filters.yearBounds.max ?? 2025"
@@ -100,12 +83,7 @@
                     :class="[s.desktopFilterBtn, s.runtimeBtn, (Number.isFinite(filters.runtimeMin) || Number.isFinite(filters.runtimeMax)) && s.desktopFilterBtnActive]"
                     popovertarget="filter-runtime">
                     Runtime
-                    <svg width="12" height="12" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"
-                        :class="s.chevron">
-                        <path fill-rule="evenodd"
-                            d="M5.293 7.293a1 1 0 0 1 1.414 0L10 10.586l3.293-3.293a1 1 0 1 1 1.414 1.414l-4 4a1 1 0 0 1-1.414 0l-4-4a1 1 0 0 1 0-1.414z"
-                            clip-rule="evenodd" />
-                    </svg>
+                    <span :class="s.chevron" v-html="chevronIcon" />
                 </button>
                 <div id="filter-runtime" popover="auto" :class="[s.desktopPanel, s.runtimePanel]">
                     <FilterRangeSlider :min="filters.runtimeBounds.min ?? 0" :max="filters.runtimeBounds.max ?? 300"
@@ -140,9 +118,8 @@
             </button>
 
             <!-- Reset -->
-            <button v-if="filters.activeFilterCount > 0" :class="s.resetBtn" @click="filters.reset()">
-                Reset
-            </button>
+            <button v-if="filters.activeFilterCount > 0 || filters.search" :class="s.resetBtn" @click="filters.reset()"
+                v-html="resetIcon" />
         </div>
 
         <!-- Mobile bottom sheet backdrop -->
@@ -158,11 +135,8 @@
 
                         <!-- Sort -->
                         <FilterSection label="Sort">
-                            <div :class="s.sortOptions">
-                                <button v-for="opt in sortOptions" :key="opt.value"
-                                    :class="[s.sortOption, filters.sort === opt.value && s.sortOptionActive]"
-                                    @click="filters.sort = opt.value">{{ opt.label }}</button>
-                            </div>
+                            <FilterOptionList :options="sortOptions" :active-values="[filters.sort]"
+                                @toggle="filters.sort = $event" />
                         </FilterSection>
 
                         <!-- Genre -->
@@ -216,9 +190,15 @@
                     </div>
 
                     <div :class="s.sheetFooter">
-                        <button :class="s.sheetReset" @click="filters.reset()">Reset</button>
-                        <button :class="s.sheetDone" @click="sheetOpen = false">
-                            Show {{ filters.visibleMovies.length }} movies
+                        <button :class="s.sheetDone" :disabled="filters.visibleMovies.length === 0"
+                            @click="sheetOpen = false">
+                            Show {{ filters.visibleMovies.length }}
+                            {{ filters.visibleMovies.length === 1 ? 'movie' : 'movies' }}
+                        </button>
+                        <button v-if="filters.activeFilterCount > 0 || filters.search" :class="s.sheetReset"
+                            @click="filters.reset()">
+                            <span :class="s.sheetResetIcon" v-html="resetIcon" />
+                            Reset
                         </button>
                     </div>
                 </div>
@@ -235,11 +215,19 @@
     import FilterOptionList from '@/components/FilterOptionList.vue'
     import FilterRangeSlider from '@/components/FilterRangeSlider.vue'
     import ToggleSwitch from '@/components/ToggleSwitch.vue'
+
     import searchIcon from '@/assets/icons/magnifying-glass.svg?raw'
     import filterIcon from '@/assets/icons/filters.svg?raw'
     import resetIcon from '@/assets/icons/reset.svg?raw'
     import randomIcon from '@/assets/icons/dice.svg?raw'
-    import { mpaaGroupOptions, sortOptions } from '@/lib/filterOptions'
+    import chevronIcon from '@/assets/icons/chevron-down.svg?raw'
+    import { mpaaGroupOptions } from '@/lib/filterOptions'
+
+    const sortOptions = [
+        { value: 'acquired-desc', label: 'Recently Added' },
+        { value: 'year-desc', label: 'Latest Release' },
+        { value: 'rating-desc', label: 'Top Rated' },
+    ]
 
     const filters = useFiltersStore()
     const router = useRouter()
@@ -288,23 +276,24 @@
         border-bottom-right-radius: var(--radius-xl);
         /* box-shadow: var(--shadow-lg); */
         display: flex;
-        gap: var(--space-2);
-        padding: var(--space-3) var(--content-padding);
+        gap: var(--size-2);
+        justify-content: space-between;
+        padding: 0 var(--content-padding) var(--size-3) var(--content-padding);
         /* padding-top: env(safe-area-inset-bottom); */
         position: sticky;
-        /* top: var(--header-height); */
-        top: 0;
+        top: var(--header-height);
         z-index: 90;
     }
 
     /* ── Search ── */
     .searchRow {
         display: flex;
-        gap: var(--space-2);
+        gap: var(--size-2);
     }
 
     .searchInputWrap {
         flex: 1;
+        max-width: 16rem;
         position: relative;
     }
 
@@ -314,7 +303,7 @@
         display: flex;
         font-size: var(--text-lg);
         justify-content: center;
-        left: var(--space-4);
+        left: var(--size-4);
         pointer-events: none;
         position: absolute;
         top: 50%;
@@ -322,14 +311,14 @@
     }
 
     .searchInput {
-        background: var(--color-surface);
-        border: 1px solid var(--color-border);
+        background: var(--color-bg);
+        border: 2px solid var(--color-border);
         border-radius: var(--radius-full);
         color: var(--color-text);
         font-size: var(--text-sm);
         height: 100%;
         outline: none;
-        padding: var(--space-3) var(--space-4) var(--space-3) var(--space-10);
+        padding: var(--size-3) var(--size-4) var(--size-3) var(--size-10);
         transition: border-color var(--transition-fast);
         width: 100%;
     }
@@ -346,15 +335,14 @@
     .mobileRow {
         align-items: center;
         display: flex;
-        gap: var(--space-1);
+        gap: var(--size-1);
         justify-content: space-between;
-    }
 
-    @media (min-width: 768px) {
-        .mobileRow {
+        @media (min-width: 60rem) {
             display: none;
         }
     }
+
 
     .mobileBtn {
         align-items: center;
@@ -403,12 +391,10 @@
     .desktopRow {
         display: none;
         align-items: center;
-        gap: var(--space-2);
+        gap: var(--size-2);
         flex-wrap: wrap;
-    }
 
-    @media (min-width: 768px) {
-        .desktopRow {
+        @media (min-width: 60rem) {
             display: flex;
         }
     }
@@ -418,18 +404,16 @@
     }
 
     .desktopFilterBtn {
-        display: inline-flex;
         align-items: center;
-        gap: var(--space-2);
-        padding: var(--space-2) var(--space-3);
-        font-size: var(--text-sm);
-        font-weight: var(--font-weight-medium);
-        background: var(--color-surface-raised);
-        border: 1px solid var(--color-border);
         border-radius: var(--radius-full);
         color: var(--color-text-secondary);
-        white-space: nowrap;
+        display: inline-flex;
+        gap: var(--size-2);
+        padding: var(--size-2) var(--size-3);
+        font-size: var(--text-sm);
+        font-weight: var(--font-weight-medium);
         transition: border-color var(--transition-fast), color var(--transition-fast);
+        white-space: nowrap;
     }
 
     .desktopFilterBtn:hover {
@@ -437,39 +421,31 @@
         color: var(--color-text);
     }
 
-    .desktopFilterBtnActive {
-        border-color: var(--color-accent-muted);
-        color: var(--color-accent);
-        background: var(--color-accent-subtle);
-    }
-
-    .desktopSelect {
-        padding: var(--space-2) var(--space-3);
-        font-size: var(--text-sm);
-        font-weight: var(--font-weight-medium);
+    .desktopFilterBtn:has(+ .desktopPanel:popover-open) {
         background: var(--color-surface-raised);
-        border: 1px solid var(--color-border);
-        border-radius: var(--radius-full);
-        color: var(--color-text-secondary);
-        outline: none;
-        cursor: pointer;
     }
 
-    .desktopBadge {
-        background: var(--color-accent);
-        color: var(--color-text-on-accent);
-        font-size: 10px;
-        font-weight: var(--font-weight-bold);
-        border-radius: var(--radius-full);
-        min-width: 18px;
-        height: 18px;
-        display: inline-flex;
+
+    .desktopFilterBtnActive {
+        /* border-color: var(--color-accent-muted); */
+        color: var(--color-primary);
+        /* background: var(--color-accent-subtle); */
+    }
+
+    .sortBtn {
+        anchor-name: --filter-sort;
+    }
+
+    .sortPanel {
+        min-width: 10rem;
+        position-anchor: --filter-sort;
+    }
+
+.chevron {
         align-items: center;
+        display: flex;
         justify-content: center;
-        padding: 0 4px;
-    }
-
-    .chevron {
+        color: var(--color-text-muted);
         transition: transform var(--transition-fast);
     }
 
@@ -486,7 +462,7 @@
         border: 1px solid var(--color-border);
 
         /* Appearance */
-        padding: var(--space-2);
+        padding: var(--size-2);
         background: var(--color-surface-raised);
         border-radius: var(--radius-lg);
         box-shadow: var(--shadow-lg);
@@ -496,7 +472,7 @@
 
         /* Anchor positioning — offset below the trigger button */
         position-area: bottom span-left;
-        margin-top: var(--space-2);
+        margin-top: var(--size-2);
     }
 
     /* Per-filter anchor names */
@@ -554,7 +530,7 @@
     }
 
     .resetBtn {
-        padding: var(--space-2) var(--space-3);
+        padding: var(--size-2) var(--size-3);
         font-size: var(--text-sm);
         font-weight: var(--font-weight-medium);
         background: none;
@@ -569,39 +545,11 @@
         border-color: var(--color-border-strong);
     }
 
-    /* ── Sort options ── */
-    .sortOptions {
-        display: flex;
-        flex-direction: column;
-    }
-
-    .sortOption {
-        width: 100%;
-        padding: var(--space-2) var(--space-3);
-        font-size: var(--text-sm);
-        color: var(--color-text-secondary);
-        background: none;
-        border: none;
-        border-radius: var(--radius-md);
-        text-align: left;
-        transition: background var(--transition-fast), color var(--transition-fast);
-    }
-
-    .sortOption:hover {
-        background: var(--color-bg-hover);
-        color: var(--color-text);
-    }
-
-    .sortOptionActive {
-        color: var(--color-accent);
-        background: var(--color-accent-subtle);
-    }
-
     /* ── Inline label + toggle ── */
     .inlineToggle {
         display: inline-flex;
         align-items: center;
-        gap: var(--space-2);
+        gap: var(--size-2);
     }
 
     .inlineToggleLabel {
@@ -615,8 +563,8 @@
     .mobileToggles {
         display: flex;
         flex-direction: column;
-        gap: var(--space-3);
-        padding: var(--space-3) var(--space-4);
+        gap: var(--size-3);
+        padding: var(--size-3) var(--size-4);
         border-bottom: 1px solid var(--color-border-subtle);
     }
 
@@ -636,7 +584,7 @@
         right: 0;
         top: 0;
         margin-top: calc(var(--header-height) + 120px);
-        background: oklch(11% 0.006 265 / 0.98);
+        background: var(--color-bg-frosted);
         backdrop-filter: var(--bg-frosted-lg);
         border-top: 1px solid oklch(100% 0 0 / 0.08);
         border-radius: var(--radius-xl) var(--radius-xl) 0 0;
@@ -649,26 +597,29 @@
         flex: 1;
         min-height: 0;
         overflow-y: auto;
-        padding-bottom: var(--space-4);
+        padding-bottom: var(--size-4);
     }
 
     .sheetFooter {
         display: flex;
-        gap: var(--space-2);
-        padding: var(--space-3) var(--content-padding);
-        padding-bottom: calc(var(--space-3) + env(safe-area-inset-bottom));
+        gap: var(--size-2);
+        padding: var(--size-3) var(--content-padding);
+        padding-bottom: calc(var(--size-3) + env(safe-area-inset-bottom));
         border-top: 1px solid var(--color-border);
         flex-shrink: 0;
     }
 
     .sheetReset {
-        padding: var(--space-3) var(--space-5);
-        font-size: var(--text-sm);
-        font-weight: var(--font-weight-medium);
-        background: none;
+        align-items: center;
+        background: transparent;
         border: 1px solid var(--color-border);
         border-radius: var(--radius-md);
         color: var(--color-text-secondary);
+        display: flex;
+        font-size: var(--text-sm);
+        gap: var(--size-2);
+        justify-content: center;
+        padding: var(--size-3) var(--size-5);
         transition: border-color var(--transition-fast);
     }
 
@@ -676,24 +627,35 @@
         border-color: var(--color-border-strong);
     }
 
+    .sheetResetIcon {
+        align-items: center;
+        display: flex;
+        font-size: var(--text-lg);
+        justify-content: center;
+    }
+
     .sheetDone {
-        flex: 1;
-        padding: var(--space-3);
-        font-size: var(--text-sm);
-        font-weight: var(--font-weight-semibold);
         background: var(--color-accent);
         border: none;
         border-radius: var(--radius-md);
         color: var(--color-text-on-accent);
+        flex: 1;
+        font-weight: var(--font-weight-medium);
+        font-size: var(--text-sm);
+        padding: var(--size-3);
         transition: background var(--transition-fast);
     }
 
     .sheetDone:hover {
         background: var(--color-accent-bright);
     }
-</style>
 
-<style>
+    .sheetDone:disabled {
+        background: var(--color-disabled);
+        border: none;
+        color: var(--color-text-muted);
+        cursor: default;
+    }
 
     .sheet-enter-active,
     .sheet-leave-active {

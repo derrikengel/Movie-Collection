@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Cal+Sans&family=Urbanist:ital,wght@0,100..900;1,100..900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Google+Sans:opsz,wght,GRAD@17..18,400..700,200&display=swap');
 @layer reset, tokens, base, utilities, components;
 
 /* ============================================================
@@ -13,15 +13,6 @@
         margin: 0;
         padding: 0;
     }
-
-    html {
-        font-optical-sizing: auto;
-    }
-
-    img {
-        display: block;
-        max-width: 100%;
-    }
 }
 
 /* ============================================================
@@ -29,133 +20,110 @@
    ============================================================ */
 @layer tokens {
     :root {
-
         /* ─── Primitives ─── */
 
         /* Shared lightness scale */
-        --l-50: 98%;
-        --l-100: 94%;
-        --l-200: 89%;
+        --l-50: 100%;
+        --l-100: 96%;
+        --l-200: 90%;
         --l-300: 82%;
-        --l-400: 73%;
-        --l-500: 62%;
+        --l-400: 72%;
+        --l-500: 61%;
         --l-600: 49%;
         --l-700: 38%;
-        --l-800: 27%;
-        --l-900: 17%;
-        --l-950: 10%;
+        --l-800: 28%;
+        --l-900: 20%;
+        --l-950: 14%;
 
         /* Shared chroma curve (multipliers relative to source chroma) */
-        --c-50: 0.20;
-        --c-100: 0.35;
-        --c-200: 0.55;
-        --c-300: 0.82;
-        --c-400: 1.00;
-        --c-500: 1.00;
-        --c-600: 0.90;
-        --c-700: 0.78;
-        --c-800: 0.59;
-        --c-900: 0.39;
-        --c-950: 0.22;
-
-        /* Shared hue arc (+10 at 50 → 0 at 500 → -10 at 950)
-       Scale by --{palette}-hue-dir: 0 = none, 1 = full, -1 = reversed, 0.5 = half */
-        --arc-50: 10;
-        --arc-100: 8;
-        --arc-200: 6;
-        --arc-300: 3;
-        --arc-400: 1;
-        --arc-500: 0;
-        --arc-600: -2;
-        --arc-700: -4;
-        --arc-800: -6;
-        --arc-900: -8;
-        --arc-950: -10;
+        --c-50: 0.05;
+        --c-100: 0.11;
+        --c-200: 0.19;
+        --c-300: 0.28;
+        --c-400: 0.36;
+        --c-500: 0.4;
+        --c-600: 0.36;
+        --c-700: 0.28;
+        --c-800: 0.18;
+        --c-900: 0.10;
+        --c-950: 0.05;
 
         /* Color palette — chroma, hue, and direction scalars */
-        --gray-c: 0.04;
-        --gray-h: 250;
-        --gray-hue-dir: 0;
-        --amber-c: 0.185;
-        --amber-h: 40;
-        --amber-hue-dir: 1;
-        --green-c: 0.200;
-        --green-h: 151;
-        --green-hue-dir: -0.6;
-        --red-c: 0.205;
-        --red-h: 22;
-        --red-hue-dir: -0.4;
+        --blue-c: 0.2;
+        --blue-h: 230;
 
-        /* Color: Gray */
-        --gray-50: oklch(var(--l-50) calc(var(--gray-c) * var(--c-50)) calc(var(--gray-h) + var(--gray-hue-dir) * var(--arc-50)));
-        --gray-100: oklch(var(--l-100) calc(var(--gray-c) * var(--c-100)) calc(var(--gray-h) + var(--gray-hue-dir) * var(--arc-100)));
-        --gray-200: oklch(var(--l-200) calc(var(--gray-c) * var(--c-200)) calc(var(--gray-h) + var(--gray-hue-dir) * var(--arc-200)));
-        --gray-300: oklch(var(--l-300) calc(var(--gray-c) * var(--c-300)) calc(var(--gray-h) + var(--gray-hue-dir) * var(--arc-300)));
-        --gray-400: oklch(var(--l-400) calc(var(--gray-c) * var(--c-400)) calc(var(--gray-h) + var(--gray-hue-dir) * var(--arc-400)));
-        --gray-500: oklch(var(--l-500) calc(var(--gray-c) * var(--c-500)) calc(var(--gray-h) + var(--gray-hue-dir) * var(--arc-500)));
-        --gray-600: oklch(var(--l-600) calc(var(--gray-c) * var(--c-600)) calc(var(--gray-h) + var(--gray-hue-dir) * var(--arc-600)));
-        --gray-700: oklch(var(--l-700) calc(var(--gray-c) * var(--c-700)) calc(var(--gray-h) + var(--gray-hue-dir) * var(--arc-700)));
-        --gray-800: oklch(var(--l-800) calc(var(--gray-c) * var(--c-800)) calc(var(--gray-h) + var(--gray-hue-dir) * var(--arc-800)));
-        --gray-900: oklch(var(--l-900) calc(var(--gray-c) * var(--c-900)) calc(var(--gray-h) + var(--gray-hue-dir) * var(--arc-900)));
-        --gray-950: oklch(var(--l-950) calc(var(--gray-c) * var(--c-950)) calc(var(--gray-h) + var(--gray-hue-dir) * var(--arc-950)));
+        --red-c: 0.5;
+        --red-h: 30;
 
-        /* Color: Amber */
-        --amber-50: oklch(var(--l-50) calc(var(--amber-c) * var(--c-50)) calc(var(--amber-h) + var(--amber-hue-dir) * var(--arc-50)));
-        --amber-100: oklch(var(--l-100) calc(var(--amber-c) * var(--c-100)) calc(var(--amber-h) + var(--amber-hue-dir) * var(--arc-100)));
-        --amber-200: oklch(var(--l-200) calc(var(--amber-c) * var(--c-200)) calc(var(--amber-h) + var(--amber-hue-dir) * var(--arc-200)));
-        --amber-300: oklch(var(--l-300) calc(var(--amber-c) * var(--c-300)) calc(var(--amber-h) + var(--amber-hue-dir) * var(--arc-300)));
-        --amber-400: oklch(var(--l-400) calc(var(--amber-c) * var(--c-400)) calc(var(--amber-h) + var(--amber-hue-dir) * var(--arc-400)));
-        --amber-500: oklch(var(--l-500) calc(var(--amber-c) * var(--c-500)) calc(var(--amber-h) + var(--amber-hue-dir) * var(--arc-500)));
-        --amber-600: oklch(var(--l-600) calc(var(--amber-c) * var(--c-600)) calc(var(--amber-h) + var(--amber-hue-dir) * var(--arc-600)));
-        --amber-700: oklch(var(--l-700) calc(var(--amber-c) * var(--c-700)) calc(var(--amber-h) + var(--amber-hue-dir) * var(--arc-700)));
-        --amber-800: oklch(var(--l-800) calc(var(--amber-c) * var(--c-800)) calc(var(--amber-h) + var(--amber-hue-dir) * var(--arc-800)));
-        --amber-900: oklch(var(--l-900) calc(var(--amber-c) * var(--c-900)) calc(var(--amber-h) + var(--amber-hue-dir) * var(--arc-900)));
-        --amber-950: oklch(var(--l-950) calc(var(--amber-c) * var(--c-950)) calc(var(--amber-h) + var(--amber-hue-dir) * var(--arc-950)));
+        --green-c: 0.3;
+        --green-h: 155;
 
-        /* Color: Green */
-        --green-50: oklch(var(--l-50) calc(var(--green-c) * var(--c-50)) calc(var(--green-h) + var(--green-hue-dir) * var(--arc-50)));
-        --green-100: oklch(var(--l-100) calc(var(--green-c) * var(--c-100)) calc(var(--green-h) + var(--green-hue-dir) * var(--arc-100)));
-        --green-200: oklch(var(--l-200) calc(var(--green-c) * var(--c-200)) calc(var(--green-h) + var(--green-hue-dir) * var(--arc-200)));
-        --green-300: oklch(var(--l-300) calc(var(--green-c) * var(--c-300)) calc(var(--green-h) + var(--green-hue-dir) * var(--arc-300)));
-        --green-400: oklch(var(--l-400) calc(var(--green-c) * var(--c-400)) calc(var(--green-h) + var(--green-hue-dir) * var(--arc-400)));
-        --green-500: oklch(var(--l-500) calc(var(--green-c) * var(--c-500)) calc(var(--green-h) + var(--green-hue-dir) * var(--arc-500)));
-        --green-600: oklch(var(--l-600) calc(var(--green-c) * var(--c-600)) calc(var(--green-h) + var(--green-hue-dir) * var(--arc-600)));
-        --green-700: oklch(var(--l-700) calc(var(--green-c) * var(--c-700)) calc(var(--green-h) + var(--green-hue-dir) * var(--arc-700)));
-        --green-800: oklch(var(--l-800) calc(var(--green-c) * var(--c-800)) calc(var(--green-h) + var(--green-hue-dir) * var(--arc-800)));
-        --green-900: oklch(var(--l-900) calc(var(--green-c) * var(--c-900)) calc(var(--green-h) + var(--green-hue-dir) * var(--arc-900)));
-        --green-950: oklch(var(--l-950) calc(var(--green-c) * var(--c-950)) calc(var(--green-h) + var(--green-hue-dir) * var(--arc-950)));
+        /* Color: Blue */
+        --blue-50: oklch(var(--l-50) calc(var(--blue-c) * var(--c-50)) var(--blue-h));
+        --blue-100: oklch(var(--l-100) calc(var(--blue-c) * var(--c-100)) var(--blue-h));
+        --blue-200: oklch(var(--l-200) calc(var(--blue-c) * var(--c-200)) var(--blue-h));
+        --blue-300: oklch(var(--l-300) calc(var(--blue-c) * var(--c-300)) var(--blue-h));
+        --blue-400: oklch(var(--l-400) calc(var(--blue-c) * var(--c-400)) var(--blue-h));
+        --blue-500: oklch(var(--l-500) calc(var(--blue-c) * var(--c-500)) var(--blue-h));
+        --blue-600: oklch(var(--l-600) calc(var(--blue-c) * var(--c-600)) var(--blue-h));
+        --blue-700: oklch(var(--l-700) calc(var(--blue-c) * var(--c-700)) var(--blue-h));
+        --blue-800: oklch(var(--l-800) calc(var(--blue-c) * var(--c-800)) var(--blue-h));
+        --blue-900: oklch(var(--l-900) calc(var(--blue-c) * var(--c-900)) var(--blue-h));
+        --blue-950: oklch(var(--l-950) calc(var(--blue-c) * var(--c-950)) var(--blue-h));
 
         /* Color: Red */
-        --red-50: oklch(var(--l-50) calc(var(--red-c) * var(--c-50)) calc(var(--red-h) + var(--red-hue-dir) * var(--arc-50)));
-        --red-100: oklch(var(--l-100) calc(var(--red-c) * var(--c-100)) calc(var(--red-h) + var(--red-hue-dir) * var(--arc-100)));
-        --red-200: oklch(var(--l-200) calc(var(--red-c) * var(--c-200)) calc(var(--red-h) + var(--red-hue-dir) * var(--arc-200)));
-        --red-300: oklch(var(--l-300) calc(var(--red-c) * var(--c-300)) calc(var(--red-h) + var(--red-hue-dir) * var(--arc-300)));
-        --red-400: oklch(var(--l-400) calc(var(--red-c) * var(--c-400)) calc(var(--red-h) + var(--red-hue-dir) * var(--arc-400)));
-        --red-500: oklch(var(--l-500) calc(var(--red-c) * var(--c-500)) calc(var(--red-h) + var(--red-hue-dir) * var(--arc-500)));
-        --red-600: oklch(var(--l-600) calc(var(--red-c) * var(--c-600)) calc(var(--red-h) + var(--red-hue-dir) * var(--arc-600)));
-        --red-700: oklch(var(--l-700) calc(var(--red-c) * var(--c-700)) calc(var(--red-h) + var(--red-hue-dir) * var(--arc-700)));
-        --red-800: oklch(var(--l-800) calc(var(--red-c) * var(--c-800)) calc(var(--red-h) + var(--red-hue-dir) * var(--arc-800)));
-        --red-900: oklch(var(--l-900) calc(var(--red-c) * var(--c-900)) calc(var(--red-h) + var(--red-hue-dir) * var(--arc-900)));
-        --red-950: oklch(var(--l-950) calc(var(--red-c) * var(--c-950)) calc(var(--red-h) + var(--red-hue-dir) * var(--arc-950)));
+        --red-50: oklch(var(--l-50) calc(var(--red-c) * var(--c-50)) var(--red-h));
+        --red-100: oklch(var(--l-100) calc(var(--red-c) * var(--c-100)) var(--red-h));
+        --red-200: oklch(var(--l-200) calc(var(--red-c) * var(--c-200)) var(--red-h));
+        --red-300: oklch(var(--l-300) calc(var(--red-c) * var(--c-300)) var(--red-h));
+        --red-400: oklch(var(--l-400) calc(var(--red-c) * var(--c-400)) var(--red-h));
+        --red-500: oklch(var(--l-500) calc(var(--red-c) * var(--c-500)) var(--red-h));
+        --red-600: oklch(var(--l-600) calc(var(--red-c) * var(--c-600)) var(--red-h));
+        --red-700: oklch(var(--l-700) calc(var(--red-c) * var(--c-700)) var(--red-h));
+        --red-800: oklch(var(--l-800) calc(var(--red-c) * var(--c-800)) var(--red-h));
+        --red-900: oklch(var(--l-900) calc(var(--red-c) * var(--c-900)) var(--red-h));
+        --red-950: oklch(var(--l-950) calc(var(--red-c) * var(--c-950)) var(--red-h));
 
-        /* Spacing */
-        --spacing: 0.25rem;
-        --space-1: calc(var(--spacing) * 1);
-        --space-2: calc(var(--spacing) * 2);
-        --space-3: calc(var(--spacing) * 3);
-        --space-4: calc(var(--spacing) * 4);
-        --space-5: calc(var(--spacing) * 5);
-        --space-6: calc(var(--spacing) * 6);
-        --space-7: calc(var(--spacing) * 7);
-        --space-8: calc(var(--spacing) * 8);
-        --space-9: calc(var(--spacing) * 9);
-        --space-10: calc(var(--spacing) * 10);
-        --space-11: calc(var(--spacing) * 11);
-        --space-12: calc(var(--spacing) * 12);
-        --space-13: calc(var(--spacing) * 13);
-        --space-14: calc(var(--spacing) * 14);
-        --space-15: calc(var(--spacing) * 15);
-        --space-16: calc(var(--spacing) * 16);
+        /* Color: Green */
+        --green-50: oklch(var(--l-50) calc(var(--green-c) * var(--c-50)) var(--green-h));
+        --green-100: oklch(var(--l-100) calc(var(--green-c) * var(--c-100)) var(--green-h));
+        --green-200: oklch(var(--l-200) calc(var(--green-c) * var(--c-200)) var(--green-h));
+        --green-300: oklch(var(--l-300) calc(var(--green-c) * var(--c-300)) var(--green-h));
+        --green-400: oklch(var(--l-400) calc(var(--green-c) * var(--c-400)) var(--green-h));
+        --green-500: oklch(var(--l-500) calc(var(--green-c) * var(--c-500)) var(--green-h));
+        --green-600: oklch(var(--l-600) calc(var(--green-c) * var(--c-600)) var(--green-h));
+        --green-700: oklch(var(--l-700) calc(var(--green-c) * var(--c-700)) var(--green-h));
+        --green-800: oklch(var(--l-800) calc(var(--green-c) * var(--c-800)) var(--green-h));
+        --green-900: oklch(var(--l-900) calc(var(--green-c) * var(--c-900)) var(--green-h));
+        --green-950: oklch(var(--l-950) calc(var(--green-c) * var(--c-950)) var(--green-h));
+
+        /* Sizing */
+        --sizing: 0.25rem;
+        --size-0-5: calc(var(--sizing) * 0.5);
+        --size-1: calc(var(--sizing) * 1);
+        --size-2: calc(var(--sizing) * 2);
+        --size-3: calc(var(--sizing) * 3);
+        --size-4: calc(var(--sizing) * 4);
+        --size-5: calc(var(--sizing) * 5);
+        --size-6: calc(var(--sizing) * 6);
+        --size-7: calc(var(--sizing) * 7);
+        --size-8: calc(var(--sizing) * 8);
+        --size-9: calc(var(--sizing) * 9);
+        --size-10: calc(var(--sizing) * 10);
+        --size-11: calc(var(--sizing) * 11);
+        --size-12: calc(var(--sizing) * 12);
+        --size-13: calc(var(--sizing) * 13);
+        --size-14: calc(var(--sizing) * 14);
+        --size-15: calc(var(--sizing) * 15);
+        --size-16: calc(var(--sizing) * 16);
+        --size-17: calc(var(--sizing) * 17);
+        --size-18: calc(var(--sizing) * 18);
+        --size-19: calc(var(--sizing) * 19);
+        --size-20: calc(var(--sizing) * 20);
+        --size-21: calc(var(--sizing) * 21);
+        --size-22: calc(var(--sizing) * 22);
+        --size-23: calc(var(--sizing) * 23);
+        --size-24: calc(var(--sizing) * 24);
 
         /* Radius */
         --radius-xs: 0.125rem;
@@ -169,7 +137,8 @@
         --radius-full: calc(infinity * 1px);
 
         /* Typography */
-        --font-sans: "Cal Sans", sans-serif;
+        --font-sans: 'Google Sans', sans-serif;
+        --text-2xs: 0.625rem;
         --text-xs: 0.75rem;
         --text-sm: 0.875rem;
         --text-base: 1rem;
@@ -183,50 +152,66 @@
         --text-7xl: 4.5rem;
         --text-8xl: 6rem;
         --text-9xl: 8rem;
+        --font-grad: 'GRAD' 200;
         --font-weight-normal: 400;
-        --font-weight-medium: 400;
-        --font-weight-semibold: 400;
-        --font-weight-bold: 400;
-        --font-weight-extrabold: 400;
-        --leading-tight: 1.2;
-        --leading-snug: 1.4;
-        --leading-normal: 1.6;
+        --font-weight-medium: 500;
+        --font-weight-semibold: 600;
+        --font-weight-bold: 700;
+        --leading-tight: 1.15;
+        --leading-snug: 1.325;
+        --leading-normal: 1.5;
+        --leading-relaxed: 1.625;
+        --leading-loose: 2;
+        --tracking-tighter: -0.05em;
+        --tracking-tight: -0.025em;
+        --tracking-normal: 0em;
+        --tracking-wide: 0.025em;
+        --tracking-wider: 0.05em;
+        --tracking-widest: 0.1em;
 
         /* ─── Semantic tokens ─── */
 
         /* Surfaces */
-        --color-bg: var(--gray-950);
-        --color-surface: var(--gray-950);
-        --color-surface-raised: var(--gray-900);
-        --color-overlay: var(--gray-800);
+        --color-bg: var(--blue-950);
+        --color-surface: var(--blue-900);
+        --color-surface-raised: var(--blue-800);
+        --color-overlay: var(--blue-800);
 
         /* Text */
-        --color-text: var(--gray-50);
-        --color-text-secondary: var(--gray-300);
-        --color-text-muted: var(--gray-500);
-        --color-text-on-accent: var(--gray-950);
-        --color-surface-on-accent: var(--gray-50);
+        --color-heading: var(--blue-50);
+        --color-text: var(--blue-100);
+        --color-text-secondary: var(--blue-200);
+        --color-text-muted: var(--blue-300);
+        --color-text-on-accent: var(--blue-950);
+        --color-surface-on-accent: var(--blue-50);
+        --color-text-on-primary: var(--red-950);
 
         /* Borders */
-        --color-border: var(--gray-800);
-        --color-border-subtle: var(--gray-900);
-        --color-border-strong: var(--gray-700);
+        --color-border: var(--blue-800);
+        --color-border-subtle: var(--blue-900);
+        --color-border-strong: var(--blue-700);
+
+        /* Primary */
+        --color-primary: var(--red-400);
+        --color-primary-bright: var(--red-300);
+        --color-primary-muted: var(--red-500);
+        --color-primary-subtle: oklch(from var(--red-400) l c h / 0.12);
 
         /* Accent */
-        --color-accent: var(--amber-400);
-        --color-accent-bright: var(--amber-300);
-        --color-accent-muted: var(--amber-500);
-        --color-accent-subtle: oklch(from var(--amber-400) l c h / 0.12);
-        --color-accent-glow: oklch(from var(--amber-400) l c h / 0.4);
+        --color-accent: var(--blue-400);
+        --color-accent-bright: var(--blue-300);
+        --color-accent-muted: var(--blue-500);
+        --color-accent-subtle: oklch(from var(--blue-400) l c h / 0.12);
 
         /* Status */
         --color-success: var(--green-400);
         --color-error: var(--red-400);
-        --color-warning: var(--amber-400);
+        --color-warning: var(--red-400);
 
         /* Frosted glass */
-        --color-bg-frosted: oklch(from var(--gray-900) l c h / 0.9);
-        --color-border-frosted: oklch(from var(--gray-50) l c h / 0.06);
+        --color-bg-frosted: oklch(from var(--blue-900) l c h / 0.9);
+        --color-bg-frosted-subtle: oklch(from var(--blue-950) l c h / 0.5);
+        --color-border-frosted: oklch(from var(--blue-50) l c h / 0.08);
         --bg-frosted-xs: blur(0.25rem);
         --bg-frosted-sm: blur(0.5rem);
         --bg-frosted-md: blur(0.75rem);
@@ -234,28 +219,58 @@
         --bg-frosted-xl: blur(1.5rem);
 
         /* Interaction */
-        --color-bg-hover: oklch(100% 0 0 / 0.05);
+        --color-bg-hover: red;
+        --color-disabled: var(--blue-700);
 
         /* Overlays */
-        --color-backdrop: oklch(0% 0 0 / 0.5);
+        --color-backdrop: green;
+
+        /* Toast */
+        --color-toast-bg-frosted: oklch(from var(--green-600) l c h / 0.5);
+        --color-toast-border-frosted: oklch(from var(--green-50) l c h / 0.08);
+        --color-toast-bg: var(--green-600);
+        --color-toast-text: var(--green-50);
+        --color-toast-text-secondary: var(--green-200);
+        --color-toast-text-muted: var(--green-400);
 
         /* Shadows */
-        --shadow-2xs: 0 1px oklch(from var(--gray-950) l c h / 0.25);
-        --shadow-xs: 0 1px 2px 0 oklch(from var(--gray-950) l c h / 0.25);
-        --shadow-sm: 0 1px 3px 0 oklch(from var(--gray-950) l c h / 0.5), 0 1px 2px -1px oklch(from var(--gray-950) l c h / 0.5);
-        --shadow-md: 0 4px 6px -1px oklch(from var(--gray-950) l c h / 0.5), 0 2px 4px -2px oklch(from var(--gray-950) l c h / 0.5);
-        --shadow-lg: 0 10px 15px -3px oklch(from var(--gray-950) l c h / 0.5), 0 4px 6px -4px oklch(from var(--gray-950) l c h / 0.5);
-        --shadow-xl: 0 20px 25px -5px oklch(from var(--gray-950) l c h / 0.5), 0 8px 10px -6px oklch(from var(--gray-950) l c h / 0.5);
-        --shadow-2xl: 0 25px 50px -12px oklch(from var(--gray-950) l c h / 0.75);
+        --shadow-2xs: 0 1px oklch(from var(--blue-950) l c h / 0.25);
+        --shadow-xs: 0 1px 2px 0 oklch(from var(--blue-950) l c h / 0.25);
+        --shadow-sm: 0 1px 3px 0 oklch(from var(--blue-950) l c h / 0.5), 0 1px 2px -1px oklch(from var(--blue-950) l c h / 0.5);
+        --shadow-md: 0 4px 6px -1px oklch(from var(--blue-950) l c h / 0.5), 0 2px 4px -2px oklch(from var(--blue-950) l c h / 0.5);
+        --shadow-lg: 0 10px 15px -3px oklch(from var(--blue-950) l c h / 0.5), 0 4px 6px -4px oklch(from var(--blue-950) l c h / 0.5);
+        --shadow-xl: 0 20px 25px -5px oklch(from var(--blue-950) l c h / 0.5), 0 8px 10px -6px oklch(from var(--blue-950) l c h / 0.5);
+        --shadow-2xl: 0 25px 50px -12px oklch(from var(--blue-950) l c h / 0.75);
+
+        /* Text Shadows */
+        --text-shadow-2xs: 0px 1px 0px oklch(from var(--blue-950) l c h / 0.34);
+        --text-shadow-xs: 0px 1px 1px oklch(from var(--blue-950) l c h / 0.65);
+        --text-shadow-sm: 0px 1px 0px oklch(from var(--blue-950) l c h / 0.17), 0px 1px 1px oklch(from var(--blue-950) l c h / 0.17), 0px 2px 2px oklch(from var(--blue-950) l c h / 0.17);
+        --text-shadow-md: 0px 1px 1px oklch(from var(--blue-950) l c h / 0.5), 0px 1px 2px oklch(from var(--blue-950) l c h / 0.5), 0px 2px 4px oklch(from var(--blue-950) l c h / 0.5);
+        --text-shadow-lg: 0px 1px 2px oklch(from var(--blue-950) l c h / 0.5), 0px 3px 2px oklch(from var(--blue-950) l c h / 0.5), 0px 4px 8px oklch(from var(--blue-950) l c h / 0.5);
 
         /* Transitions */
         --transition-fast: 150ms ease;
         --transition-normal: 250ms ease;
 
         /* Layout */
-        --header-height: 56px;
         --content-width: 60rem;
-        --content-padding: var(--space-5);
+        --content-padding: var(--size-5);
+        --header-height: var(--size-14);
+
+        @media (min-width: 40rem) {
+            --content-padding: var(--size-8);
+        }
+
+        @media (min-width: 60rem) {
+            --content-padding: var(--size-12);
+            --header-height: var(--size-24);
+        }
+
+        @media (min-width: 100rem) {
+            --content-padding: var(--size-16);
+            /* --header-height: var(--size-24); */
+        }
     }
 }
 
@@ -263,16 +278,26 @@
    BASE
    ============================================================ */
 @layer base {
-    body {
-        font-family: var(--font-sans);
-        font-size: var(--text-base);
-        font-weight: var(--font-weight-normal);
-        line-height: var(--leading-normal);
-        color: var(--color-text);
+    html {
         background-color: var(--color-bg);
+        color: var(--color-text);
+        font-family: var(--font-sans);
+        font-optical-sizing: auto;
+        font-size: var(--text-base);
+        font-variation-settings: var(--font-grad);
+        font-weight: var(--font-weight-base);
+        line-height: var(--leading-normal);
+        scrollbar-color: var(--color-accent-muted) transparent;
+        scrollbar-width: thin;
+    }
+
+    body {
         min-height: 100dvh;
-        -webkit-font-smoothing: antialiased;
-        -moz-osx-font-smoothing: grayscale;
+    }
+
+    img {
+        display: block;
+        max-width: 100%;
     }
 
     a {
@@ -281,9 +306,11 @@
     }
 
     button {
+        background: transparent;
+        border: none;
+        cursor: pointer;
         font-family: inherit;
         font-size: inherit;
-        cursor: pointer;
     }
 
     input,
@@ -299,15 +326,51 @@
         height: 1em;
         width: 1em;
     }
+
+    /* Page transitions */
+    .page-enter-active,
+    .page-leave-active {
+        transition: opacity 150ms ease;
+    }
+
+    .page-enter-from,
+    .page-leave-to {
+        opacity: 0;
+    }
+}
+
+@layer components {
+    .badge {
+        align-content: center;
+        background: var(--color-primary);
+        border-radius: var(--radius-full);
+        color: var(--color-text-on-accent);
+        height: 1.75em;
+        font-size: var(--text-2xs);
+        font-weight: var(--font-weight-semibold);
+        line-height: 1;
+        min-width: 1.75em;
+        padding: 0 var(--size-1);
+        text-align: center;
+    }
 }
 
 /* ============================================================
-   SERVICE BRAND COLORS
-   Used by MovieFormView, MovieDetailView, and anywhere service
-   icons/buttons are rendered. Apply the class to the container;
-   brand-fg and brand-bg fills cascade to child SVG paths.
+   UTILITIES
    ============================================================ */
 @layer utilities {
+    .visually-hidden {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        padding: 0;
+        margin: -1px;
+        overflow: hidden;
+        clip: rect(0, 0, 0, 0);
+        white-space: nowrap;
+        border: 0;
+    }
+
     .svc-fandango-at-home {
         --brand-fg: #fff;
         --brand-bg: #ff6700;
@@ -331,40 +394,5 @@
     .svc-plex {
         --brand-fg: #282a2d;
         --brand-bg: #e5a00d;
-    }
-}
-
-/* ============================================================
-   UTILITIES
-   ============================================================ */
-@layer utilities {
-    .visually-hidden {
-        position: absolute;
-        width: 1px;
-        height: 1px;
-        padding: 0;
-        margin: -1px;
-        overflow: hidden;
-        clip: rect(0, 0, 0, 0);
-        white-space: nowrap;
-        border: 0;
-    }
-}
-
-/* Page transitions */
-.page-enter-active,
-.page-leave-active {
-    transition: opacity 150ms ease;
-}
-
-.page-enter-from,
-.page-leave-to {
-    opacity: 0;
-}
-
-@media (prefers-reduced-motion: reduce) {
-    .page-enter-active,
-    .page-leave-active {
-        transition: none;
     }
 }
