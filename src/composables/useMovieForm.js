@@ -1,5 +1,6 @@
 import { ref, reactive, computed, watch } from 'vue'
 import { nowLocal, toLocalDatetime } from '@/lib/datetime'
+import { releaseYear } from '@/lib/movies'
 
 export const genreSuggestions = [
     'Action', 'Adventure', 'Animation', 'Christmas', 'Comedy',
@@ -23,7 +24,7 @@ export function useMovieForm() {
     const form = reactive({
         tmdb_id: null,
         title: '',
-        year: '',
+        release_date: '',
         runtime_minutes: '',
         mpaa_rating: '',
         disc_format: '',
@@ -48,7 +49,7 @@ export function useMovieForm() {
 
     const trailerSearchUrl = computed(() => {
         if (!form.title) return 'https://www.youtube.com/results?search_query='
-        const q = encodeURIComponent(`${form.title} (${form.year}) trailer`)
+        const q = encodeURIComponent(`${form.title} (${releaseYear(form.release_date)}) trailer`)
         return `https://www.youtube.com/results?search_query=${q}`
     })
 
@@ -60,7 +61,7 @@ export function useMovieForm() {
     function populateFromMovie(movie) {
         form.tmdb_id = movie.tmdb_id
         form.title = movie.title
-        form.year = movie.year
+        form.release_date = movie.release_date
         form.runtime_minutes = movie.runtime_minutes
         form.mpaa_rating = movie.mpaa_rating ?? ''
         form.disc_format = movie.disc_format ?? ''
@@ -105,7 +106,7 @@ export function useMovieForm() {
     }
 
     function serviceSearchUrl(service) {
-        const q = encodeURIComponent(`${form.title} (${form.year})`)
+        const q = encodeURIComponent(`${form.title} (${releaseYear(form.release_date)})`)
         const urls = {
             fandango_at_home: `https://athome.fandango.com/content/browse/search?searchString=${q}`,
             apple_tv: `https://tv.apple.com/search?term=${q}`,

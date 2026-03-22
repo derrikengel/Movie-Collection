@@ -3,9 +3,11 @@ import { useRouter } from 'vue-router'
 import { supabase } from '@/lib/supabase'
 import { useMoviesStore } from '@/stores/movies'
 import { useToastStore } from '@/stores/toast'
+import { releaseYear } from '@/lib/movies'
 
 export function useMovieSubmit(form, isEditMode, getRouteSlug) {
     const submitting = ref(false)
+    const submitted = ref(false)
     const submitError = ref('')
     const router = useRouter()
     const moviesStore = useMoviesStore()
@@ -33,7 +35,7 @@ export function useMovieSubmit(form, isEditMode, getRouteSlug) {
 
         if (!form.title.trim()) return submitError.value = 'Title is required.'
         if (!form.poster_path.trim()) return submitError.value = 'Poster is required.'
-        if (!form.year) return submitError.value = 'Year is required.'
+        if (!form.release_date) return submitError.value = 'Release date is required.'
         if (!form.runtime_minutes) return submitError.value = 'Runtime is required.'
         if (!form.mpaa_rating) return submitError.value = 'MPAA Rating is required — open Movie Details to set it.'
         if (form.genres.length === 0) return submitError.value = 'At least one genre is required — open Movie Details to add genres.'
@@ -54,14 +56,14 @@ export function useMovieSubmit(form, isEditMode, getRouteSlug) {
         submitting.value = true
 
         try {
-            const slug = generateSlug(form.title, form.year)
+            const slug = generateSlug(form.title, releaseYear(form.release_date))
             const search_keywords = generateSearchKeywords(form.title)
             const movieData = {
                 tmdb_id: form.tmdb_id,
                 title: form.title,
                 slug,
                 search_keywords,
-                year: form.year || null,
+                release_date: form.release_date || null,
                 runtime_minutes: form.runtime_minutes || null,
                 mpaa_rating: form.mpaa_rating || null,
                 disc_format: form.disc_format || null,
@@ -118,6 +120,7 @@ export function useMovieSubmit(form, isEditMode, getRouteSlug) {
                 isEditMode.value ? `${form.title} updated` : `${form.title} added to collection`,
                 { type: 'success' }
             )
+            submitted.value = true
             router.push(`/${slug}`)
         } catch (err) {
             console.error('Movie submit failed:', err)
@@ -127,5 +130,5 @@ export function useMovieSubmit(form, isEditMode, getRouteSlug) {
         }
     }
 
-    return { submitting, submitError, handleSubmit }
+    return { submitting, submitted, submitError, handleSubmit }
 }

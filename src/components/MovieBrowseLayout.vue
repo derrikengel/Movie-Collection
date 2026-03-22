@@ -4,28 +4,36 @@
 
         <div :class="s.results">
             <p v-if="moviesStore.loading" :class="s.status">Loading…</p>
+
             <p v-else-if="props.movies.length === 0" :class="s.status">{{ emptyMessage }}</p>
+
             <p v-else-if="filters.visibleMovies.length === 0" :class="s.status">No movies match your filters.</p>
+
             <div v-else :class="s.grid">
-                <RouterLink v-for="movie in filters.visibleMovies" :key="movie.id" :to="`/${movie.slug}`"
+                <RouterLink v-for="movie in displayedMovies" :key="movie.id" :to="`/${movie.slug}`"
                     :class="[s.card, filters.isWatchedFaded(movie) && s.cardFaded]">
-                    <img v-if="movie.poster_path" :src="posterUrl(movie.poster_path)" :alt="movie.title"
-                        :class="s.poster" loading="lazy" />
-                    <div v-else :class="[s.poster, s.posterEmpty]">
-                        <span>{{ movie.title }}</span>
-                    </div>
+
+                    <span :class="s.preloadTitle">
+                        {{ movie.title }} ({{ releaseYear(movie.release_date) }})
+                    </span>
+
+                    <img v-if="movie.poster_path" :src="posterUrl(movie.poster_path)"
+                        :alt="`${movie.title} ${releaseYear(movie.release_date)}`" :class="s.poster" loading="lazy" />
                 </RouterLink>
             </div>
+
+            <div v-if="hasMore" ref="sentinel" :class="s.sentinel"></div>
         </div>
     </div>
 </template>
 
 <script setup>
-    import { watch, onMounted, onUnmounted } from 'vue'
+    import { ref, computed, watch, onMounted, onUnmounted, onActivated, onDeactivated, nextTick } from 'vue'
     import { useMoviesStore } from '@/stores/movies'
     import { useFiltersStore } from '@/stores/filters'
     import FilterBar from '@/components/FilterBar.vue'
     import { posterUrl } from '@/lib/tmdb'
+    import { releaseYear } from '@/lib/movies'
 
     const props = defineProps({
         movies: { type: Array, required: true },
@@ -37,20 +45,57 @@
     const moviesStore = useMoviesStore()
     const filters = useFiltersStore()
 
+    const PAGE_SIZE = 100
+    const visibleCount = ref(PAGE_SIZE)
+    const sentinel = ref(null)
+    let observer = null
+
+    const displayedMovies = computed(() => filters.visibleMovies.slice(0, visibleCount.value))
+    const hasMore = computed(() => visibleCount.value < filters.visibleMovies.length)
+
+    function loadMore() {
+        visibleCount.value = Math.min(visibleCount.value + PAGE_SIZE, filters.visibleMovies.length)
+    }
+
+    function setupObserver() {
+        observer = new IntersectionObserver((entries) => {
+            if (entries[0].isIntersecting) loadMore()
+        }, { rootMargin: '400px' })
+    }
+
+    watch(sentinel, (el) => {
+        if (observer) observer.disconnect()
+        if (el) observer.observe(el)
+    })
+
+    watch(() => filters.visibleMovies, () => {
+        visibleCount.value = PAGE_SIZE
+    })
+
+    let savedScrollY = 0
+
     onMounted(() => {
         filters.reset()
         filters.setBase(props.movies)
         if (props.defaultWatchedMode !== 'fade') filters.watchedMode = props.defaultWatchedMode
         if (props.defaultIgnoredMode !== 'hide') filters.ignoredMode = props.defaultIgnoredMode
         filters.initFromUrl()
+        setupObserver()
+    })
+
+    onActivated(() => {
+        nextTick(() => window.scrollTo({ top: savedScrollY, behavior: 'instant' }))
+    })
+
+    onDeactivated(() => {
+        savedScrollY = window.scrollY
     })
 
     onUnmounted(() => {
+        if (observer) observer.disconnect()
         filters.clearBase()
     })
 
-    // Keep Fuse index + filteredMovies in sync if the list changes
-    // (e.g. user removes a movie from the list while on this view)
     watch(() => props.movies, (newMovies) => {
         filters.setBase(newMovies)
     })
@@ -98,15 +143,9 @@
         border-radius: var(--radius-md);
         display: block;
         overflow: hidden;
+        position: relative;
         transition: transform var(--transition-normal), opacity var(--transition-normal), box-shadow var(--transition-normal), z-index var(--transition-normal);
         z-index: 0;
-
-        img {
-            aspect-ratio: 2 / 3;
-            display: block;
-            object-fit: cover;
-            width: 100%;
-        }
     }
 
     .card:hover {
@@ -115,21 +154,29 @@
         z-index: 20;
     }
 
-    .cardFaded {
-        img {
-            opacity: 0.4;
-        }
+    .cardFaded .poster {
+        opacity: 0.4;
     }
 
     .cardFaded:hover {
         opacity: 1;
     }
 
+    .preloadTitle {
+        align-content: center;
+        color: var(--color-text-subtle);
+        inset: 0;
+        padding: var(--size-4);
+        position: absolute;
+        text-align: center;
+    }
+
     .poster {
-        width: 100%;
         aspect-ratio: 2/3;
-        object-fit: cover;
         display: block;
+        object-fit: cover;
+        position: relative;
+        width: 100%;
     }
 
     .posterEmpty {
@@ -141,5 +188,9 @@
         font-size: var(--text-xs);
         color: var(--color-text-muted);
         text-align: center;
+    }
+
+    .sentinel {
+        height: 1px;
     }
 </style>

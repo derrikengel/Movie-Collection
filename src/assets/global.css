@@ -182,6 +182,7 @@
         --color-text: var(--blue-100);
         --color-text-secondary: var(--blue-200);
         --color-text-muted: var(--blue-300);
+        --color-text-subtle: oklch(from var(--blue-200) l c h / 0.3);
         --color-text-on-accent: var(--blue-950);
         --color-surface-on-accent: var(--blue-50);
         --color-text-on-primary: var(--red-950);
@@ -254,7 +255,7 @@
         --transition-normal: 250ms ease;
 
         /* Layout */
-        --content-width: 60rem;
+        --content-width: 64rem;
         --content-padding: var(--size-5);
         --header-height: var(--size-14);
 
@@ -319,6 +320,10 @@
         font-family: inherit;
         font-size: inherit;
         color: inherit;
+    }
+
+    ::-webkit-calendar-picker-indicator {
+        filter: invert(1);
     }
 
     svg {

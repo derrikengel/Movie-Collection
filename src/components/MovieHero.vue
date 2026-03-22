@@ -1,7 +1,7 @@
 <template>
     <div :class="[s.hero, !hasBackdrop && s.heroFallback]">
         <div :class="s.heroMedia" :style="`background-image: url(${backdropImage})`">
-            <div v-if="movie.trailer_youtube_id" ref="youtubeEl" :class="s.youtubePlayer" />
+            <div v-if="movie.trailer_youtube_id && !trailerError" ref="youtubeEl" :class="s.youtubePlayer" />
         </div>
 
         <button v-if="trailerLoaded" :class="s.muteBtn" @click="toggleMute"
@@ -29,9 +29,10 @@
 
     const youtubeEl = ref(null)
     const trailerLoaded = ref(false)
+    const trailerError = ref(false)
     const muted = ref(true)
 
-    const { instance, onReady } = props.movie.trailer_youtube_id
+    const { instance, onReady, onError } = props.movie.trailer_youtube_id
         ? usePlayer(props.movie.trailer_youtube_id, youtubeEl, {
             playerVars: {
                 controls: 0,
@@ -45,12 +46,17 @@
                 fs: 0,
             },
         })
-        : { instance: ref(null), onReady: () => { } }
+        : { instance: ref(null), onReady: () => { }, onError: () => { } }
 
     onReady((event) => {
+        event.target.setPlaybackQuality('hd1080')
         event.target.playVideo()
         trailerLoaded.value = true
         muted.value = event.target.isMuted()
+    })
+
+    onError(() => {
+        trailerError.value = true
     })
 
     function toggleMute() {

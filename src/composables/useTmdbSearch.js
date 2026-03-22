@@ -45,7 +45,7 @@ export function useTmdbSearch() {
         return {
             tmdb_id: details.id,
             title: details.title,
-            year: new Date(details.release_date).getFullYear(),
+            release_date: details.release_date ?? '',
             runtime_minutes: details.runtime,
             mpaa_rating: certification,
             tmdb_rating: parseFloat(details.vote_average.toFixed(1)),

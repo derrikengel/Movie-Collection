@@ -17,6 +17,7 @@ export const useMoviesStore = defineStore('movies', () => {
             .from('movies')
             .select('*, movie_services(*)')
             .order('title')
+            .limit(5000) // limit set in supabase data api settings
 
         if (err) {
             error.value = err.message

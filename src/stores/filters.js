@@ -4,6 +4,7 @@ import { useRouter, useRoute } from 'vue-router'
 import { useMoviesStore } from '@/stores/movies'
 import { useUserMoviesStore } from '@/stores/userMovies'
 import Fuse from 'fuse.js'
+import { releaseYear } from '@/lib/movies'
 
 export const useFiltersStore = defineStore('filters', () => {
     const moviesStore = useMoviesStore()
@@ -57,8 +58,14 @@ export const useFiltersStore = defineStore('filters', () => {
         )
     }
     function _applyYear(results) {
-        if (Number.isFinite(yearMin.value)) results = results.filter(m => m.year >= yearMin.value)
-        if (Number.isFinite(yearMax.value)) results = results.filter(m => m.year <= yearMax.value)
+        if (Number.isFinite(yearMin.value)) results = results.filter(m => {
+            const y = releaseYear(m.release_date)
+            return y === null || y >= yearMin.value
+        })
+        if (Number.isFinite(yearMax.value)) results = results.filter(m => {
+            const y = releaseYear(m.release_date)
+            return y === null || y <= yearMax.value
+        })
         return results
     }
     function _applyRuntime(results) {
@@ -79,8 +86,8 @@ export const useFiltersStore = defineStore('filters', () => {
                 case 'acquired-asc': return new Date(a.acquired_at) - new Date(b.acquired_at)
                 case 'title-asc': return a.title.localeCompare(b.title)
                 case 'title-desc': return b.title.localeCompare(a.title)
-                case 'year-desc': return (b.year ?? 0) - (a.year ?? 0)
-                case 'year-asc': return (a.year ?? 0) - (b.year ?? 0)
+                case 'year-desc': return new Date(b.release_date ?? 0) - new Date(a.release_date ?? 0)
+                case 'year-asc': return new Date(a.release_date ?? 0) - new Date(b.release_date ?? 0)
                 case 'rating-desc': return (b.tmdb_rating ?? 0) - (a.tmdb_rating ?? 0)
                 case 'rating-asc': return (a.tmdb_rating ?? 0) - (b.tmdb_rating ?? 0)
                 default: return 0
@@ -138,7 +145,7 @@ export const useFiltersStore = defineStore('filters', () => {
 
     // ── Dynamic bounds ─────────────────────────────────
     const yearBounds = computed(() => {
-        const years = _withoutYear.value.map(m => m.year).filter(Number.isFinite)
+        const years = _withoutYear.value.map(m => releaseYear(m.release_date)).filter(y => y !== null)
         return {
             min: years.length ? Math.min(...years) : null,
             max: years.length ? Math.max(...years) : null,

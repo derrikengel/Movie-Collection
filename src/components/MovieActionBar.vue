@@ -40,7 +40,7 @@
 <style module="s">
     .bar {
         margin-inline: auto;
-        margin-top: var(--size-6);
+        margin-top: var(--size-12);
         max-width: var(--content-width);
         padding-inline: var(--content-padding);
         position: relative;

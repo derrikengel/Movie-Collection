@@ -72,7 +72,9 @@
         <main :class="[s.main, isMovieDetail && s.mainOverlay]">
             <RouterView v-slot="{ Component }">
                 <Transition name="page" mode="out-in">
-                    <component :is="Component" :key="$route.path" />
+                    <KeepAlive :include="['HomeView']">
+                        <component :is="Component" :key="$route.path" />
+                    </KeepAlive>
                 </Transition>
             </RouterView>
         </main>

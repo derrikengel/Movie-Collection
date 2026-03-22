@@ -12,7 +12,7 @@
                 <div :class="s.meta">
                     <dl :class="s.tags">
                         <dt class="visually-hidden">Release Year</dt>
-                        <dd :class="s.tag">{{ movie.year }}</dd>
+                        <dd :class="s.tag" :title="movie.release_date ? new Date(movie.release_date + 'T00:00:00').toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }) : undefined">{{ releaseYear(movie.release_date) }}</dd>
 
                         <dt v-if="movie.mpaa_rating" class="visually-hidden">Rating</dt>
                         <dd v-if="movie.mpaa_rating" :class="s.tag">{{ movie.mpaa_rating }}</dd>
@@ -29,19 +29,21 @@
 
                     <h1 :class="s.title">{{ movie.title }}</h1>
 
-
-
                     <div v-if="movie.genres?.length" :class="s.genres">
                         <span v-for="genre in movie.genres" :key="genre" :class="s.genre">{{ genre }}</span>
                     </div>
 
-                    <p v-if="movie.description" :class="s.description">{{ movie.description }}</p>
+                    <p v-if="movie.description" :class="`${s.description} ${s.descriptionWide}`">{{ movie.description }}
+                    </p>
 
                     <p v-if="movie.notes" :class="s.notes">{{ movie.notes }}</p>
 
                 </div>
             </div>
+
+            <p v-if="movie.description" :class="`${s.description} ${s.descriptionNarrow}`">{{ movie.description }}</p>
         </div>
+
 
         <MovieActionBar :actions="actions" :is-active="isActive" :has-services="hasServices" :is-guest="!auth.user"
             :movie="movie" @action="handleAction" />
@@ -66,6 +68,7 @@
     import MovieActionBar from '@/components/MovieActionBar.vue'
     import { usePageTitle } from '@/composables/usePageTitle'
     import { posterUrl } from '@/lib/tmdb'
+    import { releaseYear } from '@/lib/movies'
     import { useMovieActions } from '@/composables/useMovieActions'
     import star from '@/assets/icons/star.svg?raw'
 
@@ -79,7 +82,7 @@
 
     usePageTitle(computed(() =>
         movie.value
-            ? `${movie.value.title} (${movie.value.year}) | Movie Collection`
+            ? `${movie.value.title} (${releaseYear(movie.value.release_date)}) | Movie Collection`
             : 'Movie Collection'
     ))
     const notFound = computed(() => !moviesStore.loading && movie.value === null)
@@ -109,26 +112,37 @@
     }
 
     .content {
+        align-items: center;
         display: flex;
         flex-direction: row-reverse;
         gap: 5%;
-        margin-top: -14%;
+        margin-top: -6%;
 
-        @media (min-width: 60rem) {
-            margin-top: -20%;
+        @container (min-width: 48rem) {
+            align-items: stretch;
+            gap: var(--size-12);
+            margin-top: -12%;
+        }
+
+        @container (min-width: 60rem) {
+            gap: var(--size-16);
+            margin-top: -18%;
         }
     }
 
     .poster {
-        border-radius: var(--radius-lg);
-        box-shadow: var(--shadow-xl);
         flex-shrink: 0;
         min-width: 7rem;
         width: 24%;
     }
 
     .poster img {
+        aspect-ratio: 2 / 3;
+        border-radius: var(--radius-lg);
+        box-shadow: var(--shadow-2xl);
         display: block;
+        object-fit: cover;
+        width: 100%;
     }
 
     .meta {
@@ -148,6 +162,7 @@
         line-height: var(--leading-tight);
         margin-bottom: var(--size-4);
         text-shadow: var(--text-shadow-lg);
+        text-wrap: pretty;
 
         @container (min-width: 40rem) {
             font-size: var(--text-5xl);
@@ -222,6 +237,26 @@
         font-size: var(--text-sm);
         line-height: var(--leading-relaxed);
         text-wrap: pretty;
+
+        @container (min-width: 48rem) {
+            font-size: var(--text-base);
+        }
+    }
+
+    .descriptionNarrow {
+        margin-top: var(--size-6);
+
+        @container (min-width: 32rem) {
+            display: none;
+        }
+    }
+
+    .descriptionWide {
+        display: none;
+
+        @container (min-width: 32rem) {
+            display: block;
+        }
     }
 
     .notes {

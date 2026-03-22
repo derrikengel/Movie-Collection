@@ -38,7 +38,7 @@
             <div :class="s.selectedBar">
                 <img v-if="form.poster_path" :src="posterUrl(form.poster_path, 'w92')" :class="s.selectedPoster" />
                 <div :class="s.selectedInfo">
-                    <strong>{{ form.title }}</strong> ({{ form.year }})
+                    <strong>{{ form.title }}</strong> ({{ releaseYear(form.release_date) }})
                 </div>
                 <button v-if="!isEditMode" type="button" :class="s.btnGhost" @click="resetTmdb">Change</button>
                 <RouterLink v-else :to="`/${route.params.slug}`" :class="s.btnGhost">View</RouterLink>
@@ -55,7 +55,7 @@
                             <span :class="s.summaryStart">
                                 <span v-html="serviceIcons[svc.value]" :class="s.serviceIcon" aria-hidden="true" />
                                 {{ isServiceActive(svc.value) ? svc.label : `Add ${svc.label}` }}
-                                <span v-if="getService(svc.value)?.quality" :class="s.summaryBadge">{{
+                                <span v-if="getService(svc.value)?.quality" class="badge" :class="s.summaryBadge">{{
                                     getService(svc.value).quality }}</span>
                             </span>
                             <span :class="s.serviceTriggerIcon" aria-hidden="true">+</span>
@@ -87,7 +87,8 @@
                             <span :class="s.summaryStart">
                                 <span v-html="serviceIcons.disc" :class="s.serviceIcon" aria-hidden="true" />
                                 {{ form.disc_format ? 'Physical disc' : 'Add physical disc' }}
-                                <span v-if="form.disc_format" :class="s.summaryBadge">{{ form.disc_format }}</span>
+                                <span v-if="form.disc_format" class="badge" :class="s.summaryBadge">{{ form.disc_format
+                                    }}</span>
                             </span>
                             <span :class="s.serviceTriggerIcon" aria-hidden="true">+</span>
                         </summary>
@@ -145,8 +146,8 @@
 
                     <div :class="s.fieldRow">
                         <div :class="s.field">
-                            <label :class="s.fieldLabel">Year <span :class="s.required">*</span></label>
-                            <input v-model="form.year" type="number" :class="s.input" required />
+                            <label :class="s.fieldLabel">Release Date <span :class="s.required">*</span></label>
+                            <input v-model="form.release_date" type="date" :class="s.input" required />
                         </div>
                         <div :class="s.field">
                             <label :class="s.fieldLabel">Runtime (min) <span :class="s.required">*</span></label>
@@ -180,18 +181,23 @@
 
                     <div :class="s.field">
                         <label :class="s.fieldLabel">Genres <span :class="s.required">*</span></label>
-                        <div :class="s.tagInput">
-                            <span v-for="(genre, i) in form.genres" :key="genre" :class="s.tag">
-                                {{ genre }}
-                                <button type="button" :class="s.tagRemove" @click="removeGenre(i)">×</button>
-                            </span>
-                            <input v-model="genreInput" type="text" :class="s.tagTextInput" placeholder="Add genre…"
-                                @keydown.enter.prevent="addGenre" @keydown.comma.prevent="addGenre"
-                                list="genre-suggestions" />
+                        <div :class="s.genreWrapper">
+                            <div :class="s.tagInput">
+                                <span v-for="(genre, i) in form.genres" :key="genre" :class="s.tag">
+                                    {{ genre }}
+                                    <button type="button" :class="s.tagRemove" @click="removeGenre(i)">×</button>
+                                </span>
+                                <input v-model="genreInput" type="text" :class="s.tagTextInput" placeholder="Add genre…"
+                                    @keydown.enter.prevent="addGenre" @keydown.comma.prevent="addGenre"
+                                    @focus="genreFocused = true" @blur="genreFocused = false" />
+                            </div>
+                            <ul v-if="genreFocused && filteredGenreSuggestions.length" :class="s.genreDropdown">
+                                <li v-for="g in filteredGenreSuggestions" :key="g" :class="s.genreOption"
+                                    @mousedown.prevent="selectGenre(g)" @touchstart.prevent="selectGenre(g)">
+                                    {{ g }}
+                                </li>
+                            </ul>
                         </div>
-                        <datalist id="genre-suggestions">
-                            <option v-for="g in genreSuggestions" :key="g" :value="g" />
-                        </datalist>
                     </div>
 
                     <div :class="s.field">
@@ -240,6 +246,7 @@
     import { serviceIcons } from '@/lib/icons'
     import { usePageTitle } from '@/composables/usePageTitle'
     import { posterUrl, backdropUrl } from '@/lib/tmdb'
+    import { releaseYear } from '@/lib/movies'
     import { useTmdbSearch } from '@/composables/useTmdbSearch'
     import { useMovieForm, genreSuggestions, discOptions, serviceOptions } from '@/composables/useMovieForm'
     import { useMovieSubmit } from '@/composables/useMovieSubmit'
@@ -249,14 +256,35 @@
     const { confirm } = useConfirm()
     const isEditMode = computed(() => !!route.params.slug)
     const formReady = ref(false)
-    const submitted = ref(false)
+    const formSnapshot = ref(null)
 
     const { tmdbQuery, tmdbResults, tmdbSearching, tmdbSearched, searchTmdb, selectTmdb: _selectTmdb, resetTmdb: _resetTmdb } = useTmdbSearch()
     const { form, genreInput, trailerSearchUrl, populateFromMovie, addGenre, removeGenre, getService, isServiceActive, serviceSearchUrl } = useMovieForm()
-    const { submitting, submitError, handleSubmit } = useMovieSubmit(form, isEditMode, () => route.params.slug)
+
+    const genreFocused = ref(false)
+    const filteredGenreSuggestions = computed(() => {
+        const q = genreInput.value.trim().toLowerCase()
+        return genreSuggestions.filter(g =>
+            !form.genres.includes(g) && (!q || g.toLowerCase().includes(q))
+        )
+    })
+    function selectGenre(genre) {
+        genreInput.value = genre
+        addGenre()
+    }
+    const { submitting, submitted, submitError, handleSubmit } = useMovieSubmit(form, isEditMode, () => route.params.slug)
+
+    const isDirty = computed(() => {
+        if (!formSnapshot.value) return false
+        return JSON.stringify(form) !== formSnapshot.value
+    })
+
+    function takeSnapshot() {
+        formSnapshot.value = JSON.stringify(form)
+    }
 
     usePageTitle(computed(() => {
-        const base = form.title ? `${form.title}${form.year ? ` (${form.year})` : ''}` : null
+        const base = form.title ? `${form.title}${form.release_date ? ` (${releaseYear(form.release_date)})` : ''}` : null
         if (isEditMode.value) return base ? `Edit ${base} | Movie Collection` : 'Edit Movie | Movie Collection'
         return base ? `Add ${base} | Movie Collection` : 'Add Movie | Movie Collection'
     }))
@@ -264,7 +292,7 @@
     onMounted(() => {
         if (isEditMode.value) {
             const movie = moviesStore.movies.find(m => m.slug === route.params.slug)
-            if (movie) { populateFromMovie(movie); formReady.value = true }
+            if (movie) { populateFromMovie(movie); formReady.value = true; takeSnapshot() }
         }
     })
 
@@ -272,15 +300,17 @@
         const data = await _selectTmdb(result)
         Object.assign(form, data)
         formReady.value = true
+        takeSnapshot()
     }
 
     function resetTmdb() {
         _resetTmdb()
         formReady.value = false
+        formSnapshot.value = null
     }
 
     onBeforeRouteLeave(async () => {
-        if (submitted.value || !formReady.value) return true
+        if (submitted.value || !formReady.value || !isDirty.value) return true
         const ok = await confirm('You have unsaved changes. Leave anyway?', {
             title: 'Unsaved Changes',
             confirmLabel: 'Leave page',
@@ -524,7 +554,7 @@
     .serviceCard {
         display: flex;
         flex-direction: column;
-        border: 1px solid var(--color-border-subtle);
+        border: 1px solid var(--color-surface-raised);
         background: var(--color-surface-raised);
         border-radius: var(--radius-md);
         overflow: hidden;
@@ -544,7 +574,6 @@
         border: none;
         color: var(--color-text-secondary);
         font-size: var(--text-sm);
-        font-weight: var(--font-weight-medium);
         cursor: pointer;
         text-align: left;
         transition: color var(--transition-fast), background var(--transition-fast);
@@ -563,7 +592,6 @@
 
     .serviceCardActive>.serviceCardTrigger {
         color: var(--color-text);
-        font-weight: var(--font-weight-bold);
     }
 
     .summaryStart {
@@ -595,7 +623,7 @@
     }
 
     .serviceTriggerIcon {
-        font-size: var(--text-lg);
+        font-size: var(--text-xl);
         color: var(--color-text-muted);
         line-height: 1;
         flex-shrink: 0;
@@ -631,15 +659,8 @@
     }
 
     .summaryBadge {
-        display: inline-flex;
-        align-items: center;
-        padding: 1px var(--size-2);
         font-size: var(--text-xs);
-        font-weight: var(--font-weight-bold);
-        color: var(--color-text-on-accent);
-        background: var(--color-accent);
-        border-radius: var(--radius-full);
-        line-height: 1.4;
+        padding: var(--size-0-5) var(--size-2);
     }
 
     .urlRow {
@@ -735,6 +756,40 @@
 
     .tagTextInput::placeholder {
         color: var(--color-text-muted);
+    }
+
+    .genreWrapper {
+        position: relative;
+    }
+
+    .genreDropdown {
+        background: var(--color-surface-raised);
+        border: 1px solid var(--color-border);
+        border-radius: var(--radius-md);
+        box-shadow: var(--shadow-md);
+        height: 16rem;
+        left: 0;
+        list-style: none;
+        margin: var(--size-1) 0 0;
+        max-height: 75vh;
+        overflow-y: auto;
+        padding: var(--size-1) 0;
+        position: absolute;
+        right: 0;
+        top: 100%;
+        z-index: 10;
+    }
+
+    .genreOption {
+        color: var(--color-text);
+        cursor: pointer;
+        font-size: var(--text-sm);
+        padding: var(--size-2) var(--size-3);
+    }
+
+    .genreOption:hover,
+    .genreOption:active {
+        background: var(--color-bg-hover);
     }
 
     /* TMDB Details collapsible */
