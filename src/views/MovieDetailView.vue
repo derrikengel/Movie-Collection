@@ -12,7 +12,9 @@
                 <div :class="s.meta">
                     <dl :class="s.tags">
                         <dt class="visually-hidden">Release Year</dt>
-                        <dd :class="s.tag" :title="movie.release_date ? new Date(movie.release_date + 'T00:00:00').toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }) : undefined">{{ releaseYear(movie.release_date) }}</dd>
+                        <dd :class="s.tag"
+                            :title="movie.release_date ? new Date(movie.release_date + 'T00:00:00').toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }) : undefined">
+                            {{ releaseYear(movie.release_date) }}</dd>
 
                         <dt v-if="movie.mpaa_rating" class="visually-hidden">Rating</dt>
                         <dd v-if="movie.mpaa_rating" :class="s.tag">{{ movie.mpaa_rating }}</dd>
@@ -102,6 +104,7 @@
 <style module="s">
     .page {
         container-type: inline-size;
+        margin: calc(var(--content-padding) * -1) calc(var(--content-padding) * -1) 0 calc(var(--content-padding) * -1);
     }
 
     .contentWrap {
@@ -118,15 +121,18 @@
         gap: 5%;
         margin-top: -6%;
 
-        @container (min-width: 48rem) {
+        @container (min-width: 32rem) {
             align-items: stretch;
+        }
+
+        @container (min-width: 48rem) {
             gap: var(--size-12);
             margin-top: -12%;
         }
 
-        @container (min-width: 60rem) {
+        @container (min-width: 64rem) {
             gap: var(--size-16);
-            margin-top: -18%;
+            margin-top: -14%;
         }
     }
 
@@ -150,7 +156,7 @@
         min-width: 0;
         padding-top: var(--size-4);
 
-        @container (min-width: 60rem) {
+        @container (min-width: 64rem) {
             padding-top: var(--size-6);
         }
     }
@@ -164,11 +170,11 @@
         text-shadow: var(--text-shadow-lg);
         text-wrap: pretty;
 
-        @container (min-width: 40rem) {
+        @container (min-width: 48rem) {
             font-size: var(--text-5xl);
         }
 
-        @container (min-width: 60rem) {
+        @container (min-width: 64rem) {
             font-size: var(--text-6xl);
         }
     }
@@ -183,17 +189,12 @@
 
     .tag {
         align-items: center;
-        /* background: var(--color-bg-frosted-subtle);
-        backdrop-filter: var(--bg-frosted-md);
-        border-radius: var(--radius-md); */
         color: var(--color-heading);
         display: flex;
         font-size: var(--text-xs);
         gap: var(--size-1);
         justify-content: center;
         text-shadow: var(--text-shadow-md);
-        /* padding: var(--size-1) var(--size-2); */
-        /* letter-spacing: var(--tracking-wider); */
 
         &:not(:first-of-type):before {
             background: oklch(from var(--blue-300) l c h / 0.4);
@@ -269,7 +270,7 @@
     .editLink {
         display: flex;
         align-items: center;
-        padding: var(--size-2) var(--size-4);
+        /* padding: var(--size-2) var(--size-4); */
         font-size: var(--text-sm);
         font-weight: var(--font-weight-medium);
         background: none;
@@ -278,7 +279,7 @@
         color: var(--color-text-muted);
         transition: border-color var(--transition-fast), color var(--transition-fast);
 
-        margin: var(--content-padding);
+        /* margin: var(--content-padding); */
         max-width: var(--content-max-width);
         justify-content: center;
     }

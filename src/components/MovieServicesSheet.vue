@@ -63,7 +63,7 @@
         left: 0;
         right: 0;
         width: 100%;
-        max-width: 40rem;
+        max-width: 48rem;
         background: var(--color-bg-frosted);
         backdrop-filter: var(--bg-frosted-lg);
         border-radius: var(--radius-xl) var(--radius-xl) 0 0;

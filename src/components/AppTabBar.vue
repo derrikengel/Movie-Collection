@@ -87,8 +87,6 @@
 
     /* Only visible on mobile */
     .tabBar {
-        --tab-bar-height: var(--size-15);
-        --footer-height: calc(var(--tab-bar-height) + var(--size-6));
         background: var(--color-bg-frosted);
         backdrop-filter: var(--bg-frosted-lg);
         border-top: 1px solid var(--color-border-frosted);
@@ -97,7 +95,7 @@
         bottom: 0;
         /* box-shadow: var(--shadow-lg); */
         display: flex;
-        height: var(--tab-bar-height);
+        height: calc(var(--tab-bar-height) + env(safe-area-inset-bottom));
         left: 0;
         overflow: hidden;
         padding-bottom: env(safe-area-inset-bottom);
@@ -105,7 +103,7 @@
         right: 0;
         z-index: 90;
 
-        @media (min-width: 60rem) {
+        @media (min-width: 64rem) {
             display: none;
         }
     }

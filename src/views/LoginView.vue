@@ -61,8 +61,7 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        min-height: calc(100dvh - var(--header-height));
-        padding: var(--content-padding);
+        height: 100%;
     }
 
     .card {

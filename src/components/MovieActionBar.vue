@@ -52,14 +52,6 @@
         border-radius: var(--radius-xl);
         display: flex;
         justify-content: space-around;
-
-        /*
-        backdrop-filter: var(--bg-frosted-lg);
-        background: var(--color-bg-frosted-subtle);
-        margin-top: -10%;
-        @media (min-width: 1280px) {
-            margin-top: -16%;
-        } */
     }
 
     .barBtn {
@@ -74,7 +66,7 @@
         position: relative;
         transition: color var(--transition-fast);
 
-        @media (min-width: 60rem) {
+        @media (min-width: 64rem) {
             padding: var(--size-4) 0;
         }
     }
@@ -102,7 +94,7 @@
         font-size: var(--text-2xs);
         font-weight: var(--font-weight-medium);
 
-        @media (min-width: 60rem) {
+        @media (min-width: 64rem) {
             font-size: var(--text-sm);
         }
     }

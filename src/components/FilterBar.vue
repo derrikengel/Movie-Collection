@@ -22,7 +22,7 @@
             <!-- Sort -->
             <div :class="s.desktopFilter">
                 <button :class="[s.desktopFilterBtn, s.sortBtn]" popovertarget="filter-sort">
-                    Sort: {{ sortOptions.find(o => o.value === filters.sort)?.label }}
+                    Sort: {{sortOptions.find(o => o.value === filters.sort)?.label}}
                     <span :class="s.chevron" v-html="chevronIcon" />
                 </button>
                 <div id="filter-sort" popover="auto" :class="[s.desktopPanel, s.sortPanel]">
@@ -37,7 +37,7 @@
                     popovertarget="filter-genre">
                     Genre
                     <span v-if="filters.genres.length" class="badge" :class="s.desktopBadge">{{ filters.genres.length
-                    }}</span>
+                        }}</span>
                     <span :class="s.chevron" v-html="chevronIcon" />
                 </button>
                 <div id="filter-genre" popover="auto" :class="[s.desktopPanel, s.genrePanel]">
@@ -52,7 +52,7 @@
                     Rating
                     <span v-if="filters.mpaaGroups.length" class="badge" :class="s.desktopBadge">{{
                         filters.mpaaGroups.length
-                    }}</span>
+                        }}</span>
                     <span :class="s.chevron" v-html="chevronIcon" />
                 </button>
                 <div id="filter-mpaa" popover="auto" :class="[s.desktopPanel, s.mpaaPanel]">
@@ -338,7 +338,7 @@
         gap: var(--size-1);
         justify-content: space-between;
 
-        @media (min-width: 60rem) {
+        @media (min-width: 64rem) {
             display: none;
         }
     }
@@ -394,7 +394,7 @@
         gap: var(--size-2);
         flex-wrap: wrap;
 
-        @media (min-width: 60rem) {
+        @media (min-width: 64rem) {
             display: flex;
         }
     }
@@ -441,7 +441,7 @@
         position-anchor: --filter-sort;
     }
 
-.chevron {
+    .chevron {
         align-items: center;
         display: flex;
         justify-content: center;

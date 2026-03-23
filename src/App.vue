@@ -2,7 +2,7 @@
 <template>
     <div :class="s.app">
 
-        <header :class="[s.header, isMovieDetail && s.headerOverlay]">
+        <header :class="[s.header, isMovieDetail && s.hideHeaderNarrow]">
             <nav :class="s.nav">
 
                 <!-- Any listing page: filtered count + list name -->
@@ -12,12 +12,6 @@
                         {{ filters.visibleMovies.length === 1 ? 'movie' : 'movies' }}
                     </span>
                 </div>
-
-                <!-- Movie detail: back button on mobile only, nothing on desktop -->
-                <button v-else-if="isMovieDetail" :class="s.backBtn" @click="router.back()" aria-label="Go back">
-                    <span v-html="arrowLeft" :class="s.backIcon" />
-                    <span :class="s.backLabel">Back</span>
-                </button>
 
                 <!-- Profile: display name -->
                 <div v-else-if="isProfile" :class="s.headerTitle">{{ auth.displayName }}</div>
@@ -37,14 +31,14 @@
                             <span v-html="bookmark" :class="s.navIcon" />
                             My Watchlist
                             <span v-if="watchlistCount !== null" class="badge" :class="s.navBadge">{{ watchlistCount
-                            }}</span>
+                                }}</span>
                         </RouterLink>
 
                         <RouterLink to="/profile/favorites" :class="s.navLink" :active-class="s.navLinkActive">
                             <span v-html="heart" :class="s.navIcon" />
                             My Favorites
                             <span v-if="favoritesCount !== null" class="badge" :class="s.navBadge">{{ favoritesCount
-                            }}</span>
+                                }}</span>
                         </RouterLink>
 
                         <RouterLink v-if="auth.isAdmin" to="/admin/add" :class="s.navLink"
@@ -69,7 +63,7 @@
             </nav>
         </header>
 
-        <main :class="[s.main, isMovieDetail && s.mainOverlay]">
+        <main :class="s.main">
             <RouterView v-slot="{ Component }">
                 <Transition name="page" mode="out-in" @after-leave="triggerScrollResolve">
                     <KeepAlive :include="['HomeView']">
@@ -81,16 +75,14 @@
 
         <!-- Mobile bottom tab bar (hidden on movie detail — action bar takes its place) -->
         <AppTabBar />
-
         <ToastStack />
         <ConfirmDialog />
-
     </div>
 </template>
 
 <script setup>
     import { computed } from 'vue'
-    import { useRoute, useRouter } from 'vue-router'
+    import { useRoute } from 'vue-router'
     import { triggerScrollResolve } from '@/router'
     import { useAuthStore } from '@/stores/auth'
     import { useFiltersStore } from '@/stores/filters'
@@ -104,10 +96,8 @@
     import userGear from '@/assets/icons/user-gear.svg?raw'
     import userCircle from '@/assets/icons/user-circle.svg?raw'
     import plus from '@/assets/icons/plus.svg?raw'
-    import arrowLeft from '@/assets/icons/arrow-left.svg?raw'
 
     const route = useRoute()
-    const router = useRouter()
     const auth = useAuthStore()
     const filters = useFiltersStore()
     const { watchlistCount, favoritesCount } = useListCounts()
@@ -134,6 +124,14 @@
         z-index: 100;
     }
 
+    .hideHeaderNarrow {
+        display: none;
+
+        @media (min-width: 64rem) {
+            display: block;
+        }
+    }
+
     .nav {
         display: flex;
         align-items: center;
@@ -145,24 +143,24 @@
     }
 
     /* Overlay header on mobile movie detail — hero fills the top */
-    .headerOverlay {
+    /* .headerOverlay {
         background: transparent;
         backdrop-filter: none;
         border: none;
         pointer-events: none;
 
-        @media (min-width: 60rem) {
+        @media (min-width: 64rem) {
             background: var(--color-bg-frosted);
             backdrop-filter: var(--bg-frosted-lg);
             border-bottom-color: var(--color-border);
             pointer-events: auto;
         }
-    }
+    } */
 
     /* Re-enable pointer events on the back button itself */
-    .headerOverlay .backBtn {
+    /* .headerOverlay .backBtn {
         pointer-events: auto;
-    }
+    } */
 
     .countHeader {
         display: flex;
@@ -175,7 +173,7 @@
         font-weight: var(--font-weight-semibold);
         color: var(--color-primary);
 
-        @media (min-width: 60rem) {
+        @media (min-width: 64rem) {
             font-size: var(--text-5xl);
         }
     }
@@ -186,7 +184,7 @@
         text-transform: uppercase;
         letter-spacing: var(--tracking-widest);
 
-        @media (min-width: 60rem) {
+        @media (min-width: 64rem) {
             font-size: var(--text-lg);
         }
     }
@@ -197,7 +195,7 @@
         align-items: center;
         gap: var(--size-1);
 
-        @media (min-width: 60rem) {
+        @media (min-width: 64rem) {
             display: flex;
         }
     }
@@ -247,56 +245,20 @@
         font-weight: var(--font-weight-bold);
     }
 
-    .backBtn {
-        align-items: center;
-        background: var(--color-bg-frosted-subtle);
-        backdrop-filter: var(--bg-frosted-xs);
-        border: none;
-        border-radius: var(--radius-full);
-        color: var(--color-text);
-        display: flex;
-        gap: var(--size-2);
-        height: var(--size-8);
-        padding: 0 var(--size-4);
-        transition: background var(--transition-fast);
-
-        @media (min-width: 60rem) {
-            display: none;
-        }
-    }
-
-    .backBtn:hover {
-        background: var(--color-bg-frosted);
-    }
-
-    .backIcon {
-        align-items: center;
-        display: flex;
-        font-size: var(--text-sm);
-        justify-content: center;
-    }
-
-    .backLabel {
-        font-size: var(--text-xs);
-        letter-spacing: 0.1em;
-        text-transform: uppercase;
-    }
-
-    .mainOverlay {
+    /* .mainOverlay {
         margin-top: calc(-1 * var(--header-height));
 
-        @media (min-width: 60rem) {
+        @media (min-width: 64rem) {
             margin-top: 0;
         }
-    }
+    } */
 
     .main {
         flex: 1;
-        padding-bottom: var(--footer-space);
+        padding: var(--content-padding) var(--content-padding) calc(var(--tab-bar-height) + env(safe-area-inset-bottom) + var(--content-padding)) var(--content-padding);
 
-        @media (min-width: 60rem) {
-            --footer-space: 0;
+        @media (min-width: 64rem) {
+            padding: var(--content-padding);
         }
     }
-
 </style>

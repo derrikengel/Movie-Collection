@@ -258,17 +258,18 @@
         --content-width: 64rem;
         --content-padding: var(--size-5);
         --header-height: var(--size-14);
+        --tab-bar-height: var(--size-15);
 
-        @media (min-width: 40rem) {
+        @media (min-width: 48rem) {
             --content-padding: var(--size-8);
         }
 
-        @media (min-width: 60rem) {
+        @media (min-width: 64rem) {
             --content-padding: var(--size-12);
             --header-height: var(--size-24);
         }
 
-        @media (min-width: 100rem) {
+        @media (min-width: 90rem) {
             --content-padding: var(--size-16);
             /* --header-height: var(--size-24); */
         }
@@ -280,7 +281,7 @@
    ============================================================ */
 @layer base {
     html {
-        background-color: var(--color-bg);
+        background: var(--color-bg);
         color: var(--color-text);
         font-family: var(--font-sans);
         font-optical-sizing: auto;

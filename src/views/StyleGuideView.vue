@@ -33,7 +33,6 @@
         container-type: inline-size;
         margin-inline: auto;
         max-width: var(--content-width);
-        padding-inline: var(--content-padding);
     }
 
     .heading {

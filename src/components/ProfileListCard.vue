@@ -6,7 +6,7 @@
                 <span :class="s.listCardIcon" v-html="icon" aria-hidden="true" />
                 <span :class="s.listCardName">{{ label }}</span>
             </div>
-            <span :class="s.listCardCount">{{ count }}</span>
+            <span class="badge" :class="s.listCardCount">{{ count }}</span>
         </div>
 
         <div :class="s.listCardPosters">
@@ -41,11 +41,16 @@
         background: var(--color-surface);
         border: 1px solid var(--color-border);
         border-radius: var(--radius-lg);
-        padding: var(--size-4);
         display: flex;
         flex-direction: column;
-        gap: var(--size-3);
+        gap: var(--size-4);
+        padding: var(--size-4);
         transition: border-color var(--transition-fast), background var(--transition-fast);
+
+        @container (min-width: 48rem) {
+            gap: var(--size-6);
+            padding: var(--size-6);
+        }
     }
 
     .listCard:hover {
@@ -67,54 +72,76 @@
     }
 
     .listCardIcon {
-        display: flex;
         align-items: center;
         color: var(--color-text-muted);
+        display: flex;
+        font-size: var(--text-2xl);
+        justify-content: center;
     }
 
     .listCardName {
-        font-size: var(--text-sm);
-        font-weight: var(--font-weight-bold);
-        color: var(--color-text);
+        color: var(--color-heading);
+        font-weight: var(--font-weight-medium);
+
+        @container (min-width: 32rem) {
+            font-size: var(--text-lg);
+        }
+
+        @container (min-width: 48rem) {
+            font-size: var(--text-xl);
+        }
     }
 
     .listCardCount {
-        font-size: var(--text-sm);
-        font-weight: var(--font-weight-bold);
-        color: var(--color-accent);
-        background: var(--color-accent-subtle);
-        border: 1px solid var(--color-accent-muted);
-        border-radius: var(--radius-full);
-        padding: 2px var(--size-2);
-        min-width: 28px;
-        text-align: center;
+        font-size: var(--text-xs);
+        padding: 0 var(--size-2);
+
+        @container (min-width: 32rem) {
+            font-size: var(--text-sm);
+        }
     }
 
     .listCardPosters {
-        display: flex;
         align-items: center;
+        display: flex;
         gap: var(--size-2);
-        min-height: 60px;
+
+        @container (min-width: 64rem) {
+            gap: var(--size-3);
+        }
     }
 
     .listCardPoster {
-        width: 40px;
-        height: 60px;
-        object-fit: cover;
+        aspect-ratio: 2 / 3;
         border-radius: var(--radius-sm);
+        box-shadow: var(--shadow-md);
         flex-shrink: 0;
+        object-fit: cover;
+        width: var(--size-10);
+
+        @container (min-width: 48rem) {
+            width: var(--size-12);
+        }
+
+        @container (min-width: 64rem) {
+            width: var(--size-14);
+        }
     }
 
     .listCardMore {
-        font-size: var(--text-xs);
-        font-weight: var(--font-weight-bold);
         color: var(--color-text-muted);
+        font-size: var(--text-xs);
+        font-weight: var(--font-weight-medium);
         padding-left: var(--size-1);
+
+        @container (min-width: 64rem) {
+            padding-left: var(--size-2);
+        }
     }
 
     .listCardEmpty {
-        font-size: var(--text-xs);
         color: var(--color-text-muted);
+        font-size: var(--text-xs);
         font-style: italic;
     }
 </style>

@@ -2,11 +2,8 @@
 <template>
     <Teleport to="body">
         <dialog ref="dialogEl" :class="s.dialog" role="alertdialog" aria-modal="true"
-            :aria-labelledby="store.title ? 'confirm-title' : undefined"
-            aria-describedby="confirm-message"
-            @close="store.respond(false)"
-            @click="onBackdropClick"
-        >
+            :aria-labelledby="store.title ? 'confirm-title' : undefined" aria-describedby="confirm-message"
+            @close="store.respond(false)" @click="onBackdropClick">
             <h2 v-if="store.title" id="confirm-title" :class="s.title">{{ store.title }}</h2>
             <p id="confirm-message" :class="s.message">{{ store.message }}</p>
             <div :class="s.actions">
@@ -38,7 +35,7 @@
 <style module="s">
     .dialog {
         background: var(--color-overlay);
-        backdrop-filter: blur(16px);
+        backdrop-filter: var(--bg-frosted-xl);
         border: 1px solid var(--color-border-frosted);
         border-bottom: none;
         border-radius: var(--radius-xl) var(--radius-xl) 0 0;

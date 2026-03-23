@@ -4,17 +4,25 @@
             <div v-if="movie.trailer_youtube_id && !trailerError" ref="youtubeEl" :class="s.youtubePlayer" />
         </div>
 
-        <button v-if="trailerLoaded" :class="s.muteBtn" @click="toggleMute"
-            :aria-label="muted ? 'Unmute trailer' : 'Mute trailer'" v-html="muted ? volumeMute : volumeFull" />
+        <button :class="`${s.overlayBtn} ${s.backBtn}`" @click="router.back()" aria-label="Go back"
+            v-html="arrowLeft" />
+
+        <button v-if="trailerLoaded" :class="`${s.overlayBtn} ${s.muteBtn} ${!muted && s.muteBtnUnmuted}`"
+            @click="toggleMute" :aria-label="muted ? 'Unmute trailer' : 'Mute trailer'"
+            v-html="muted ? volumeMute : volumeFull" />
     </div>
 </template>
 
 <script setup>
     import { ref, onUnmounted } from 'vue'
+    import { useRouter } from 'vue-router'
     import { usePlayer } from '@vue-youtube/core'
     import { posterUrl, backdropUrl } from '@/lib/tmdb'
     import volumeFull from '@/assets/icons/volume-full.svg?raw'
     import volumeMute from '@/assets/icons/volume-mute.svg?raw'
+    import arrowLeft from '@/assets/icons/arrow-left.svg?raw'
+
+    const router = useRouter()
 
     const props = defineProps({
         movie: {
@@ -86,13 +94,21 @@
     }
 
     .heroMedia {
-        aspect-ratio: 2/1;
+        aspect-ratio: 2 / 1;
         background-position: 50% 50%;
         background-repeat: no-repeat;
         background-size: cover;
         mask-image: linear-gradient(to top, transparent, black 50%, black 100%);
         mask-composite: intersect;
         mask-repeat: no-repeat;
+
+        @media (min-width: 64rem) {
+            aspect-ratio: 2.25 / 1;
+        }
+
+        @media (min-width: 80rem) {
+            aspect-ratio: 2.5 / 1;
+        }
 
         @media (min-width: 90rem) {
             mask-image: linear-gradient(to top, transparent, black 50%, black 100%),
@@ -131,17 +147,17 @@
     }
 
     .youtubePlayer {
-        aspect-ratio: 16/9;
+        aspect-ratio: 16 / 9;
         height: auto;
         pointer-events: none;
-        width: 100%;
         position: absolute;
         top: 50%;
         translate: 0 -50%;
+        width: 100%;
     }
 
-    /* Mute toggle */
-    .muteBtn {
+    .overlayBtn {
+        aspect-ratio: 1 / 1;
         align-items: center;
         backdrop-filter: var(--bg-frosted-xs);
         background: var(--color-bg-frosted-subtle);
@@ -150,17 +166,44 @@
         color: var(--color-text);
         display: flex;
         font-size: var(--text-xl);
-        height: var(--size-8);
         justify-content: center;
         position: absolute;
-        right: var(--size-4);
-        top: calc((var(--header-height) - var(--size-8)) / 2);
-        transition: background var(--transition-fast);
+        top: var(--size-2);
+        transition: background var(--transition-fast), opacity var(--transition-normal);
         width: var(--size-8);
         z-index: 2;
+
+        @container (min-width: 32rem) {
+            top: var(--size-3);
+        }
+
+        @container (min-width: 48rem) {
+            top: var(--size-4);
+        }
+
+        @container (min-width: 64rem) {
+            top: var(--size-6);
+            width: var(--size-10);
+        }
     }
 
-    .muteBtn:hover {
+    .overlayBtn:hover {
         background: var(--color-bg-frosted);
+    }
+
+    .backBtn {
+        left: var(--content-padding);
+
+        @media (min-width: 64rem) {
+            display: none;
+        }
+    }
+
+    .muteBtn {
+        right: var(--content-padding);
+    }
+
+    .muteBtnUnmuted {
+        opacity: 0.4;
     }
 </style>

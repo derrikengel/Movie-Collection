@@ -30,7 +30,7 @@
 </template>
 
 <script setup>
-    import { ref, computed, watch, onMounted, onUnmounted } from 'vue'
+    import { ref, computed, watch, onMounted, onUnmounted, onActivated, onDeactivated } from 'vue'
     import { useMoviesStore } from '@/stores/movies'
     import { useFiltersStore } from '@/stores/filters'
     import FilterBar from '@/components/FilterBar.vue'
@@ -70,11 +70,17 @@
         if (el) observer.observe(el)
     })
 
+    let isActive = false
+
     watch(() => filters.visibleMovies, () => {
-        visibleCount.value = PAGE_SIZE
+        if (isActive) visibleCount.value = PAGE_SIZE
     })
 
+    onActivated(() => { isActive = true })
+    onDeactivated(() => { isActive = false })
+
     onMounted(() => {
+        isActive = true
         filters.reset()
         filters.setBase(props.movies)
         if (props.defaultWatchedMode !== 'fade') filters.watchedMode = props.defaultWatchedMode
@@ -84,6 +90,7 @@
     })
 
     onUnmounted(() => {
+        isActive = false
         if (observer) observer.disconnect()
         filters.clearBase()
     })
@@ -99,7 +106,6 @@
     }
 
     .results {
-        padding: var(--content-padding);
         margin: 0 auto;
     }
 

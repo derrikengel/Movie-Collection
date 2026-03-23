@@ -159,7 +159,7 @@ Use **container queries** inside components, **media queries** for global layout
 }
 
 /* Global layout in App.vue — media query is fine */
-@media (min-width: 60rem) {
+@media (min-width: 64rem) {
   .desktopNav { display: flex; }
 }
 ```

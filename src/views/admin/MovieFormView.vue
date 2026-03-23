@@ -188,11 +188,9 @@
                                     <button type="button" :class="s.tagRemove" @click="removeGenre(i)">×</button>
                                 </span>
                                 <input v-model="genreInput" type="text" :class="s.tagTextInput" placeholder="Add genre…"
-                                    enterkeyhint="done"
-                                    @keydown.enter.prevent="addGenre" @keyup.enter.prevent="addGenre"
-                                    @keydown.comma.prevent="addGenre"
-                                    @focus="genreFocused = true"
-                                    @blur="onGenreBlur" />
+                                    enterkeyhint="done" @keydown.enter.prevent="addGenre"
+                                    @keyup.enter.prevent="addGenre" @keydown.comma.prevent="addGenre"
+                                    @focus="genreFocused = true" @blur="onGenreBlur" />
                             </div>
                             <ul v-if="genreFocused && filteredGenreSuggestions.length" :class="s.genreDropdown">
                                 <li v-for="g in filteredGenreSuggestions" :key="g">
