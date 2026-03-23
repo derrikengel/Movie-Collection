@@ -182,7 +182,7 @@
         --color-text: var(--blue-100);
         --color-text-secondary: var(--blue-200);
         --color-text-muted: var(--blue-300);
-        --color-text-subtle: oklch(from var(--blue-200) l c h / 0.3);
+        --color-text-subtle: oklch(from var(--blue-200) l c h / 0.4);
         --color-text-on-accent: var(--blue-950);
         --color-surface-on-accent: var(--blue-50);
         --color-text-on-primary: var(--red-950);

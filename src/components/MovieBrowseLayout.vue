@@ -12,13 +12,15 @@
             <div v-else :class="s.grid">
                 <RouterLink v-for="movie in displayedMovies" :key="movie.id" :to="`/${movie.slug}`"
                     :class="[s.card, filters.isWatchedFaded(movie) && s.cardFaded]">
+                    <div :class="s.cardContent">
+                        <span :class="s.preloadTitle">
+                            {{ movie.title }} ({{ releaseYear(movie.release_date) }})
+                        </span>
 
-                    <span :class="s.preloadTitle">
-                        {{ movie.title }} ({{ releaseYear(movie.release_date) }})
-                    </span>
-
-                    <img v-if="movie.poster_path" :src="posterUrl(movie.poster_path)"
-                        :alt="`${movie.title} ${releaseYear(movie.release_date)}`" :class="s.poster" loading="lazy" />
+                        <img v-if="movie.poster_path" :src="posterUrl(movie.poster_path)"
+                            :alt="`${movie.title} ${releaseYear(movie.release_date)}`" :class="s.poster"
+                            loading="lazy" />
+                    </div>
                 </RouterLink>
             </div>
 
@@ -28,7 +30,7 @@
 </template>
 
 <script setup>
-    import { ref, computed, watch, onMounted, onUnmounted, onActivated, onDeactivated, nextTick } from 'vue'
+    import { ref, computed, watch, onMounted, onUnmounted } from 'vue'
     import { useMoviesStore } from '@/stores/movies'
     import { useFiltersStore } from '@/stores/filters'
     import FilterBar from '@/components/FilterBar.vue'
@@ -72,8 +74,6 @@
         visibleCount.value = PAGE_SIZE
     })
 
-    let savedScrollY = 0
-
     onMounted(() => {
         filters.reset()
         filters.setBase(props.movies)
@@ -81,14 +81,6 @@
         if (props.defaultIgnoredMode !== 'hide') filters.ignoredMode = props.defaultIgnoredMode
         filters.initFromUrl()
         setupObserver()
-    })
-
-    onActivated(() => {
-        nextTick(() => window.scrollTo({ top: savedScrollY, behavior: 'instant' }))
-    })
-
-    onDeactivated(() => {
-        savedScrollY = window.scrollY
     })
 
     onUnmounted(() => {
@@ -121,10 +113,17 @@
     .grid {
         display: grid;
         gap: var(--size-2);
-        grid-template-columns: repeat(auto-fill, minmax(8rem, 1fr));
+        grid-template-columns: repeat(auto-fill, minmax(6rem, 1fr));
     }
 
-    @container (min-width: 50rem) {
+    @container (min-width: 32rem) {
+        .grid {
+            gap: var(--size-3);
+            grid-template-columns: repeat(auto-fill, minmax(8rem, 1fr));
+        }
+    }
+
+    @container (min-width: 48rem) {
         .grid {
             gap: var(--size-3);
             grid-template-columns: repeat(auto-fill, minmax(10rem, 1fr));
@@ -139,12 +138,11 @@
     }
 
     .card {
-        background: var(--color-bg);
+        background: var(--color-surface);
         border-radius: var(--radius-md);
         display: block;
         overflow: hidden;
-        position: relative;
-        transition: transform var(--transition-normal), opacity var(--transition-normal), box-shadow var(--transition-normal), z-index var(--transition-normal);
+        transition: transform var(--transition-normal), box-shadow var(--transition-normal), z-index var(--transition-normal);
         z-index: 0;
     }
 
@@ -154,17 +152,24 @@
         z-index: 20;
     }
 
-    .cardFaded .poster {
+    .cardFaded .cardContent {
         opacity: 0.4;
     }
 
-    .cardFaded:hover {
+    .cardFaded:hover .cardContent {
         opacity: 1;
+    }
+
+    .cardContent {
+        position: relative;
+        transition: opacity var(--transition-normal);
     }
 
     .preloadTitle {
         align-content: center;
         color: var(--color-text-subtle);
+        font-size: var(--text-xs);
+        line-height: var(--leading-snug);
         inset: 0;
         padding: var(--size-4);
         position: absolute;

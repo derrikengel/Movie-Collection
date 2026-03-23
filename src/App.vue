@@ -71,7 +71,7 @@
 
         <main :class="[s.main, isMovieDetail && s.mainOverlay]">
             <RouterView v-slot="{ Component }">
-                <Transition name="page" mode="out-in">
+                <Transition name="page" mode="out-in" @after-leave="triggerScrollResolve">
                     <KeepAlive :include="['HomeView']">
                         <component :is="Component" :key="$route.path" />
                     </KeepAlive>
@@ -91,6 +91,7 @@
 <script setup>
     import { computed } from 'vue'
     import { useRoute, useRouter } from 'vue-router'
+    import { triggerScrollResolve } from '@/router'
     import { useAuthStore } from '@/stores/auth'
     import { useFiltersStore } from '@/stores/filters'
     import AppTabBar from '@/components/AppTabBar.vue'

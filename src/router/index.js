@@ -1,8 +1,24 @@
 import { createRouter, createWebHistory } from 'vue-router'
+import { nextTick } from 'vue'
 import { useAuthStore } from '@/stores/auth'
+
+let scrollResolve = null
+
+export function triggerScrollResolve() {
+    if (scrollResolve) {
+        const resolve = scrollResolve
+        scrollResolve = null
+        nextTick(resolve)
+    }
+}
 
 const router = createRouter({
     history: createWebHistory(import.meta.env.BASE_URL),
+    scrollBehavior(to, from, savedPosition) {
+        return new Promise(resolve => {
+            scrollResolve = () => resolve(savedPosition ?? { top: 0 })
+        })
+    },
     routes: [
         {
             path: '/',

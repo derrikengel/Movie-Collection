@@ -1,7 +1,10 @@
 {
   "permissions": {
     "allow": [
-      "Bash(find /c/Repos/Movie-Collection/src/composables -type f -name *.js -o -name *.vue)"
+      "Bash(find /c/Repos/Movie-Collection/src/composables -type f -name *.js -o -name *.vue)",
+      "Bash(grep -r \"scrollBehavior\" c:/Repos/Movie-Collection/node_modules/vue-router/dist/*.d.ts)",
+      "Bash(grep \"\\\\.d\\\\.ts$\")",
+      "Bash(ls c:/Repos/Movie-Collection/node_modules/vue-router/dist/*.js)"
     ]
   }
 }

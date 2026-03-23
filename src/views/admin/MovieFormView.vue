@@ -188,13 +188,17 @@
                                     <button type="button" :class="s.tagRemove" @click="removeGenre(i)">×</button>
                                 </span>
                                 <input v-model="genreInput" type="text" :class="s.tagTextInput" placeholder="Add genre…"
-                                    @keydown.enter.prevent="addGenre" @keydown.comma.prevent="addGenre"
-                                    @focus="genreFocused = true" @blur="genreFocused = false" />
+                                    enterkeyhint="done"
+                                    @keydown.enter.prevent="addGenre" @keyup.enter.prevent="addGenre"
+                                    @keydown.comma.prevent="addGenre"
+                                    @focus="genreFocused = true"
+                                    @blur="onGenreBlur" />
                             </div>
                             <ul v-if="genreFocused && filteredGenreSuggestions.length" :class="s.genreDropdown">
-                                <li v-for="g in filteredGenreSuggestions" :key="g" :class="s.genreOption"
-                                    @mousedown.prevent="selectGenre(g)" @touchstart.prevent="selectGenre(g)">
-                                    {{ g }}
+                                <li v-for="g in filteredGenreSuggestions" :key="g">
+                                    <button type="button" :class="s.genreOption" @click="selectGenre(g)">
+                                        {{ g }}
+                                    </button>
                                 </li>
                             </ul>
                         </div>
@@ -271,6 +275,9 @@
     function selectGenre(genre) {
         genreInput.value = genre
         addGenre()
+    }
+    function onGenreBlur() {
+        setTimeout(() => { genreFocused.value = false }, 150)
     }
     const { submitting, submitted, submitError, handleSubmit } = useMovieSubmit(form, isEditMode, () => route.params.slug)
 
@@ -781,10 +788,14 @@
     }
 
     .genreOption {
+        background: none;
+        border: none;
         color: var(--color-text);
         cursor: pointer;
         font-size: var(--text-sm);
         padding: var(--size-2) var(--size-3);
+        text-align: left;
+        width: 100%;
     }
 
     .genreOption:hover,
