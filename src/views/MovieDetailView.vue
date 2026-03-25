@@ -35,15 +35,16 @@
                         <span v-for="genre in movie.genres" :key="genre" :class="s.genre">{{ genre }}</span>
                     </div>
 
-                    <p v-if="movie.description" :class="`${s.description} ${s.descriptionWide}`">{{ movie.description }}
+                    <p v-if="movie.description" :class="`${s.description} ${s.descriptionWide}`">
+                        {{ movie.description }}
                     </p>
 
-                    <p v-if="movie.notes" :class="s.notes">{{ movie.notes }}</p>
-
+                    <p v-if="movie.notes" :class="`${s.notes} ${s.notesWide}`">{{ movie.notes }}</p>
                 </div>
             </div>
 
             <p v-if="movie.description" :class="`${s.description} ${s.descriptionNarrow}`">{{ movie.description }}</p>
+            <p v-if="movie.notes" :class="`${s.notes} ${s.notesNarrow}`">{{ movie.notes }}</p>
         </div>
 
 
@@ -245,7 +246,7 @@
     }
 
     .descriptionNarrow {
-        margin-top: var(--size-6);
+        margin-top: var(--size-8);
 
         @container (min-width: 32rem) {
             display: none;
@@ -261,10 +262,24 @@
     }
 
     .notes {
-        font-size: var(--text-sm);
         color: var(--color-text-muted);
+        font-size: var(--text-sm);
         font-style: italic;
-        margin-bottom: var(--size-4);
+        margin-top: var(--size-4);
+    }
+
+    .notesNarrow {
+        @container (min-width: 32rem) {
+            display: none;
+        }
+    }
+
+    .notesWide {
+        display: none;
+
+        @container (min-width: 32rem) {
+            display: block;
+        }
     }
 
     .editLink {

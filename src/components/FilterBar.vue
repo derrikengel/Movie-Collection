@@ -4,9 +4,10 @@
 
         <!-- Search -->
         <div :class="s.searchInputWrap">
-            <span :class="s.searchIcon" v-html="searchIcon" />
-            <input v-model="filters.search" type="text" inputmode="search" placeholder="Search by title"
+            <label for="search" class="visually-hidden">Search</label>
+            <input v-model="filters.search" id="search" type="search" inputmode="search" placeholder="Search by title"
                 :class="s.searchInput" aria-label="Search movies" />
+            <span :class="s.searchIcon" v-html="searchIcon" />
         </div>
 
         <!-- Narrow buttons -->
@@ -118,8 +119,7 @@
             </button>
 
             <!-- Reset -->
-            <button v-if="filters.activeFilterCount > 0 || filters.search" :class="s.resetBtn" @click="filters.reset()"
-                v-html="resetIcon" />
+            <button :class="s.resetBtn" @click="filters.reset()" v-html="resetIcon" />
         </div>
 
         <!-- Mobile bottom sheet backdrop -->
@@ -572,9 +572,9 @@
     .backdrop {
         position: fixed;
         inset: 0;
-        background: var(--color-backdrop);
+        background: var(--color-bg-frosted-subtle);
         z-index: 199;
-        backdrop-filter: var(--bg-frosted-xs);
+        backdrop-filter: var(--bg-frosted-xl);
     }
 
     .sheet {

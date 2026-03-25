@@ -63,8 +63,8 @@
     }
 
     .dialog::backdrop {
-        background: var(--color-backdrop);
-        backdrop-filter: var(--bg-frosted-lg);
+        background: var(--color-bg-frosted-subtle);
+        backdrop-filter: var(--bg-frosted-xl);
         opacity: 1;
         transition:
             opacity var(--transition-normal),

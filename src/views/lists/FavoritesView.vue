@@ -1,5 +1,5 @@
 <template>
-    <MovieBrowseLayout :movies="movies" emptyMessage="No favorites yet." />
+    <MovieBrowseLayout :movies="movies" emptyMessage="No favorites yet." defaultWatchedMode="show" />
 </template>
 
 <script setup>

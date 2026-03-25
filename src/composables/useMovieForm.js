@@ -4,10 +4,10 @@ import { releaseYear } from '@/lib/movies'
 
 export const genreSuggestions = [
     'Action', 'Adventure', 'Animation', 'Christmas', 'Comedy',
-    'Crime', 'Documentary', 'Drama', 'Fantasy', 'Halloween',
-    'History', 'Horror', 'Kids & Family', 'Music', 'Musical',
-    'Mystery', 'Romance', 'Science Fiction', 'Thriller',
-    'War', 'Western',
+    'Crime', 'Documentary', 'Drama', 'Family', 'Fantasy',
+    'Halloween', 'History', 'Horror', 'Music', 'Mystery',
+    'Romance', 'Science Fiction', 'Sports', 'Thriller', 'War',
+    'Western',
 ]
 
 export const discOptions = ['4K Blu-ray', 'Blu-ray', 'DVD']
@@ -34,6 +34,7 @@ export function useMovieForm() {
         poster_path: '',
         backdrop_path: '',
         genres: [],
+        search_keywords: [],
         notes: '',
         acquired_at: nowLocal(),
         services: [
@@ -46,6 +47,7 @@ export function useMovieForm() {
     })
 
     const genreInput = ref('')
+    const keywordInput = ref('')
 
     const trailerSearchUrl = computed(() => {
         if (!form.title) return 'https://www.youtube.com/results?search_query='
@@ -71,6 +73,7 @@ export function useMovieForm() {
         form.poster_path = movie.poster_path ?? ''
         form.backdrop_path = movie.backdrop_path ?? ''
         form.genres = [...(movie.genres ?? [])]
+        form.search_keywords = movie.search_keywords ? movie.search_keywords.split(/\s+/).filter(Boolean) : []
         form.notes = movie.notes ?? ''
         form.acquired_at = toLocalDatetime(movie.acquired_at)
         const existingMap = Object.fromEntries(
@@ -94,6 +97,16 @@ export function useMovieForm() {
 
     function removeGenre(i) {
         form.genres.splice(i, 1)
+    }
+
+    function addKeyword() {
+        const val = keywordInput.value.trim()
+        if (val && !form.search_keywords.includes(val)) form.search_keywords.push(val)
+        keywordInput.value = ''
+    }
+
+    function removeKeyword(i) {
+        form.search_keywords.splice(i, 1)
     }
 
     function getService(value) {
@@ -120,10 +133,13 @@ export function useMovieForm() {
     return {
         form,
         genreInput,
+        keywordInput,
         trailerSearchUrl,
         populateFromMovie,
         addGenre,
         removeGenre,
+        addKeyword,
+        removeKeyword,
         getService,
         isServiceActive,
         serviceSearchUrl,

@@ -52,7 +52,7 @@ export function useTmdbSearch() {
             description: details.overview,
             poster_path: details.poster_path ?? '',
             backdrop_path: details.backdrop_path ?? '',
-            genres: details.genres.map(g => g.name),
+            genres: details.genres.map(g => g.name).filter(g => g !== 'TV Movie'),
             trailer_youtube_id: trailer?.key ?? '',
         }
     }

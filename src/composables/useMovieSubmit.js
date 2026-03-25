@@ -57,7 +57,9 @@ export function useMovieSubmit(form, isEditMode, getRouteSlug) {
 
         try {
             const slug = generateSlug(form.title, releaseYear(form.release_date))
-            const search_keywords = generateSearchKeywords(form.title)
+            const search_keywords = form.search_keywords.length
+                ? form.search_keywords.join(' ')
+                : generateSearchKeywords(form.title)
             const movieData = {
                 tmdb_id: form.tmdb_id,
                 title: form.title,

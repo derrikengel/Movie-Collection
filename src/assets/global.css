@@ -220,11 +220,8 @@
         --bg-frosted-xl: blur(1.5rem);
 
         /* Interaction */
-        --color-bg-hover: red;
+        --color-bg-hover: var(--blue-700);
         --color-disabled: var(--blue-700);
-
-        /* Overlays */
-        --color-backdrop: green;
 
         /* Toast */
         --color-toast-bg-frosted: oklch(from var(--green-600) l c h / 0.5);
@@ -283,6 +280,7 @@
     html {
         background: var(--color-bg);
         color: var(--color-text);
+        color-scheme: dark;
         font-family: var(--font-sans);
         font-optical-sizing: auto;
         font-size: var(--text-base);
@@ -290,6 +288,7 @@
         font-weight: var(--font-weight-base);
         line-height: var(--leading-normal);
         scrollbar-color: var(--color-accent-muted) transparent;
+        scrollbar-gutter: stable;
         scrollbar-width: thin;
     }
 
@@ -321,10 +320,6 @@
         font-family: inherit;
         font-size: inherit;
         color: inherit;
-    }
-
-    ::-webkit-calendar-picker-indicator {
-        filter: invert(1);
     }
 
     svg {

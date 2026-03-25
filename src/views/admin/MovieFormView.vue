@@ -88,7 +88,7 @@
                                 <span v-html="serviceIcons.disc" :class="s.serviceIcon" aria-hidden="true" />
                                 {{ form.disc_format ? 'Physical disc' : 'Add physical disc' }}
                                 <span v-if="form.disc_format" class="badge" :class="s.summaryBadge">{{ form.disc_format
-                                    }}</span>
+                                }}</span>
                             </span>
                             <span :class="s.serviceTriggerIcon" aria-hidden="true">+</span>
                         </summary>
@@ -116,7 +116,8 @@
             </div>
 
             <!-- TMDB Data (collapsible) -->
-            <details :open="isEditMode || undefined" :class="s.tmdbDetails">
+            <details :class="s.tmdbDetails">
+                <!-- <details :open="isEditMode || undefined" :class="s.tmdbDetails"> -->
                 <summary :class="s.tmdbSummary">
                     <span>Movie Details</span>
                     <span :class="s.chevron" aria-hidden="true">▾</span>
@@ -142,6 +143,19 @@
                     <div :class="s.field">
                         <label :class="s.fieldLabel">Title <span :class="s.required">*</span></label>
                         <input v-model="form.title" type="text" :class="s.input" required />
+                    </div>
+
+                    <div :class="s.field">
+                        <label :class="s.fieldLabel">Search Keywords</label>
+                        <div :class="s.tagInput">
+                            <span v-for="(kw, i) in form.search_keywords" :key="kw" :class="s.tag">
+                                {{ kw }}
+                                <button type="button" :class="s.tagRemove" @click="removeKeyword(i)">×</button>
+                            </span>
+                            <input v-model="keywordInput" type="text" :class="s.tagTextInput" placeholder="Add keyword…"
+                                enterkeyhint="done" @keydown.enter.prevent="addKeyword"
+                                @keyup.enter.prevent="addKeyword" @keydown.comma.prevent="addKeyword" />
+                        </div>
                     </div>
 
                     <div :class="s.fieldRow">
@@ -261,7 +275,7 @@
     const formSnapshot = ref(null)
 
     const { tmdbQuery, tmdbResults, tmdbSearching, tmdbSearched, searchTmdb, selectTmdb: _selectTmdb, resetTmdb: _resetTmdb } = useTmdbSearch()
-    const { form, genreInput, trailerSearchUrl, populateFromMovie, addGenre, removeGenre, getService, isServiceActive, serviceSearchUrl } = useMovieForm()
+    const { form, genreInput, keywordInput, trailerSearchUrl, populateFromMovie, addGenre, removeGenre, addKeyword, removeKeyword, getService, isServiceActive, serviceSearchUrl } = useMovieForm()
 
     const genreFocused = ref(false)
     const filteredGenreSuggestions = computed(() => {

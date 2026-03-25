@@ -12,17 +12,17 @@
         <div :class="s.rangeInputRow">
             <label :class="s.rangeField">
                 <span :class="s.rangeLabel">{{ labelMin }}</span>
-                <input type="number" :value="modelValueMin ?? ''" :placeholder="String(min)" :min="min"
+                <input type="number" :value="modelValueMin ?? min" :min="min"
                     :max="Number.isFinite(modelValueMax) ? modelValueMax : max" :class="s.rangeInput"
                     :aria-label="ariaLabelMin"
-                    @input="e => emit('update:modelValueMin', e.target.value === '' ? null : Number(e.target.value))" />
+                    @input="e => emit('update:modelValueMin', e.target.value === '' || Number(e.target.value) === min ? null : Number(e.target.value))" />
             </label>
             <label :class="s.rangeField">
                 <span :class="s.rangeLabel">{{ labelMax }}</span>
-                <input type="number" :value="modelValueMax ?? ''" :placeholder="String(max)"
+                <input type="number" :value="modelValueMax ?? max"
                     :min="Number.isFinite(modelValueMin) ? modelValueMin : min" :max="max" :class="s.rangeInput"
                     :aria-label="ariaLabelMax"
-                    @input="e => emit('update:modelValueMax', e.target.value === '' ? null : Number(e.target.value))" />
+                    @input="e => emit('update:modelValueMax', e.target.value === '' || Number(e.target.value) === max ? null : Number(e.target.value))" />
             </label>
         </div>
     </div>
@@ -164,10 +164,6 @@
 
     .rangeInput:focus {
         border-color: var(--color-border-strong);
-    }
-
-    .rangeInput::placeholder {
-        color: var(--color-text-muted);
     }
 
     .rangeInput::-webkit-outer-spin-button,

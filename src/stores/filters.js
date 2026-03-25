@@ -79,7 +79,6 @@ export const useFiltersStore = defineStore('filters', () => {
         return results.filter(m => !ignoredIds.has(m.id))
     }
     function _applySort(results) {
-        if (search.value.trim()) return results
         return [...results].sort((a, b) => {
             switch (sort.value) {
                 case 'acquired-desc': return new Date(b.acquired_at) - new Date(a.acquired_at)

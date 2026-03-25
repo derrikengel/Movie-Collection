@@ -31,6 +31,7 @@
 
 <script setup>
     import { ref, computed, watch, onMounted, onUnmounted, onActivated, onDeactivated } from 'vue'
+    import { useRouter } from 'vue-router'
     import { useMoviesStore } from '@/stores/movies'
     import { useFiltersStore } from '@/stores/filters'
     import FilterBar from '@/components/FilterBar.vue'
@@ -44,6 +45,7 @@
         defaultIgnoredMode: { type: String, default: 'hide' },
     })
 
+    const router = useRouter()
     const moviesStore = useMoviesStore()
     const filters = useFiltersStore()
 
@@ -51,6 +53,9 @@
     const visibleCount = ref(PAGE_SIZE)
     const sentinel = ref(null)
     let observer = null
+    let fromRoute = null
+
+    const removeAfterEach = router.afterEach((_to, from) => { fromRoute = from })
 
     const displayedMovies = computed(() => filters.visibleMovies.slice(0, visibleCount.value))
     const hasMore = computed(() => visibleCount.value < filters.visibleMovies.length)
@@ -76,21 +81,33 @@
         if (isActive) visibleCount.value = PAGE_SIZE
     })
 
-    onActivated(() => { isActive = true })
-    onDeactivated(() => { isActive = false })
-
-    onMounted(() => {
-        isActive = true
+    function initFilters() {
         filters.reset()
         filters.setBase(props.movies)
         if (props.defaultWatchedMode !== 'fade') filters.watchedMode = props.defaultWatchedMode
         if (props.defaultIgnoredMode !== 'hide') filters.ignoredMode = props.defaultIgnoredMode
         filters.initFromUrl()
+    }
+
+    onActivated(() => {
+        isActive = true
+        const isReturningFromDetail = !!fromRoute?.params?.slug
+        if (!isReturningFromDetail) {
+            filters.watchedMode = props.defaultWatchedMode
+            filters.ignoredMode = props.defaultIgnoredMode
+        }
+    })
+    onDeactivated(() => { isActive = false })
+
+    onMounted(() => {
+        isActive = true
+        initFilters()
         setupObserver()
     })
 
     onUnmounted(() => {
         isActive = false
+        removeAfterEach()
         if (observer) observer.disconnect()
         filters.clearBase()
     })
@@ -144,7 +161,7 @@
     }
 
     .card {
-        background: var(--color-surface);
+        background: var(--color-bg);
         border-radius: var(--radius-md);
         display: block;
         overflow: hidden;
@@ -159,7 +176,7 @@
     }
 
     .cardFaded .cardContent {
-        opacity: 0.4;
+        opacity: 0.25;
     }
 
     .cardFaded:hover .cardContent {
