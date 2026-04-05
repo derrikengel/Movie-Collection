@@ -1,5 +1,5 @@
 export const mpaaGroupOptions = [
-    { value: 'family', label: 'Family Friendly', ratings: ['G', 'PG'] },
+    { value: 'family', label: 'Family', ratings: ['G', 'PG', 'TV-G', 'TV-PG'] },
     { value: 'teens', label: 'Teens & Up', ratings: ['PG-13', 'TV-14'] },
     { value: 'mature', label: 'Mature', ratings: ['R', 'NC-17', 'TV-MA'] },
     { value: 'unrated', label: 'Unrated', ratings: ['NR', 'Unrated'] },

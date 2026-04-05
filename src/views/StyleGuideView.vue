@@ -21,7 +21,9 @@
 <script setup>
     const palettes = [
         { name: 'blue' },
+        { name: 'purple' },
         { name: 'red' },
+        { name: 'yellow' },
         { name: 'green' }
     ]
 

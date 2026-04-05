@@ -12,15 +12,15 @@ export default defineConfig({
         VitePWA({
             registerType: 'autoUpdate',
             manifest: {
-                id: '/movies-app-v2',
+                id: '/movies-app',
                 name: 'Movies',
                 short_name: 'Movies',
                 description: 'Browse and manage the movie collection.',
                 start_url: '/',
                 scope: '/',
                 display: 'standalone',
-                background_color: '#0A1016',
-                theme_color: '#0A1016',
+                background_color: '#060A0C',
+                theme_color: '#060A0C',
                 icons: [
                     {
                         src: '/icon-192.png',
@@ -31,7 +31,13 @@ export default defineConfig({
                         src: '/icon-512.png',
                         sizes: '512x512',
                         type: 'image/png'
-                    }
+                    },
+                    {
+                        src: '/icon-512.png',
+                        sizes: '512x512',
+                        type: 'image/png',
+                        purpose: 'maskable'
+                    },
                 ]
             }
         }),

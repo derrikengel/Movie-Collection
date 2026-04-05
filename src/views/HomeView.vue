@@ -1,10 +1,10 @@
 <template>
-    <MovieBrowseLayout :movies="moviesStore.movies" />
+    <MovieGrid :movies="moviesStore.movies" />
 </template>
 
 <script setup>
     import { useMoviesStore } from '@/stores/movies'
-    import MovieBrowseLayout from '@/components/MovieBrowseLayout.vue'
+    import MovieGrid from '@/components/grid/MovieGrid.vue'
 
     const moviesStore = useMoviesStore()
 </script>

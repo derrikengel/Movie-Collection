@@ -6,6 +6,7 @@ import watchedIcon from '@/assets/icons/eye.svg?raw'
 import watchlistIcon from '@/assets/icons/bookmark.svg?raw'
 import favoriteIcon from '@/assets/icons/heart.svg?raw'
 import ignoredIcon from '@/assets/icons/ignore.svg?raw'
+import userIcon from '@/assets/icons/user.svg?raw'
 
 const listLabels = {
     watched: 'Watched',
@@ -34,32 +35,38 @@ export function useMovieActions(movieRef) {
         {
             field: 'watched',
             label: 'Watched',
-            icon: watchedIcon
+            icon: watchedIcon,
+            listClass: 'list-watched',
         },
         {
             field: 'watchlist',
             label: 'Watchlist',
-            icon: watchlistIcon
+            icon: watchlistIcon,
+            listClass: 'list-watchlist',
         },
         {
             field: 'favorite',
             label: 'Favorite',
-            icon: favoriteIcon
+            icon: favoriteIcon,
+            listClass: 'list-favorite',
         },
         {
             field: 'ignored',
             label: 'Ignore',
-            icon: ignoredIcon
-        }
+            icon: ignoredIcon,
+            listClass: 'list-ignored',
+        },
     ]
 
     function isActive(field) {
         return userMovie.value?.[field] === true
     }
 
+
     async function handleAction(field) {
         if (!auth.user) {
-            toast.show('to save movies to your lists', {
+            toast.error('to save movies to your lists', {
+                icon: userIcon,
                 action: { label: 'Sign in', to: '/login', before: true }
             })
             return
@@ -69,16 +76,23 @@ export function useMovieActions(movieRef) {
         const title = movieRef.value?.title ?? 'Movie'
         const list = listLabels[field] ?? field
         const route = listRoutes[field]
+        const icon = actions.find(a => a.field === field)?.icon
 
         try {
             await userMoviesStore.toggle(auth.user.id, movieRef.value.id, field)
             if (wasActive) {
-                toast.show(`${title} removed from`, { action: { label: list, to: route } })
+                toast.success(`${title} removed from`, {
+                    icon: icon,
+                    action: { label: list, to: route }
+                })
             } else {
-                toast.show(`${title} added to`, { action: { label: list, to: route } })
+                toast.success(`${title} added to`, {
+                    icon: icon,
+                    type: 'success', action: { label: list, to: route }
+                })
             }
         } catch {
-            toast.show('Something went wrong — try again', { type: 'error' })
+            toast.error('Something went wrong — try again', { type: 'error' })
         }
     }
 

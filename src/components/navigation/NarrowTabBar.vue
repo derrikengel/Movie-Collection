@@ -1,7 +1,7 @@
-<!-- src/components/AppTabBar.vue -->
 <template>
     <nav :class="s.tabBar" aria-label="Main navigation">
-        <RouterLink v-for="tab in tabs" :key="tab.to" :to="tab.to" :class="s.tab" :active-class="s.tabActive"
+        <RouterLink v-for="tab in tabs" :key="tab.to" :to="tab.to"
+            :class="[s.tab, tab.listClass && s.tabColored, tab.listClass]" :active-class="s.tabActive"
             :exact="tab.exact">
             <span :class="s.tabIcon" v-html="tab.icon" aria-hidden="true" />
             <span :class="s.tabLabel">{{ tab.label }}</span>
@@ -17,8 +17,7 @@
     import film from '@/assets/icons/film.svg?raw'
     import bookmark from '@/assets/icons/bookmark.svg?raw'
     import heart from '@/assets/icons/heart.svg?raw'
-    import userGear from '@/assets/icons/user-gear.svg?raw'
-    import userCircle from '@/assets/icons/user-circle.svg?raw'
+    import userIcon from '@/assets/icons/user.svg?raw'
     import plus from '@/assets/icons/plus.svg?raw'
 
     const auth = useAuthStore()
@@ -43,6 +42,7 @@
                     label: 'Watchlist',
                     icon: bookmark,
                     badge: watchlistCount.value || null,
+                    listClass: 'list-watchlist',
                 },
                 {
                     to: '/profile/favorites',
@@ -50,12 +50,13 @@
                     label: 'Favorites',
                     icon: heart,
                     badge: favoritesCount.value || null,
+                    listClass: 'list-favorite',
                 },
                 {
                     to: '/profile',
                     exact: true,
                     label: auth.displayName,
-                    icon: userGear,
+                    icon: userIcon,
                     badge: null,
                 }
             )
@@ -64,7 +65,7 @@
                 to: '/login',
                 exact: false,
                 label: 'Sign In',
-                icon: userCircle,
+                icon: userIcon,
                 badge: null,
             })
         }
@@ -84,8 +85,6 @@
 </script>
 
 <style module="s">
-
-    /* Only visible on mobile */
     .tabBar {
         background: var(--color-bg-frosted);
         backdrop-filter: var(--bg-frosted-lg);
@@ -93,7 +92,6 @@
         border-top-left-radius: var(--radius-xl);
         border-top-right-radius: var(--radius-xl);
         bottom: 0;
-        /* box-shadow: var(--shadow-lg); */
         display: flex;
         height: calc(var(--tab-bar-height) + env(safe-area-inset-bottom));
         left: 0;
@@ -110,7 +108,6 @@
 
     .tab {
         align-items: center;
-        color: var(--color-text-muted);
         display: flex;
         flex: 1;
         flex-direction: column;
@@ -118,49 +115,85 @@
         justify-content: center;
         position: relative;
         text-decoration: none;
-        transition: color var(--transition-fast);
-    }
-
-    .tab:hover {
-        color: var(--color-text-secondary);
-    }
-
-    .tabActive {
-        color: var(--color-text);
-        position: relative;
-    }
-
-    .tabActive:before {
-        background-color: var(--color-primary);
-        border-top-left-radius: var(--radius-md);
-        border-top-right-radius: var(--radius-md);
-        bottom: 0;
-        content: '';
-        height: var(--size-1);
-        left: 50%;
-        translate: -50% 0;
-        position: absolute;
-        width: var(--size-12);
     }
 
     .tabIcon {
-        display: flex;
         align-items: center;
-        justify-content: center;
+        color: var(--color-list-500, var(--color-text-muted));
+        display: flex;
         font-size: var(--text-2xl);
+        justify-content: center;
+        transition: color var(--transition-fast);
+
+        :global(.solid) {
+            display: none;
+            transition: fill var(--transition-fast);
+        }
+
+        :global(.outline) {
+            display: block;
+        }
     }
 
-
-
     .tabLabel {
-        font-size: var(--text-2xs);
-        font-weight: var(--font-weight-medium);
+        color: var(--color-text-muted);
+        font-size: 0.5rem;
+        font-weight: var(--font-weight-semibold);
+        letter-spacing: var(--tracking-widest);
+        text-transform: uppercase;
+        transition: color var(--transition-fast);
     }
 
     .tabBadge {
-        box-shadow: var(--shadow-md);
+        background: var(--color-list-400);
+        color: var(--color-list-800);
+        box-shadow: 0 0 0 var(--size-0-5) var(--color-bg-frosted);
         position: absolute;
-        right: calc(50% - var(--size-5));
+        right: calc(50% - var(--size-6));
         top: var(--size-1);
+        transition: background var(--transition-fast);
+    }
+
+    .tab:hover {
+        .tabIcon {
+            color: var(--color-list-400, var(--blue-50));
+        }
+
+        .tabLabel {
+            color: var(--color-text);
+        }
+    }
+
+    .tabActive {
+        position: relative;
+
+        &:before {
+            background-color: var(--color-primary);
+            border-top-left-radius: var(--radius-md);
+            border-top-right-radius: var(--radius-md);
+            bottom: 0;
+            content: '';
+            height: var(--size-1);
+            left: 50%;
+            position: absolute;
+            translate: -50% 0;
+            width: var(--size-12);
+        }
+
+        .tabIcon {
+            color: var(--color-list-400, var(--blue-50));
+
+            :global(.solid) {
+                display: block;
+            }
+
+            :global(.outline) {
+                display: none;
+            }
+        }
+
+        .tabLabel {
+            color: var(--blue-50);
+        }
     }
 </style>

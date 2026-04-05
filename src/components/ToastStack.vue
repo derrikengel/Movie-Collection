@@ -1,22 +1,31 @@
 <template>
     <Teleport to="body">
-        <div :class="s.stack" aria-live="polite" aria-atomic="false">
-            <TransitionGroup name="toast" tag="div" :class="s.inner">
+        <ul :class="s.stack" aria-live="polite" aria-atomic="false">
+            <TransitionGroup name="toast" tag="li" :class="s.toastItem">
                 <div v-for="toast in store.toasts" :key="toast.id" :class="[s.toast, s[toast.type]]" role="status">
-                    <span :class="s.message">
-                        <RouterLink v-if="toast.action?.before" :to="toast.action.to" :class="s.actionLink">
-                            {{ toast.action.label }}
-                        </RouterLink>
-                        {{ toast.message }}
-                        <RouterLink v-if="toast.action && !toast.action.before" :to="toast.action.to"
-                            :class="s.actionLink">
-                            {{ toast.action.label }}
-                        </RouterLink>
-                    </span>
-                    <button :class="s.dismiss" @click="store.dismiss(toast.id)" aria-label="Dismiss" v-html="xIcon" />
+
+                    <p :class="s.message">
+                        <span v-if="toast.icon" :class="s.icon" v-html="toast.icon" aria-hidden="true" />
+
+                        <span>
+                            <RouterLink v-if="toast.action?.before" :to="toast.action.to" :class="s.actionLink">
+                                {{ toast.action.label }}
+                            </RouterLink>
+
+                            {{ toast.message }}
+
+                            <RouterLink v-if="toast.action && !toast.action.before" :to="toast.action.to"
+                                :class="s.actionLink">
+                                {{ toast.action.label }}
+                            </RouterLink>
+                        </span>
+                    </p>
+
+                    <!-- <button :class="s.dismiss" @click="store.dismiss(toast.id)" aria-label="Dismiss" v-html="xIcon" /> -->
+
                 </div>
             </TransitionGroup>
-        </div>
+        </ul>
     </Teleport>
 </template>
 
@@ -33,11 +42,15 @@
         pointer-events: none;
         position: fixed;
         right: 0;
-        top: calc(var(--header-height) + var(--size-3));
+        top: var(--size-4);
         z-index: 200;
+
+        @media (min-width: 64rem) {
+            top: var(--size-8);
+        }
     }
 
-    .inner {
+    .toastItem {
         align-items: center;
         display: flex;
         flex-direction: column;
@@ -46,53 +59,67 @@
 
     .toast {
         align-items: center;
-        background: var(--color-toast-bg);
-        border-left-width: 3px;
-        border-left-color: var(--color-border);
-        border-radius: var(--radius-full);
+        background: var(--toast-bg, var(--blue-200));
+        border-radius: var(--radius-4xl);
         box-shadow: var(--shadow-lg);
-        color: var(--color-toast-text);
+        color: var(--toast-text, var(--blue-800));
         display: flex;
         font-size: var(--text-sm);
-        gap: var(--size-2);
+        font-weight: var(--font-weight-medium);
+        gap: var(--size-3);
         max-width: calc(100vw - var(--size-8));
-        padding: var(--size-2) var(--size-2) var(--size-2) var(--size-4);
+        padding: var(--size-2) var(--size-4);
         pointer-events: auto;
-        white-space: nowrap;
     }
 
     .success {
-        border-left-color: var(--color-success);
+        --toast-bg: var(--green-600);
+        --toast-text: var(--green-100);
+        --toast-icon: var(--green-50);
+        --toast-link: var(--green-50);
+        --toast-link-accent: var(--green-400);
     }
 
     .error {
-        border-left-color: var(--color-error);
+        --toast-bg: var(--red-600);
+        --toast-text: var(--red-100);
+        --toast-icon: var(--red-50);
+        --toast-link: var(--red-50);
+        --toast-link-accent: var(--red-400);
     }
 
     .message {
-        overflow: hidden;
-        text-overflow: ellipsis;
+        align-items: center;
+        display: flex;
+        gap: var(--size-2);
+    }
+
+    .icon {
+        align-items: center;
+        color: var(--toast-icon, var(--blue-600));
+        display: flex;
+        flex-shrink: 0;
+        font-size: var(--text-xl);
+        justify-content: center;
     }
 
     .actionLink {
-        color: var(--color-accent);
+        color: var(--toast-link, var(--blue-600));
         font-weight: var(--font-weight-bold);
-        margin-right: var(--size-1);
+        text-decoration-line: underline;
+        text-decoration-color: var(--toast-link-accent, var(--blue-400));
+        text-decoration-thickness: 0.0625em;
+        text-underline-offset: 0.25em;
     }
 
     .dismiss {
         align-items: center;
-        background: none;
-        border: none;
-        border-radius: var(--radius-full);
-        color: var(--color-text-muted);
+        color: var(--toast-text, var(--blue-600));
         cursor: pointer;
         display: flex;
         flex-shrink: 0;
-        font-size: var(--text-base);
-        height: var(--size-6);
+        font-size: var(--text-lg);
         justify-content: center;
-        line-height: 1;
         padding: 0;
         transition: color var(--transition-fast);
         width: var(--size-6);

@@ -9,25 +9,13 @@
             <div :class="s.userInfo">
                 <h1 :class="s.displayName">{{ auth.displayName }}</h1>
                 <div :class="s.stats">
-                    <span :class="s.stat">
-                        <span :class="s.statValue">{{ counts.watched }}</span>
-                        <span :class="s.statLabel">Watched</span>
-                    </span>
-                    <span :class="s.statDivider" />
-                    <span :class="s.stat">
-                        <span :class="s.statValue">{{ counts.watchlist }}</span>
-                        <span :class="s.statLabel">Watchlist</span>
-                    </span>
-                    <span :class="s.statDivider" />
-                    <span :class="s.stat">
-                        <span :class="s.statValue">{{ counts.favorites }}</span>
-                        <span :class="s.statLabel">Favorites</span>
-                    </span>
-                    <span :class="s.statDivider" />
-                    <span :class="s.stat">
-                        <span :class="s.statValue">{{ counts.ignored }}</span>
-                        <span :class="s.statLabel">Ignored</span>
-                    </span>
+                    <template v-for="(stat, i) in stats" :key="stat.label">
+                        <span v-if="i > 0" :class="s.statDivider" />
+                        <span :class="[s.stat, stat.listClass]">
+                            <span :class="s.statValue">{{ stat.value }}</span>
+                            <span :class="s.statLabel">{{ stat.label }}</span>
+                        </span>
+                    </template>
                 </div>
             </div>
         </div>
@@ -62,7 +50,7 @@
     import { useToastStore } from '@/stores/toast'
     import { useUserMoviesStore } from '@/stores/userMovies'
     import { useMoviesStore } from '@/stores/movies'
-    import ProfileListCard from '@/components/ProfileListCard.vue'
+    import ProfileListCard from '@/components/profile/ProfileListCard.vue'
     import watchedIcon from '@/assets/icons/eye.svg?raw'
     import watchlistIcon from '@/assets/icons/bookmark.svg?raw'
     import favoritesIcon from '@/assets/icons/heart.svg?raw'
@@ -101,6 +89,7 @@
             count: counts.value.watchlist,
             previews: getPreviewMovies('watchlist'),
             icon: watchlistIcon,
+            listClass: 'list-watchlist',
         },
         {
             to: '/profile/watched',
@@ -108,6 +97,7 @@
             count: counts.value.watched,
             previews: getPreviewMovies('watched'),
             icon: watchedIcon,
+            listClass: 'list-watched',
         },
         {
             to: '/profile/favorites',
@@ -115,6 +105,7 @@
             count: counts.value.favorites,
             previews: getPreviewMovies('favorite'),
             icon: favoritesIcon,
+            listClass: 'list-favorite',
         },
         {
             to: '/profile/ignored',
@@ -122,7 +113,15 @@
             count: counts.value.ignored,
             previews: getPreviewMovies('ignored'),
             icon: ignoredIcon,
+            listClass: 'list-ignored',
         },
+    ])
+
+    const stats = computed(() => [
+        { label: 'Watched', value: counts.value.watched, listClass: 'list-watched' },
+        { label: 'Watchlist', value: counts.value.watchlist, listClass: 'list-watchlist' },
+        { label: 'Favorites', value: counts.value.favorites, listClass: 'list-favorite' },
+        { label: 'Ignored', value: counts.value.ignored, listClass: 'list-ignored' },
     ])
 
     async function handleSignOut() {
@@ -191,18 +190,18 @@
     }
 
     .statValue {
+        color: var(--color-list-400);
         font-size: var(--text-base);
         font-weight: var(--font-weight-bold);
-        color: var(--color-text);
         line-height: 1;
     }
 
     .statLabel {
+        color: var(--color-text);
         font-size: 10px;
         font-weight: var(--font-weight-medium);
-        color: var(--color-text-muted);
-        text-transform: uppercase;
         letter-spacing: 0.06em;
+        text-transform: uppercase;
     }
 
     .statDivider {

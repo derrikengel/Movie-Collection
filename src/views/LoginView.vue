@@ -1,7 +1,6 @@
 <template>
     <div :class="s.login">
         <div :class="s.card">
-            <h1 :class="s.title">Sign in</h1>
 
             <form :class="s.form" @submit.prevent="handleSubmit">
                 <div :class="s.field">
@@ -18,7 +17,7 @@
 
                 <p v-if="errorMsg" :class="s.error">{{ errorMsg }}</p>
 
-                <button type="submit" :class="s.submit" :disabled="loading">
+                <button type="submit" :class="s.submit" :disabled="loading || !email || !password">
                     {{ loading ? 'Signing in…' : 'Sign in' }}
                 </button>
             </form>
@@ -57,23 +56,23 @@
 
 <style module="s">
     .login {
+        align-items: center;
         container-type: inline-size;
         display: flex;
-        align-items: center;
         justify-content: center;
-        height: 100%;
     }
 
     .card {
+        background: var(--blue-900);
+        border: 1px solid var(--blue-800);
+        border-radius: var(--radius-lg);
+        max-width: 24rem;
         width: 100%;
-        max-width: 360px;
-    }
+        padding: var(--size-4);
 
-    .title {
-        font-size: var(--text-2xl);
-        font-weight: var(--font-weight-bold);
-        color: var(--color-text);
-        margin-bottom: var(--size-6);
+        @media (min-width: 64rem) {
+            padding: var(--size-6);
+        }
     }
 
     .form {
@@ -89,16 +88,15 @@
     }
 
     .label {
-        font-size: var(--text-sm);
-        font-weight: var(--font-weight-medium);
-        color: var(--color-text-secondary);
+        color: var(--blue-100);
+        font-weight: var(--font-weight-semibold);
     }
 
     .input {
+        background: var(--color-bg);
         padding: var(--size-3) var(--size-4);
         font-size: var(--text-base);
-        background: var(--color-surface);
-        border: 1px solid var(--color-border);
+        border: 1px solid var(--blue-700);
         border-radius: var(--radius-md);
         color: var(--color-text);
         outline: none;
@@ -118,27 +116,31 @@
     }
 
     .error {
+        color: var(--red-400);
         font-size: var(--text-sm);
-        color: var(--color-error);
+        font-weight: var(--font-weight-medium);
     }
 
     .submit {
-        padding: var(--size-3) var(--size-4);
-        font-size: var(--text-base);
-        font-weight: var(--font-weight-bold);
-        background: var(--color-accent);
-        color: var(--color-text-on-accent);
+        background: var(--green-400);
         border: none;
         border-radius: var(--radius-md);
-        transition: background var(--transition-fast);
+        color: var(--green-800);
+        font-size: var(--text-base);
+        font-weight: var(--font-weight-semibold);
+        padding: var(--size-3) var(--size-4);
+        transition: background var(--transition-fast), color var(--transition-fast);
     }
 
     .submit:hover:not(:disabled) {
-        background: var(--color-accent-bright);
+        background: var(--green-500);
+        color: var(--green-900);
     }
 
     .submit:disabled {
-        opacity: 0.5;
+        background: var(--blue-500);
+        color: var(--blue-900);
         cursor: not-allowed;
+        opacity: 0.5;
     }
 </style>

@@ -24,6 +24,8 @@ export const useFiltersStore = defineStore('filters', () => {
     const ignoredMode = ref('hide')   // 'hide' | 'show'
     const sort = ref('acquired-desc')
     const _baseMovies = ref(null)  // null = use all movies
+    const _defaultWatchedMode = ref('fade')
+    const _defaultIgnoredMode = ref('hide')
 
     // ── MPAA groups ────────────────────────────────────
     const mpaaMap = {
@@ -189,8 +191,8 @@ export const useFiltersStore = defineStore('filters', () => {
         if (mpaaGroups.value.length) count++
         if (Number.isFinite(yearMin.value) || Number.isFinite(yearMax.value)) count++
         if (Number.isFinite(runtimeMin.value) || Number.isFinite(runtimeMax.value)) count++
-        if (watchedMode.value !== 'fade') count++
-        if (ignoredMode.value !== 'hide') count++
+        if (watchedMode.value !== _defaultWatchedMode.value) count++
+        if (ignoredMode.value !== _defaultIgnoredMode.value) count++
         return count
     })
 
@@ -209,6 +211,12 @@ export const useFiltersStore = defineStore('filters', () => {
         _baseMovies.value = null
     }
 
+    // ── Per-view defaults ──────────────────────────────
+    function setDefaults({ watchedMode: wm = 'fade', ignoredMode: im = 'hide' } = {}) {
+        _defaultWatchedMode.value = wm
+        _defaultIgnoredMode.value = im
+    }
+
     // ── Reset ──────────────────────────────────────────
     function reset() {
         search.value = ''
@@ -218,8 +226,8 @@ export const useFiltersStore = defineStore('filters', () => {
         yearMax.value = null
         runtimeMin.value = null
         runtimeMax.value = null
-        watchedMode.value = 'fade'
-        ignoredMode.value = 'hide'
+        watchedMode.value = _defaultWatchedMode.value
+        ignoredMode.value = _defaultIgnoredMode.value
         sort.value = 'acquired-desc'
     }
 
@@ -233,8 +241,8 @@ export const useFiltersStore = defineStore('filters', () => {
         if (Number.isFinite(yearMax.value)) p.ymax = yearMax.value
         if (Number.isFinite(runtimeMin.value)) p.rmin = runtimeMin.value
         if (Number.isFinite(runtimeMax.value)) p.rmax = runtimeMax.value
-        if (watchedMode.value !== 'fade') p.watched = watchedMode.value
-        if (ignoredMode.value !== 'hide') p.ignored = ignoredMode.value
+        if (watchedMode.value !== _defaultWatchedMode.value) p.watched = watchedMode.value
+        if (ignoredMode.value !== _defaultIgnoredMode.value) p.ignored = ignoredMode.value
         if (sort.value !== 'acquired-desc') p.sort = sort.value
         return p
     }
@@ -277,7 +285,7 @@ export const useFiltersStore = defineStore('filters', () => {
         activeFilterCount,
         isWatchedFaded,
         randomMovie, reset,
-        setBase, clearBase,
+        setBase, clearBase, setDefaults,
         initFromUrl,
         mpaaMap,
     }

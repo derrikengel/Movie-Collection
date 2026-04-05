@@ -5,7 +5,7 @@ export const useToastStore = defineStore('toast', () => {
     const toasts = ref([])
     let nextId = 0
 
-    function show(message, { type = 'info', duration = 10000, action = null } = {}) {
+    function show(message, { type = 'info', duration = 3000, action = null, icon = null } = {}) {
         const id = nextId++
 
         if (toasts.value.length >= 3) {
@@ -13,7 +13,7 @@ export const useToastStore = defineStore('toast', () => {
         }
 
         const timer = setTimeout(() => dismiss(id), duration)
-        toasts.value.push({ id, message, type, action, timer })
+        toasts.value.push({ id, message, type, action, icon, timer })
     }
 
     function dismiss(id) {
@@ -23,5 +23,13 @@ export const useToastStore = defineStore('toast', () => {
         toasts.value.splice(index, 1)
     }
 
-    return { toasts, show, dismiss }
+    function success(message, options = {}) {
+        show(message, { ...options, type: 'success' })
+    }
+
+    function error(message, options = {}) {
+        show(message, { ...options, type: 'error' })
+    }
+
+    return { toasts, show, success, error, dismiss }
 })

@@ -47,13 +47,16 @@
             <p v-if="movie.notes" :class="`${s.notes} ${s.notesNarrow}`">{{ movie.notes }}</p>
         </div>
 
+        <MovieActionBar :movie="movie" />
 
-        <MovieActionBar :actions="actions" :is-active="isActive" :has-services="hasServices" :is-guest="!auth.user"
-            :movie="movie" @action="handleAction" />
+        <MovieServices v-if="hasServices" :movie="movie" />
 
-        <RouterLink v-if="auth.isAdmin" :to="`/admin/edit/${movie.slug}`" :class="s.editLink">
-            Edit Movie
-        </RouterLink>
+        <p v-if="auth.isAdmin" :class="s.edit">
+            <RouterLink :to="`/admin/edit/${movie.slug}`" :class="s.editLink">
+                <span v-html="pencil" :class="s.editIcon" />
+                Edit Movie
+            </RouterLink>
+        </p>
 
     </div>
 
@@ -67,13 +70,14 @@
     import { useRoute } from 'vue-router'
     import { useMoviesStore } from '@/stores/movies'
     import { useAuthStore } from '@/stores/auth'
-    import MovieHero from '@/components/MovieHero.vue'
-    import MovieActionBar from '@/components/MovieActionBar.vue'
+    import MovieHero from '@/components/detail/MovieHero.vue'
+    import MovieActionBar from '@/components/detail/MovieActionBar.vue'
+    import MovieServices from '@/components/detail/MovieServices.vue'
     import { usePageTitle } from '@/composables/usePageTitle'
     import { posterUrl } from '@/lib/tmdb'
     import { releaseYear } from '@/lib/movies'
-    import { useMovieActions } from '@/composables/useMovieActions'
     import star from '@/assets/icons/star.svg?raw'
+    import pencil from '@/assets/icons/pencil.svg?raw'
 
     const route = useRoute()
     const moviesStore = useMoviesStore()
@@ -99,7 +103,6 @@
         return h > 0 ? `${h}h ${m}m` : `${m}m`
     })
 
-    const { actions, isActive, handleAction } = useMovieActions(movie)
 </script>
 
 <style module="s">
@@ -165,7 +168,7 @@
     .title {
         color: var(--color-heading);
         font-size: var(--text-3xl);
-        font-weight: var(--font-weight-normal);
+        font-weight: var(--font-weight-bold);
         line-height: var(--leading-tight);
         margin-bottom: var(--size-4);
         text-shadow: var(--text-shadow-lg);
@@ -193,6 +196,7 @@
         color: var(--color-heading);
         display: flex;
         font-size: var(--text-xs);
+        font-weight: var(--font-weight-medium);
         gap: var(--size-1);
         justify-content: center;
         text-shadow: var(--text-shadow-md);
@@ -210,9 +214,9 @@
 
     .tagIcon {
         align-items: center;
+        color: var(--yellow-200);
         display: flex;
         justify-content: center;
-        color: var(--color-text-muted);
     }
 
     .genres {
@@ -223,19 +227,19 @@
     }
 
     .genre {
-        background: var(--color-surface-raised);
-        /* background: var(--color-bg-frosted-subtle);
-        backdrop-filter: var(--bg-frosted-md); */
-        /* border: 1px solid var(--color-border); */
+        background: var(--blue-800);
         border-radius: var(--radius-full);
-        color: var(--color-text-muted);
+        color: var(--blue-300);
         font-size: var(--text-2xs);
-        letter-spacing: var(--tracking-wider);
+        font-weight: var(--font-weight-semibold);
+        letter-spacing: var(--tracking-widest);
+        line-height: var(--leading-snug);
         padding: var(--size-1) var(--size-3);
+        text-transform: uppercase;
     }
 
     .description {
-        color: var(--color-text-secondary);
+        color: var(--color-text);
         font-size: var(--text-sm);
         line-height: var(--leading-relaxed);
         text-wrap: pretty;
@@ -282,26 +286,37 @@
         }
     }
 
-    .editLink {
-        display: flex;
-        align-items: center;
-        /* padding: var(--size-2) var(--size-4); */
-        font-size: var(--text-sm);
-        font-weight: var(--font-weight-medium);
-        background: none;
-        border: 1px solid var(--color-border);
-        border-radius: var(--radius-md);
-        color: var(--color-text-muted);
-        transition: border-color var(--transition-fast), color var(--transition-fast);
+    .edit {
+        margin: var(--size-12) auto 0 auto;
+        max-width: var(--content-width);
+        padding-inline: var(--content-padding);
+    }
 
-        /* margin: var(--content-padding); */
-        max-width: var(--content-max-width);
+    .editLink {
+        align-items: center;
+        background: var(--yellow-900);
+        border: 1px solid var(--yellow-800);
+        border-radius: var(--radius-md);
+        color: var(--yellow-400);
+        display: flex;
+        font-size: var(--text-xs);
+        font-weight: var(--font-weight-medium);
+        gap: var(--size-2);
         justify-content: center;
+        padding: var(--size-2) var(--size-4);
+        transition: border-color var(--transition-fast), color var(--transition-fast), background var(--transition-fast);
     }
 
     .editLink:hover {
-        border-color: var(--color-border-strong);
-        color: var(--color-text);
+        border-color: var(--yellow-500);
+        background: var(--yellow-500);
+        color: var(--yellow-950);
+    }
+
+    .editIcon {
+        align-items: center;
+        display: flex;
+        justify-content: center;
     }
 
     /* ─── Not found ─── */

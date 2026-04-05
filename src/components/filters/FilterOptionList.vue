@@ -18,43 +18,48 @@
 
 <style module="s">
     .option {
-        display: flex;
         align-items: center;
-        justify-content: space-between;
-        width: 100%;
-        padding: var(--size-2) var(--size-3);
-        font-size: var(--text-sm);
-        color: var(--color-text-secondary);
         background: none;
         border: none;
         border-radius: var(--radius-md);
+        color: var(--blue-300);
+        display: flex;
+        font-size: var(--text-sm);
+        font-weight: var(--font-weight-medium);
+        justify-content: space-between;
+        padding: var(--size-2) var(--size-3);
         text-align: left;
         transition: background var(--transition-fast), color var(--transition-fast);
+        width: 100%;
+    }
+
+    .sublabel {
+        font-size: var(--text-2xs);
+        color: var(--blue-500);
+        font-weight: var(--font-weight-semibold);
     }
 
     .option:hover {
-        background: var(--color-bg-hover);
-        color: var(--color-text);
+        background: var(--blue-700);
+        color: var(--blue-50);
+
+        .sublabel {
+            color: var(--blue-400);
+        }
     }
 
     .optionActive {
-        color: var(--color-accent);
-        background: var(--color-accent-subtle);
+        background: var(--blue-700);
+        color: var(--blue-50);
+
+        .sublabel {
+            color: var(--blue-400);
+        }
     }
 
     .optionDisabled {
         opacity: 0.35;
         cursor: default;
         pointer-events: none;
-    }
-
-    .sublabel {
-        font-size: var(--text-xs);
-        color: var(--color-text-muted);
-        font-weight: var(--font-weight-medium);
-    }
-
-    .optionActive .sublabel {
-        color: var(--color-accent-muted);
     }
 </style>

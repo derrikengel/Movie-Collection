@@ -1,6 +1,5 @@
 <template>
     <div :class="s.page">
-        <h1 :class="s.pageTitle">{{ isEditMode ? 'Edit Movie' : 'Add Movie' }}</h1>
 
         <!-- TMDB Search (add mode only) -->
         <section v-if="!isEditMode && !formReady" :class="s.section">
@@ -37,11 +36,21 @@
             <!-- Selected movie bar -->
             <div :class="s.selectedBar">
                 <img v-if="form.poster_path" :src="posterUrl(form.poster_path, 'w92')" :class="s.selectedPoster" />
+
                 <div :class="s.selectedInfo">
-                    <strong>{{ form.title }}</strong> ({{ releaseYear(form.release_date) }})
+                    <span :class="s.selectedTitle">{{ form.title }}</span>
+                    <span :class="s.selectedYear">{{ releaseYear(form.release_date) }}</span>
                 </div>
-                <button v-if="!isEditMode" type="button" :class="s.btnGhost" @click="resetTmdb">Change</button>
-                <RouterLink v-else :to="`/${route.params.slug}`" :class="s.btnGhost">View</RouterLink>
+
+                <button v-if="!isEditMode" type="button" :class="s.btnChange" @click="resetTmdb">
+                    <span v-html="pencilIcon" :class="s.changeIcon" />
+                    Change
+                </button>
+
+                <RouterLink v-else :to="`/${route.params.slug}`" :class="s.btnView">
+                    View
+                    <span v-html="rightArrowIcon" :class="s.viewIcon" />
+                </RouterLink>
             </div>
 
             <!-- Services -->
@@ -88,7 +97,7 @@
                                 <span v-html="serviceIcons.disc" :class="s.serviceIcon" aria-hidden="true" />
                                 {{ form.disc_format ? 'Physical disc' : 'Add physical disc' }}
                                 <span v-if="form.disc_format" class="badge" :class="s.summaryBadge">{{ form.disc_format
-                                }}</span>
+                                    }}</span>
                             </span>
                             <span :class="s.serviceTriggerIcon" aria-hidden="true">+</span>
                         </summary>
@@ -247,9 +256,15 @@
 
             <p v-if="submitError" :class="s.errorMsg">{{ submitError }}</p>
 
-            <button type="submit" :class="[s.btnPrimary, s.btnSubmit]" :disabled="submitting">
-                {{ submitting ? (isEditMode ? 'Saving…' : 'Adding…') : (isEditMode ? 'Save Changes' : 'Add Movie') }}
-            </button>
+            <div :class="s.submit">
+                <button type="submit" :class="s.btnSubmit" :disabled="submitting">
+                    <!-- <span :class="s.submitIcon" v-html="checkmarkIcon" /> -->
+                    {{
+                        submitting ? (isEditMode ? 'Saving…' : 'Adding…') :
+                            (isEditMode ? 'Save Changes' : 'Add Movie')
+                    }}
+                </button>
+            </div>
         </form>
     </div>
 </template>
@@ -266,6 +281,9 @@
     import { useTmdbSearch } from '@/composables/useTmdbSearch'
     import { useMovieForm, genreSuggestions, discOptions, serviceOptions } from '@/composables/useMovieForm'
     import { useMovieSubmit } from '@/composables/useMovieSubmit'
+    import checkmarkIcon from '@/assets/icons/checkmark.svg?raw'
+    import rightArrowIcon from '@/assets/icons/arrow-right.svg?raw'
+    import pencilIcon from '@/assets/icons/pencil.svg?raw'
 
     const route = useRoute()
     const moviesStore = useMoviesStore()
@@ -424,25 +442,49 @@
         display: flex;
         align-items: center;
         gap: var(--size-3);
-        padding: var(--size-3) var(--size-4);
+        padding: var(--size-4);
         background: var(--color-surface);
         border: 1px solid var(--color-border);
         border-radius: var(--radius-md);
         margin-bottom: var(--size-5);
+
+        @container (min-width: 32rem) {
+            gap: var(--size-4);
+        }
     }
 
     .selectedPoster {
-        width: 32px;
-        height: 48px;
-        object-fit: cover;
+        aspect-ratio: 2 / 3;
         border-radius: var(--radius-sm);
+        object-fit: cover;
         flex-shrink: 0;
+        width: var(--size-12);
+
+        @container (min-width: 32rem) {
+            width: var(--size-16);
+        }
     }
 
     .selectedInfo {
-        flex: 1;
-        font-size: var(--text-sm);
         color: var(--color-text);
+        flex: 1;
+    }
+
+    .selectedTitle {
+        color: var(--blue-50);
+        display: block;
+        font-weight: var(--font-weight-bold);
+        line-height: var(--leading-tight);
+        text-wrap: pretty;
+
+        @container (min-width: 32rem) {
+            font-size: var(--text-xl);
+        }
+    }
+
+    .selectedYear {
+        color: var(--blue-200);
+        font-size: var(--text-xs);
     }
 
     /* Media Preview */
@@ -620,18 +662,17 @@
     }
 
     .serviceIcon {
-        width: 20px;
-        height: 20px;
-        flex-shrink: 0;
-        display: flex;
         align-items: center;
+        display: flex;
+        flex-shrink: 0;
+        font-size: var(--text-2xl);
         justify-content: center;
     }
 
-    .serviceIcon :global(svg) {
+    /* .serviceIcon :global(svg) {
         width: 100%;
         height: 100%;
-    }
+    } */
 
     .serviceIcon :global(.brand-fg) {
         fill: var(--brand-fg, currentColor);
@@ -679,6 +720,7 @@
 
     .summaryBadge {
         font-size: var(--text-xs);
+        font-weight: var(--font-weight-semibold);
         padding: var(--size-0-5) var(--size-2);
     }
 
@@ -885,50 +927,73 @@
         flex: 1;
     }
 
-    /* Buttons */
-    .btnPrimary {
-        padding: var(--size-3) var(--size-5);
-        font-size: var(--text-base);
-        font-weight: var(--font-weight-bold);
-        background: var(--color-accent);
-        color: var(--color-text-on-accent);
-        border: none;
+    .btnView,
+    .btnChange {
+        align-items: center;
+        background: var(--blue-800);
         border-radius: var(--radius-md);
-        white-space: nowrap;
+        color: var(--blue-300);
+        display: flex;
+        font-size: var(--text-sm);
+        font-weight: var(--font-weight-medium);
+        gap: var(--size-1);
+        padding: var(--size-2) var(--size-4);
+        transition: border-color var(--transition-fast), color var(--transition-fast);
+    }
+
+    .viewIcon,
+    .changeIcon {
+        align-items: center;
+        display: flex;
+    }
+
+    .btnView:hover,
+    .btnChange:hover {
+        color: var(--color-text);
+    }
+
+    .submit {
+        background: linear-gradient(transparent, var(--color-bg));
+        bottom: calc(var(--tab-bar-height) + env(safe-area-inset-bottom));
+        margin-inline: calc(-1 * var(--content-padding));
+        padding: var(--size-2) var(--content-padding);
+        position: sticky;
+
+        @media (min-width: 64rem) {
+            bottom: 0;
+            margin: 0;
+            padding: var(--size-6) 0;
+        }
+    }
+
+    .btnSubmit {
+        align-items: center;
+        display: flex;
+        background: var(--green-600);
+        box-shadow: var(--shadow-lg);
+        gap: var(--size-2);
+        border-radius: var(--radius-lg);
+        color: var(--green-50);
+        font-weight: var(--font-weight-semibold);
+        /* border: none; */
+        justify-content: center;
+        padding: var(--size-3) var(--size-4);
         transition: background var(--transition-fast);
+        width: 100%;
     }
 
-    .btnPrimary:hover:not(:disabled) {
-        background: var(--color-accent-bright);
+    .btnSubmit:hover:not(:disabled) {
+        background: var(--green-700);
     }
 
-    .btnPrimary:disabled {
+    .btnSubmit:disabled {
         opacity: 0.5;
         cursor: not-allowed;
     }
 
-    .btnGhost {
-        padding: var(--size-2) var(--size-4);
-        font-size: var(--text-sm);
-        font-weight: var(--font-weight-medium);
-        background: none;
-        border: 1px solid var(--color-border);
-        border-radius: var(--radius-md);
-        color: var(--color-text-secondary);
-        transition: border-color var(--transition-fast), color var(--transition-fast);
-        display: inline-flex;
+    .submitIcon {
         align-items: center;
-    }
-
-    .btnGhost:hover {
-        border-color: var(--color-border-strong);
-        color: var(--color-text);
-    }
-
-    .btnSubmit {
-        width: 100%;
-        padding: var(--size-4);
-        font-size: var(--text-base);
+        display: flex;
     }
 
     /* Messages */

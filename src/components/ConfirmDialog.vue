@@ -34,37 +34,37 @@
 
 <style module="s">
     .dialog {
-        background: var(--color-overlay);
-        backdrop-filter: var(--bg-frosted-xl);
-        border: 1px solid var(--color-border-frosted);
-        border-bottom: none;
-        border-radius: var(--radius-xl) var(--radius-xl) 0 0;
-        bottom: 0;
-        left: 0;
-        margin: 0 auto;
+        background: transparent;
+        border: none;
+        border-radius: var(--radius-xl);
+        left: 50%;
         max-width: 32rem;
-        padding: var(--size-6) var(--size-5) calc(var(--size-6) + env(safe-area-inset-bottom));
+        opacity: 1;
+        padding: var(--size-5);
         position: fixed;
-        right: 0;
-        transform: translateY(0);
+        top: 50%;
+        translate: -50% -50%;
         transition:
-            transform var(--transition-normal),
+            opacity var(--transition-normal),
+            translate var(--transition-normal),
             overlay var(--transition-normal) allow-discrete,
             display var(--transition-normal) allow-discrete;
-        width: 100%;
+        width: calc(100% - var(--size-8));
 
         @starting-style {
-            transform: translateY(100%);
+            opacity: 0;
+            translate: -50% calc(-50% + var(--size-4));
         }
     }
 
     .dialog:not([open]) {
-        transform: translateY(100%);
+        opacity: 0;
+        translate: -50% calc(-50% + var(--size-4));
     }
 
     .dialog::backdrop {
-        background: var(--color-bg-frosted-subtle);
-        backdrop-filter: var(--bg-frosted-xl);
+        background: var(--color-bg-frosted);
+        backdrop-filter: var(--bg-frosted-lg);
         opacity: 1;
         transition:
             opacity var(--transition-normal),
@@ -81,8 +81,8 @@
     }
 
     .title {
-        color: var(--color-text);
-        font-size: var(--text-base);
+        color: var(--color-heading);
+        font-size: var(--text-xl);
         font-weight: var(--font-weight-bold);
         margin-bottom: var(--size-2);
     }
@@ -101,35 +101,33 @@
     }
 
     .btnConfirm {
-        background: var(--color-error);
+        background: var(--red-400);
         border: none;
         border-radius: var(--radius-md);
-        color: #fff;
-        font-size: var(--text-base);
-        font-weight: var(--font-weight-bold);
+        color: var(--red-900);
+        font-weight: var(--font-weight-semibold);
         padding: var(--size-3) var(--size-5);
-        transition: opacity var(--transition-fast);
+        transition: background var(--transition-fast), color var(--transition-fast);
         width: 100%;
     }
 
     .btnConfirm:hover {
-        opacity: 0.85;
+        background: var(--red-500);
+        color: var(--red-950);
     }
 
     .btnCancel {
-        background: none;
-        border: 1px solid var(--color-border);
+        background: var(--blue-800);
         border-radius: var(--radius-md);
-        color: var(--color-text-secondary);
-        font-size: var(--text-sm);
-        font-weight: var(--font-weight-medium);
+        color: var(--blue-200);
+        font-weight: var(--font-weight-semibold);
         padding: var(--size-3);
-        transition: border-color var(--transition-fast), color var(--transition-fast);
+        transition: background var(--transition-fast), color var(--transition-fast);
         width: 100%;
     }
 
     .btnCancel:hover {
-        border-color: var(--color-border-strong);
-        color: var(--color-text);
+        background: var(--blue-700);
+        color: var(--blue-100);
     }
 </style>

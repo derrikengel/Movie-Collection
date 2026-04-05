@@ -10,18 +10,8 @@
             <p v-else-if="filters.visibleMovies.length === 0" :class="s.status">No movies match your filters.</p>
 
             <div v-else :class="s.grid">
-                <RouterLink v-for="movie in displayedMovies" :key="movie.id" :to="`/${movie.slug}`"
-                    :class="[s.card, filters.isWatchedFaded(movie) && s.cardFaded]">
-                    <div :class="s.cardContent">
-                        <span :class="s.preloadTitle">
-                            {{ movie.title }} ({{ releaseYear(movie.release_date) }})
-                        </span>
-
-                        <img v-if="movie.poster_path" :src="posterUrl(movie.poster_path)"
-                            :alt="`${movie.title} ${releaseYear(movie.release_date)}`" :class="s.poster"
-                            loading="lazy" />
-                    </div>
-                </RouterLink>
+                <MovieCard v-for="movie in displayedMovies" :key="movie.id" :movie="movie"
+                    :faded="filters.isWatchedFaded(movie)" />
             </div>
 
             <div v-if="hasMore" ref="sentinel" :class="s.sentinel"></div>
@@ -34,9 +24,8 @@
     import { useRouter } from 'vue-router'
     import { useMoviesStore } from '@/stores/movies'
     import { useFiltersStore } from '@/stores/filters'
-    import FilterBar from '@/components/FilterBar.vue'
-    import { posterUrl } from '@/lib/tmdb'
-    import { releaseYear } from '@/lib/movies'
+    import FilterBar from '@/components/filters/FilterBar.vue'
+    import MovieCard from '@/components/grid/MovieCard.vue'
 
     const props = defineProps({
         movies: { type: Array, required: true },
@@ -77,15 +66,22 @@
 
     let isActive = false
 
-    watch(() => filters.visibleMovies, () => {
-        if (isActive) visibleCount.value = PAGE_SIZE
-    })
+    watch(
+        () => [
+            filters.search, filters.genres, filters.mpaaGroups,
+            filters.yearMin, filters.yearMax,
+            filters.runtimeMin, filters.runtimeMax,
+            filters.watchedMode, filters.ignoredMode,
+            filters.sort,
+        ],
+        () => { if (isActive) visibleCount.value = PAGE_SIZE },
+        { deep: true }
+    )
 
     function initFilters() {
+        filters.setDefaults({ watchedMode: props.defaultWatchedMode, ignoredMode: props.defaultIgnoredMode })
         filters.reset()
         filters.setBase(props.movies)
-        if (props.defaultWatchedMode !== 'fade') filters.watchedMode = props.defaultWatchedMode
-        if (props.defaultIgnoredMode !== 'hide') filters.ignoredMode = props.defaultIgnoredMode
         filters.initFromUrl()
     }
 
@@ -127,29 +123,21 @@
     }
 
     .status {
-        text-align: center;
         color: var(--color-text-muted);
         font-size: var(--text-sm);
         padding: var(--size-12) 0;
+        text-align: center;
     }
 
     .grid {
         display: grid;
         gap: var(--size-2);
-        grid-template-columns: repeat(auto-fill, minmax(6rem, 1fr));
+        grid-template-columns: repeat(auto-fill, minmax(10rem, 1fr));
     }
 
     @container (min-width: 32rem) {
         .grid {
             gap: var(--size-3);
-            grid-template-columns: repeat(auto-fill, minmax(8rem, 1fr));
-        }
-    }
-
-    @container (min-width: 48rem) {
-        .grid {
-            gap: var(--size-3);
-            grid-template-columns: repeat(auto-fill, minmax(10rem, 1fr));
         }
     }
 
@@ -158,64 +146,6 @@
             gap: var(--size-4);
             grid-template-columns: repeat(auto-fill, minmax(16rem, 1fr));
         }
-    }
-
-    .card {
-        background: var(--color-bg);
-        border-radius: var(--radius-md);
-        display: block;
-        overflow: hidden;
-        transition: transform var(--transition-normal), box-shadow var(--transition-normal), z-index var(--transition-normal);
-        z-index: 0;
-    }
-
-    .card:hover {
-        box-shadow: var(--shadow-2xl);
-        transform: scale(1.25);
-        z-index: 20;
-    }
-
-    .cardFaded .cardContent {
-        opacity: 0.25;
-    }
-
-    .cardFaded:hover .cardContent {
-        opacity: 1;
-    }
-
-    .cardContent {
-        position: relative;
-        transition: opacity var(--transition-normal);
-    }
-
-    .preloadTitle {
-        align-content: center;
-        color: var(--color-text-subtle);
-        font-size: var(--text-xs);
-        line-height: var(--leading-snug);
-        inset: 0;
-        padding: var(--size-4);
-        position: absolute;
-        text-align: center;
-    }
-
-    .poster {
-        aspect-ratio: 2/3;
-        display: block;
-        object-fit: cover;
-        position: relative;
-        width: 100%;
-    }
-
-    .posterEmpty {
-        background: var(--color-surface-raised);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        padding: var(--size-4);
-        font-size: var(--text-xs);
-        color: var(--color-text-muted);
-        text-align: center;
     }
 
     .sentinel {
