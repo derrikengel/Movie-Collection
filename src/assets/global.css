@@ -348,6 +348,7 @@
 
     body {
         min-height: 100dvh;
+        overscroll-behavior-y: contain;
     }
 
     img {
