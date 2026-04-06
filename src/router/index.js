@@ -1,6 +1,8 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import { nextTick } from 'vue'
 import { useAuthStore } from '@/stores/auth'
+import { useFiltersStore } from '@/stores/filters'
+import { useNavContextStore } from '@/stores/navContext'
 
 let scrollResolve = null
 
@@ -110,6 +112,14 @@ const router = createRouter({
             component: () => import('@/views/MovieDetailView.vue')
         },
     ],
+})
+
+router.beforeEach((to, from) => {
+    if (to.params.slug && !from.params.slug) {
+        const filters = useFiltersStore()
+        const navContext = useNavContextStore()
+        navContext.setContext([...filters.filteredMovies], from.name)
+    }
 })
 
 router.beforeEach(async (to) => {

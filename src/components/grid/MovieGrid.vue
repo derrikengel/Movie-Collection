@@ -37,7 +37,6 @@
     const router = useRouter()
     const moviesStore = useMoviesStore()
     const filters = useFiltersStore()
-
     const PAGE_SIZE = 100
     const visibleCount = ref(PAGE_SIZE)
     const sentinel = ref(null)

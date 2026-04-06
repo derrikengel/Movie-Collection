@@ -16,7 +16,8 @@
 
         <nav :class="s.nav">
             <RouterLink v-for="link in navLinks" :key="link.to" :to="link.to" :exact="link.exact"
-                :class="[s.navLink, link.colored && s.navLinkColored, link.listClass]" :active-class="s.navLinkActive">
+                :class="[s.navLink, link.colored && s.navLinkColored, link.listClass, forcedActiveRoute === link.to.name && s.navLinkActive]"
+                :active-class="s.navLinkActive">
                 <span v-html="link.icon" :class="s.navIcon" />
                 <span :class="s.navLabel">{{ link.label }}</span>
                 <span v-if="link.badge" class="badge" :class="s.navBadge">{{ link.badge }}</span>
@@ -31,6 +32,7 @@
     import { useAuthStore } from '@/stores/auth'
     import { useFiltersStore } from '@/stores/filters'
     import { useListCounts } from '@/composables/useListCounts'
+    import { useNavContextStore } from '@/stores/navContext'
     import film from '@/assets/icons/film.svg?raw'
     import bookmark from '@/assets/icons/bookmark.svg?raw'
     import heart from '@/assets/icons/heart.svg?raw'
@@ -40,7 +42,12 @@
     const route = useRoute()
     const auth = useAuthStore()
     const filters = useFiltersStore()
+    const navContext = useNavContextStore()
     const { watchlistCount, favoritesCount } = useListCounts()
+
+    const forcedActiveRoute = computed(() =>
+        route.name === 'movie' ? (navContext.sourceList ?? 'home') : null
+    )
 
     const listingNames = ['home', 'watchlist', 'watched', 'favorites', 'ignored']
     const isListPage = computed(() => listingNames.includes(route.name))

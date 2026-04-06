@@ -58,6 +58,45 @@
             </RouterLink>
         </p>
 
+        <div :class="[s.browse, sourceListClass]">
+            <div :class="s.browseNav">
+                <RouterLink v-if="prevMovie" :to="{ name: 'movie', params: { slug: prevMovie.slug } }"
+                    :class="s.browseLink">
+
+                    <span v-html="arrowLeft" :class="s.browseIcon" />
+
+                    <div :class="s.browseContent">
+                        <img v-if="prevMovie.poster_path" :src="posterUrl(prevMovie.poster_path)" :alt="prevMovie.title"
+                            :class="s.browsePoster" />
+
+                        <div :class="s.browseMeta">
+                            <span :class="s.browsePrevNext">{{ sourceLabel }} Prev</span>
+                            <span :class="s.browseTitle">{{ prevMovie.title }}</span>
+                            <span :class="s.browseYear">{{ releaseYear(prevMovie.release_date) }}</span>
+                        </div>
+                    </div>
+                </RouterLink>
+                <div v-else :class="s.browseEmpty" />
+
+                <RouterLink v-if="nextMovie" :to="{ name: 'movie', params: { slug: nextMovie.slug } }"
+                    :class="[s.browseLink, s.browseLinkNext]">
+                    <div :class="s.browseContent">
+                        <img v-if="nextMovie.poster_path" :src="posterUrl(nextMovie.poster_path)" :alt="nextMovie.title"
+                            :class="s.browsePoster" />
+
+                        <div :class="s.browseMeta">
+                            <span :class="s.browsePrevNext">{{ sourceLabel }} Next</span>
+                            <span :class="s.browseTitle">{{ nextMovie.title }}</span>
+                            <span :class="s.browseYear">{{ releaseYear(nextMovie.release_date) }}</span>
+                        </div>
+                    </div>
+
+                    <span v-html="arrowRight" :class="s.browseIcon" />
+                </RouterLink>
+                <div v-else :class="s.browseEmpty" />
+            </div>
+        </div>
+
     </div>
 
     <div v-else-if="notFound" :class="s.notFound">
@@ -70,6 +109,8 @@
     import { useRoute } from 'vue-router'
     import { useMoviesStore } from '@/stores/movies'
     import { useAuthStore } from '@/stores/auth'
+    import { useFiltersStore } from '@/stores/filters'
+    import { useNavContextStore } from '@/stores/navContext'
     import MovieHero from '@/components/detail/MovieHero.vue'
     import MovieActionBar from '@/components/detail/MovieActionBar.vue'
     import MovieServices from '@/components/detail/MovieServices.vue'
@@ -78,10 +119,14 @@
     import { releaseYear } from '@/lib/movies'
     import star from '@/assets/icons/star.svg?raw'
     import pencil from '@/assets/icons/pencil.svg?raw'
+    import arrowLeft from '@/assets/icons/arrow-left.svg?raw'
+    import arrowRight from '@/assets/icons/arrow-right.svg?raw'
 
     const route = useRoute()
     const moviesStore = useMoviesStore()
     const auth = useAuthStore()
+    const filters = useFiltersStore()
+    const navContext = useNavContextStore()
 
     const movie = computed(() =>
         moviesStore.movies.find(m => m.slug === route.params.slug) ?? null
@@ -102,6 +147,32 @@
         const m = movie.value.runtime_minutes % 60
         return h > 0 ? `${h}h ${m}m` : `${m}m`
     })
+
+    const sourceLabelMap = {
+        home: '',
+        watchlist: 'Watchlist:',
+        watched: 'Watched:',
+        favorites: 'Favorites:',
+        ignored: 'Ignored:',
+    }
+    const sourceLabel = computed(() => sourceLabelMap[navContext.sourceList] ?? '')
+
+    const sourceListClassMap = {
+        watchlist: 'list-watchlist',
+        watched: 'list-watched',
+        favorites: 'list-favorite',
+        ignored: 'list-ignored',
+    }
+    const sourceListClass = computed(() => sourceListClassMap[navContext.sourceList] ?? null)
+
+    const browseList = computed(() =>
+        navContext.contextMovies.length ? navContext.contextMovies : filters.filteredMovies
+    )
+    const currentIndex = computed(() => browseList.value.findIndex(m => m.slug === route.params.slug))
+    const prevMovie = computed(() => currentIndex.value > 0 ? browseList.value[currentIndex.value - 1] : null)
+    const nextMovie = computed(() =>
+        currentIndex.value < browseList.value.length - 1 ? browseList.value[currentIndex.value + 1] : null
+    )
 
 </script>
 
@@ -286,8 +357,144 @@
         }
     }
 
+    .browse {
+        background: var(--blue-900);
+        margin-bottom: calc(var(--content-padding) * -1);
+        margin-top: var(--size-12);
+        padding: var(--size-4) 0;
+
+        @media (min-width: 64rem) {
+            padding: var(--size-8) 0;
+        }
+    }
+
+    .browseLabel {
+        color: var(--blue-400);
+        font-size: var(--text-xs);
+        font-weight: var(--font-weight-semibold);
+        letter-spacing: var(--tracking-widest);
+        margin-bottom: var(--size-3);
+        text-transform: uppercase;
+    }
+
+    .browseNav {
+        display: flex;
+        gap: var(--size-2);
+        margin-inline: auto;
+        max-width: var(--content-width);
+        padding-inline: var(--content-padding);
+    }
+
+    .browseLink {
+        background: var(--color-surface);
+        border: 1px solid var(--color-border);
+        border-radius: var(--radius-md);
+        container-type: inline-size;
+        display: flex;
+        flex: 1;
+        gap: var(--size-3);
+        min-width: 0;
+        padding: var(--size-3);
+        text-align: right;
+        transition: border-color var(--transition-fast), background var(--transition-fast);
+    }
+
+    .browseLink:hover {
+        background: var(--color-surface-raised);
+        border-color: var(--color-border-strong);
+    }
+
+    .browseLinkNext {
+        text-align: left;
+    }
+
+    .browseContent {
+        align-items: center;
+        display: flex;
+        flex: 1;
+        flex-direction: row-reverse;
+        gap: var(--size-3);
+
+        @container (min-width: 20rem) {
+            gap: var(--size-4);
+        }
+    }
+
+    .browseLinkNext .browseContent {
+        align-items: center;
+        flex-direction: row;
+    }
+
+    .browseIcon {
+        align-items: center;
+        color: var(--color-text-muted);
+        font-size: var(--text-xs);
+        display: flex;
+        flex-shrink: 0;
+        justify-content: center;
+
+        @container (min-width: 16rem) {
+            font-size: var(--text-sm);
+        }
+    }
+
+    .browsePoster {
+        display: none;
+
+        @container (min-width: 14rem) {
+            aspect-ratio: 2 / 3;
+            border-radius: var(--radius-sm);
+            box-shadow: var(--shadow-md);
+            display: block;
+            flex-shrink: 0;
+            object-fit: cover;
+            width: var(--size-12);
+        }
+
+        @container (min-width: 20rem) {
+            width: var(--size-16);
+        }
+    }
+
+    .browseMeta {
+        display: flex;
+        flex-direction: column;
+        gap: var(--size-1);
+        min-width: 0;
+    }
+
+    .browsePrevNext {
+        color: var(--color-list-400, var(--blue-400));
+        font-size: var(--text-2xs);
+        font-weight: var(--font-weight-medium);
+        letter-spacing: var(--tracking-wider);
+        text-transform: uppercase;
+    }
+
+    .browseTitle {
+        color: var(--blue-50);
+        font-size: var(--text-xs);
+        font-weight: var(--font-weight-bold);
+        line-height: var(--leading-snug);
+        text-wrap: pretty;
+
+        @container (min-width: 20rem) {
+            font-size: var(--text-sm);
+        }
+    }
+
+    .browseYear {
+        color: var(--blue-100);
+        font-size: var(--text-xs);
+        line-height: var(--leading-tight);
+    }
+
+    .browseEmpty {
+        flex: 1;
+    }
+
     .edit {
-        margin: var(--size-12) auto 0 auto;
+        margin: var(--size-6) auto 0 auto;
         max-width: var(--content-width);
         padding-inline: var(--content-padding);
     }

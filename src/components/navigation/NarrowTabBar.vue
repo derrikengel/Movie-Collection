@@ -1,8 +1,8 @@
 <template>
     <nav :class="s.tabBar" aria-label="Main navigation">
         <RouterLink v-for="tab in tabs" :key="tab.to" :to="tab.to"
-            :class="[s.tab, tab.listClass && s.tabColored, tab.listClass]" :active-class="s.tabActive"
-            :exact="tab.exact">
+            :class="[s.tab, tab.listClass && s.tabColored, tab.listClass, forcedActiveRoute === tab.to.name && s.tabActive]"
+            :active-class="s.tabActive" :exact="tab.exact" @click="handleTabClick(tab)">
             <span :class="s.tabIcon" v-html="tab.icon" aria-hidden="true" />
             <span :class="s.tabLabel">{{ tab.label }}</span>
             <span v-if="tab.badge" class="badge" :class="s.tabBadge">{{ tab.badge }}</span>
@@ -12,16 +12,30 @@
 
 <script setup>
     import { computed } from 'vue'
+    import { useRoute } from 'vue-router'
     import { useAuthStore } from '@/stores/auth'
     import { useListCounts } from '@/composables/useListCounts'
+    import { useNavContextStore } from '@/stores/navContext'
     import film from '@/assets/icons/film.svg?raw'
     import bookmark from '@/assets/icons/bookmark.svg?raw'
     import heart from '@/assets/icons/heart.svg?raw'
     import userIcon from '@/assets/icons/user.svg?raw'
     import plus from '@/assets/icons/plus.svg?raw'
 
+    const route = useRoute()
     const auth = useAuthStore()
+    const navContext = useNavContextStore()
     const { watchlistCount, favoritesCount } = useListCounts()
+
+    const forcedActiveRoute = computed(() =>
+        route.name === 'movie' ? (navContext.sourceList ?? 'home') : null
+    )
+
+    function handleTabClick(tab) {
+        if (route.name === tab.to.name) {
+            window.scrollTo({ top: 0, behavior: 'smooth' })
+        }
+    }
 
     const tabs = computed(() => {
         const items = [

@@ -21,11 +21,11 @@
                 </component>
             </li>
             <li v-if="movie.disc_format" :class="[s.service, s.disc]">
-                <span :class="s.serviceLeft">
+                <span :class="s.serviceInfo">
                     <span :class="[s.serviceIcon, s.discIcon]" v-html="discIcon" />
                     <span :class="s.serviceName">{{ discLabel }}</span>
+                    <span :class="s.serviceQuality">{{ discQuality }}</span>
                 </span>
-                <span :class="s.serviceQuality">{{ discQuality }}</span>
             </li>
         </ul>
     </div>
