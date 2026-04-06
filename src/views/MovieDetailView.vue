@@ -358,14 +358,7 @@
     }
 
     .browse {
-        background: var(--blue-900);
-        margin-bottom: calc(var(--content-padding) * -1);
         margin-top: var(--size-12);
-        padding: var(--size-4) 0;
-
-        @media (min-width: 64rem) {
-            padding: var(--size-8) 0;
-        }
     }
 
     .browseLabel {
