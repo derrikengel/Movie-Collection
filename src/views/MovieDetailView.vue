@@ -52,7 +52,7 @@
         <MovieServices v-if="hasServices" :movie="movie" />
 
         <p v-if="auth.isAdmin" :class="s.edit">
-            <RouterLink :to="`/admin/edit/${movie.slug}`" :class="s.editLink">
+            <RouterLink :to="{ name: 'edit-movie', params: { slug: movie.slug } }" :class="s.editLink">
                 <span v-html="pencil" :class="s.editIcon" />
                 Edit Movie
             </RouterLink>

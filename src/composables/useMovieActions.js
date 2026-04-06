@@ -16,10 +16,10 @@ const listLabels = {
 }
 
 const listRoutes = {
-    watched: '/profile/watched',
-    watchlist: '/profile/watchlist',
-    favorite: '/profile/favorites',
-    ignored: '/profile/ignored',
+    watched: { name: 'watched' },
+    watchlist: { name: 'watchlist' },
+    favorite: { name: 'favorites' },
+    ignored: { name: 'ignored' },
 }
 
 export function useMovieActions(movieRef) {
@@ -67,7 +67,7 @@ export function useMovieActions(movieRef) {
         if (!auth.user) {
             toast.error('to save movies to your lists', {
                 icon: userIcon,
-                action: { label: 'Sign in', to: '/login', before: true }
+                action: { label: 'Sign in', to: { name: 'login' }, before: true }
             })
             return
         }
@@ -88,7 +88,7 @@ export function useMovieActions(movieRef) {
             } else {
                 toast.success(`${title} added to`, {
                     icon: icon,
-                    type: 'success', action: { label: list, to: route }
+                    action: { label: list, to: route }
                 })
             }
         } catch {

@@ -55,6 +55,7 @@
     import watchlistIcon from '@/assets/icons/bookmark.svg?raw'
     import favoritesIcon from '@/assets/icons/heart.svg?raw'
     import ignoredIcon from '@/assets/icons/ignore.svg?raw'
+    import userIcon from '@/assets/icons/user.svg?raw'
 
     const auth = useAuthStore()
     const toast = useToastStore()
@@ -84,7 +85,7 @@
 
     const lists = computed(() => [
         {
-            to: '/profile/watchlist',
+            to: { name: 'watchlist' },
             label: 'Watchlist',
             count: counts.value.watchlist,
             previews: getPreviewMovies('watchlist'),
@@ -92,7 +93,7 @@
             listClass: 'list-watchlist',
         },
         {
-            to: '/profile/watched',
+            to: { name: 'watched' },
             label: 'Watched',
             count: counts.value.watched,
             previews: getPreviewMovies('watched'),
@@ -100,7 +101,7 @@
             listClass: 'list-watched',
         },
         {
-            to: '/profile/favorites',
+            to: { name: 'favorites' },
             label: 'Favorites',
             count: counts.value.favorites,
             previews: getPreviewMovies('favorite'),
@@ -108,7 +109,7 @@
             listClass: 'list-favorite',
         },
         {
-            to: '/profile/ignored',
+            to: { name: 'ignored' },
             label: 'Ignored',
             count: counts.value.ignored,
             previews: getPreviewMovies('ignored'),
@@ -125,9 +126,9 @@
     ])
 
     async function handleSignOut() {
-        toast.show('Signed out')
+        toast.success('You have been signed out', { icon: userIcon })
         await auth.logout()
-        router.push('/')
+        router.push({ name: 'home' })
     }
 </script>
 

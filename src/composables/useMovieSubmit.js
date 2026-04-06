@@ -123,7 +123,7 @@ export function useMovieSubmit(form, isEditMode, getRouteSlug) {
                 { type: 'success' }
             )
             submitted.value = true
-            router.push(`/${slug}`)
+            router.push({ name: 'movie', params: { slug } })
         } catch (err) {
             console.error('Movie submit failed:', err)
             submitError.value = err.message || err.details || String(err)

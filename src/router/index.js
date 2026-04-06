@@ -22,6 +22,7 @@ const router = createRouter({
     routes: [
         {
             path: '/',
+            name: 'home',
             component: () => import('@/views/HomeView.vue'),
             meta: {
                 title: 'Movie Collection'
@@ -29,6 +30,7 @@ const router = createRouter({
         },
         {
             path: '/login',
+            name: 'login',
             component: () => import('@/views/LoginView.vue'),
             meta: {
                 title: 'Sign In'
@@ -36,6 +38,7 @@ const router = createRouter({
         },
         {
             path: '/profile',
+            name: 'profile',
             component: () => import('@/views/ProfileView.vue'),
             meta: {
                 requiresAuth: true,
@@ -44,6 +47,7 @@ const router = createRouter({
         },
         {
             path: '/profile/watchlist',
+            name: 'watchlist',
             component: () => import('@/views/lists/WatchlistView.vue'),
             meta: {
                 requiresAuth: true,
@@ -52,6 +56,7 @@ const router = createRouter({
         },
         {
             path: '/profile/favorites',
+            name: 'favorites',
             component: () => import('@/views/lists/FavoritesView.vue'),
             meta: {
                 requiresAuth: true,
@@ -60,6 +65,7 @@ const router = createRouter({
         },
         {
             path: '/profile/watched',
+            name: 'watched',
             component: () => import('@/views/lists/WatchedView.vue'),
             meta: {
                 requiresAuth: true,
@@ -68,6 +74,7 @@ const router = createRouter({
         },
         {
             path: '/profile/ignored',
+            name: 'ignored',
             component: () => import('@/views/lists/IgnoredView.vue'),
             meta: {
                 requiresAuth: true,
@@ -76,10 +83,12 @@ const router = createRouter({
         },
         {
             path: '/styleguide',
+            name: 'styleguide',
             component: () => import('@/views/StyleGuideView.vue')
         },
         {
             path: '/admin/add',
+            name: 'add-movie',
             component: () => import('@/views/admin/MovieFormView.vue'),
             meta: {
                 requiresAdmin: true,
@@ -88,6 +97,7 @@ const router = createRouter({
         },
         {
             path: '/admin/edit/:slug',
+            name: 'edit-movie',
             component: () => import('@/views/admin/MovieFormView.vue'),
             meta: {
                 requiresAdmin: true,
@@ -96,6 +106,7 @@ const router = createRouter({
         },
         {
             path: '/:slug',
+            name: 'movie',
             component: () => import('@/views/MovieDetailView.vue')
         },
     ],
@@ -115,8 +126,8 @@ router.beforeEach(async (to) => {
         })
     }
 
-    if (to.meta.requiresAuth && !auth.user) return '/login'
-    if (to.meta.requiresAdmin && !auth.isAdmin) return '/'
+    if (to.meta.requiresAuth && !auth.user) return { name: 'login' }
+    if (to.meta.requiresAdmin && !auth.isAdmin) return { name: 'home' }
 
     if (to.meta.title) {
         document.title = to.path === '/'

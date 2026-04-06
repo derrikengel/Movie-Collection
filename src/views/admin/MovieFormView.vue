@@ -47,7 +47,7 @@
                     Change
                 </button>
 
-                <RouterLink v-else :to="`/${route.params.slug}`" :class="s.btnView">
+                <RouterLink v-else :to="{ name: 'movie', params: { slug: route.params.slug } }" :class="s.btnView">
                     View
                     <span v-html="rightArrowIcon" :class="s.viewIcon" />
                 </RouterLink>
@@ -270,9 +270,9 @@
 </template>
 
 <script setup>
-    import { ref, computed, onMounted } from 'vue'
+    import { ref, computed, watchEffect, onMounted, onBeforeUnmount } from 'vue'
     import { useRoute, onBeforeRouteLeave } from 'vue-router'
-    import { useConfirm } from '@/composables/useConfirm'
+
     import { useMoviesStore } from '@/stores/movies'
     import { serviceIcons } from '@/lib/icons'
     import { usePageTitle } from '@/composables/usePageTitle'
@@ -287,7 +287,7 @@
 
     const route = useRoute()
     const moviesStore = useMoviesStore()
-    const { confirm } = useConfirm()
+
     const isEditMode = computed(() => !!route.params.slug)
     const formReady = ref(false)
     const formSnapshot = ref(null)
@@ -326,8 +326,8 @@
         return base ? `Add ${base} | Movie Collection` : 'Add Movie | Movie Collection'
     }))
 
-    onMounted(() => {
-        if (isEditMode.value) {
+    watchEffect(() => {
+        if (isEditMode.value && !formReady.value && moviesStore.movies.length) {
             const movie = moviesStore.movies.find(m => m.slug === route.params.slug)
             if (movie) { populateFromMovie(movie); formReady.value = true; takeSnapshot() }
         }
@@ -346,15 +346,16 @@
         formSnapshot.value = null
     }
 
-    onBeforeRouteLeave(async () => {
+    onBeforeRouteLeave(() => {
         if (submitted.value || !formReady.value || !isDirty.value) return true
-        const ok = await confirm('You have unsaved changes. Leave anyway?', {
-            title: 'Unsaved Changes',
-            confirmLabel: 'Leave page',
-            cancelLabel: 'Stay',
-        })
-        return ok
+        return window.confirm('You have unsaved changes. Leave anyway?')
     })
+
+    function onBeforeUnload(e) {
+        if (!submitted.value && formReady.value && isDirty.value) e.preventDefault()
+    }
+    onMounted(() => window.addEventListener('beforeunload', onBeforeUnload))
+    onBeforeUnmount(() => window.removeEventListener('beforeunload', onBeforeUnload))
 </script>
 
 <style module="s">

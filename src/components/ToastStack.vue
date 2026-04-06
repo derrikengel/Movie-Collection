@@ -42,11 +42,11 @@
         pointer-events: none;
         position: fixed;
         right: 0;
-        top: var(--size-4);
+        top: 8rem;
         z-index: 200;
 
         @media (min-width: 64rem) {
-            top: var(--size-8);
+            top: 12rem;
         }
     }
 

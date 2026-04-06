@@ -1,6 +1,6 @@
 <template>
     <div :class="[s.card, faded && s.cardFaded]">
-        <RouterLink :to="`/${movie.slug}`" :class="s.cardFront">
+        <RouterLink :to="{ name: 'movie', params: { slug: movie.slug } }" :class="s.cardFront">
             <span :class="s.preloadTitle">
                 {{ movie.title }} ({{ releaseYear(movie.release_date) }})
             </span>
@@ -9,7 +9,7 @@
         </RouterLink>
 
         <div :class="s.cardOverlay">
-            <RouterLink :to="`/${movie.slug}`" :class="s.cardOverlayContent">
+            <RouterLink :to="{ name: 'movie', params: { slug: movie.slug } }" :class="s.cardOverlayContent">
                 <p :class="s.cardTitle">{{ movie.title }}</p>
                 <dl :class="s.tags">
                     <dt class="visually-hidden">Release Year</dt>
@@ -109,7 +109,7 @@
         backdrop-filter: var(--bg-frosted-sm);
         background: var(--color-bg-frosted-dark);
         border-radius: inherit;
-        display: flex;
+        display: none;
         flex-direction: column;
         inset: 0;
         opacity: 0;
@@ -247,7 +247,11 @@
         }
     }
 
-    @media (hover: hover) {
+    @media (hover: hover) and (pointer: fine) {
+        .cardOverlay {
+            display: flex;
+        }
+
         .card:hover {
             box-shadow: var(--shadow-2xl);
             scale: 1.25;

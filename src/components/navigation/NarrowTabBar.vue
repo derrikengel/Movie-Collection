@@ -26,7 +26,7 @@
     const tabs = computed(() => {
         const items = [
             {
-                to: '/',
+                to: { name: 'home' },
                 exact: true,
                 label: 'Movies',
                 icon: film,
@@ -37,7 +37,7 @@
         if (auth.user) {
             items.push(
                 {
-                    to: '/profile/watchlist',
+                    to: { name: 'watchlist' },
                     exact: false,
                     label: 'Watchlist',
                     icon: bookmark,
@@ -45,7 +45,7 @@
                     listClass: 'list-watchlist',
                 },
                 {
-                    to: '/profile/favorites',
+                    to: { name: 'favorites' },
                     exact: false,
                     label: 'Favorites',
                     icon: heart,
@@ -53,7 +53,7 @@
                     listClass: 'list-favorite',
                 },
                 {
-                    to: '/profile',
+                    to: { name: 'profile' },
                     exact: true,
                     label: auth.displayName,
                     icon: userIcon,
@@ -62,7 +62,7 @@
             )
         } else {
             items.push({
-                to: '/login',
+                to: { name: 'login' },
                 exact: false,
                 label: 'Sign In',
                 icon: userIcon,
@@ -72,7 +72,7 @@
 
         if (auth.isAdmin) {
             items.push({
-                to: '/admin/add',
+                to: { name: 'add-movie' },
                 exact: false,
                 label: 'Add',
                 icon: plus,

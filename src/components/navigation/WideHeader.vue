@@ -42,18 +42,18 @@
     const filters = useFiltersStore()
     const { watchlistCount, favoritesCount } = useListCounts()
 
-    const listingPaths = ['/', '/profile/watchlist', '/profile/watched', '/profile/favorites', '/profile/ignored']
-    const isListPage = computed(() => listingPaths.includes(route.path))
-    const isMovieDetail = computed(() => !route.meta?.title && route.path !== '/')
-    const isProfile = computed(() => route.path === '/profile')
+    const listingNames = ['home', 'watchlist', 'watched', 'favorites', 'ignored']
+    const isListPage = computed(() => listingNames.includes(route.name))
+    const isMovieDetail = computed(() => !route.meta?.title && route.name !== 'home')
+    const isProfile = computed(() => route.name === 'profile')
 
     const listNameMap = {
-        '/profile/watchlist': 'Watchlist',
-        '/profile/watched': 'Watched',
-        '/profile/favorites': 'Favorite',
-        '/profile/ignored': 'Ignored',
+        watchlist: 'Watchlist',
+        watched: 'Watched',
+        favorites: 'Favorite',
+        ignored: 'Ignored',
     }
-    const listName = computed(() => listNameMap[route.path] ?? null)
+    const listName = computed(() => listNameMap[route.name] ?? null)
 
     // ── Animated count ─────────────────────────────────
     // ── Animated count ─────────────────────────────────
@@ -84,11 +84,11 @@
     // Route change: reset to 0 while count is hidden; flag to skip debounce on next update.
     // Fallback timer handles the KeepAlive case where filters.visibleMovies.length doesn't
     // change (base was already correct), so the length watcher never fires.
-    watch(() => route.path, (newPath) => {
+    watch(() => route.name, (newName) => {
         cancelAnim()
         clearTimeout(debounceTimer)
         clearTimeout(routeTimer)
-        if (!listingPaths.includes(newPath)) return
+        if (!listingNames.includes(newName)) return
         displayCount.value = 0
         isRouteChange = true
         routeTimer = setTimeout(() => {
@@ -118,13 +118,13 @@
 
     const navLinks = computed(() => {
         const items = [
-            { to: '/', exact: true, label: 'All Movies', icon: film, badge: null },
+            { to: { name: 'home' }, exact: true, label: 'All Movies', icon: film, badge: null },
         ]
 
         if (auth.user) {
             items.push(
                 {
-                    to: '/profile/watchlist',
+                    to: { name: 'watchlist' },
                     exact: false,
                     label: 'Watchlist',
                     icon: bookmark,
@@ -133,7 +133,7 @@
                     colored: true,
                 },
                 {
-                    to: '/profile/favorites',
+                    to: { name: 'favorites' },
                     exact: false,
                     label: 'Favorites',
                     icon: heart,
@@ -144,12 +144,12 @@
             )
 
             if (auth.isAdmin) {
-                items.push({ to: '/admin/add', exact: false, label: 'Add Movie', icon: plus, badge: null })
+                items.push({ to: { name: 'add-movie' }, exact: false, label: 'Add Movie', icon: plus, badge: null })
             }
 
-            items.push({ to: '/profile', exact: true, label: auth.displayName, icon: userIcon, badge: null, isUser: true })
+            items.push({ to: { name: 'profile' }, exact: true, label: auth.displayName, icon: userIcon, badge: null, isUser: true })
         } else {
-            items.push({ to: '/login', exact: false, label: 'Sign In', icon: userIcon, badge: null })
+            items.push({ to: { name: 'login' }, exact: false, label: 'Sign In', icon: userIcon, badge: null })
         }
 
         return items

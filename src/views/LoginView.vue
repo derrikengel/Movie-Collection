@@ -30,6 +30,8 @@
     import { useRouter } from 'vue-router'
     import { useAuthStore } from '@/stores/auth'
     import { useToastStore } from '@/stores/toast'
+    import userIcon from '@/assets/icons/user.svg?raw'
+
     const auth = useAuthStore()
     const toast = useToastStore()
     const router = useRouter()
@@ -44,8 +46,11 @@
         errorMsg.value = ''
         try {
             await auth.login(email.value, password.value)
-            toast.show(`Signed in as ${auth.displayName}`)
-            router.push('/')
+            toast.success(`Signed in as`, {
+                icon: userIcon,
+                action: { label: auth.displayName, to: { name: 'profile' } }
+            })
+            router.push({ name: 'home' })
         } catch (err) {
             errorMsg.value = 'Invalid email or password.'
         } finally {

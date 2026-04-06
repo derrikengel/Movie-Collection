@@ -99,11 +99,11 @@
             </div>
 
             <!-- Watched toggle -->
-            <ToggleSwitch variant="wide" label="Fade Watched" :model-value="filters.watchedMode === 'fade'"
+            <ToggleSwitch v-if="auth.user" variant="wide" label="Fade Watched" :model-value="filters.watchedMode === 'fade'"
                 @update:model-value="filters.watchedMode = $event ? 'fade' : 'show'" />
 
             <!-- Ignored toggle -->
-            <ToggleSwitch variant="wide" label="Hide Ignored" :model-value="filters.ignoredMode === 'hide'"
+            <ToggleSwitch v-if="auth.user" variant="wide" label="Hide Ignored" :model-value="filters.ignoredMode === 'hide'"
                 @update:model-value="filters.ignoredMode = $event ? 'hide' : 'show'" />
 
             <!-- Randomize -->
@@ -163,12 +163,12 @@
                         </FilterPanel>
 
                         <!-- Watched / Ignored quick toggles -->
-                        <div :class="s.toggle">
+                        <div v-if="auth.user" :class="s.toggle">
                             <ToggleSwitch label="Fade Watched" :model-value="filters.watchedMode === 'fade'"
                                 @update:model-value="filters.watchedMode = $event ? 'fade' : 'show'" />
                         </div>
 
-                        <div :class="s.toggle">
+                        <div v-if="auth.user" :class="s.toggle">
                             <ToggleSwitch label="Hide Ignored" :model-value="filters.ignoredMode === 'hide'"
                                 @update:model-value="filters.ignoredMode = $event ? 'hide' : 'show'" />
                         </div>
@@ -197,6 +197,7 @@
     import { ref, computed } from 'vue'
     import { useRouter } from 'vue-router'
     import { useFiltersStore } from '@/stores/filters'
+    import { useAuthStore } from '@/stores/auth'
     import FilterPanel from '@/components/filters/NarrowFilterPanel.vue'
     import FilterOptionList from '@/components/filters/FilterOptionList.vue'
     import FilterRangeSlider from '@/components/filters/FilterRangeSlider.vue'
@@ -216,6 +217,7 @@
     ]
 
     const filters = useFiltersStore()
+    const auth = useAuthStore()
     const router = useRouter()
 
     const sheetOpen = ref(false)
@@ -249,7 +251,7 @@
 
     function handleRandom() {
         const movie = filters.randomMovie()
-        if (movie) router.push(`/${movie.slug}`)
+        if (movie) router.push({ name: 'movie', params: { slug: movie.slug } })
     }
 </script>
 
