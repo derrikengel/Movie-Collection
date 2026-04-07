@@ -41,7 +41,7 @@
                     popovertarget="filter-genre">
                     Genre
                     <span v-if="filters.genres.length" class="badge" :class="s.wideBadge">{{ filters.genres.length
-                        }}</span>
+                    }}</span>
                     <span :class="s.chevron" v-html="chevronIcon" />
                 </button>
                 <div id="filter-genre" popover="auto" :class="[s.widePanel, s.genrePanel]">
@@ -56,7 +56,7 @@
                     Rating
                     <span v-if="filters.mpaaGroups.length" class="badge" :class="s.wideBadge">{{
                         filters.mpaaGroups.length
-                        }}</span>
+                    }}</span>
                     <span :class="s.chevron" v-html="chevronIcon" />
                 </button>
                 <div id="filter-mpaa" popover="auto" :class="[s.widePanel, s.mpaaPanel]">
@@ -99,11 +99,13 @@
             </div>
 
             <!-- Watched toggle -->
-            <ToggleSwitch v-if="auth.user" variant="wide" label="Fade Watched" :model-value="filters.watchedMode === 'fade'"
+            <ToggleSwitch v-if="auth.user" variant="wide" label="Fade Watched"
+                :model-value="filters.watchedMode === 'fade'"
                 @update:model-value="filters.watchedMode = $event ? 'fade' : 'show'" />
 
             <!-- Ignored toggle -->
-            <ToggleSwitch v-if="auth.user" variant="wide" label="Hide Ignored" :model-value="filters.ignoredMode === 'hide'"
+            <ToggleSwitch v-if="auth.user" variant="wide" label="Hide Ignored"
+                :model-value="filters.ignoredMode === 'hide'"
                 @update:model-value="filters.ignoredMode = $event ? 'hide' : 'show'" />
 
             <!-- Randomize -->
@@ -123,7 +125,13 @@
                     <div :class="s.sheetScroll">
 
                         <!-- Sort -->
-                        <FilterPanel :label="`Sort: ${sortOptions.find(o => o.value === filters.sort)?.label}`">
+                        <FilterPanel>
+                            <template #label>
+                                Sort:
+                                <span :class="s.sortCurrentNarrow">
+                                    {{sortOptions.find(o => o.value === filters.sort)?.label}}
+                                </span>
+                            </template>
                             <FilterOptionList :options="sortOptions" :active-values="[filters.sort]"
                                 @toggle="filters.sort = $event" />
                         </FilterPanel>
@@ -178,7 +186,7 @@
                     <div :class="s.sheetFooter">
                         <button :class="s.sheetDone" :disabled="filters.visibleMovies.length === 0"
                             @click="sheetOpen = false">
-                            Show {{ filters.visibleMovies.length }}
+                            View {{ filters.visibleMovies.length }}
                             {{ filters.visibleMovies.length === 1 ? 'movie' : 'movies' }}
                         </button>
                         <button v-if="filters.activeFilterCount > 0 || filters.search" :class="s.sheetReset"
@@ -433,6 +441,10 @@
         /* font-size: var(--text-xs); */
     }
 
+    .sortCurrentNarrow {
+        color: var(--blue-50);
+    }
+
     .chevron {
         align-items: center;
         color: var(--blue-400);
@@ -551,7 +563,7 @@
         inset: 0;
         background: var(--color-bg-frosted-subtle);
         z-index: 199;
-        backdrop-filter: var(--bg-frosted-xl);
+        backdrop-filter: var(--bg-frosted-lg);
     }
 
     .sheet {
@@ -612,19 +624,20 @@
     }
 
     .sheetDone {
-        background: var(--color-accent);
+        background: var(--green-400);
         border: none;
         border-radius: var(--radius-md);
-        color: var(--color-text-on-accent);
+        color: var(--green-800);
         flex: 1;
         font-weight: var(--font-weight-medium);
         font-size: var(--text-sm);
         padding: var(--size-3);
-        transition: background var(--transition-fast);
+        transition: background var(--transition-fast), color var(--transition-fast);
     }
 
     .sheetDone:hover {
-        background: var(--color-accent-bright);
+        background: var(--green-500);
+        color: var(--green-950);
     }
 
     .sheetDone:disabled {

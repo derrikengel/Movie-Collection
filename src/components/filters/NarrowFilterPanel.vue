@@ -1,7 +1,9 @@
 <template>
     <details :class="s.filterPanel">
         <summary :class="s.header">
-            <span :class="[s.label, (count > 0 || active) && s.labelActive]">{{ label }}</span>
+            <span :class="[s.label, (count > 0 || active) && s.labelActive]">
+                <slot name="label">{{ label }}</slot>
+            </span>
             <span v-if="count > 0" class="badge">{{ count }}</span>
             <span :class="s.chevron" v-html="chevronIcon" />
         </summary>
@@ -17,7 +19,7 @@
     import chevronIcon from '@/assets/icons/chevron-down.svg?raw'
 
     defineProps({
-        label: { type: String, required: true },
+        label: { type: String, default: '' },
         count: { type: Number, default: 0 },
         active: { type: Boolean, default: false },
     })
