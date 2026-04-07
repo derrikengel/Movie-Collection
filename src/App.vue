@@ -5,7 +5,7 @@
         <main :class="s.main">
             <RouterView v-slot="{ Component }">
                 <Transition name="page" mode="out-in" @after-leave="triggerScrollResolve">
-                    <KeepAlive :include="['HomeView']">
+                    <KeepAlive :include="['HomeView', 'WatchlistView', 'WatchedView', 'FavoritesView', 'IgnoredView']">
                         <component :is="Component" :key="$route.path" />
                     </KeepAlive>
                 </Transition>

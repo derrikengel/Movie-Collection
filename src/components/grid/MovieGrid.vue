@@ -85,12 +85,14 @@
     }
 
     onActivated(() => {
-        isActive = true
         const isReturningFromDetail = !!fromRoute?.params?.slug
         if (!isReturningFromDetail) {
-            filters.watchedMode = props.defaultWatchedMode
-            filters.ignoredMode = props.defaultIgnoredMode
+            visibleCount.value = PAGE_SIZE
+            initFilters()
+        } else {
+            filters.setBase(props.movies)
         }
+        isActive = true
     })
     onDeactivated(() => { isActive = false })
 

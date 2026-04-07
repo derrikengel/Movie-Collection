@@ -4,7 +4,7 @@
             <div v-if="movie.trailer_youtube_id && !trailerError" ref="youtubeEl" :class="s.youtubePlayer" />
         </div>
 
-        <button :class="`${s.overlayBtn} ${s.backBtn}`" @click="router.back()" aria-label="Go back"
+        <button :class="`${s.overlayBtn} ${s.backBtn}`" @click="goBack" aria-label="Go back"
             v-html="arrowLeft" />
 
         <button v-if="trailerLoaded" :class="`${s.overlayBtn} ${s.muteBtn} ${!muted && s.muteBtnUnmuted}`"
@@ -18,11 +18,21 @@
     import { useRouter } from 'vue-router'
     import { usePlayer } from '@vue-youtube/core'
     import { posterUrl, backdropUrl } from '@/lib/tmdb'
+    import { useNavContextStore } from '@/stores/navContext'
     import volumeFull from '@/assets/icons/volume-full.svg?raw'
     import volumeMute from '@/assets/icons/volume-mute.svg?raw'
     import arrowLeft from '@/assets/icons/arrow-left.svg?raw'
 
     const router = useRouter()
+    const navContext = useNavContextStore()
+
+    function goBack() {
+        if (navContext.sourceList !== null) {
+            router.back()
+        } else {
+            router.push({ name: 'home' })
+        }
+    }
 
     const props = defineProps({
         movie: {
