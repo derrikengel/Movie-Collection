@@ -26,7 +26,7 @@ export function useTmdbSearch() {
 
     // Returns a populated data object — caller merges into form via Object.assign
     async function selectTmdb(result) {
-        const [details, releases, videos] = await Promise.all([
+        const [details, releases, videos, credits] = await Promise.all([
             fetch(`https://api.themoviedb.org/3/movie/${result.id}?language=en-US`, {
                 headers: { Authorization: `Bearer ${import.meta.env.VITE_TMDB_TOKEN}` }
             }).then(r => r.json()),
@@ -36,7 +36,16 @@ export function useTmdbSearch() {
             fetch(`https://api.themoviedb.org/3/movie/${result.id}/videos?language=en-US`, {
                 headers: { Authorization: `Bearer ${import.meta.env.VITE_TMDB_TOKEN}` }
             }).then(r => r.json()),
+            fetch(`https://api.themoviedb.org/3/movie/${result.id}/credits`, {
+                headers: { Authorization: `Bearer ${import.meta.env.VITE_TMDB_TOKEN}` }
+            }).then(r => r.json()),
         ])
+
+        const cast_members = (credits.cast ?? []).slice(0, 10).map(({ name, character, profile_path }) => ({
+            name,
+            character,
+            profile_path: profile_path ?? '',
+        }))
 
         const usRelease = releases.results?.find(r => r.iso_3166_1 === 'US')
         const certification = usRelease?.release_dates?.find(d => d.certification)?.certification ?? ''
@@ -54,6 +63,7 @@ export function useTmdbSearch() {
             backdrop_path: details.backdrop_path ?? '',
             genres: details.genres.map(g => g.name).filter(g => g !== 'TV Movie'),
             trailer_youtube_id: trailer?.key ?? '',
+            cast_members,
         }
     }
 

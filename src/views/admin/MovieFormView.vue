@@ -251,6 +251,47 @@
                         <input v-model="form.backdrop_path" type="text" :class="s.input" placeholder="/abc123.jpg" />
                     </div>
 
+                    <!-- Cast Members -->
+                    <div :class="s.field">
+                        <label :class="s.fieldLabel">Cast</label>
+
+                        <div v-if="form.cast_members.length" :class="s.castList">
+                            <div v-for="(member, i) in form.cast_members" :key="i" :class="s.castRow">
+                                <div :class="s.castOrder">
+                                    <button type="button" :class="s.castOrderBtn" :disabled="i === 0"
+                                        aria-label="Move up" @click="moveCastMember(i, -1)">▲</button>
+                                    <button type="button" :class="s.castOrderBtn"
+                                        :disabled="i === form.cast_members.length - 1"
+                                        aria-label="Move down" @click="moveCastMember(i, 1)">▼</button>
+                                </div>
+
+                                <img
+                                    v-if="member.profile_path"
+                                    :src="profileUrl(member.profile_path)"
+                                    :alt="member.name"
+                                    :class="s.castThumb"
+                                />
+                                <div v-else :class="[s.castThumb, s.castThumbEmpty]" />
+
+                                <div :class="s.castFields">
+                                    <input v-model="member.name" type="text" :class="s.input" placeholder="Actor name" />
+                                    <input v-model="member.character" type="text" :class="s.input"
+                                        placeholder="Character name" />
+                                    <input v-model="member.profile_path" type="text" :class="s.input"
+                                        placeholder="/path.jpg (optional)" />
+                                </div>
+
+                                <button type="button" :class="s.castRemove" @click="removeCastMember(i)"
+                                    aria-label="Remove cast member">×</button>
+                            </div>
+                        </div>
+
+                        <button type="button" :class="s.btnSecondary" @click="addCastMember"
+                            :disabled="form.cast_members.length >= 10">
+                            + Add Cast Member
+                        </button>
+                    </div>
+
                 </div>
             </details>
 
@@ -276,7 +317,7 @@
     import { useMoviesStore } from '@/stores/movies'
     import { serviceIcons } from '@/lib/icons'
     import { usePageTitle } from '@/composables/usePageTitle'
-    import { posterUrl, backdropUrl } from '@/lib/tmdb'
+    import { posterUrl, backdropUrl, profileUrl } from '@/lib/tmdb'
     import { releaseYear } from '@/lib/movies'
     import { useTmdbSearch } from '@/composables/useTmdbSearch'
     import { useMovieForm, genreSuggestions, discOptions, serviceOptions } from '@/composables/useMovieForm'
@@ -293,7 +334,7 @@
     const formSnapshot = ref(null)
 
     const { tmdbQuery, tmdbResults, tmdbSearching, tmdbSearched, searchTmdb, selectTmdb: _selectTmdb, resetTmdb: _resetTmdb } = useTmdbSearch()
-    const { form, genreInput, keywordInput, trailerSearchUrl, populateFromMovie, addGenre, removeGenre, addKeyword, removeKeyword, getService, isServiceActive, serviceSearchUrl } = useMovieForm()
+    const { form, genreInput, keywordInput, trailerSearchUrl, populateFromMovie, addCastMember, removeCastMember, moveCastMember, addGenre, removeGenre, addKeyword, removeKeyword, getService, isServiceActive, serviceSearchUrl } = useMovieForm()
 
     const genreFocused = ref(false)
     const filteredGenreSuggestions = computed(() => {
@@ -1007,5 +1048,115 @@
         font-size: var(--text-sm);
         color: var(--color-text-muted);
         margin-top: var(--size-2);
+    }
+
+    /* Cast editor */
+    .castList {
+        display: flex;
+        flex-direction: column;
+        gap: var(--size-3);
+        margin-bottom: var(--size-2);
+    }
+
+    .castRow {
+        align-items: flex-start;
+        background: var(--color-surface);
+        border: 1px solid var(--color-border);
+        border-radius: var(--radius-md);
+        display: flex;
+        gap: var(--size-3);
+        padding: var(--size-3);
+    }
+
+    .castThumb {
+        aspect-ratio: 1;
+        border-radius: var(--radius-full);
+        flex-shrink: 0;
+        object-fit: cover;
+        width: var(--size-10);
+    }
+
+    .castThumbEmpty {
+        background: var(--color-surface-raised);
+        display: block;
+    }
+
+    .castFields {
+        display: flex;
+        flex: 1;
+        flex-direction: column;
+        gap: var(--size-2);
+        min-width: 0;
+    }
+
+    .castFields .input {
+        font-size: var(--text-sm);
+        padding: var(--size-2) var(--size-3);
+    }
+
+    .castOrder {
+        display: flex;
+        flex-direction: column;
+        flex-shrink: 0;
+        gap: var(--size-1);
+        justify-content: center;
+    }
+
+    .castOrderBtn {
+        background: transparent;
+        border: none;
+        color: var(--color-text-muted);
+        cursor: pointer;
+        font-size: var(--text-2xs);
+        line-height: 1;
+        padding: var(--size-1);
+        transition: color var(--transition-fast);
+    }
+
+    .castOrderBtn:hover:not(:disabled) {
+        color: var(--color-text);
+    }
+
+    .castOrderBtn:disabled {
+        cursor: default;
+        opacity: 0.2;
+    }
+
+    .castRemove {
+        background: transparent;
+        border: none;
+        color: var(--color-text-muted);
+        cursor: pointer;
+        flex-shrink: 0;
+        font-size: var(--text-xl);
+        line-height: 1;
+        padding: var(--size-1);
+        transition: color var(--transition-fast);
+    }
+
+    .castRemove:hover {
+        color: var(--color-text);
+    }
+
+    .btnSecondary {
+        background: var(--color-surface);
+        border: 1px solid var(--color-border);
+        border-radius: var(--radius-md);
+        color: var(--color-text-secondary);
+        cursor: pointer;
+        font-size: var(--text-sm);
+        font-weight: var(--font-weight-medium);
+        padding: var(--size-2) var(--size-4);
+        transition: border-color var(--transition-fast), color var(--transition-fast);
+    }
+
+    .btnSecondary:hover:not(:disabled) {
+        border-color: var(--color-border-strong);
+        color: var(--color-text);
+    }
+
+    .btnSecondary:disabled {
+        cursor: not-allowed;
+        opacity: 0.4;
     }
 </style>

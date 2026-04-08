@@ -33,6 +33,7 @@ export function useMovieForm() {
         trailer_youtube_id: '',
         poster_path: '',
         backdrop_path: '',
+        cast_members: [],
         genres: [],
         search_keywords: [],
         notes: '',
@@ -72,6 +73,7 @@ export function useMovieForm() {
         form.trailer_youtube_id = movie.trailer_youtube_id ?? ''
         form.poster_path = movie.poster_path ?? ''
         form.backdrop_path = movie.backdrop_path ?? ''
+        form.cast_members = movie.cast_members ? [...movie.cast_members] : []
         form.genres = [...(movie.genres ?? [])]
         form.search_keywords = movie.search_keywords ? movie.search_keywords.split(/\s+/).filter(Boolean) : []
         form.notes = movie.notes ?? ''
@@ -87,6 +89,21 @@ export function useMovieForm() {
             quality: existingMap[key]?.quality ?? '',
             url: existingMap[key]?.url ?? '',
         }))
+    }
+
+    function addCastMember() {
+        form.cast_members.push({ name: '', character: '', profile_path: '' })
+    }
+
+    function removeCastMember(i) {
+        form.cast_members.splice(i, 1)
+    }
+
+    function moveCastMember(i, dir) {
+        const j = i + dir
+        if (j < 0 || j >= form.cast_members.length) return
+        const [member] = form.cast_members.splice(i, 1)
+        form.cast_members.splice(j, 0, member)
     }
 
     function addGenre() {
@@ -136,6 +153,9 @@ export function useMovieForm() {
         keywordInput,
         trailerSearchUrl,
         populateFromMovie,
+        addCastMember,
+        removeCastMember,
+        moveCastMember,
         addGenre,
         removeGenre,
         addKeyword,

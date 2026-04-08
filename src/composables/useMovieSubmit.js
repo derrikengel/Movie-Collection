@@ -74,6 +74,7 @@ export function useMovieSubmit(form, isEditMode, getRouteSlug) {
                 poster_path: form.poster_path || null,
                 backdrop_path: form.backdrop_path || null,
                 trailer_youtube_id: form.trailer_youtube_id || null,
+                cast_members: form.cast_members.length ? form.cast_members : null,
                 genres: form.genres,
                 notes: form.notes || null,
                 acquired_at: new Date(form.acquired_at).toISOString(),

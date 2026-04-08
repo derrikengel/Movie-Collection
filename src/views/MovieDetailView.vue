@@ -35,17 +35,47 @@
                         <span v-for="genre in movie.genres" :key="genre" :class="s.genre">{{ genre }}</span>
                     </div>
 
-                    <p v-if="movie.description" :class="`${s.description} ${s.descriptionWide}`">
+                    <p v-if="movie.description" :class="[s.description, s.descriptionWide]">
                         {{ movie.description }}
                     </p>
 
-                    <p v-if="movie.notes" :class="`${s.notes} ${s.notesWide}`">{{ movie.notes }}</p>
+                    <section :class="[s.cast, s.castWide]">
+                        <div :class="s.castPhotos">
+                            <img v-for="member in movie.cast_members.filter(m => m.profile_path)" :key="member.name"
+                                :src="profileUrl(member.profile_path)" :alt="member.name" :class="s.castPhoto"
+                                loading="lazy" />
+                        </div>
+
+                        <ol :class="s.castList" role="list">
+                            <li v-for="member in movie.cast_members" :key="member.name" :class="s.card">
+                                <span :class="s.name">{{ member.name }}</span>
+                            </li>
+                        </ol>
+                    </section>
+
+                    <p v-if="movie.notes" :class="[s.notes, s.notesWide]">{{ movie.notes }}</p>
                 </div>
             </div>
 
-            <p v-if="movie.description" :class="`${s.description} ${s.descriptionNarrow}`">{{ movie.description }}</p>
-            <p v-if="movie.notes" :class="`${s.notes} ${s.notesNarrow}`">{{ movie.notes }}</p>
+            <p v-if="movie.description" :class="[s.description, s.descriptionNarrow]">{{ movie.description }}</p>
+
+            <section :class="[s.cast, s.castNarrow]">
+                <div :class="s.castPhotos">
+                    <img v-for="member in movie.cast_members.filter(m => m.profile_path)" :key="member.name"
+                        :src="profileUrl(member.profile_path)" :alt="member.name" :class="s.castPhoto" loading="lazy" />
+                </div>
+
+                <ol :class="s.castList" role="list">
+                    <li v-for="member in movie.cast_members" :key="member.name" :class="s.card">
+                        <span :class="s.name">{{ member.name }}</span>
+                    </li>
+                </ol>
+            </section>
+
+            <p v-if="movie.notes" :class="[s.notes, s.notesNarrow]">{{ movie.notes }}</p>
         </div>
+
+        <!-- <MovieCast v-if="movie.cast_members?.length" :cast="movie.cast_members" /> -->
 
         <MovieActionBar :movie="movie" />
 
@@ -113,9 +143,10 @@
     import { useNavContextStore } from '@/stores/navContext'
     import MovieHero from '@/components/detail/MovieHero.vue'
     import MovieActionBar from '@/components/detail/MovieActionBar.vue'
+    import MovieCast from '@/components/detail/MovieCast.vue'
     import MovieServices from '@/components/detail/MovieServices.vue'
     import { usePageTitle } from '@/composables/usePageTitle'
-    import { posterUrl } from '@/lib/tmdb'
+    import { posterUrl, profileUrl } from '@/lib/tmdb'
     import { releaseYear } from '@/lib/movies'
     import star from '@/assets/icons/star.svg?raw'
     import pencil from '@/assets/icons/pencil.svg?raw'
@@ -334,6 +365,59 @@
         @container (min-width: 32rem) {
             display: block;
         }
+    }
+
+    .castNarrow {
+        margin-top: var(--size-6);
+
+        @container (min-width: 48rem) {
+            display: none;
+        }
+    }
+
+    .castWide {
+        display: none;
+        margin-top: var(--size-6);
+
+        @container (min-width: 48rem) {
+            display: block;
+        }
+    }
+
+    .castPhotos {
+        display: flex;
+    }
+
+    .castPhoto {
+        aspect-ratio: 1;
+        border: 0.125rem solid var(--blue-950);
+        border-radius: var(--radius-full);
+        box-shadow: var(--shadow-md);
+        display: block;
+        object-fit: cover;
+        object-position: left 50% top 25%;
+        width: var(--size-10);
+    }
+
+    .castPhoto+.castPhoto {
+        margin-left: calc(var(--size-2) * -1);
+    }
+
+    .castList {
+        list-style: none;
+        font-size: var(--text-xs);
+        color: var(--blue-300);
+        font-style: italic;
+        font-weight: var(--font-weight-medium);
+        margin-top: var(--size-2);
+    }
+
+    .castList li+li:before {
+        content: ', ';
+    }
+
+    .castList li {
+        display: inline;
     }
 
     .notes {
