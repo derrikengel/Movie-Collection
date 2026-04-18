@@ -1,6 +1,5 @@
 <template>
     <div :class="s.page">
-        <FilterBar />
 
         <div :class="s.results">
             <p v-if="moviesStore.loading" :class="s.status">Loading…</p>
@@ -24,7 +23,6 @@
     import { useRouter } from 'vue-router'
     import { useMoviesStore } from '@/stores/movies'
     import { useFiltersStore } from '@/stores/filters'
-    import FilterBar from '@/components/filters/FilterBar.vue'
     import MovieCard from '@/components/grid/MovieCard.vue'
 
     const props = defineProps({
@@ -124,8 +122,8 @@
     }
 
     .status {
-        color: var(--color-text-muted);
-        font-size: var(--text-sm);
+        color: var(--blue-400);
+        font-weight: var(--font-weight-medium);
         padding: var(--size-12) 0;
         text-align: center;
     }
@@ -133,17 +131,17 @@
     .grid {
         display: grid;
         gap: var(--size-2);
-        grid-template-columns: repeat(auto-fill, minmax(10rem, 1fr));
-    }
+        grid-template-columns: repeat(auto-fill, minmax(6rem, 1fr));
 
-    @container (min-width: 32rem) {
-        .grid {
+        @media (hover: hover) and (pointer: fine) {
+            grid-template-columns: repeat(auto-fill, minmax(10rem, 1fr));
+        }
+
+        @container (min-width: 32rem) {
             gap: var(--size-3);
         }
-    }
 
-    @container (min-width: 80rem) {
-        .grid {
+        @container (min-width: 80rem) {
             gap: var(--size-4);
             grid-template-columns: repeat(auto-fill, minmax(16rem, 1fr));
         }

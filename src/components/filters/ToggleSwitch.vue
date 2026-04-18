@@ -1,13 +1,10 @@
 <template>
-    <button :class="[s.toggle, modelValue && s.toggleOn, variant === 'wide' && s.toggleWide]" role="switch"
-        :aria-checked="String(modelValue)" @click="$emit('update:modelValue', !modelValue)" type="button">
+    <button :class="[s.toggle, modelValue && s.toggleOn]" role="switch" :aria-checked="String(modelValue)"
+        @click="$emit('update:modelValue', !modelValue)" type="button">
 
-        <span :class="[s.label, variant === 'wide' && s.labelWide]">{{ label }}</span>
+        <span :class="s.check" v-if="modelValue" v-html="checkmark" aria-hidden="true" />
 
-        <div :class="s.switch">
-            <span :class="s.thumb" v-html="modelValue ? checkmark : ''" aria-hidden="true" />
-        </div>
-
+        {{ label }}
     </button>
 </template>
 
@@ -18,10 +15,6 @@
         label: {
             type: String,
             required: true
-        },
-        variant: {
-            type: String,
-            default: 'narrow'
         }
     })
     defineEmits(['update:modelValue'])
@@ -30,72 +23,49 @@
 <style module="s">
     .toggle {
         align-items: center;
-        display: flex;
-        gap: var(--size-3);
-        justify-content: space-between;
-    }
-
-    .label {
-        color: var(--color-text-muted);
-        font-size: var(--text-xs);
-        font-weight: var(--font-weight-medium);
-        letter-spacing: var(--tracking-widest);
-        text-transform: uppercase;
-        transition: color var(--transition-fast);
-    }
-
-    .switch {
-        background: var(--blue-950);
+        background: var(--color-bg-frosted-unselected);
         border-radius: var(--radius-full);
-        box-shadow: 0 0 0 3px var(--blue-950), 0 0 0 4px var(--blue-700);
-        cursor: pointer;
+        color: var(--blue-100);
         display: flex;
-        flex-shrink: 0;
-        height: var(--size-4);
-        position: relative;
-        transition: background var(--transition-fast), box-shadow var(--transition-fast);
-        width: calc(var(--size-4) * 2);
-    }
-
-    .thumb {
-        align-items: center;
-        background: var(--blue-500);
-        border-radius: var(--radius-full);
-        /* box-shadow: var(--shadow-xs); */
-        color: var(--color-accent);
-        display: flex;
-        flex: 0 0 50%;
-        font-size: var(--text-xs);
-        justify-content: center;
-        transition: transform var(--transition-fast), background var(--transition-fast);
-    }
-
-    .toggleWide {
-        padding: 0 var(--size-3);
-    }
-
-    .labelWide {
-        color: var(--color-text-secondary);
+        flex-grow: 1;
         font-size: var(--text-sm);
         font-weight: var(--font-weight-medium);
-        letter-spacing: normal;
-        text-transform: none;
+        gap: var(--size-2);
+        line-height: var(--leading-tight);
+        justify-content: center;
+        padding: var(--size-3) var(--size-4);
+        transition: background-color var(--transition-fast), color var(--transition-fast);
+
+        @media (min-width: 64rem) {
+            flex-grow: 0;
+            padding: var(--size-2) var(--size-4);
+        }
+    }
+
+    .check {
+        align-items: center;
+        display: flex;
+        color: var(--blue-400);
+        opacity: 0.2;
+        font-size: var(--text-base);
+        justify-content: center;
+        line-height: 0;
+    }
+
+    @media (hover: hover) and (pointer: fine) {
+        .toggle:hover {
+            background: var(--color-bg-frosted-selected);
+            color: var(--blue-50);
+        }
     }
 
     .toggleOn {
-        .label {
-            color: var(--color-heading);
-        }
+        background: var(--color-bg-frosted-selected);
+        color: var(--blue-50);
 
-        .switch {
-            background: var(--green-500);
-            box-shadow: 0 0 0 3px var(--green-500);
-        }
-
-        .thumb {
-            color: var(--green-600);
-            background: var(--green-50);
-            transform: translateX(var(--size-4));
+        .check {
+            color: var(--green-400);
+            opacity: 1;
         }
     }
 </style>

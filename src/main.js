@@ -26,5 +26,4 @@ auth.init().then(() => {
     app.mount('#app')
 })
 
-// Fetch movies immediately, independent of auth
 movies.fetchMovies()

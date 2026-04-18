@@ -1,51 +1,50 @@
-<!-- src/components/FilterRangeSlider.vue -->
 <template>
     <div :class="s.rangeControls">
         <div :class="s.rangeInputRow">
             <div :class="s.rangeField">
-                <span :class="s.rangeLabel">{{ labelMin }}</span>
+                <label :class="s.rangeLabel" :for="`${inputId}-min`">{{ labelMin }}</label>
 
                 <div v-if="unit === 'time'" :class="s.timeFields">
                     <div :class="s.timeField">
-                        <input type="number" :value="minHours" min="0" :class="s.timeInput"
+                        <input type="number" :id="`${inputId}-min`" :value="minHours" min="0" :class="s.timeInput"
                             :aria-label="ariaLabelMin + ' hours'"
                             @input="e => emitTime('min', Number(e.target.value), minMins)" />
                         <span :class="s.timeUnit">h</span>
                     </div>
 
                     <div :class="s.timeField">
-                        <input type="number" :value="minMins" min="0" max="59" :class="s.timeInput"
-                            :aria-label="ariaLabelMin + ' minutes'"
+                        <input type="number" :id="`${inputId}-min-m`" :value="minMins" min="0" max="59"
+                            :class="s.timeInput" :aria-label="ariaLabelMin + ' minutes'"
                             @input="e => emitTime('min', minHours, Number(e.target.value))" />
                         <span :class="s.timeUnit">m</span>
                     </div>
                 </div>
 
-                <input v-else type="number" :value="modelValueMin ?? min" :min="min"
+                <input v-else type="number" :id="`${inputId}-min`" :value="modelValueMin ?? min" :min="min"
                     :max="Number.isFinite(modelValueMax) ? modelValueMax : max" :class="s.rangeInput"
                     :aria-label="ariaLabelMin" @change="onNumMinChange" />
             </div>
 
             <div :class="s.rangeField">
-                <span :class="s.rangeLabel">{{ labelMax }}</span>
+                <label :class="s.rangeLabel" :for="`${inputId}-max`">{{ labelMax }}</label>
 
                 <div v-if="unit === 'time'" :class="s.timeFields">
                     <div :class="s.timeField">
-                        <input type="number" :value="maxHours" min="0" :class="s.timeInput"
+                        <input type="number" :id="`${inputId}-max`" :value="maxHours" min="0" :class="s.timeInput"
                             :aria-label="ariaLabelMax + ' hours'"
                             @input="e => emitTime('max', Number(e.target.value), maxMins)" />
                         <span :class="s.timeUnit">h</span>
                     </div>
 
                     <div :class="s.timeField">
-                        <input type="number" :value="maxMins" min="0" max="59" :class="s.timeInput"
-                            :aria-label="ariaLabelMax + ' minutes'"
+                        <input type="number" :id="`${inputId}-max-m`" :value="maxMins" min="0" max="59"
+                            :class="s.timeInput" :aria-label="ariaLabelMax + ' minutes'"
                             @input="e => emitTime('max', maxHours, Number(e.target.value))" />
                         <span :class="s.timeUnit">m</span>
                     </div>
                 </div>
 
-                <input v-else type="number" :value="modelValueMax ?? max"
+                <input v-else type="number" :id="`${inputId}-max`" :value="modelValueMax ?? max"
                     :min="Number.isFinite(modelValueMin) ? modelValueMin : min" :max="max" :class="s.rangeInput"
                     :aria-label="ariaLabelMax" @change="onNumMaxChange" />
             </div>
@@ -63,7 +62,7 @@
 </template>
 
 <script setup>
-    import { computed } from 'vue'
+    import { computed, useId } from 'vue'
     import { useDualSlider } from '@/composables/useDualSlider'
 
     const props = defineProps({
@@ -79,6 +78,8 @@
     })
 
     const emit = defineEmits(['update:modelValueMin', 'update:modelValueMax'])
+
+    const inputId = useId()
 
     const { trackStyle, minZIndex, onMinInput, onMaxInput } = useDualSlider(
         () => props.modelValueMin,
@@ -120,86 +121,93 @@
 
 <style module="s">
     .rangeControls {
-        padding: var(--size-3);
         display: flex;
         flex-direction: column;
-        gap: var(--size-3);
+        gap: var(--size-4);
+        margin-inline: auto;
+        min-width: 14rem;
+        max-width: 20rem;
+
+        @media (min-width: 64rem) {
+            padding: var(--size-2) var(--size-4);
+        }
     }
 
     /* Dual-handle range slider */
     .dualSlider {
-        position: relative;
-        height: 28px;
-        display: flex;
         align-items: center;
+        display: flex;
+        height: var(--size-6);
+        position: relative;
     }
 
     .dualSliderBase {
-        position: absolute;
-        left: 0;
-        right: 0;
-        height: 4px;
-        background: var(--color-border-strong);
+        background: var(--color-bg-frosted-selected);
         border-radius: var(--radius-full);
+        height: var(--size-0-5);
+        left: 0;
         pointer-events: none;
+        position: absolute;
+        right: 0;
     }
 
     .dualSliderFill {
-        position: absolute;
-        height: 4px;
-        background: var(--color-accent);
+        background: var(--blue-400);
         border-radius: var(--radius-full);
+        height: var(--size-0-5);
         pointer-events: none;
+        position: absolute;
     }
 
     .dualSliderInput {
-        position: absolute;
-        width: 100%;
-        pointer-events: none;
-        background: transparent;
         appearance: none;
-        height: 4px;
+        background: transparent;
+        height: var(--size-0-5);
         margin: 0;
         padding: 0;
+        pointer-events: none;
+        position: absolute;
+        width: 100%;
     }
 
     .dualSliderInput::-webkit-slider-runnable-track {
         background: transparent;
-        height: 4px;
+        height: var(--size-0-5);
     }
 
     .dualSliderInput::-moz-range-track {
         background: transparent;
-        height: 4px;
+        height: var(--size-0-5);
     }
 
     .dualSliderInput::-webkit-slider-thumb {
         appearance: none;
-        pointer-events: all;
-        width: 24px;
-        height: 24px;
+        background: var(--blue-400);
         border-radius: var(--radius-full);
-        background: var(--color-accent);
+        border: none;
+        box-shadow: 0 0 0 var(--size-1) var(--blue-700);
         cursor: pointer;
-        border: 2px solid var(--color-surface-raised);
-        box-shadow: var(--shadow-md);
-        margin-top: -10px;
+        height: var(--size-5);
+        pointer-events: all;
+        translate: 0 calc(-50% + (var(--size-1) * 0.5));
+        width: var(--size-5);
     }
 
     .dualSliderInput::-moz-range-thumb {
-        pointer-events: all;
-        width: 24px;
-        height: 24px;
+        background: var(--blue-400);
+        border: none;
         border-radius: var(--radius-full);
-        background: var(--color-accent);
+        box-shadow: 0 0 0 var(--size-1) var(--blue-700);
         cursor: pointer;
-        border: 2px solid var(--color-surface-raised);
-        box-shadow: var(--shadow-md);
+        height: var(--size-5);
+        pointer-events: all;
+        width: var(--size-5);
     }
 
     /* Number inputs below slider */
     .rangeInputRow {
         display: flex;
+        gap: var(--size-2);
         justify-content: space-between;
     }
 
@@ -211,26 +219,29 @@
     }
 
     .rangeLabel {
-        font-size: var(--text-xs);
-        color: var(--blue-100);
+        color: var(--blue-300);
+        font-size: var(--text-2xs);
+        letter-spacing: var(--tracking-widest);
+        font-weight: var(--font-weight-semibold);
+        text-transform: uppercase;
     }
 
     .rangeInput {
         appearance: textfield;
-        background: var(--color-surface);
-        border: 1px solid var(--color-border);
-        border-radius: var(--radius-md);
-        color: var(--color-text);
+        background: var(--color-frosted-input);
+        border: none;
+        border-radius: var(--radius-full);
+        color: var(--blue-50);
         font-size: var(--text-sm);
         outline: none;
         padding: var(--size-2) var(--size-3);
         text-align: center;
-        transition: border-color var(--transition-fast);
-        width: 80px;
+        transition: background-color var(--transition-fast);
+        width: var(--size-20);
     }
 
     .rangeInput:focus {
-        border-color: var(--color-border-strong);
+        background: var(--color-frosted-input-focus);
     }
 
     .rangeInput::-webkit-outer-spin-button,
@@ -240,16 +251,16 @@
     }
 
     .timeFields {
-        background: var(--color-surface);
-        border: 1px solid var(--color-border);
-        border-radius: var(--radius-md);
+        background: var(--color-frosted-input);
+        border: none;
+        border-radius: var(--radius-full);
         display: flex;
         /* padding: var(--size-2) var(--size-3); */
-        transition: border-color var(--transition-fast);
+        transition: background-color var(--transition-fast);
     }
 
     .timeFields:focus-within {
-        border-color: var(--color-border-strong);
+        background: var(--color-frosted-input-focus);
     }
 
     .timeField {
@@ -261,7 +272,7 @@
         appearance: textfield;
         background: transparent;
         border: none;
-        color: var(--color-text);
+        color: var(--blue-50);
         outline: none;
         padding: var(--size-2) 0;
         text-align: right;

@@ -3,10 +3,11 @@
 
         <!-- TMDB Search (add mode only) -->
         <section v-if="!isEditMode && !formReady" :class="s.section">
-            <label :class="s.fieldLabel">Search TMDB</label>
+            <label class="visually-hidden" for="tmbdSearch">Search TMDB</label>
             <div :class="s.searchRow">
-                <input v-model="tmdbQuery" type="search" placeholder="Search for a movie…" :class="s.input"
-                    @keydown.enter.prevent="searchTmdb" :disabled="tmdbSearching" />
+                <input id="tmbdSearch" v-model="tmdbQuery" type="search" placeholder="Search for a movie…"
+                    :class="s.input" @keydown.enter.prevent="searchTmdb" :disabled="tmdbSearching" />
+
                 <button :class="s.btnPrimary" @click="searchTmdb" :disabled="tmdbSearching || !tmdbQuery">
                     {{ tmdbSearching ? 'Searching…' : 'Search' }}
                 </button>
@@ -261,20 +262,17 @@
                                     <button type="button" :class="s.castOrderBtn" :disabled="i === 0"
                                         aria-label="Move up" @click="moveCastMember(i, -1)">▲</button>
                                     <button type="button" :class="s.castOrderBtn"
-                                        :disabled="i === form.cast_members.length - 1"
-                                        aria-label="Move down" @click="moveCastMember(i, 1)">▼</button>
+                                        :disabled="i === form.cast_members.length - 1" aria-label="Move down"
+                                        @click="moveCastMember(i, 1)">▼</button>
                                 </div>
 
-                                <img
-                                    v-if="member.profile_path"
-                                    :src="profileUrl(member.profile_path)"
-                                    :alt="member.name"
-                                    :class="s.castThumb"
-                                />
+                                <img v-if="member.profile_path" :src="profileUrl(member.profile_path)"
+                                    :alt="member.name" :class="s.castThumb" />
                                 <div v-else :class="[s.castThumb, s.castThumbEmpty]" />
 
                                 <div :class="s.castFields">
-                                    <input v-model="member.name" type="text" :class="s.input" placeholder="Actor name" />
+                                    <input v-model="member.name" type="text" :class="s.input"
+                                        placeholder="Actor name" />
                                     <input v-model="member.character" type="text" :class="s.input"
                                         placeholder="Character name" />
                                     <input v-model="member.profile_path" type="text" :class="s.input"
@@ -322,7 +320,6 @@
     import { useTmdbSearch } from '@/composables/useTmdbSearch'
     import { useMovieForm, genreSuggestions, discOptions, serviceOptions } from '@/composables/useMovieForm'
     import { useMovieSubmit } from '@/composables/useMovieSubmit'
-    import checkmarkIcon from '@/assets/icons/checkmark.svg?raw'
     import rightArrowIcon from '@/assets/icons/arrow-right.svg?raw'
     import pencilIcon from '@/assets/icons/pencil.svg?raw'
 
@@ -404,6 +401,7 @@
         container-type: inline-size;
         margin-inline: auto;
         max-width: 40rem;
+        padding-top: var(--size-6);
     }
 
     .pageTitle {
@@ -659,7 +657,7 @@
         flex-direction: column;
         border: 1px solid var(--color-surface-raised);
         background: var(--color-surface-raised);
-        border-radius: var(--radius-md);
+        border-radius: var(--radius-xl);
         overflow: hidden;
     }
 
@@ -778,30 +776,31 @@
 
     /* Inputs */
     .input {
-        width: 100%;
-        padding: var(--size-3) var(--size-4);
-        font-size: var(--text-base);
-        background: var(--color-surface);
-        border: 1px solid var(--color-border);
-        border-radius: var(--radius-md);
-        color: var(--color-text);
-        outline: none;
-        transition: border-color var(--transition-fast);
         appearance: auto;
+        background: var(--blue-900);
+        border: 2px solid var(--blue-800);
+        border-radius: var(--radius-full);
+        color: var(--blue-50);
+        font-size: var(--text-base);
+        outline: none;
+        padding: var(--size-3) var(--size-5);
+        transition: border-color var(--transition-fast);
+        width: 100%;
     }
 
     .input::placeholder {
-        color: var(--color-text-muted);
+        color: var(--blue-100);
     }
 
     .input:focus {
-        border-color: var(--color-border-strong);
+        border-color: var(--blue-600);
     }
 
     .textarea {
-        resize: vertical;
+        border-radius: var(--radius-lg);
         font-family: inherit;
         line-height: var(--leading-normal);
+        resize: vertical;
     }
 
     /* Tag input (genres) */

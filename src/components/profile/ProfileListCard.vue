@@ -1,10 +1,9 @@
-<!-- src/components/ProfileListCard.vue -->
 <template>
     <RouterLink :to="to" :class="[s.listCard, listClass]">
         <div :class="s.listCardHeader">
             <div :class="s.listCardMeta">
                 <span :class="s.listCardIcon" v-html="icon" aria-hidden="true" />
-                <span :class="s.listCardName">{{ label }}</span>
+                <h2 :class="s.listCardName">{{ label }}</h2>
             </div>
             <span class="badge" :class="s.listCardCount">{{ count }}</span>
         </div>
@@ -12,13 +11,14 @@
         <div :class="s.listCardPosters">
             <template v-if="previews.length">
                 <img v-for="movie in previews" :key="movie.id" :src="posterUrl(movie.poster_path, 'w92')"
-                    :alt="movie.title" :class="s.listCardPoster" />
+                    :alt="`${movie.title} (${releaseYear(movie.release_date)})`"
+                    :title="`${movie.title} (${releaseYear(movie.release_date)})`" :class="s.listCardPoster" />
                 <div v-if="count > previews.length" :class="s.listCardMore">
                     +{{ count - previews.length }}
                 </div>
             </template>
             <div v-else :class="s.listCardEmpty">
-                Nothing here yet
+                Nothing here yet.
             </div>
         </div>
     </RouterLink>
@@ -26,6 +26,7 @@
 
 <script setup>
     import { posterUrl } from '@/lib/tmdb'
+    import { releaseYear } from '@/lib/movies'
 
     defineProps({
         to: String,
@@ -39,40 +40,39 @@
 
 <style module="s">
     .listCard {
-        background: var(--color-surface);
-        border: 1px solid var(--color-border);
-        border-radius: var(--radius-lg);
+        background: var(--blue-900);
+        border-radius: var(--radius-xl);
         display: flex;
         flex-direction: column;
-        gap: var(--size-4);
-        padding: var(--size-4);
+        gap: var(--size-6);
+        padding: var(--size-6);
         transition: border-color var(--transition-fast), background var(--transition-fast);
 
         @container (min-width: 48rem) {
-            gap: var(--size-6);
-            padding: var(--size-6);
+            border-radius: var(--radius-2xl);
+            padding: var(--size-8);
         }
     }
 
-    .listCard:hover {
-        border-color: var(--color-border-strong);
-        background: var(--color-surface-raised);
+    @media (hover: hover) and (pointer: fine) {
+        .listCard:hover {
+            background: var(--blue-800);
+        }
     }
 
     .listCardHeader {
-        display: flex;
         align-items: center;
+        display: flex;
         justify-content: space-between;
     }
 
     .listCardMeta {
-        display: flex;
         align-items: center;
-        gap: var(--size-2);
-        color: var(--color-text-secondary);
+        display: flex;
+        gap: var(--size-3);
 
         @container (min-width: 48rem) {
-            gap: var(--size-3);
+            gap: var(--size-4);
         }
     }
 
@@ -80,30 +80,25 @@
         align-items: center;
         color: var(--color-list-400);
         display: flex;
-        font-size: var(--text-2xl);
+        font-size: var(--text-3xl);
         justify-content: center;
     }
 
     .listCardName {
-        color: var(--color-heading);
-        font-weight: var(--font-weight-medium);
-        transition: color var(--transition-fast);
+        color: var(--blue-50);
+        font-size: var(--text-sm);
+        font-weight: var(--font-weight-bold);
+        letter-spacing: var(--tracking-widest);
+        line-height: var(--leading-tighter);
+        text-transform: uppercase;
 
         @container (min-width: 32rem) {
             font-size: var(--text-lg);
         }
-
-        @container (min-width: 48rem) {
-            font-size: var(--text-xl);
-        }
     }
 
-    /* .listCard:hover .listCardName {
-        color: var(--color-list-100);
-    } */
-
     .listCardCount {
-        background: oklch(from var(--color-list-400) l c h / 0.2);
+        background: oklch(from var(--color-list-400) l c h / 0.25);
         color: var(--color-list-400);
         font-size: var(--text-xs);
         padding: 0 var(--size-2);
@@ -126,12 +121,13 @@
     .listCardPoster {
         aspect-ratio: 2 / 3;
         border-radius: var(--radius-sm);
-        box-shadow: var(--shadow-sm);
+        box-shadow: var(--shadow-md);
         flex-shrink: 0;
         object-fit: cover;
         width: var(--size-10);
 
         @container (min-width: 48rem) {
+            border-radius: var(--radius-md);
             width: var(--size-12);
         }
 
@@ -141,9 +137,9 @@
     }
 
     .listCardMore {
-        color: var(--color-text-muted);
+        color: var(--blue-500);
         font-size: var(--text-xs);
-        font-weight: var(--font-weight-medium);
+        font-weight: var(--font-weight-semibold);
         padding-left: var(--size-1);
         transition: color var(--transition-fast);
 
@@ -152,13 +148,9 @@
         }
     }
 
-    /* .listCard:hover .listCardMore {
-        color: var(--color-list-300);
-    } */
-
     .listCardEmpty {
-        color: var(--color-text-muted);
-        font-size: var(--text-xs);
-        font-style: italic;
+        color: var(--blue-400);
+        font-size: var(--text-sm);
+        font-weight: var(--font-weight-medium);
     }
 </style>

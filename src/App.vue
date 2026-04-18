@@ -1,6 +1,6 @@
 <template>
     <div :class="s.app">
-        <WideHeader />
+        <AppHeader />
 
         <main :class="s.main">
             <RouterView v-slot="{ Component }">
@@ -20,7 +20,7 @@
 
 <script setup>
     import { triggerScrollResolve } from '@/router'
-    import WideHeader from '@/components/navigation/WideHeader.vue'
+    import AppHeader from '@/components/navigation/AppHeader.vue'
     import NarrowTabBar from '@/components/navigation/NarrowTabBar.vue'
     import ToastStack from '@/components/ToastStack.vue'
     import ConfirmDialog from '@/components/ConfirmDialog.vue'

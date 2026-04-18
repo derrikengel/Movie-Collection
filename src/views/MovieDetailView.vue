@@ -269,19 +269,21 @@
 
     .title {
         color: var(--color-heading);
-        font-size: var(--text-3xl);
-        font-weight: var(--font-weight-bold);
-        line-height: var(--leading-tight);
+        font-size: var(--text-2xl);
+        font-weight: var(--font-weight-semibold);
+        line-height: var(--leading-tighter);
+        letter-spacing: var(--tracking-wider);
         margin-bottom: var(--size-4);
+        text-transform: uppercase;
         text-shadow: var(--text-shadow-lg);
         text-wrap: pretty;
 
-        @container (min-width: 48rem) {
-            font-size: var(--text-5xl);
+        @container (min-width: 40rem) {
+            font-size: var(--text-3xl);
         }
 
         @container (min-width: 64rem) {
-            font-size: var(--text-6xl);
+            font-size: var(--text-5xl);
         }
     }
 

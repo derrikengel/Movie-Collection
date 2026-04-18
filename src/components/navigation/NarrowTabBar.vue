@@ -5,7 +5,6 @@
             :active-class="s.tabActive" :exact="tab.exact" @click="handleTabClick(tab)">
             <span :class="s.tabIcon" v-html="tab.icon" aria-hidden="true" />
             <span :class="s.tabLabel">{{ tab.label }}</span>
-            <span v-if="tab.badge" class="badge" :class="s.tabBadge">{{ tab.badge }}</span>
         </RouterLink>
     </nav>
 </template>
@@ -14,7 +13,6 @@
     import { computed } from 'vue'
     import { useRoute } from 'vue-router'
     import { useAuthStore } from '@/stores/auth'
-    import { useListCounts } from '@/composables/useListCounts'
     import { useNavContextStore } from '@/stores/navContext'
     import film from '@/assets/icons/film.svg?raw'
     import bookmark from '@/assets/icons/bookmark.svg?raw'
@@ -25,8 +23,6 @@
     const route = useRoute()
     const auth = useAuthStore()
     const navContext = useNavContextStore()
-    const { watchlistCount, favoritesCount } = useListCounts()
-
     const forcedActiveRoute = computed(() =>
         route.name === 'movie' ? (navContext.sourceList ?? 'home') : null
     )
@@ -44,7 +40,6 @@
                 exact: true,
                 label: 'Movies',
                 icon: film,
-                badge: null,
             },
         ]
 
@@ -55,7 +50,6 @@
                     exact: false,
                     label: 'Watchlist',
                     icon: bookmark,
-                    badge: watchlistCount.value || null,
                     listClass: 'list-watchlist',
                 },
                 {
@@ -63,7 +57,6 @@
                     exact: false,
                     label: 'Favorites',
                     icon: heart,
-                    badge: favoritesCount.value || null,
                     listClass: 'list-favorite',
                 },
                 {
@@ -71,7 +64,6 @@
                     exact: true,
                     label: auth.displayName,
                     icon: userIcon,
-                    badge: null,
                 }
             )
         } else {
@@ -80,7 +72,6 @@
                 exact: false,
                 label: 'Sign In',
                 icon: userIcon,
-                badge: null,
             })
         }
 
@@ -90,7 +81,6 @@
                 exact: false,
                 label: 'Add',
                 icon: plus,
-                badge: null,
             })
         }
 
@@ -101,16 +91,14 @@
 <style module="s">
     .tabBar {
         background: var(--color-bg-frosted);
-        backdrop-filter: var(--bg-frosted-lg);
-        border-top: 1px solid var(--color-border-frosted);
-        border-top-left-radius: var(--radius-xl);
-        border-top-right-radius: var(--radius-xl);
+        backdrop-filter: var(--bg-frosted-3xl);
+        border-top-left-radius: var(--radius-2xl);
+        border-top-right-radius: var(--radius-2xl);
+        box-shadow: 0 -5px 25px -5px oklch(from var(--blue-950) l c h / 0.5), 0 -2px 10px -6px oklch(from var(--blue-950) l c h / 0.5);
         bottom: 0;
         display: flex;
-        height: calc(var(--tab-bar-height) + env(safe-area-inset-bottom));
         left: 0;
         overflow: hidden;
-        padding-bottom: env(safe-area-inset-bottom);
         position: fixed;
         right: 0;
         z-index: 90;
@@ -122,10 +110,13 @@
 
     .tab {
         align-items: center;
+        color: var(--blue-400);
         display: flex;
         flex: 1;
         flex-direction: column;
-        gap: var(--size-1);
+        gap: var(--size-2);
+        padding-bottom: calc(var(--size-3) + env(safe-area-inset-bottom));
+        padding-top: var(--size-3);
         justify-content: center;
         position: relative;
         text-decoration: none;
@@ -133,52 +124,23 @@
 
     .tabIcon {
         align-items: center;
-        color: var(--color-list-500, var(--color-text-muted));
         display: flex;
-        font-size: var(--text-2xl);
+        font-size: var(--text-xl);
         justify-content: center;
         transition: color var(--transition-fast);
-
-        :global(.solid) {
-            display: none;
-            transition: fill var(--transition-fast);
-        }
-
-        :global(.outline) {
-            display: block;
-        }
     }
 
     .tabLabel {
-        color: var(--color-text-muted);
-        font-size: 0.5rem;
+        font-size: var(--text-2xs);
         font-weight: var(--font-weight-semibold);
         letter-spacing: var(--tracking-widest);
+        line-height: var(--leading-tighter);
         text-transform: uppercase;
         transition: color var(--transition-fast);
     }
 
-    .tabBadge {
-        background: var(--color-list-400);
-        color: var(--color-list-800);
-        box-shadow: 0 0 0 var(--size-0-5) var(--color-bg-frosted);
-        position: absolute;
-        right: calc(50% - var(--size-6));
-        top: var(--size-1);
-        transition: background var(--transition-fast);
-    }
-
-    .tab:hover {
-        .tabIcon {
-            color: var(--color-list-400, var(--blue-50));
-        }
-
-        .tabLabel {
-            color: var(--color-text);
-        }
-    }
-
     .tabActive {
+        color: var(--blue-50);
         position: relative;
 
         &:before {
@@ -195,19 +157,7 @@
         }
 
         .tabIcon {
-            color: var(--color-list-400, var(--blue-50));
-
-            :global(.solid) {
-                display: block;
-            }
-
-            :global(.outline) {
-                display: none;
-            }
-        }
-
-        .tabLabel {
-            color: var(--blue-50);
+            color: var(--color-list-400);
         }
     }
 </style>

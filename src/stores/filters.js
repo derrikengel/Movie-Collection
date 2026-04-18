@@ -29,7 +29,7 @@ export const useFiltersStore = defineStore('filters', () => {
 
     // ── MPAA groups ────────────────────────────────────
     const mpaaMap = {
-        family: ['G', 'PG'],
+        family: ['G', 'PG', 'TV-G', 'TV-PG'],
         teens: ['PG-13', 'TV-14'],
         mature: ['R', 'NC-17', 'TV-MA'],
         unrated: ['NR', 'Not Rated', 'Unrated', null, ''],
@@ -187,10 +187,12 @@ export const useFiltersStore = defineStore('filters', () => {
     // ── Active filter count ────────────────────────────
     const activeFilterCount = computed(() => {
         let count = 0
-        if (genres.value.length) count++
-        if (mpaaGroups.value.length) count++
-        if (Number.isFinite(yearMin.value) || Number.isFinite(yearMax.value)) count++
-        if (Number.isFinite(runtimeMin.value) || Number.isFinite(runtimeMax.value)) count++
+        count += genres.value.length
+        count += mpaaGroups.value.length
+        if (Number.isFinite(yearMin.value)) count++
+        if (Number.isFinite(yearMax.value)) count++
+        if (Number.isFinite(runtimeMin.value)) count++
+        if (Number.isFinite(runtimeMax.value)) count++
         if (watchedMode.value !== _defaultWatchedMode.value) count++
         if (ignoredMode.value !== _defaultIgnoredMode.value) count++
         return count

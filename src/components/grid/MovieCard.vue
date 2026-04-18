@@ -2,7 +2,8 @@
     <div :class="[s.card, faded && s.cardFaded]">
         <RouterLink :to="{ name: 'movie', params: { slug: movie.slug } }" :class="s.cardFront">
             <span :class="s.preloadTitle">
-                {{ movie.title }} ({{ releaseYear(movie.release_date) }})
+                {{ movie.title }}<br>
+                {{ releaseYear(movie.release_date) }}
             </span>
             <img v-if="movie.poster_path" :src="posterUrl(movie.poster_path)"
                 :alt="`${movie.title} ${releaseYear(movie.release_date)}`" :class="s.poster" loading="lazy" />
@@ -34,8 +35,9 @@
             <div v-if="auth.user" :class="s.cardActions">
                 <button v-for="action in actions" :key="action.field"
                     :class="[s.cardAction, action.listClass, isActive(action.field) && s.cardActionActive]"
-                    :aria-label="action.label" :title="action.label" @click.prevent="handleAction(action.field)"
-                    v-html="action.icon" />
+                    :aria-label="action.label" :title="action.label" @click.prevent="handleAction(action.field)">
+                    <span :class="s.cardActionIcon" v-html="action.icon" />
+                </button>
             </div>
         </div>
     </div>
@@ -67,6 +69,8 @@
 
 <style module="s">
     .card {
+        aspect-ratio: 2 / 3;
+        background: var(--blue-900);
         border-radius: var(--radius-lg);
         container-type: inline-size;
         overflow: hidden;
@@ -88,26 +92,29 @@
 
     .preloadTitle {
         align-content: center;
-        color: var(--color-text-subtle);
+        color: var(--blue-500);
         font-size: var(--text-xs);
+        font-weight: var(--font-weight-semibold);
         inset: 0;
+        letter-spacing: var(--tracking-widest);
         line-height: var(--leading-snug);
         padding: var(--size-4);
         position: absolute;
         text-align: center;
+        text-transform: uppercase;
     }
 
     .poster {
-        aspect-ratio: 2 / 3;
         display: block;
         object-fit: cover;
+        height: 100%;
         position: relative;
         width: 100%;
     }
 
     .cardOverlay {
-        backdrop-filter: var(--bg-frosted-sm);
-        background: var(--color-bg-frosted-dark);
+        backdrop-filter: var(--bg-frosted-2xl);
+        background: linear-gradient(oklch(from var(--blue-950) l c h / 0.25), oklch(from var(--blue-950) l c h / 0.8));
         border-radius: inherit;
         display: none;
         flex-direction: column;
@@ -120,40 +127,43 @@
 
     .cardOverlayContent {
         align-items: center;
-        color: var(--color-text);
+        color: var(--blue-50);
         display: flex;
         flex: 1;
         flex-direction: column;
-        gap: var(--size-2);
+        font-size: var(--text-sm);
+        font-weight: var(--font-weight-semibold);
+        line-height: var(--leading-tighter);
+        letter-spacing: var(--tracking-wider);
+        gap: var(--size-3);
         justify-content: center;
         min-height: 0;
         padding: var(--size-3);
+        text-transform: uppercase;
         text-align: center;
         text-decoration: none;
-    }
-
-    .cardTitle {
-        color: var(--color-heading);
-        font-size: var(--text-xs);
-        font-weight: var(--font-weight-bold);
-        line-height: var(--leading-snug);
-        opacity: 0;
-        translate: 0 var(--size-0-5);
-        transition: opacity var(--transition-slow), translate var(--transition-slow);
-        transition-delay: 100ms;
 
         @container (min-width: 12rem) {
-            font-size: var(--text-base);
+            font-size: var(--text-lg);
         }
     }
 
+    .cardTitle {
+        opacity: 0;
+        text-wrap: balance;
+        translate: 0 var(--size-0-5);
+        transition: opacity var(--transition-slow), translate var(--transition-slow);
+        transition-delay: 100ms;
+    }
+
     .tags {
+        color: oklch(from var(--blue-50) l c h / 0.8);
         display: flex;
         flex-wrap: wrap;
-        font-weight: var(--font-weight-medium);
+        font-size: var(--text-2xs);
+        font-weight: var(--font-weight-semibold);
         gap: var(--size-1) var(--size-2);
         justify-content: center;
-        letter-spacing: var(--tracking-wider);
         opacity: 0;
         translate: 0 calc(var(--size-0-5) * -1);
         transition: opacity var(--transition-slow), translate var(--transition-slow);
@@ -162,14 +172,12 @@
 
     .tag {
         align-items: center;
-        color: var(--color-heading);
         display: flex;
-        font-size: var(--text-2xs);
         gap: var(--size-1);
         justify-content: center;
 
         &:not(:first-of-type):before {
-            background: oklch(from var(--blue-300) l c h / 0.4);
+            background: oklch(from var(--blue-50) l c h / 0.4);
             border-radius: var(--radius-full);
             content: '';
             display: block;
@@ -199,51 +207,52 @@
 
     .cardAction {
         align-items: center;
-        border: 1px solid var(--color-border-frosted-strong);
+        background: oklch(from var(--color-list-400) l c h / 0.1);
+        border: none;
         border-radius: var(--radius-md);
-        color: oklch(from var(--color-list-300) l c h / 0.65);
         cursor: pointer;
         display: flex;
         flex: 1;
-        font-size: var(--text-base);
         justify-content: center;
         padding: var(--size-2) 0;
-        transition: color var(--transition-fast), opacity var(--transition-fast), border-color var(--transition-fast), background var(--transition-fast);
-
-        &:hover {
-            border-color: oklch(from var(--color-list-400) l c h / 0.4);
-            color: var(--color-list-400);
-        }
+        transition: background var(--transition-fast), color var(--transition-fast);
 
         @container (min-width: 12rem) {
             border-radius: var(--radius-lg);
         }
+    }
 
-        @container (min-width: 16rem) {
-            font-size: var(--text-lg);
-        }
+    .cardActionIcon {
+        align-items: center;
+        border: 1px solid var(--color-list-400);
+        border-radius: var(--radius-full);
+        color: var(--color-list-400);
+        display: flex;
+        font-size: var(--text-xs);
+        height: var(--size-6);
+        justify-content: center;
+        width: var(--size-6);
+        transition: background var(--transition-fast), color var(--transition-fast), border-color var(--transition-fast);
 
-        :global(.outline) {
-            display: block;
-        }
-
-        :global(.solid) {
-            display: none;
+        @container (min-width: 12rem) {
+            font-size: var(--text-sm);
+            height: var(--size-7);
+            width: var(--size-7);
         }
     }
 
-    .cardActionActive {
-        background: oklch(from var(--color-list-600) l c h / 0.16);
-        border-color: oklch(from var(--color-list-400) l c h / 0.4);
-        color: var(--color-list-400);
-        opacity: 1;
+    .cardAction:hover {
+        background: oklch(from var(--color-list-400) l c h / 0.25);
+    }
 
-        :global(.outline) {
-            display: none;
-        }
+    .cardActionActive,
+    .cardActionActive:hover {
+        background: linear-gradient(135deg, var(--color-list-400), var(--color-list-500));
 
-        :global(.solid) {
-            display: block;
+        .cardActionIcon {
+            background: var(--color-list-900);
+            border-color: transparent;
+            color: var(--color-list-400);
         }
     }
 

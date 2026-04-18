@@ -21,45 +21,53 @@
         align-items: center;
         background: none;
         border: none;
-        border-radius: var(--radius-md);
-        color: var(--blue-300);
+        border-radius: var(--radius-lg);
+        color: var(--blue-100);
         display: flex;
         font-size: var(--text-sm);
         font-weight: var(--font-weight-medium);
         justify-content: space-between;
-        padding: var(--size-2) var(--size-3);
+        padding: var(--size-3);
         text-align: left;
         transition: background var(--transition-fast), color var(--transition-fast);
         width: 100%;
     }
 
-    .sublabel {
-        font-size: var(--text-2xs);
-        color: var(--blue-500);
-        font-weight: var(--font-weight-semibold);
+    .option+.option {
+        margin-top: var(--size-0-5);
     }
 
-    .option:hover {
-        background: var(--blue-700);
-        color: var(--blue-50);
+    .sublabel {
+        color: var(--blue-400);
+        font-size: var(--text-2xs);
+        font-weight: var(--font-weight-semibold);
+        transition: color var(--transition-fast);
+    }
 
-        .sublabel {
-            color: var(--blue-400);
+    @media (hover: hover) and (pointer: fine) {
+        .option:hover {
+            background: var(--color-bg-frosted-unselected);
+            color: var(--blue-50);
+
+            .sublabel {
+                color: var(--blue-300);
+            }
         }
     }
 
     .optionActive {
-        background: var(--blue-700);
+        background: var(--color-bg-frosted-unselected);
         color: var(--blue-50);
 
         .sublabel {
-            color: var(--blue-400);
+            color: var(--blue-300);
         }
     }
 
     .optionDisabled {
-        opacity: 0.35;
+        color: var(--blue-400);
         cursor: default;
+        opacity: 0.6;
         pointer-events: none;
     }
 </style>

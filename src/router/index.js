@@ -44,7 +44,7 @@ const router = createRouter({
             component: () => import('@/views/ProfileView.vue'),
             meta: {
                 requiresAuth: true,
-                title: 'Your Profile'
+                title: 'Profile'
             }
         },
         {
@@ -86,7 +86,11 @@ const router = createRouter({
         {
             path: '/styleguide',
             name: 'styleguide',
-            component: () => import('@/views/StyleGuideView.vue')
+            component: () => import('@/views/StyleGuideView.vue'),
+            meta: {
+                requiresAdmin: true,
+                title: 'Style Guide'
+            }
         },
         {
             path: '/admin/add',

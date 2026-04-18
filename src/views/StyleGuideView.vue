@@ -1,12 +1,8 @@
 <template>
     <div :class="s.page">
-        <h1 :class="s.heading">Style Guide</h1>
-
         <section :class="s.section">
-            <h2 :class="s.sectionHeading">Color Palettes</h2>
-
             <div v-for="palette in palettes" :key="palette.name" :class="s.palette">
-                <h3 :class="s.paletteLabel">{{ palette.name }}</h3>
+                <h2 :class="s.paletteLabel">{{ palette.name }}</h2>
                 <div :class="s.swatches">
                     <div v-for="step in steps" :key="step" :class="s.swatch"
                         :style="{ background: `var(--${palette.name}-${step})` }">

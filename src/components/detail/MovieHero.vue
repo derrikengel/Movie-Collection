@@ -4,7 +4,7 @@
             <div v-if="movie.trailer_youtube_id && !trailerError" ref="youtubeEl" :class="s.youtubePlayer" />
         </div>
 
-        <button :class="`${s.overlayBtn} ${s.backBtn}`" @click="goBack" aria-label="Go back"
+        <a :href="backHref" :class="[s.overlayBtn, s.backBtn]" aria-label="Go back" @click.prevent="handleBack"
             v-html="arrowLeft" />
 
         <button v-if="trailerLoaded" :class="`${s.overlayBtn} ${s.muteBtn} ${!muted && s.muteBtnUnmuted}`"
@@ -14,7 +14,7 @@
 </template>
 
 <script setup>
-    import { ref, onUnmounted } from 'vue'
+    import { ref, computed, onUnmounted } from 'vue'
     import { useRouter } from 'vue-router'
     import { usePlayer } from '@vue-youtube/core'
     import { posterUrl, backdropUrl } from '@/lib/tmdb'
@@ -26,7 +26,9 @@
     const router = useRouter()
     const navContext = useNavContextStore()
 
-    function goBack() {
+    const backHref = computed(() => router.resolve({ name: navContext.sourceList ?? 'home' }).href)
+
+    function handleBack() {
         if (navContext.sourceList !== null) {
             router.back()
         } else {
@@ -98,7 +100,7 @@
 <style module="s">
     .hero {
         margin-inline: auto;
-        max-width: 90rem;
+        max-width: 120rem;
         overflow: hidden;
         position: relative;
     }
@@ -117,7 +119,7 @@
         }
 
         @media (min-width: 80rem) {
-            aspect-ratio: 2.5 / 1;
+            aspect-ratio: 12 / 5;
         }
 
         @media (min-width: 90rem) {

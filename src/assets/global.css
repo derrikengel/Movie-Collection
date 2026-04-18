@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Google+Sans:opsz,wght@17..18,400..700&display=swap');
+@import url('https://use.typekit.net/hxr2lop.css');
 @layer reset, tokens, base, utilities, components;
 
 /* ============================================================
@@ -44,14 +44,14 @@
         --c-900: 0.16;
         --c-950: 0.05;
 
-        --blue-c: 0.2;
-        --blue-h: 230;
+        --blue-c: 0.3;
+        --blue-h: 220;
 
         --red-c: 0.56;
         --red-h: 28;
 
-        --green-c: 0.56;
-        --green-h: 165;
+        --green-c: 0.40;
+        --green-h: 160;
 
         --yellow-c: 0.7;
         --yellow-h: 94;
@@ -156,7 +156,7 @@
         --radius-4xl: 2rem;
         --radius-full: calc(infinity * 1px);
 
-        --font-sans: 'Google Sans', sans-serif;
+        --font-sans: 'futura-pt', sans-serif;
         --text-2xs: 0.625rem;
         --text-xs: 0.75rem;
         --text-sm: 0.875rem;
@@ -172,10 +172,10 @@
         --text-8xl: 6rem;
         --text-9xl: 8rem;
         --font-weight-normal: 400;
-        --font-weight-normal: 400;
         --font-weight-medium: 500;
         --font-weight-semibold: 600;
         --font-weight-bold: 700;
+        --leading-tighter: 1.05;
         --leading-tight: 1.15;
         --leading-snug: 1.325;
         --leading-normal: 1.5;
@@ -268,16 +268,30 @@
         --color-ignored-900: oklch(var(--l-900) calc(var(--red-c) * var(--c-900)) var(--red-h));
         --color-ignored-950: oklch(var(--l-950) calc(var(--red-c) * var(--c-950)) var(--red-h));
 
-        --color-bg-frosted: oklch(from var(--blue-900) l c h / 0.9);
+        --color-bg-frosted: oklch(from var(--blue-800) l c h / 0.85);
         --color-bg-frosted-subtle: oklch(from var(--blue-950) l c h / 0.5);
         --color-bg-frosted-dark: oklch(from var(--blue-950) l c h / 0.85);
-        --color-border-frosted: oklch(fromvar(--blue-50) l c h / 0.08);
+        --color-divider-frosted: oklch(from var(--blue-400) l c h / 0.1);
+        --color-bg-frosted-selected: oklch(from var(--blue-400) l c h / 0.2);
+        --color-bg-frosted-unselected: oklch(from var(--blue-950) l c h / 0.2);
+        --color-bg-frosted-hover: oklch(from var(--blue-950) l c h / 0.5);
+
+        --color-border-frosted: oklch(from var(--blue-50) l c h / 0.08);
         --color-border-frosted-strong: oklch(from var(--blue-50) l c h / 0.16);
+
+        --color-frosted-input: oklch(from var(--blue-950) l c h / 0.5);
+        --color-frosted-input-focus: oklch(from var(--blue-950) l c h / 0.75);
+
         --bg-frosted-xs: blur(0.25rem);
         --bg-frosted-sm: blur(0.5rem);
         --bg-frosted-md: blur(0.75rem);
         --bg-frosted-lg: blur(1rem);
         --bg-frosted-xl: blur(1.5rem);
+        --bg-frosted-2xl: blur(2.5rem);
+        --bg-frosted-3xl: blur(4rem);
+        --bg-frosted-4xl: blur(6rem);
+        --bg-frosted-5xl: blur(8rem);
+        --bg-frosted-6xl: blur(10rem);
 
         --color-bg-hover: var(--blue-700);
         --color-disabled: var(--blue-700);
@@ -303,13 +317,15 @@
         --text-shadow-md: 0px 1px 1px oklch(from var(--blue-950) l c h / 0.5), 0px 1px 2px oklch(from var(--blue-950) l c h / 0.5), 0px 2px 4px oklch(from var(--blue-950) l c h / 0.5);
         --text-shadow-lg: 0px 1px 2px oklch(from var(--blue-950) l c h / 0.5), 0px 3px 2px oklch(from var(--blue-950) l c h / 0.5), 0px 4px 8px oklch(from var(--blue-950) l c h / 0.5);
 
+        interpolate-size: allow-keywords;
+
         --transition-fast: 150ms ease;
         --transition-normal: 250ms ease;
         --transition-slow: 500ms ease;
 
         --content-width: 64rem;
         --content-padding: var(--size-5);
-        --header-height: var(--size-14);
+        /* --header-height: var(--size-14); */
         --tab-bar-height: var(--size-15);
 
         @media (min-width: 48rem) {
@@ -318,7 +334,7 @@
 
         @media (min-width: 64rem) {
             --content-padding: var(--size-12);
-            --header-height: var(--size-24);
+            /* --header-height: var(--size-24); */
         }
 
         @media (min-width: 90rem) {
@@ -403,7 +419,7 @@
         color: var(--color-text-on-accent);
         height: 1.75em;
         font-size: var(--text-2xs);
-        font-weight: var(--font-weight-semibold);
+        font-weight: var(--font-weight-bold);
         line-height: 1;
         min-width: 1.75em;
         padding: 0 var(--size-1);
