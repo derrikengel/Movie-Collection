@@ -37,7 +37,7 @@
         transition: background-color var(--transition-fast), color var(--transition-fast);
 
         @media (min-width: 64rem) {
-            flex-grow: 0;
+            flex: auto;
             padding: var(--size-2) var(--size-4);
         }
     }
