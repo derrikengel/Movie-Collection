@@ -252,6 +252,10 @@
         </div>
 
     </header>
+
+    <Teleport to="body">
+        <div v-if="filtersOpen" :class="s.narrowBackdrop" @contextmenu.prevent />
+    </Teleport>
 </template>
 
 <script setup>
@@ -1044,6 +1048,18 @@
     .runtimePanel {
         min-width: 14rem;
         position-anchor: --filter-runtime;
+    }
+
+    /* ── Narrow backdrop (blocks content interaction when filters open) ── */
+
+    .narrowBackdrop {
+        inset: 0;
+        position: fixed;
+        z-index: 99;
+
+        @media (min-width: 64rem) {
+            display: none;
+        }
     }
 
     /* ── Narrow footer (View movies + Reset) ── */
