@@ -27,7 +27,7 @@
         border-radius: var(--radius-full);
         color: var(--blue-100);
         display: flex;
-        flex-grow: 1;
+        flex: 1 1 0;
         font-size: var(--text-sm);
         font-weight: var(--font-weight-medium);
         gap: var(--size-2);
