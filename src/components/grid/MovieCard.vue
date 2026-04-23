@@ -2,11 +2,10 @@
     <div :class="[s.card, faded && s.cardFaded]">
         <RouterLink :to="{ name: 'movie', params: { slug: movie.slug } }" :class="s.cardFront">
             <span :class="s.preloadTitle">
-                {{ movie.title }}<br>
-                {{ releaseYear(movie.release_date) }}
+                {{ movie.title }}
+                <span :class="s.preloadYear">{{ releaseYear(movie.release_date) }}</span>
             </span>
-            <img v-if="movie.poster_path" :src="posterUrl(movie.poster_path)"
-                :alt="`${movie.title} ${releaseYear(movie.release_date)}`" :class="s.poster" loading="lazy" />
+            <img v-if="movie.poster_path" :src="posterUrl(movie.poster_path)" alt="" :class="s.poster" loading="lazy" />
         </RouterLink>
 
         <div :class="s.cardOverlay">
@@ -71,7 +70,7 @@
     .card {
         aspect-ratio: 2 / 3;
         background: var(--blue-900);
-        border-radius: var(--radius-lg);
+        border-radius: var(--radius-xl);
         container-type: inline-size;
         overflow: hidden;
         position: relative;
@@ -82,12 +81,12 @@
     .cardFront {
         display: block;
         height: 100%;
+        transition: opacity var(--transition-slow);
         width: 100%;
     }
 
     .cardFaded .cardFront {
-        opacity: 0.35;
-        transition: opacity var(--transition-normal);
+        opacity: 0.2;
     }
 
     .preloadTitle {
@@ -97,11 +96,18 @@
         font-weight: var(--font-weight-semibold);
         inset: 0;
         letter-spacing: var(--tracking-widest);
-        line-height: var(--leading-snug);
+        line-height: var(--leading-tight);
         padding: var(--size-4);
         position: absolute;
         text-align: center;
         text-transform: uppercase;
+        text-wrap: balance;
+    }
+
+    .preloadYear {
+        color: var(--blue-600);
+        display: block;
+        margin-top: var(--size-1);
     }
 
     .poster {
@@ -177,13 +183,13 @@
         justify-content: center;
 
         &:not(:first-of-type):before {
-            background: oklch(from var(--blue-50) l c h / 0.4);
+            background: oklch(from var(--blue-50) l c h / 0.2);
             border-radius: var(--radius-full);
             content: '';
             display: block;
-            height: var(--size-0-5);
+            height: var(--size-1);
             margin-right: var(--size-1);
-            width: var(--size-0-5);
+            width: var(--size-1);
         }
     }
 

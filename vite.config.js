@@ -11,6 +11,40 @@ export default defineConfig({
         vueDevTools(),
         VitePWA({
             registerType: 'autoUpdate',
+            workbox: {
+                // Serve cached index.html for all navigation requests (SPA routing)
+                navigateFallback: '/index.html',
+                navigateFallbackDenylist: [/^\/api\//],
+                runtimeCaching: [
+                    {
+                        // Supabase API — NetworkFirst: fresh data when online, cached data as fallback
+                        urlPattern: /^https:\/\/.*\.supabase\.co\/.*/i,
+                        handler: 'NetworkFirst',
+                        options: {
+                            cacheName: 'supabase-cache',
+                            networkTimeoutSeconds: 10,
+                            expiration: {
+                                maxEntries: 50,
+                                maxAgeSeconds: 60 * 60 * 24
+                            },
+                            cacheableResponse: { statuses: [0, 200] }
+                        }
+                    },
+                    {
+                        // TMDB poster/backdrop images — CacheFirst, they never change
+                        urlPattern: /^https:\/\/image\.tmdb\.org\/.*/i,
+                        handler: 'CacheFirst',
+                        options: {
+                            cacheName: 'tmdb-images',
+                            expiration: {
+                                maxEntries: 1000,
+                                maxAgeSeconds: 60 * 60 * 24 * 30
+                            },
+                            cacheableResponse: { statuses: [0, 200] }
+                        }
+                    }
+                ]
+            },
             manifest: {
                 id: '/movies-app',
                 name: 'Movies',

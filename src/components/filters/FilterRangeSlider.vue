@@ -185,11 +185,11 @@
         background: var(--blue-400);
         border-radius: var(--radius-full);
         border: none;
-        box-shadow: 0 0 0 var(--size-1) var(--blue-700);
+        box-shadow: 0 0 0 var(--size-0-5) var(--blue-700);
         cursor: pointer;
         height: var(--size-5);
         pointer-events: all;
-        translate: 0 calc(-50% + (var(--size-1) * 0.5));
+        translate: 0 calc(-50% + (var(--size-0-5) * 0.5));
         width: var(--size-5);
     }
 
@@ -197,7 +197,7 @@
         background: var(--blue-400);
         border: none;
         border-radius: var(--radius-full);
-        box-shadow: 0 0 0 var(--size-1) var(--blue-700);
+        box-shadow: 0 0 0 var(--size-0-5) var(--blue-700);
         cursor: pointer;
         height: var(--size-5);
         pointer-events: all;

@@ -68,7 +68,6 @@
             filters.search, filters.genres, filters.mpaaGroups,
             filters.yearMin, filters.yearMax,
             filters.runtimeMin, filters.runtimeMax,
-            filters.watchedMode, filters.ignoredMode,
             filters.sort,
         ],
         () => { if (isActive) visibleCount.value = PAGE_SIZE },
