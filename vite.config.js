@@ -46,13 +46,16 @@ export default defineConfig({
                 ]
             },
             manifest: {
-                id: '/movies-app',
+                id: '/',
                 name: 'Movies',
                 short_name: 'Movies',
                 description: 'Browse and manage the movie collection.',
                 start_url: '/',
                 scope: '/',
                 display: 'standalone',
+                launch_handler: {
+                    client_mode: 'focus-existing'
+                },
                 background_color: '#060A0C',
                 theme_color: '#060A0C',
                 icons: [
