@@ -2,7 +2,7 @@
     <div :class="s.app">
         <AppHeader />
 
-        <main :class="s.main">
+        <main :class="[s.main, route.name === 'login' && s.mainCentered]">
             <RouterView v-slot="{ Component }">
                 <Transition name="page" mode="out-in" @after-leave="triggerScrollResolve">
                     <KeepAlive :include="['HomeView', 'WatchlistView', 'WatchedView', 'FavoritesView', 'IgnoredView']">
@@ -19,7 +19,10 @@
 </template>
 
 <script setup>
+    import { useRoute } from 'vue-router'
     import { triggerScrollResolve } from '@/router'
+
+    const route = useRoute()
     import AppHeader from '@/components/navigation/AppHeader.vue'
     import NarrowTabBar from '@/components/navigation/NarrowTabBar.vue'
     import ToastStack from '@/components/ToastStack.vue'
@@ -40,5 +43,11 @@
         @media (min-width: 64rem) {
             padding: var(--content-padding);
         }
+    }
+
+    .mainCentered {
+        align-items: center;
+        display: flex;
+        justify-content: center;
     }
 </style>

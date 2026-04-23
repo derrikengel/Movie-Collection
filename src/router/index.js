@@ -27,7 +27,8 @@ const router = createRouter({
             name: 'home',
             component: () => import('@/views/HomeView.vue'),
             meta: {
-                title: 'Movie Collection'
+                title: 'Movie Collection',
+                filterBar: true,
             }
         },
         {
@@ -53,7 +54,8 @@ const router = createRouter({
             component: () => import('@/views/lists/WatchlistView.vue'),
             meta: {
                 requiresAuth: true,
-                title: 'Watchlist'
+                title: 'Watchlist',
+                filterBar: true,
             }
         },
         {
@@ -62,7 +64,8 @@ const router = createRouter({
             component: () => import('@/views/lists/FavoritesView.vue'),
             meta: {
                 requiresAuth: true,
-                title: 'Favorites'
+                title: 'Favorites',
+                filterBar: true,
             }
         },
         {
@@ -71,7 +74,8 @@ const router = createRouter({
             component: () => import('@/views/lists/WatchedView.vue'),
             meta: {
                 requiresAuth: true,
-                title: 'Watched'
+                title: 'Watched',
+                filterBar: true,
             }
         },
         {
@@ -80,7 +84,8 @@ const router = createRouter({
             component: () => import('@/views/lists/IgnoredView.vue'),
             meta: {
                 requiresAuth: true,
-                title: 'Not Interested'
+                title: 'Not Interested',
+                filterBar: true,
             }
         },
         {

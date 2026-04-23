@@ -1,27 +1,26 @@
 <template>
     <div :class="s.login">
-        <div :class="s.card">
 
-            <form :class="s.form" @submit.prevent="handleSubmit">
-                <div :class="s.field">
-                    <label for="email" :class="s.label">Email</label>
-                    <input id="email" v-model="email" type="email" autocomplete="email" required :disabled="loading"
-                        :class="s.input" />
-                </div>
+        <form :class="s.form" @submit.prevent="handleSubmit">
+            <div :class="s.field">
+                <label for="email" :class="s.label">Email</label>
+                <input id="email" v-model="email" type="email" autocomplete="email" required :disabled="loading"
+                    :class="s.input" />
+            </div>
 
-                <div :class="s.field">
-                    <label for="password" :class="s.label">Password</label>
-                    <input id="password" v-model="password" type="password" autocomplete="current-password" required
-                        :disabled="loading" :class="s.input" />
-                </div>
+            <div :class="s.field">
+                <label for="password" :class="s.label">Password</label>
+                <input id="password" v-model="password" type="password" autocomplete="current-password" required
+                    :disabled="loading" :class="s.input" />
+            </div>
 
-                <p v-if="errorMsg" :class="s.error">{{ errorMsg }}</p>
+            <p v-if="errorMsg" :class="s.error">{{ errorMsg }}</p>
 
-                <button type="submit" :class="s.submit" :disabled="loading || !email || !password">
-                    {{ loading ? 'Signing in…' : 'Sign in' }}
-                </button>
-            </form>
-        </div>
+            <button type="submit" :class="s.submit" :disabled="loading">
+                {{ loading ? 'Signing in…' : 'Sign in' }}
+            </button>
+        </form>
+
     </div>
 </template>
 
@@ -61,29 +60,24 @@
 
 <style module="s">
     .login {
-        align-items: center;
-        container-type: inline-size;
-        display: flex;
-        justify-content: center;
-    }
+        background: var(--color-bg-frosted);
+        border-radius: var(--radius-xl);
+        flex: 0 1 30rem;
+        padding: var(--size-6);
 
-    .card {
-        background: var(--blue-900);
-        border: 1px solid var(--blue-800);
-        border-radius: var(--radius-lg);
-        max-width: 24rem;
-        width: 100%;
-        padding: var(--size-4);
+        @media (min-width: 30rem) {
+            padding: var(--size-8);
+        }
 
         @media (min-width: 64rem) {
-            padding: var(--size-6);
+            padding: var(--size-12);
         }
     }
 
     .form {
         display: flex;
         flex-direction: column;
-        gap: var(--size-4);
+        gap: var(--size-6);
     }
 
     .field {
@@ -93,27 +87,31 @@
     }
 
     .label {
-        color: var(--blue-100);
+        color: var(--blue-300);
+        font-size: var(--text-xs);
         font-weight: var(--font-weight-semibold);
+        letter-spacing: var(--tracking-widest);
+        text-transform: uppercase;
     }
 
     .input {
-        background: var(--color-bg);
-        padding: var(--size-3) var(--size-4);
+        background: var(--color-frosted-input);
+        border: none;
+        border-radius: var(--radius-lg);
+        color: var(--blue-50);
         font-size: var(--text-base);
-        border: 1px solid var(--blue-700);
-        border-radius: var(--radius-md);
-        color: var(--color-text);
         outline: none;
-        transition: border-color var(--transition-fast);
+        padding: var(--size-4) var(--size-5);
+        transition: background var(--transition-fast);
+        width: 100%;
     }
 
     .input::placeholder {
-        color: var(--color-text-muted);
+        color: red;
     }
 
     .input:focus {
-        border-color: var(--color-border-strong);
+        background: var(--color-frosted-input-focus);
     }
 
     .input:disabled {
@@ -127,25 +125,25 @@
     }
 
     .submit {
-        background: var(--green-400);
+        background: var(--green-300);
         border: none;
-        border-radius: var(--radius-md);
+        border-radius: var(--radius-full);
         color: var(--green-800);
-        font-size: var(--text-base);
+        font-size: var(--text-xs);
         font-weight: var(--font-weight-semibold);
-        padding: var(--size-3) var(--size-4);
+        letter-spacing: var(--tracking-widest);
+        padding: var(--size-4);
+        text-transform: uppercase;
         transition: background var(--transition-fast), color var(--transition-fast);
+        width: 100%;
     }
 
     .submit:hover:not(:disabled) {
-        background: var(--green-500);
+        background: var(--green-400);
         color: var(--green-900);
     }
 
     .submit:disabled {
-        background: var(--blue-500);
-        color: var(--blue-900);
-        cursor: not-allowed;
-        opacity: 0.5;
+        opacity: 0.3;
     }
 </style>

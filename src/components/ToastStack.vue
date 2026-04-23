@@ -1,6 +1,6 @@
 <template>
     <Teleport to="body">
-        <ul :class="s.stack" aria-live="polite" aria-atomic="false">
+        <ul :class="s.stack" :style="stackStyle" aria-live="polite" aria-atomic="false">
             <TransitionGroup name="toast" tag="li" :class="s.toastItem">
                 <div v-for="toast in store.toasts" :key="toast.id" :class="[s.toast, s[toast.type]]" role="status">
 
@@ -21,8 +21,6 @@
                         </span>
                     </p>
 
-                    <!-- <button :class="s.dismiss" @click="store.dismiss(toast.id)" aria-label="Dismiss" v-html="xIcon" /> -->
-
                 </div>
             </TransitionGroup>
         </ul>
@@ -30,10 +28,17 @@
 </template>
 
 <script setup>
+    import { computed } from 'vue'
+    import { useRoute } from 'vue-router'
     import { useToastStore } from '@/stores/toast'
-    import xIcon from '@/assets/icons/x-mark.svg?raw'
 
     const store = useToastStore()
+    const route = useRoute()
+
+    const stackStyle = computed(() => ({
+        '--toast-top': route.meta.filterBar ? '8.5rem' : '1rem',
+        '--toast-top-wide': route.meta.filterBar ? '12rem' : '7rem',
+    }))
 </script>
 
 <style module="s">
@@ -42,11 +47,11 @@
         pointer-events: none;
         position: fixed;
         right: 0;
-        top: 8rem;
+        top: var(--toast-top, 8rem);
         z-index: 200;
 
         @media (min-width: 64rem) {
-            top: 12rem;
+            top: var(--toast-top-wide, 12rem);
         }
     }
 
@@ -73,19 +78,19 @@
     }
 
     .success {
-        --toast-bg: var(--green-600);
-        --toast-text: var(--green-100);
-        --toast-icon: var(--green-50);
-        --toast-link: var(--green-50);
-        --toast-link-accent: var(--green-400);
+        --toast-bg: var(--green-300);
+        --toast-text: var(--green-800);
+        --toast-icon: var(--green-950);
+        --toast-link: var(--green-950);
+        --toast-link-accent: var(--green-500);
     }
 
     .error {
-        --toast-bg: var(--red-600);
-        --toast-text: var(--red-100);
-        --toast-icon: var(--red-50);
-        --toast-link: var(--red-50);
-        --toast-link-accent: var(--red-400);
+        --toast-bg: var(--red-400);
+        --toast-text: var(--red-800);
+        --toast-icon: var(--red-950);
+        --toast-link: var(--red-950);
+        --toast-link-accent: var(--red-600);
     }
 
     .message {
@@ -96,7 +101,7 @@
 
     .icon {
         align-items: center;
-        color: var(--toast-icon, var(--blue-600));
+        color: var(--toast-icon, var(--blue-950));
         display: flex;
         flex-shrink: 0;
         font-size: var(--text-xl);
@@ -104,29 +109,12 @@
     }
 
     .actionLink {
-        color: var(--toast-link, var(--blue-600));
+        color: var(--toast-link, var(--blue-950));
         font-weight: var(--font-weight-bold);
         text-decoration-line: underline;
-        text-decoration-color: var(--toast-link-accent, var(--blue-400));
+        text-decoration-color: var(--toast-link-accent, var(--blue-500));
         text-decoration-thickness: 0.0625em;
         text-underline-offset: 0.25em;
-    }
-
-    .dismiss {
-        align-items: center;
-        color: var(--toast-text, var(--blue-600));
-        cursor: pointer;
-        display: flex;
-        flex-shrink: 0;
-        font-size: var(--text-lg);
-        justify-content: center;
-        padding: 0;
-        transition: color var(--transition-fast);
-        width: var(--size-6);
-    }
-
-    .dismiss:hover {
-        color: var(--color-text);
     }
 </style>
 
