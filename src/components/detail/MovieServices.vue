@@ -5,7 +5,7 @@
         <ul :class="s.list">
             <li v-for="service in movie.movie_services" :key="service.id">
                 <component :is="service.url ? 'a' : 'div'"
-                    v-bind="service.url ? { href: service.url, target: '_blank', rel: 'noopener noreferrer' } : {}"
+                    v-bind="service.url ? { href: service.url } : {}"
                     :class="[s.service, serviceClass(service.service)]">
 
                     <span :class="s.serviceInfo">
