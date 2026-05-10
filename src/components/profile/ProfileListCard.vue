@@ -29,7 +29,7 @@
     import { releaseYear } from '@/lib/movies'
 
     defineProps({
-        to: String,
+        to: [String, Object],
         label: String,
         count: Number,
         previews: Array,
@@ -139,7 +139,7 @@
     .listCardMore {
         color: var(--blue-500);
         font-size: var(--text-xs);
-        font-weight: var(--font-weight-semibold);
+        font-weight: var(--font-weight-bold);
         padding-left: var(--size-1);
         transition: color var(--transition-fast);
 

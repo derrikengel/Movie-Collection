@@ -147,7 +147,7 @@
     .statLabel {
         color: var(--blue-50);
         font-size: var(--text-2xs);
-        font-weight: var(--font-weight-semibold);
+        font-weight: var(--font-weight-bold);
         letter-spacing: var(--tracking-widest);
         line-height: var(--leading-tighter);
         text-transform: uppercase;
@@ -196,7 +196,7 @@
         border-radius: var(--radius-full);
         color: var(--red-900);
         font-size: var(--text-xs);
-        font-weight: var(--font-weight-semibold);
+        font-weight: var(--font-weight-bold);
         letter-spacing: var(--tracking-widest);
         padding: var(--size-3) var(--size-5);
         text-transform: uppercase;

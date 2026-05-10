@@ -1,4 +1,4 @@
-import { ref } from 'vue'
+import { ref, reactive } from 'vue'
 import { useRouter } from 'vue-router'
 import { supabase } from '@/lib/supabase'
 import { useMoviesStore } from '@/stores/movies'
@@ -9,6 +9,7 @@ export function useMovieSubmit(form, isEditMode, getRouteSlug) {
     const submitting = ref(false)
     const submitted = ref(false)
     const submitError = ref('')
+    const fieldErrors = reactive({})
     const router = useRouter()
     const moviesStore = useMoviesStore()
     const toast = useToastStore()
@@ -32,25 +33,31 @@ export function useMovieSubmit(form, isEditMode, getRouteSlug) {
 
     async function handleSubmit() {
         submitError.value = ''
-
-        if (!form.title.trim()) return submitError.value = 'Title is required.'
-        if (!form.poster_path.trim()) return submitError.value = 'Poster is required.'
-        if (!form.release_date) return submitError.value = 'Release date is required.'
-        if (!form.runtime_minutes) return submitError.value = 'Runtime is required.'
-        if (!form.mpaa_rating) return submitError.value = 'MPAA Rating is required — open Movie Details to set it.'
-        if (form.genres.length === 0) return submitError.value = 'At least one genre is required — open Movie Details to add genres.'
-        if (!form.description.trim()) return submitError.value = 'Description is required — open Movie Details to add it.'
-        if (!form.acquired_at) return submitError.value = 'Date acquired is required.'
+        Object.keys(fieldErrors).forEach(k => delete fieldErrors[k])
 
         const activeServices = form.services.filter(svc => svc.quality || svc.url)
         const hasDisc = !!form.disc_format
         if (!activeServices.length && !hasDisc) {
-            return submitError.value = 'Add at least one digital service or a disc format.'
+            fieldErrors['watch-options'] = 'Add at least one digital service or a disc format.'
+        } else {
+            for (const svc of activeServices) {
+                if (!svc.quality) fieldErrors[`svc-${svc.service}-quality-label`] = 'Quality is required.'
+                if (!svc.url) fieldErrors[`svc-${svc.service}-url`] = 'Link is required.'
+            }
         }
 
-        for (const svc of activeServices) {
-            if (!svc.quality) return submitError.value = `Quality is required for ${svc.service}.`
-            if (!svc.url) return submitError.value = `URL is required for ${svc.service}.`
+        if (!form.title.trim()) fieldErrors['title'] = 'Title is required.'
+        if (!form.poster_path.trim()) fieldErrors['poster-path'] = 'Poster image is required.'
+        if (!form.release_date) fieldErrors['release-date'] = 'Release date is required.'
+        if (!form.runtime_minutes) fieldErrors['runtime-hours'] = 'Runtime is required.'
+        if (!form.mpaa_rating) fieldErrors['mpaa-rating'] = 'Rating is required.'
+        if (form.genres.length === 0) fieldErrors['genres'] = 'At least one genre is required.'
+        if (!form.description.trim()) fieldErrors['description'] = 'Description is required.'
+        if (!form.acquired_at) fieldErrors['acquired-at'] = 'Date acquired is required.'
+
+        if (Object.keys(fieldErrors).length) {
+            toast.error('Fill in all required fields.')
+            return
         }
 
         submitting.value = true
@@ -74,7 +81,9 @@ export function useMovieSubmit(form, isEditMode, getRouteSlug) {
                 poster_path: form.poster_path || null,
                 backdrop_path: form.backdrop_path || null,
                 trailer_youtube_id: form.trailer_youtube_id || null,
-                cast_members: form.cast_members.length ? form.cast_members : null,
+                cast_members: form.cast_members.length
+                    ? form.cast_members.map(({ _key, ...m }) => m)
+                    : null,
                 genres: form.genres,
                 notes: form.notes || null,
                 acquired_at: new Date(form.acquired_at).toISOString(),
@@ -133,5 +142,5 @@ export function useMovieSubmit(form, isEditMode, getRouteSlug) {
         }
     }
 
-    return { submitting, submitted, submitError, handleSubmit }
+    return { submitting, submitted, submitError, fieldErrors, handleSubmit }
 }

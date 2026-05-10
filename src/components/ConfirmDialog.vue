@@ -81,14 +81,14 @@
     }
 
     .title {
-        color: var(--color-heading);
+        color: var(--blue-50);
         font-size: var(--text-xl);
         font-weight: var(--font-weight-bold);
         margin-bottom: var(--size-2);
     }
 
     .message {
-        color: var(--color-text-secondary);
+        color: var(--blue-200);
         font-size: var(--text-sm);
         line-height: var(--leading-normal);
         margin-bottom: var(--size-5);
@@ -105,7 +105,7 @@
         border: none;
         border-radius: var(--radius-md);
         color: var(--red-900);
-        font-weight: var(--font-weight-semibold);
+        font-weight: var(--font-weight-bold);
         padding: var(--size-3) var(--size-5);
         transition: background var(--transition-fast), color var(--transition-fast);
         width: 100%;
@@ -120,7 +120,7 @@
         background: var(--blue-800);
         border-radius: var(--radius-md);
         color: var(--blue-200);
-        font-weight: var(--font-weight-semibold);
+        font-weight: var(--font-weight-bold);
         padding: var(--size-3);
         transition: background var(--transition-fast), color var(--transition-fast);
         width: 100%;

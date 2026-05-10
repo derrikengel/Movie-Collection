@@ -1,1 +1,0 @@
-Create a new view component. Add `container-type: inline-size` to the root element. Follow all patterns in PATTERNS.md. Check CLAUDE.md for the route this view will live at. Ask me for the view name and purpose before starting.

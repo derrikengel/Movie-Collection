@@ -36,7 +36,7 @@
     .heading {
         font-size: var(--text-2xl);
         font-weight: var(--font-weight-bold);
-        color: var(--color-text);
+        color: var(--blue-50);
         margin-bottom: var(--size-8);
     }
 
@@ -49,7 +49,7 @@
     .sectionHeading {
         font-size: var(--text-lg);
         font-weight: var(--font-weight-bold);
-        color: var(--color-text-secondary);
+        color: var(--blue-200);
         margin-bottom: var(--size-2);
     }
 
@@ -62,7 +62,7 @@
     .paletteLabel {
         font-size: var(--text-sm);
         font-weight: var(--font-weight-medium);
-        color: var(--color-text-muted);
+        color: var(--blue-400);
         text-transform: capitalize;
     }
 

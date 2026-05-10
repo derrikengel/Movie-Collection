@@ -40,7 +40,7 @@
     .sublabel {
         color: var(--blue-400);
         font-size: var(--text-2xs);
-        font-weight: var(--font-weight-semibold);
+        font-weight: var(--font-weight-bold);
         transition: color var(--transition-fast);
     }
 

@@ -272,3 +272,19 @@ Services: `fandango_at_home`, `apple_tv`, `youtube`, `plex`, `movies_anywhere`
 3. **`@vue-youtube/core` requires `app.use(createManager())`** in `main.js` — already done, but don't remove it
 4. **CSS Modules active-class on RouterLink** — Vue Router's `:active-class` prop accepts a string, but with CSS Modules the hashed class name must be passed dynamically. Pattern: `:active-class="s.navLinkActive"`
 5. **Reactive badge values in computed arrays** — don't snapshot `.value` inside a computed object literal. Either inline the filter expression directly or use the ref itself and access `.value` in the template.
+
+---
+
+## Agent skills
+
+### Issue tracker
+
+Issues live in GitHub Issues on `derrikengel/Movie-Collection`. See `docs/agents/issue-tracker.md`.
+
+### Triage labels
+
+Default five-role vocabulary (`needs-triage`, `needs-info`, `ready-for-agent`, `ready-for-human`, `wontfix`). See `docs/agents/triage-labels.md`.
+
+### Domain docs
+
+Single-context layout — `CONTEXT.md` + `docs/adr/` at the repo root. See `docs/agents/domain.md`.

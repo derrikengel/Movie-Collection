@@ -70,80 +70,77 @@ background:  var(--color-surface);
 
 ## Design Token Usage
 
-All tokens live in `src/assets/global.css` in a two-layer architecture:
+All tokens live in `src/assets/global.css`. The app uses **primitives directly** in most cases — the strict two-layer semantic abstraction (surface/text/border) is being phased out.
 
-**Layer 1 — Primitives** (raw scale values, not used directly in components):
+**Primitives** (color scales, spacing, radius, typography — use these directly in components):
 ```css
---gray-950: oklch(var(--l-950) calc(var(--gray-c) * var(--c-950)) calc(var(--gray-h) + var(--gray-hue-dir) * var(--arc-950)));
---amber-400: oklch(var(--l-400) calc(var(--amber-c) * var(--c-400)) calc(var(--amber-h) + var(--amber-hue-dir) * var(--arc-400)));
---size-4: 16px;
---radius-md: 12px;
+--blue-50 through --blue-950   /* main palette */
+--green-*, --red-*, --yellow-*, --purple-*
+--size-1 through --size-24     /* 0.25rem increments */
+--radius-xs through --radius-full
+--text-2xs through --text-9xl
 ```
 
-**Layer 2 — Semantic tokens** (these are what components use):
+**Semantic tokens** (pre-composed values worth naming — use these where they apply):
 ```css
---color-bg: var(--gray-950);
---color-text: var(--sand-50);
---color-accent: var(--amber-400);
+/* Frosted glass */
+--color-bg-frosted              /* blue-800 at 85% opacity */
+--color-bg-frosted-subtle       /* blue-950 at 50% opacity */
+--color-bg-frosted-dark         /* blue-950 at 85% opacity */
+--color-divider-frosted         /* blue-400 at 10% opacity */
+--color-bg-frosted-selected     /* blue-400 at 20% opacity */
+--color-bg-frosted-unselected   /* blue-950 at 20% opacity */
+--color-bg-frosted-hover        /* blue-950 at 50% opacity */
+--color-border-frosted          /* blue-50 at 8% opacity */
+--color-border-frosted-strong   /* blue-50 at 16% opacity */
+--color-frosted-input           /* blue-950 at 50% opacity */
+--color-frosted-input-focus     /* blue-950 at 75% opacity */
+
+/* Frosted blur values */
+--bg-frosted-xs through --bg-frosted-6xl   /* blur(0.25rem) … blur(10rem) */
+
+/* Status */
+--color-success     /* green-400 */
+--color-error       /* red-400 */
+--color-warning     /* red-400 */
+
+/* Toast */
+--color-toast-bg, --color-toast-text, --color-toast-text-secondary, --color-toast-text-muted
+
+/* List context (set by .list-watched / .list-watchlist / .list-favorite / .list-ignored) */
+--color-list-50 through --color-list-950
+
+/* Shadows */
+--shadow-2xs, --shadow-xs, --shadow-sm, --shadow-md, --shadow-lg, --shadow-xl, --shadow-2xl
+--text-shadow-2xs through --text-shadow-lg
+
+/* Transitions */
+--transition-fast, --transition-normal, --transition-slow
 ```
 
-Always use semantic tokens in components, never primitives or hardcoded values:
+Use primitives directly for one-off values; reach for a semantic token when it captures the intent:
 ```css
 /* ✅ correct */
+background: var(--blue-950);
+color: var(--blue-200);
 padding: var(--size-4);
-color: var(--color-text);
-border-radius: var(--radius-md);
-background: var(--color-surface);
+background: var(--color-bg-frosted);
+box-shadow: var(--shadow-md);
 
-/* ❌ wrong */
+/* ❌ wrong — hardcoded values */
 padding: 16px;
-color: #f0efe9;
-background: var(--gray-900);
+color: #e0e8ff;
+background: rgba(13, 13, 15, 0.85);
 ```
 
 All colors are in oklch format. Use relative color syntax for opacity variants — no hardcoded rgba:
 ```css
-/* ✅ correct — derives alpha from the token */
-background: oklch(from var(--gray-950) l c h / 0.85);
-color: oklch(from var(--amber-400) l c h / 0.12);
-
-/* ✅ also correct — semantic tokens for common cases */
-background: var(--color-bg-frosted);
-background: var(--color-accent-subtle);
+/* ✅ correct */
+background: oklch(from var(--blue-950) l c h / 0.85);
+border-color: oklch(from var(--blue-50) l c h / 0.08);
 
 /* ❌ wrong */
 background: rgba(13, 13, 15, 0.85);
-```
-
-### Semantic token reference
-```css
-/* Surfaces */
---color-bg, --color-surface, --color-surface-raised, --color-overlay
-
-/* Text */
---color-text, --color-text-secondary, --color-text-muted, --color-text-on-accent
-
-/* Borders */
---color-border, --color-border-subtle, --color-border-strong
-
-/* Accent (amber) */
---color-accent, --color-accent-bright, --color-accent-muted
---color-accent-subtle   /* accent at 12% opacity */
---color-accent-glow     /* accent at 40% opacity */
-
-/* Status */
---color-success, --color-error, --color-warning
-
-/* Frosted glass */
---color-bg-frosted      /* bg at 85% opacity */
---color-border-frosted  /* white at 6% opacity */
-
-/* Interaction */
---color-bg-hover        /* white at 5% opacity */
---color-backdrop        /* black at 50% opacity */
-
-/* Shadows */
---shadow-sm, --shadow-md, --shadow-lg
 ```
 
 ---

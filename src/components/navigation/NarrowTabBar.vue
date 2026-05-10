@@ -96,6 +96,8 @@
         border-top-right-radius: var(--radius-2xl);
         box-shadow: 0 -5px 25px -5px oklch(from var(--blue-950) l c h / 0.5), 0 -2px 10px -6px oklch(from var(--blue-950) l c h / 0.5);
         bottom: 0;
+        height: calc(var(--tab-bar-height) + env(safe-area-inset-bottom));
+        padding-bottom: env(safe-area-inset-bottom);
         display: flex;
         left: 0;
         overflow: hidden;
@@ -115,8 +117,6 @@
         flex: 1;
         flex-direction: column;
         gap: var(--size-2);
-        padding-bottom: calc(var(--size-3) + env(safe-area-inset-bottom));
-        padding-top: var(--size-3);
         justify-content: center;
         position: relative;
         text-decoration: none;
@@ -132,7 +132,7 @@
 
     .tabLabel {
         font-size: var(--text-2xs);
-        font-weight: var(--font-weight-semibold);
+        font-weight: var(--font-weight-bold);
         letter-spacing: var(--tracking-widest);
         line-height: var(--leading-tighter);
         text-transform: uppercase;
@@ -144,7 +144,7 @@
         position: relative;
 
         &:before {
-            background-color: var(--color-primary);
+            background-color: var(--red-400);
             border-top-left-radius: var(--radius-md);
             border-top-right-radius: var(--radius-md);
             bottom: 0;

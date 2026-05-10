@@ -20,6 +20,8 @@
    ============================================================ */
 @layer tokens {
     :root {
+        --white: oklch(100% 0 0);
+
         --l-50: 100%;
         --l-100: 96%;
         --l-200: 90%;
@@ -180,45 +182,13 @@
         --leading-snug: 1.325;
         --leading-normal: 1.5;
         --leading-relaxed: 1.625;
-        --leading-loose: 2;
+        --leading-loose: 1.75;
         --tracking-tighter: -0.05em;
         --tracking-tight: -0.025em;
         --tracking-normal: 0em;
-        --tracking-wide: 0.025em;
-        --tracking-wider: 0.05em;
-        --tracking-widest: 0.1em;
-
-        --color-bg: var(--blue-950);
-        --color-surface: var(--blue-900);
-        --color-surface-raised: var(--blue-800);
-        --color-overlay: var(--blue-800);
-
-        --color-heading: var(--blue-50);
-        --color-text: var(--blue-100);
-        --color-text-secondary: var(--blue-200);
-        --color-text-muted: var(--blue-300);
-        --color-text-subtle: oklch(from var(--blue-200) l c h / 0.4);
-        --color-text-on-accent: var(--blue-950);
-        --color-surface-on-accent: var(--blue-50);
-        --color-text-on-primary: var(--red-950);
-
-        --color-border: var(--blue-800);
-        --color-border-subtle: var(--blue-900);
-        --color-border-strong: var(--blue-700);
-
-        --color-primary: var(--red-400);
-        --color-primary-bright: var(--red-300);
-        --color-primary-muted: var(--red-500);
-        --color-primary-subtle: oklch(from var(--red-400) l c h / 0.12);
-
-        --color-accent: var(--blue-400);
-        --color-accent-bright: var(--blue-300);
-        --color-accent-muted: var(--blue-500);
-        --color-accent-subtle: oklch(from var(--blue-400) l c h / 0.12);
-
-        --color-success: var(--green-400);
-        --color-error: var(--red-400);
-        --color-warning: var(--red-400);
+        --tracking-wide: 0.05em;
+        --tracking-wider: 0.1em;
+        --tracking-widest: 0.125em;
 
         --color-watched-50: oklch(var(--l-50) calc(var(--green-c) * var(--c-50)) var(--green-h));
         --color-watched-100: oklch(var(--l-100) calc(var(--green-c) * var(--c-100)) var(--green-h));
@@ -270,14 +240,9 @@
 
         --color-bg-frosted: oklch(from var(--blue-800) l c h / 0.85);
         --color-bg-frosted-subtle: oklch(from var(--blue-950) l c h / 0.5);
-        --color-bg-frosted-dark: oklch(from var(--blue-950) l c h / 0.85);
         --color-divider-frosted: oklch(from var(--blue-400) l c h / 0.1);
         --color-bg-frosted-selected: oklch(from var(--blue-400) l c h / 0.2);
         --color-bg-frosted-unselected: oklch(from var(--blue-950) l c h / 0.2);
-        --color-bg-frosted-hover: oklch(from var(--blue-950) l c h / 0.5);
-
-        --color-border-frosted: oklch(from var(--blue-50) l c h / 0.08);
-        --color-border-frosted-strong: oklch(from var(--blue-50) l c h / 0.16);
 
         --color-frosted-input: oklch(from var(--blue-950) l c h / 0.5);
         --color-frosted-input-focus: oklch(from var(--blue-950) l c h / 0.75);
@@ -296,13 +261,6 @@
         --color-bg-hover: var(--blue-700);
         --color-disabled: var(--blue-700);
 
-        --color-toast-bg-frosted: oklch(from var(--green-600) l c h / 0.5);
-        --color-toast-border-frosted: oklch(from var(--green-50) l c h / 0.08);
-        --color-toast-bg: var(--green-600);
-        --color-toast-text: var(--green-50);
-        --color-toast-text-secondary: var(--green-200);
-        --color-toast-text-muted: var(--green-400);
-
         --shadow-2xs: 0 1px oklch(from var(--blue-950) l c h / 0.25);
         --shadow-xs: 0 1px 2px 0 oklch(from var(--blue-950) l c h / 0.25);
         --shadow-sm: 0 1px 3px 0 oklch(from var(--blue-950) l c h / 0.5), 0 1px 2px -1px oklch(from var(--blue-950) l c h / 0.5);
@@ -317,16 +275,13 @@
         --text-shadow-md: 0px 1px 1px oklch(from var(--blue-950) l c h / 0.5), 0px 1px 2px oklch(from var(--blue-950) l c h / 0.5), 0px 2px 4px oklch(from var(--blue-950) l c h / 0.5);
         --text-shadow-lg: 0px 1px 2px oklch(from var(--blue-950) l c h / 0.5), 0px 3px 2px oklch(from var(--blue-950) l c h / 0.5), 0px 4px 8px oklch(from var(--blue-950) l c h / 0.5);
 
-        interpolate-size: allow-keywords;
-
         --transition-fast: 150ms ease;
         --transition-normal: 250ms ease;
         --transition-slow: 500ms ease;
 
         --content-width: 64rem;
         --content-padding: var(--size-5);
-        /* --header-height: var(--size-14); */
-        --tab-bar-height: var(--size-15);
+        --tab-bar-height: var(--size-16);
 
         @media (min-width: 48rem) {
             --content-padding: var(--size-8);
@@ -334,7 +289,6 @@
 
         @media (min-width: 64rem) {
             --content-padding: var(--size-12);
-            /* --header-height: var(--size-24); */
         }
 
         @media (min-width: 90rem) {
@@ -348,16 +302,17 @@
    ============================================================ */
 @layer base {
     html {
-        background: var(--color-bg);
-        color: var(--color-text);
+        background: var(--blue-950);
+        color: var(--blue-200);
         color-scheme: dark;
         font-family: var(--font-sans);
         font-optical-sizing: auto;
         font-size: var(--text-base);
-        font-weight: var(--font-weight-base);
+        font-weight: var(--font-weight-medium);
+        interpolate-size: allow-keywords;
         line-height: var(--leading-normal);
         overflow-x: hidden;
-        scrollbar-color: var(--color-accent-muted) transparent;
+        scrollbar-color: var(--blue-400) transparent;
         scrollbar-gutter: stable;
         scrollbar-width: thin;
     }
@@ -414,9 +369,9 @@
 @layer components {
     .badge {
         align-content: center;
-        background: var(--color-primary);
+        background: var(--red-400);
         border-radius: var(--radius-full);
-        color: var(--color-text-on-accent);
+        color: var(--red-900);
         height: 1.75em;
         font-size: var(--text-2xs);
         font-weight: var(--font-weight-bold);
@@ -512,26 +467,54 @@
 
     .svc-fandango-at-home {
         --brand-fg: #fff;
-        --brand-bg: #ff6700;
+        --brand-bg: #ff7300;
+        --btn-bg: #3478c1;
+        --btn-fg: #fff;
     }
 
     .svc-movies-anywhere {
-        --brand-fg: #fff;
-        --brand-bg: #9800d3;
+        --brand-fg: #9800d3;
+        --brand-bg: #fff;
+        --btn-bg: #9800d3;
+        --btn-fg: #fff;
+
+        &.light {
+            --brand-fg: #fff;
+            --brand-bg: #9800d3;
+        }
     }
 
     .svc-apple-tv {
         --brand-fg: #fff;
-        --brand-bg: #000;
+        --btn-bg: #fff;
+        --btn-fg: #000;
+
+        &.light {
+            --brand-fg: #000;
+        }
     }
 
     .svc-youtube {
         --brand-fg: #fff;
-        --brand-bg: #f00;
+        --brand-bg: #ff0033;
+        --btn-bg: #fff;
+        --btn-fg: #212121;
+
+        &.light {
+            --brand-fg: #fff;
+            --brand-bg: #ff0033;
+        }
     }
 
     .svc-plex {
         --brand-fg: #282a2d;
         --brand-bg: #e5a00d;
+        --btn-bg: #e5a00d;
+        --btn-fg: #282a2d;
+
+        &.light {
+            --brand-fg: #282a2d;
+            --brand-bg: #e5a00d;
+        }
     }
 }

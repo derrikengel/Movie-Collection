@@ -243,8 +243,11 @@
                 <div v-if="filtersOpen" :class="s.narrowFooter">
                     <button :class="s.viewBtn" :disabled="filters.visibleMovies.length === 0"
                         @click="filtersOpen = false">
-                        View {{ filters.visibleMovies.length }}
-                        {{ filters.visibleMovies.length === 1 ? 'movie' : 'movies' }}
+                        <span v-if="filters.visibleMovies.length">
+                            View {{ filters.visibleMovies.length }}
+                            {{ filters.visibleMovies.length === 1 ? 'movie' : 'movies' }}
+                        </span>
+                        <span v-else>No Results</span>
                     </button>
                 </div>
             </Transition>
@@ -596,7 +599,7 @@
 
     .countHeaderNumber {
         color: var(--color-list-50, var(--blue-50));
-        font-weight: var(--font-weight-semibold);
+        font-weight: var(--font-weight-bold);
         font-size: var(--text-xs);
 
         @media (min-width: 64rem) {
@@ -615,7 +618,7 @@
         color: var(--blue-50);
         display: inline-flex;
         font-size: var(--text-xs);
-        font-weight: var(--font-weight-semibold);
+        font-weight: var(--font-weight-bold);
         gap: var(--size-3);
         letter-spacing: var(--tracking-widest);
         text-transform: uppercase;
@@ -717,7 +720,7 @@
         align-items: center;
         display: flex;
         font-size: var(--text-xs);
-        font-weight: var(--font-weight-semibold);
+        font-weight: var(--font-weight-bold);
         gap: var(--size-2);
         letter-spacing: var(--tracking-widest);
         line-height: var(--leading-tight);
@@ -772,7 +775,7 @@
 
     .navLabel {
         font-size: var(--text-xs);
-        font-weight: var(--font-weight-semibold);
+        font-weight: var(--font-weight-bold);
         letter-spacing: var(--tracking-widest);
         line-height: var(--leading-tighter);
         text-transform: uppercase;
@@ -788,7 +791,7 @@
         position: relative;
 
         &:before {
-            background-color: var(--color-primary);
+            background-color: var(--red-400);
             border-bottom-left-radius: var(--radius-md);
             border-bottom-right-radius: var(--radius-md);
             content: '';
@@ -1078,7 +1081,7 @@
         border-radius: var(--radius-full);
         color: var(--green-800);
         font-size: var(--text-xs);
-        font-weight: var(--font-weight-semibold);
+        font-weight: var(--font-weight-bold);
         letter-spacing: var(--tracking-widest);
         padding: var(--size-4);
         text-transform: uppercase;
@@ -1092,28 +1095,10 @@
     }
 
     .viewBtn:disabled {
-        background: var(--color-disabled);
+        background: var(--color-bg-frosted-selected);
         border: none;
-        color: var(--color-text-muted);
+        color: var(--blue-400);
         cursor: default;
-    }
-
-    .narrowResetBtn {
-        align-items: center;
-        background: transparent;
-        border: 1px solid var(--color-border);
-        border-radius: var(--radius-md);
-        color: var(--color-text-secondary);
-        display: flex;
-        font-size: var(--text-sm);
-        gap: var(--size-2);
-        justify-content: center;
-        padding: var(--size-3) var(--size-5);
-        transition: border-color var(--transition-fast);
-    }
-
-    .narrowResetBtn:hover {
-        border-color: var(--color-border-strong);
     }
 
     .narrowResetIcon {

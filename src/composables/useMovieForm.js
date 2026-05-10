@@ -2,6 +2,8 @@ import { ref, reactive, computed, watch } from 'vue'
 import { nowLocal, toLocalDatetime } from '@/lib/datetime'
 import { releaseYear } from '@/lib/movies'
 
+let _nextKey = 0
+
 export const genreSuggestions = [
     'Action', 'Adventure', 'Animation', 'Christmas', 'Comedy',
     'Crime', 'Documentary', 'Drama', 'Family', 'Fantasy',
@@ -73,7 +75,9 @@ export function useMovieForm() {
         form.trailer_youtube_id = movie.trailer_youtube_id ?? ''
         form.poster_path = movie.poster_path ?? ''
         form.backdrop_path = movie.backdrop_path ?? ''
-        form.cast_members = movie.cast_members ? [...movie.cast_members] : []
+        form.cast_members = movie.cast_members
+            ? movie.cast_members.map(m => ({ ...m, _key: ++_nextKey }))
+            : []
         form.genres = [...(movie.genres ?? [])]
         form.search_keywords = movie.search_keywords ? movie.search_keywords.split(/\s+/).filter(Boolean) : []
         form.notes = movie.notes ?? ''
@@ -91,8 +95,12 @@ export function useMovieForm() {
         }))
     }
 
+    function setCastMembers(members) {
+        form.cast_members = members.map(m => ({ ...m, _key: ++_nextKey }))
+    }
+
     function addCastMember() {
-        form.cast_members.push({ name: '', character: '', profile_path: '' })
+        form.cast_members.push({ name: '', character: '', profile_path: '', _key: ++_nextKey })
     }
 
     function removeCastMember(i) {
@@ -139,12 +147,23 @@ export function useMovieForm() {
         const q = encodeURIComponent(`${form.title} (${releaseYear(form.release_date)})`)
         const urls = {
             fandango_at_home: `https://athome.fandango.com/content/browse/search?searchString=${q}`,
-            apple_tv: `https://tv.apple.com/search?term=${q}`,
+            apple_tv: `https://www.google.com/search?q=${form.title}+site%3Atv.apple.com%2Fus%2Fmovie%2F`,
             youtube: `https://www.youtube.com/results?search_query=${q}`,
             plex: `https://app.plex.tv/desktop/#!/search?query=${q}`,
-            movies_anywhere: `https://moviesanywhere.com/search?q=${q}`,
+            movies_anywhere: `https://moviesanywhere.com/my-movies`,
         }
         return urls[service] ?? null
+    }
+
+    function servicePlaceholderUrl(service) {
+        const urls = {
+            fandango_at_home: 'https://athome.fandango.com...',
+            apple_tv: 'https://tv.apple.com...',
+            youtube: 'https://www.youtube.com...',
+            plex: 'https://app.plex.tv...',
+            movies_anywhere: 'https://moviesanywhere.com...',
+        }
+        return urls[service]
     }
 
     return {
@@ -153,6 +172,7 @@ export function useMovieForm() {
         keywordInput,
         trailerSearchUrl,
         populateFromMovie,
+        setCastMembers,
         addCastMember,
         removeCastMember,
         moveCastMember,
@@ -163,5 +183,6 @@ export function useMovieForm() {
         getService,
         isServiceActive,
         serviceSearchUrl,
+        servicePlaceholderUrl
     }
 }

@@ -4,7 +4,7 @@
         <MovieHero :movie="movie" />
 
         <div :class="s.contentWrap">
-            <div :class="s.content">
+            <div :class="s.narrowContent">
                 <div :class="s.poster">
                     <img v-if="movie.poster_path" :src="posterUrl(movie.poster_path)" :alt="movie.title" />
                 </div>
@@ -34,64 +34,78 @@
                     <div v-if="movie.genres?.length" :class="s.genres">
                         <span v-for="genre in movie.genres" :key="genre" :class="s.genre">{{ genre }}</span>
                     </div>
-
-                    <p v-if="movie.description" :class="[s.description, s.descriptionWide]">
-                        {{ movie.description }}
-                    </p>
-
-                    <section :class="[s.cast, s.castWide]">
-                        <div :class="s.castPhotos">
-                            <img v-for="member in movie.cast_members.filter(m => m.profile_path)" :key="member.name"
-                                :src="profileUrl(member.profile_path)" :alt="member.name" :class="s.castPhoto"
-                                loading="lazy" />
-                        </div>
-
-                        <ol :class="s.castList" role="list">
-                            <li v-for="member in movie.cast_members" :key="member.name" :class="s.card">
-                                <span :class="s.name">{{ member.name }}</span>
-                            </li>
-                        </ol>
-                    </section>
-
-                    <p v-if="movie.notes" :class="[s.notes, s.notesWide]">{{ movie.notes }}</p>
                 </div>
             </div>
 
-            <p v-if="movie.description" :class="[s.description, s.descriptionNarrow]">{{ movie.description }}</p>
+            <div :class="s.content">
+                <div :class="s.wideCol1">
+                    <div :class="s.poster">
+                        <img v-if="movie.poster_path" :src="posterUrl(movie.poster_path)" :alt="movie.title" />
+                    </div>
 
-            <section :class="[s.cast, s.castNarrow]">
-                <div :class="s.castPhotos">
-                    <img v-for="member in movie.cast_members.filter(m => m.profile_path)" :key="member.name"
-                        :src="profileUrl(member.profile_path)" :alt="member.name" :class="s.castPhoto" loading="lazy" />
+                    <MovieActionBar :movie="movie" />
+
+                    <MovieServices v-if="hasServices" :movie="movie" />
                 </div>
 
-                <ol :class="s.castList" role="list">
-                    <li v-for="member in movie.cast_members" :key="member.name" :class="s.card">
-                        <span :class="s.name">{{ member.name }}</span>
-                    </li>
-                </ol>
-            </section>
+                <div :class="s.wideCol2">
+                    <div :class="s.meta">
+                        <dl :class="s.tags">
+                            <dt class="visually-hidden">Release Year</dt>
+                            <dd :class="s.tag"
+                                :title="movie.release_date ? new Date(movie.release_date + 'T00:00:00').toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }) : undefined">
+                                {{ releaseYear(movie.release_date) }}</dd>
 
-            <p v-if="movie.notes" :class="[s.notes, s.notesNarrow]">{{ movie.notes }}</p>
+                            <dt v-if="movie.mpaa_rating" class="visually-hidden">Rating</dt>
+                            <dd v-if="movie.mpaa_rating" :class="s.tag">{{ movie.mpaa_rating }}</dd>
+
+                            <dt v-if="movie.runtime_minutes" class="visually-hidden">Runtime</dt>
+                            <dd v-if="movie.runtime_minutes" :class="s.tag">{{ formattedRuntime }}</dd>
+
+                            <dt v-if="movie.tmdb_rating" class="visually-hidden">Rating</dt>
+                            <dd v-if="movie.tmdb_rating" :class="s.tag">
+                                <span v-html="star" :class="s.tagIcon" />
+                                {{ movie.tmdb_rating.toFixed(1) }}
+                            </dd>
+                        </dl>
+
+                        <h1 :class="s.title">{{ movie.title }}</h1>
+
+                        <div v-if="movie.genres?.length" :class="s.genres">
+                            <span v-for="genre in movie.genres" :key="genre" :class="s.genre">{{ genre }}</span>
+                        </div>
+                    </div>
+
+                    <!-- <button v-if="movie.description"
+                        :class="[s.description, descriptionExpanded && s.descriptionExpanded]"
+                        @click="descriptionExpanded = true" ref="descriptionEl">
+                        {{ movie.description }}
+                    </button> -->
+
+                    <p v-if="movie.description" :class="s.description">
+                        {{ movie.description }}
+                    </p>
+
+                    <p v-if="movie.notes" :class="s.notes">{{ movie.notes }}</p>
+
+                    <MovieCast v-if="movie.cast_members?.length" :cast="movie.cast_members" />
+
+                    <p v-if="auth.isAdmin" :class="s.edit">
+                        <RouterLink :to="{ name: 'edit-movie', params: { slug: movie.slug } }" :class="s.editLink">
+                            <span v-html="pencil" :class="s.editIcon" />
+                            Edit Movie
+                        </RouterLink>
+                    </p>
+                </div>
+            </div>
         </div>
 
-        <!-- <MovieCast v-if="movie.cast_members?.length" :cast="movie.cast_members" /> -->
 
-        <MovieActionBar :movie="movie" />
-
-        <MovieServices v-if="hasServices" :movie="movie" />
-
-        <p v-if="auth.isAdmin" :class="s.edit">
-            <RouterLink :to="{ name: 'edit-movie', params: { slug: movie.slug } }" :class="s.editLink">
-                <span v-html="pencil" :class="s.editIcon" />
-                Edit Movie
-            </RouterLink>
-        </p>
 
         <div :class="[s.browse, sourceListClass]">
             <div :class="s.browseNav">
                 <RouterLink v-if="prevMovie" :to="{ name: 'movie', params: { slug: prevMovie.slug } }"
-                    :class="s.browseLink">
+                    :class="[s.browseLink, s.browseLinkPrev]">
 
                     <span v-html="arrowLeft" :class="s.browseIcon" />
 
@@ -135,7 +149,7 @@
 </template>
 
 <script setup>
-    import { computed } from 'vue'
+    import { computed, ref, watch } from 'vue'
     import { useRoute } from 'vue-router'
     import { useMoviesStore } from '@/stores/movies'
     import { useAuthStore } from '@/stores/auth'
@@ -205,32 +219,56 @@
         currentIndex.value < browseList.value.length - 1 ? browseList.value[currentIndex.value + 1] : null
     )
 
+    const descriptionExpanded = ref(false)
+    const descriptionEl = ref(null)
+    const isDescriptionClamped = ref(false)
+
+    watch(descriptionEl, (el, _, onCleanup) => {
+        if (!el) {
+            isDescriptionClamped.value = false
+            return
+        }
+        const observer = new ResizeObserver(() => {
+            isDescriptionClamped.value = el.scrollHeight > el.clientHeight
+        })
+        observer.observe(el)
+        onCleanup(() => observer.disconnect())
+    })
+
+    watch(() => movie.value?.slug, () => {
+        descriptionExpanded.value = false
+    })
 </script>
 
 <style module="s">
     .page {
         container-type: inline-size;
-        margin: calc(var(--content-padding) * -1) calc(var(--content-padding) * -1) 0 calc(var(--content-padding) * -1);
+        margin: calc(var(--content-padding) * -1);
+        padding-bottom: var(--size-2);
+
+        @media (min-width: 64rem) {
+            padding-bottom: 0;
+        }
     }
 
     .contentWrap {
         margin: 0 auto;
-        max-width: var(--content-width);
+        max-width: calc(var(--content-width) + (var(--content-padding) * 2));
         padding-inline: var(--content-padding);
         position: relative;
     }
 
-    .content {
-        align-items: center;
+    .narrowContent {
+        align-items: end;
         display: flex;
-        flex-direction: row-reverse;
         gap: 5%;
-        margin-top: -6%;
+        margin-top: -4%;
 
-        @container (min-width: 32rem) {
-            align-items: stretch;
+        @media (min-width: 48rem) {
+            display: none;
         }
 
+        /*
         @container (min-width: 48rem) {
             gap: var(--size-12);
             margin-top: -12%;
@@ -238,80 +276,163 @@
 
         @container (min-width: 64rem) {
             gap: var(--size-16);
-            margin-top: -14%;
+            margin-top: -20%;
+        } */
+    }
+
+    .content {
+        margin-top: var(--size-8);
+
+        @media (min-width: 48rem) {
+            display: flex;
+            gap: var(--size-12);
+            margin-top: -22%;
         }
+
+        @media (min-width: 64rem) {
+            gap: var(--size-16);
+        }
+
+        .poster {
+            display: none;
+
+            @media (min-width: 48rem) {
+                display: block;
+            }
+
+            img {
+                border-radius: var(--radius-xl);
+            }
+        }
+
+        .meta {
+            display: none;
+
+            @media (min-width: 48rem) {
+                display: block;
+                padding-top: var(--size-16);
+            }
+
+            @media (min-width: 64rem) {
+                padding-top: var(--size-24);
+            }
+        }
+    }
+
+    .wideCol1 {
+        container-name: wide-col1;
+        container-type: inline-size;
+        display: flex;
+        flex: 0 0 28%;
+        flex-direction: column;
+        gap: var(--size-4);
+        min-width: 12rem;
+    }
+
+    .wideCol2 {
+        container-name: wide-col2;
+        container-type: inline-size;
+        flex: 1;
+        min-width: 0;
     }
 
     .poster {
         flex-shrink: 0;
-        min-width: 7rem;
-        width: 24%;
+        min-width: 6rem;
+        width: 20%;
+
+        @media (min-width: 48rem) {
+            margin-bottom: var(--size-4);
+            min-width: 0;
+            width: auto;
+        }
     }
 
     .poster img {
         aspect-ratio: 2 / 3;
         border-radius: var(--radius-lg);
-        box-shadow: var(--shadow-2xl);
+        box-shadow: var(--shadow-xl);
         display: block;
         object-fit: cover;
         width: 100%;
+
+        @media (min-width: 48rem) {
+            box-shadow: var(--shadow-2xl);
+        }
     }
 
     .meta {
         flex: 1;
         min-width: 0;
-        padding-top: var(--size-4);
 
-        @container (min-width: 64rem) {
+        @media (min-width: 64rem) {
             padding-top: var(--size-6);
         }
     }
 
     .title {
-        color: var(--color-heading);
+        color: var(--blue-50);
         font-size: var(--text-2xl);
-        font-weight: var(--font-weight-semibold);
+        font-weight: var(--font-weight-bold);
         line-height: var(--leading-tighter);
-        letter-spacing: var(--tracking-wider);
-        margin-bottom: var(--size-4);
+        letter-spacing: var(--tracking-widest);
+        margin-bottom: var(--size-3);
         text-transform: uppercase;
-        text-shadow: var(--text-shadow-lg);
+        /* text-shadow: var(--text-shadow-lg); */
         text-wrap: pretty;
 
-        @container (min-width: 40rem) {
+        @media (min-width: 36rem) {
             font-size: var(--text-3xl);
         }
 
-        @container (min-width: 64rem) {
+        @media (min-width: 48rem) {
+            font-size: var(--text-4xl);
+            margin-bottom: var(--size-3);
+            text-wrap: balance;
+        }
+
+        @media (min-width: 64rem) {
             font-size: var(--text-5xl);
+            margin-bottom: var(--size-4);
         }
     }
 
     .tags {
         display: flex;
         flex-wrap: wrap;
-        gap: var(--size-1) var(--size-3);
-        letter-spacing: var(--tracking-wider);
+        gap: var(--size-1) var(--size-2);
         margin-bottom: var(--size-2);
+        color: var(--blue-50);
+        font-size: var(--text-2xs);
+        font-weight: var(--font-weight-bold);
+        letter-spacing: var(--tracking-widest);
+        line-height: var(--leading-tighter);
+        /* text-shadow: var(--text-shadow-md); */
+        text-transform: uppercase;
+
+        @media (min-width: 48rem) {
+            font-size: var(--text-xs);
+            margin-bottom: var(--size-3);
+        }
+
+        @media (min-width: 64rem) {
+            margin-bottom: var(--size-4);
+        }
     }
 
     .tag {
         align-items: center;
-        color: var(--color-heading);
         display: flex;
-        font-size: var(--text-xs);
-        font-weight: var(--font-weight-medium);
         gap: var(--size-1);
         justify-content: center;
-        text-shadow: var(--text-shadow-md);
 
         &:not(:first-of-type):before {
-            background: oklch(from var(--blue-300) l c h / 0.4);
+            background: oklch(from var(--blue-50) l c h / 0.2);
             border-radius: var(--radius-full);
             content: '';
             display: block;
             height: var(--size-1);
-            margin-right: var(--size-2);
+            margin-right: var(--size-1);
             width: var(--size-1);
         }
     }
@@ -320,6 +441,7 @@
         align-items: center;
         color: var(--yellow-200);
         display: flex;
+        font-size: var(--text-xs);
         justify-content: center;
     }
 
@@ -327,130 +449,73 @@
         display: flex;
         flex-wrap: wrap;
         gap: var(--size-1);
-        margin-bottom: var(--size-4);
     }
 
     .genre {
-        background: var(--blue-800);
+        background: var(--color-bg-frosted);
         border-radius: var(--radius-full);
-        color: var(--blue-300);
+        color: var(--blue-400);
         font-size: var(--text-2xs);
-        font-weight: var(--font-weight-semibold);
+        font-weight: var(--font-weight-bold);
         letter-spacing: var(--tracking-widest);
-        line-height: var(--leading-snug);
-        padding: var(--size-1) var(--size-3);
+        line-height: var(--leading-tighter);
+        padding: var(--size-1) var(--size-2);
         text-transform: uppercase;
+
+        @media (min-width: 48rem) {
+            font-size: var(--text-xs);
+            padding: var(--size-1) var(--size-3);
+        }
     }
 
     .description {
-        color: var(--color-text);
-        font-size: var(--text-sm);
+        color: var(--blue-200);
+        font-size: var(--text-base);
+        font-weight: var(--font-weight-medium);
         line-height: var(--leading-relaxed);
+        margin-top: var(--size-8);
+        text-align: left;
         text-wrap: pretty;
 
-        @container (min-width: 48rem) {
+        @media (min-width: 48rem) {
             font-size: var(--text-base);
+            margin-top: var(--size-8);
+        }
+
+        @media (min-width: 64rem) {
+            font-size: var(--text-lg);
+            line-height: var(--leading-loose);
         }
     }
 
-    .descriptionNarrow {
-        margin-top: var(--size-8);
-
-        @container (min-width: 32rem) {
-            display: none;
-        }
-    }
-
-    .descriptionWide {
-        display: none;
-
-        @container (min-width: 32rem) {
-            display: block;
-        }
-    }
-
-    .castNarrow {
-        margin-top: var(--size-6);
-
-        @container (min-width: 48rem) {
-            display: none;
-        }
-    }
-
-    .castWide {
-        display: none;
-        margin-top: var(--size-6);
-
-        @container (min-width: 48rem) {
-            display: block;
-        }
-    }
-
-    .castPhotos {
-        display: flex;
-    }
-
-    .castPhoto {
-        aspect-ratio: 1;
-        border: 0.125rem solid var(--blue-950);
-        border-radius: var(--radius-full);
-        box-shadow: var(--shadow-md);
+    .descriptionExpanded {
+        -webkit-line-clamp: unset;
+        cursor: default;
         display: block;
-        object-fit: cover;
-        object-position: left 50% top 25%;
-        width: var(--size-10);
-    }
-
-    .castPhoto+.castPhoto {
-        margin-left: calc(var(--size-2) * -1);
-    }
-
-    .castList {
-        list-style: none;
-        font-size: var(--text-xs);
-        color: var(--blue-300);
-        font-style: italic;
-        font-weight: var(--font-weight-medium);
-        margin-top: var(--size-2);
-    }
-
-    .castList li+li:before {
-        content: ', ';
-    }
-
-    .castList li {
-        display: inline;
+        overflow: visible;
     }
 
     .notes {
-        color: var(--color-text-muted);
-        font-size: var(--text-sm);
-        font-style: italic;
-        margin-top: var(--size-4);
-    }
-
-    .notesNarrow {
-        @container (min-width: 32rem) {
-            display: none;
-        }
-    }
-
-    .notesWide {
-        display: none;
-
-        @container (min-width: 32rem) {
-            display: block;
-        }
+        color: var(--blue-200);
+        font-size: var(--text-xs);
+        font-weight: var(--font-weight-bold);
+        margin-top: var(--size-2);
     }
 
     .browse {
-        margin-top: var(--size-12);
+        margin-top: var(--size-8);
+
+        @media (min-width: 64rem) {
+            background: var(--blue-900);
+            margin-top: var(--size-24);
+            padding-block: var(--size-12);
+        }
     }
 
     .browseLabel {
         color: var(--blue-400);
         font-size: var(--text-xs);
-        font-weight: var(--font-weight-semibold);
+        font-weight: var(--font-weight-bold);
         letter-spacing: var(--tracking-widest);
         margin-bottom: var(--size-3);
         text-transform: uppercase;
@@ -460,31 +525,50 @@
         display: flex;
         gap: var(--size-2);
         margin-inline: auto;
-        max-width: var(--content-width);
-        padding-inline: var(--content-padding);
+        max-width: calc(var(--content-width) + (var(--content-padding) * 2));
+
+        @media (min-width: 64rem) {
+            padding-inline: var(--content-padding);
+        }
     }
 
     .browseLink {
-        background: var(--color-surface);
-        border: 1px solid var(--color-border);
-        border-radius: var(--radius-md);
+        background: var(--blue-900);
+        container-name: browse-card;
         container-type: inline-size;
         display: flex;
         flex: 1;
-        gap: var(--size-3);
+        gap: var(--size-4);
         min-width: 0;
-        padding: var(--size-3);
+        padding: var(--size-6) var(--size-4);
         text-align: right;
         transition: border-color var(--transition-fast), background var(--transition-fast);
+
+        @media (min-width: 48rem) {
+            padding: var(--size-6);
+        }
+
+        @media (min-width: 64rem) {
+            border: 1px solid var(--blue-800);
+            border-radius: var(--radius-xl);
+        }
     }
 
-    .browseLink:hover {
-        background: var(--color-surface-raised);
-        border-color: var(--color-border-strong);
+    @media (hover: hover) and (pointer: fine) {
+        .browseLink:hover {
+            background: var(--blue-800);
+        }
     }
 
     .browseLinkNext {
+        border-top-left-radius: var(--radius-xl);
+        border-bottom-left-radius: var(--radius-xl);
         text-align: left;
+    }
+
+    .browseLinkPrev {
+        border-top-right-radius: var(--radius-xl);
+        border-bottom-right-radius: var(--radius-xl);
     }
 
     .browseContent {
@@ -494,8 +578,12 @@
         flex-direction: row-reverse;
         gap: var(--size-3);
 
-        @container (min-width: 20rem) {
+        @container browse-card (min-width: 20rem) {
             gap: var(--size-4);
+        }
+
+        @container browse-card (min-width: 24rem) {
+            gap: var(--size-5);
         }
     }
 
@@ -506,23 +594,27 @@
 
     .browseIcon {
         align-items: center;
-        color: var(--color-text-muted);
+        color: var(--blue-50);
         font-size: var(--text-xs);
         display: flex;
         flex-shrink: 0;
         justify-content: center;
 
-        @container (min-width: 16rem) {
+        @container browse-card (min-width: 16rem) {
             font-size: var(--text-sm);
+        }
+
+        @container browse-card (min-width: 24rem) {
+            font-size: var(--text-xl);
         }
     }
 
     .browsePoster {
         display: none;
 
-        @container (min-width: 14rem) {
+        @container browse-card (min-width: 14rem) {
             aspect-ratio: 2 / 3;
-            border-radius: var(--radius-sm);
+            border-radius: var(--radius-lg);
             box-shadow: var(--shadow-md);
             display: block;
             flex-shrink: 0;
@@ -530,42 +622,47 @@
             width: var(--size-12);
         }
 
-        @container (min-width: 20rem) {
+        @container browse-card (min-width: 20rem) {
             width: var(--size-16);
+        }
+
+        @container browse-card (min-width: 24rem) {
+            width: var(--size-20);
         }
     }
 
     .browseMeta {
         display: flex;
         flex-direction: column;
-        gap: var(--size-1);
+        font-size: var(--text-2xs);
+        font-weight: var(--font-weight-bold);
+        gap: var(--size-2);
+        letter-spacing: var(--tracking-widest);
+        line-height: var(--leading-tighter);
         min-width: 0;
+        text-transform: uppercase;
     }
 
     .browsePrevNext {
-        color: var(--color-list-400, var(--blue-400));
-        font-size: var(--text-2xs);
-        font-weight: var(--font-weight-medium);
-        letter-spacing: var(--tracking-wider);
-        text-transform: uppercase;
+        color: var(--color-list-400, var(--blue-500));
     }
 
     .browseTitle {
         color: var(--blue-50);
         font-size: var(--text-xs);
-        font-weight: var(--font-weight-bold);
-        line-height: var(--leading-snug);
         text-wrap: pretty;
 
-        @container (min-width: 20rem) {
+        @container browse-card (min-width: 18rem) {
             font-size: var(--text-sm);
+        }
+
+        @container browse-card (min-width: 24rem) {
+            font-size: var(--text-base);
         }
     }
 
     .browseYear {
-        color: var(--blue-100);
-        font-size: var(--text-xs);
-        line-height: var(--leading-tight);
+        color: var(--blue-200);
     }
 
     .browseEmpty {
@@ -573,30 +670,34 @@
     }
 
     .edit {
-        margin: var(--size-6) auto 0 auto;
-        max-width: var(--content-width);
-        padding-inline: var(--content-padding);
+        margin-top: var(--size-8) auto 0 auto;
     }
 
     .editLink {
         align-items: center;
-        background: var(--yellow-900);
-        border: 1px solid var(--yellow-800);
-        border-radius: var(--radius-md);
+        border: none;
+        border-radius: var(--radius-full);
         color: var(--yellow-400);
         display: flex;
         font-size: var(--text-xs);
-        font-weight: var(--font-weight-medium);
+        font-weight: var(--font-weight-bold);
         gap: var(--size-2);
         justify-content: center;
-        padding: var(--size-2) var(--size-4);
-        transition: border-color var(--transition-fast), color var(--transition-fast), background var(--transition-fast);
+        letter-spacing: var(--tracking-widest);
+        line-height: var(--leading-tight);
+        margin-top: var(--size-9);
+        text-transform: uppercase;
+        transition: background var(--transition-fast), color var(--transition-fast);
+
+        @media (min-width: 48rem) {
+            display: inline-flex;
+        }
     }
 
-    .editLink:hover {
-        border-color: var(--yellow-500);
-        background: var(--yellow-500);
-        color: var(--yellow-950);
+    @media (hover: hover) and (pointer: fine) {
+        .editLink:hover {
+            color: var(--yellow-300);
+        }
     }
 
     .editIcon {
@@ -612,7 +713,7 @@
         align-items: center;
         gap: var(--size-4);
         padding: var(--size-12) var(--content-padding);
-        color: var(--color-text-muted);
+        color: var(--blue-400);
         font-size: var(--text-sm);
     }
 

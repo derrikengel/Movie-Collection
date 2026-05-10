@@ -93,7 +93,7 @@
         align-content: center;
         color: var(--blue-500);
         font-size: var(--text-xs);
-        font-weight: var(--font-weight-semibold);
+        font-weight: var(--font-weight-bold);
         inset: 0;
         letter-spacing: var(--tracking-widest);
         line-height: var(--leading-tight);
@@ -138,9 +138,9 @@
         flex: 1;
         flex-direction: column;
         font-size: var(--text-sm);
-        font-weight: var(--font-weight-semibold);
+        font-weight: var(--font-weight-bold);
+        letter-spacing: var(--tracking-widest);
         line-height: var(--leading-tighter);
-        letter-spacing: var(--tracking-wider);
         gap: var(--size-3);
         justify-content: center;
         min-height: 0;
@@ -167,9 +167,10 @@
         display: flex;
         flex-wrap: wrap;
         font-size: var(--text-2xs);
-        font-weight: var(--font-weight-semibold);
+        font-weight: var(--font-weight-bold);
         gap: var(--size-1) var(--size-2);
         justify-content: center;
+        letter-spacing: var(--tracking-widest);
         opacity: 0;
         translate: 0 calc(var(--size-0-5) * -1);
         transition: opacity var(--transition-slow), translate var(--transition-slow);
@@ -211,9 +212,23 @@
         }
     }
 
+    @property --grad-start {
+        inherits: false;
+        initial-value: transparent;
+        syntax: '<color>';
+    }
+
+    @property --grad-end {
+        inherits: false;
+        initial-value: transparent;
+        syntax: '<color>';
+    }
+
     .cardAction {
+        --grad-start: oklch(from var(--color-list-400) l c h / 0.1);
+        --grad-end: var(--grad-start);
         align-items: center;
-        background: oklch(from var(--color-list-400) l c h / 0.1);
+        background: linear-gradient(135deg, var(--grad-start), var(--grad-end));
         border: none;
         border-radius: var(--radius-md);
         cursor: pointer;
@@ -221,7 +236,7 @@
         flex: 1;
         justify-content: center;
         padding: var(--size-2) 0;
-        transition: background var(--transition-fast), color var(--transition-fast);
+        transition: color var(--transition-fast), --grad-start var(--transition-fast), --grad-end var(--transition-fast);
 
         @container (min-width: 12rem) {
             border-radius: var(--radius-lg);
@@ -248,18 +263,24 @@
     }
 
     .cardAction:hover {
-        background: oklch(from var(--color-list-400) l c h / 0.25);
+        --grad-start: oklch(from var(--color-list-400) l c h / 0.25);
     }
 
-    .cardActionActive,
-    .cardActionActive:hover {
-        background: linear-gradient(135deg, var(--color-list-400), var(--color-list-500));
+    .cardActionActive {
+        --grad-start: var(--color-list-400);
+        --grad-end: var(--color-list-500);
+        color: var(--color-list-900);
 
         .cardActionIcon {
             background: var(--color-list-900);
             border-color: transparent;
             color: var(--color-list-400);
         }
+    }
+
+    .cardActionActive:hover {
+        --grad-start: var(--color-list-400);
+        --grad-end: var(--color-list-400);
     }
 
     @media (hover: hover) and (pointer: fine) {

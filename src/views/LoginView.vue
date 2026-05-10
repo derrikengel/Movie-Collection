@@ -60,7 +60,7 @@
 
 <style module="s">
     .login {
-        background: var(--color-bg-frosted);
+        background: var(--blue-800);
         border-radius: var(--radius-xl);
         flex: 0 1 30rem;
         padding: var(--size-6);
@@ -89,7 +89,7 @@
     .label {
         color: var(--blue-300);
         font-size: var(--text-xs);
-        font-weight: var(--font-weight-semibold);
+        font-weight: var(--font-weight-bold);
         letter-spacing: var(--tracking-widest);
         text-transform: uppercase;
     }
@@ -107,7 +107,7 @@
     }
 
     .input::placeholder {
-        color: red;
+        color: var(--blue-100);
     }
 
     .input:focus {
@@ -130,7 +130,7 @@
         border-radius: var(--radius-full);
         color: var(--green-800);
         font-size: var(--text-xs);
-        font-weight: var(--font-weight-semibold);
+        font-weight: var(--font-weight-bold);
         letter-spacing: var(--tracking-widest);
         padding: var(--size-4);
         text-transform: uppercase;

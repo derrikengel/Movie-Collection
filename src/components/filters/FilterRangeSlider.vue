@@ -222,7 +222,7 @@
         color: var(--blue-300);
         font-size: var(--text-2xs);
         letter-spacing: var(--tracking-widest);
-        font-weight: var(--font-weight-semibold);
+        font-weight: var(--font-weight-bold);
         text-transform: uppercase;
     }
 

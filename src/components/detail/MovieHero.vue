@@ -106,26 +106,18 @@
     }
 
     .heroMedia {
-        aspect-ratio: 2 / 1;
+        aspect-ratio: 12 /5;
         background-position: 50% 50%;
         background-repeat: no-repeat;
         background-size: cover;
-        mask-image: linear-gradient(to top, transparent, black 50%, black 100%);
+        mask-image: linear-gradient(to top, transparent, black 50%);
         mask-composite: intersect;
         mask-repeat: no-repeat;
 
         @media (min-width: 64rem) {
-            aspect-ratio: 2.25 / 1;
-        }
-
-        @media (min-width: 80rem) {
-            aspect-ratio: 12 / 5;
-        }
-
-        @media (min-width: 90rem) {
-            mask-image: linear-gradient(to top, transparent, black 50%, black 100%),
-                linear-gradient(to right, transparent, black 30%, black 100%),
-                linear-gradient(to left, transparent, black 30%, black 100%);
+            mask-image: linear-gradient(to top, transparent, black 50%),
+                linear-gradient(to right, transparent, black 30%),
+                linear-gradient(to left, transparent, black 30%);
         }
     }
 
@@ -175,36 +167,50 @@
         background: var(--color-bg-frosted-subtle);
         border: none;
         border-radius: var(--radius-full);
-        color: var(--color-text);
+        color: var(--blue-50);
         display: flex;
-        font-size: var(--text-xl);
+        font-size: var(--text-lg);
         justify-content: center;
         position: absolute;
         top: var(--size-2);
-        transition: background var(--transition-fast), opacity var(--transition-normal);
-        width: var(--size-8);
+        transition: background var(--transition-fast), color var(--transition-fast), opacity var(--transition-normal);
+        width: var(--size-9);
         z-index: 2;
 
-        @container (min-width: 32rem) {
+        @media (min-width: 32rem) {
             top: var(--size-3);
         }
 
-        @container (min-width: 48rem) {
+        @media (min-width: 48rem) {
+            font-size: var(--text-xl);
             top: var(--size-4);
+            width: var(--size-10);
         }
 
-        @container (min-width: 64rem) {
+        @media (min-width: 64rem) {
+            font-size: var(--text-2xl);
             top: var(--size-6);
-            width: var(--size-10);
+            width: var(--size-12);
         }
     }
 
-    .overlayBtn:hover {
-        background: var(--color-bg-frosted);
+    @media (hover: hover) and (pointer: fine) {
+        .overlayBtn:hover {
+            background: var(--blue-50);
+            color: var(--blue-800);
+        }
     }
 
     .backBtn {
-        left: var(--content-padding);
+        left: var(--size-2);
+
+        @media (min-width: 32rem) {
+            left: var(--size-3);
+        }
+
+        @media (min-width: 48rem) {
+            left: var(--size-4);
+        }
 
         @media (min-width: 64rem) {
             display: none;
@@ -212,7 +218,19 @@
     }
 
     .muteBtn {
-        right: var(--content-padding);
+        right: var(--size-2);
+
+        @media (min-width: 32rem) {
+            right: var(--size-3);
+        }
+
+        @media (min-width: 48rem) {
+            right: var(--size-4);
+        }
+
+        @media (min-width: 64rem) {
+            right: var(--content-padding);
+        }
     }
 
     .muteBtnUnmuted {
