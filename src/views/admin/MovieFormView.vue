@@ -205,7 +205,7 @@
                                 </div>
                             </div>
                             <p v-if="fieldErrors['runtime-hours']" :class="s.errorMsg">{{ fieldErrors['runtime-hours']
-                            }}</p>
+                                }}</p>
                         </div>
                     </div>
 
@@ -1292,7 +1292,7 @@
         position: absolute;
         right: 0;
         top: 100%;
-        z-index: 10;
+        z-index: 100;
     }
 
     .genreDropdownContent {

@@ -320,10 +320,6 @@
         }
     }
 
-    .disc {
-        color: var(--blue-600);
-    }
-
     .serviceInfo {
         align-items: center;
         display: flex;
