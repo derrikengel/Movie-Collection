@@ -3,7 +3,8 @@
         <RouterLink v-for="tab in tabs" :key="tab.to" :to="tab.to"
             :class="[s.tab, tab.listClass && s.tabColored, tab.listClass, forcedActiveRoute === tab.to.name && s.tabActive]"
             :active-class="s.tabActive" :exact="tab.exact" @click="handleTabClick(tab)">
-            <span :class="s.tabIcon" v-html="tab.icon" aria-hidden="true" />
+            <UserAvatar v-if="tab.isAvatar" :avatar="auth.profile?.avatar" :class="s.tabAvatar" />
+            <span v-else :class="s.tabIcon" v-html="tab.icon" aria-hidden="true" />
             <span :class="s.tabLabel">{{ tab.label }}</span>
         </RouterLink>
     </nav>
@@ -14,6 +15,8 @@
     import { useRoute } from 'vue-router'
     import { useAuthStore } from '@/stores/auth'
     import { useNavContextStore } from '@/stores/navContext'
+    import { slugifyName } from '@/lib/movies'
+    import UserAvatar from '@/components/profile/UserAvatar.vue'
     import film from '@/assets/icons/film.svg?raw'
     import bookmark from '@/assets/icons/bookmark.svg?raw'
     import heart from '@/assets/icons/heart.svg?raw'
@@ -23,6 +26,7 @@
     const route = useRoute()
     const auth = useAuthStore()
     const navContext = useNavContextStore()
+    const userSlug = computed(() => slugifyName(auth.displayName ?? ''))
     const forcedActiveRoute = computed(() =>
         route.name === 'movie' ? (navContext.sourceList ?? 'home') : null
     )
@@ -46,24 +50,24 @@
         if (auth.user) {
             items.push(
                 {
-                    to: { name: 'watchlist' },
+                    to: { name: 'watchlist', params: { name: userSlug.value } },
                     exact: false,
                     label: 'Watchlist',
                     icon: bookmark,
                     listClass: 'list-watchlist',
                 },
                 {
-                    to: { name: 'favorites' },
+                    to: { name: 'favorites', params: { name: userSlug.value } },
                     exact: false,
                     label: 'Favorites',
                     icon: heart,
                     listClass: 'list-favorite',
                 },
                 {
-                    to: { name: 'profile' },
+                    to: { name: 'profile', params: { name: userSlug.value } },
                     exact: true,
                     label: auth.displayName,
-                    icon: userIcon,
+                    isAvatar: true,
                 }
             )
         } else {
@@ -130,6 +134,13 @@
         transition: color var(--transition-fast);
     }
 
+    .tabAvatar {
+        filter: grayscale(100%) brightness(1.1) sepia(100%) hue-rotate(155deg) saturate(2.5);
+        font-size: var(--text-xl);
+        opacity: 0.7;
+        transition: filter var(--transition-fast), opacity var(--transition-fast);
+    }
+
     .tabLabel {
         font-size: var(--text-2xs);
         font-weight: var(--font-weight-bold);
@@ -158,6 +169,11 @@
 
         .tabIcon {
             color: var(--color-list-400);
+        }
+
+        .tabAvatar {
+            filter: none;
+            opacity: 1;
         }
     }
 </style>

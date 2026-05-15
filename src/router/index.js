@@ -40,51 +40,46 @@ const router = createRouter({
             }
         },
         {
-            path: '/profile',
+            path: '/user/:name',
             name: 'profile',
             component: () => import('@/views/ProfileView.vue'),
             meta: {
                 requiresAuth: true,
-                title: 'Profile'
             }
         },
         {
-            path: '/profile/watchlist',
+            path: '/user/:name/watchlist',
             name: 'watchlist',
             component: () => import('@/views/lists/WatchlistView.vue'),
             meta: {
                 requiresAuth: true,
-                title: 'Watchlist',
                 filterBar: true,
             }
         },
         {
-            path: '/profile/favorites',
+            path: '/user/:name/favorites',
             name: 'favorites',
             component: () => import('@/views/lists/FavoritesView.vue'),
             meta: {
                 requiresAuth: true,
-                title: 'Favorites',
                 filterBar: true,
             }
         },
         {
-            path: '/profile/watched',
+            path: '/user/:name/watched',
             name: 'watched',
             component: () => import('@/views/lists/WatchedView.vue'),
             meta: {
                 requiresAuth: true,
-                title: 'Watched',
                 filterBar: true,
             }
         },
         {
-            path: '/profile/ignored',
+            path: '/user/:name/ignored',
             name: 'ignored',
             component: () => import('@/views/lists/IgnoredView.vue'),
             meta: {
                 requiresAuth: true,
-                title: 'Not Interested',
                 filterBar: true,
             }
         },
@@ -127,7 +122,7 @@ router.beforeEach((to, from) => {
     if (to.params.slug && !from.params.slug) {
         const filters = useFiltersStore()
         const navContext = useNavContextStore()
-        navContext.setContext([...filters.filteredMovies], from.name)
+        navContext.setContext([...filters.filteredMovies], from.name, { ...from.params })
     }
 })
 

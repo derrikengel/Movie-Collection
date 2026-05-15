@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+    <defs>
+        <filter id="soft" x="-10%" y="-10%" width="120%" height="120%">
+            <feGaussianBlur in="SourceAlpha" stdDeviation="6" />
+            <feOffset dx="0" dy="6" result="off" />
+            <feComponentTransfer><feFuncA type="linear" slope="0.18" /></feComponentTransfer>
+            <feMerge>
+                <feMergeNode />
+                <feMergeNode in="SourceGraphic" />
+            </feMerge>
+        </filter>
+    </defs>
+    <rect width="512" height="512" fill="#FFD6E0" />
+    <g transform="rotate(60 256 256)" filter="url(#soft)">
+        <path d="M 438.86 266.00 C 436.00 314.74, 446.26 337.89, 421.88 372.61 C 397.51 407.33, 370.94 402.94, 328.07 423.81 C 285.20 444.69, 272.92 467.54, 227.03 467.49 C 181.14 467.43, 154.20 455.83, 119.46 423.57 C 84.73 391.32, 80.92 367.81, 69.14 320.87 C 57.36 273.92, 54.16 256.12, 65.93 210.19 C 77.70 164.26, 86.65 140.29, 122.64 112.10 C 158.64 83.91, 182.26 87.51, 229.55 82.05 C 276.85 76.59, 292.44 72.11, 337.61 87.29 C 382.78 102.47, 412.59 111.73, 434.87 151.05 C 457.14 190.36, 441.72 217.26, 438.86 266.00 Z" fill="#FF4081" />
+    </g>
+    <g>
+        <ellipse cx="200" cy="240" rx="18" ry="26" fill="#FFFFFF" stroke="#2D2D2D" stroke-width="5" />
+        <ellipse cx="312" cy="240" rx="18" ry="26" fill="#FFFFFF" stroke="#2D2D2D" stroke-width="5" />
+        <circle cx="200" cy="245" r="9" fill="#2D2D2D" />
+        <circle cx="312" cy="245" r="9" fill="#2D2D2D" />
+        <path d="M 210 310 Q 256 350 302 310 L 302 310 L 210 310 Z" fill="#2D2D2D" />
+        <path d="M 230 322 L 230 335 M 256 326 L 256 340 M 282 322 L 282 335" stroke="#FFFFFF" stroke-width="3" />
+    </g>
+</svg>

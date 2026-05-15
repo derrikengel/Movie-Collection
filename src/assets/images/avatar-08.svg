@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+    <defs>
+        <filter id="soft" x="-10%" y="-10%" width="120%" height="120%">
+            <feGaussianBlur in="SourceAlpha" stdDeviation="6" />
+            <feOffset dx="0" dy="6" result="off" />
+            <feComponentTransfer>
+                <feFuncA type="linear" slope="0.18" />
+            </feComponentTransfer>
+            <feMerge>
+                <feMergeNode />
+                <feMergeNode in="SourceGraphic" />
+            </feMerge>
+        </filter>
+    </defs>
+    <rect width="512" height="512" fill="#B8E6E1" />
+    <g transform="rotate(-50 256 256)" filter="url(#soft)">
+        <path
+            d="M 465.92 266.00 C 466.25 334.32, 437.28 376.06, 380.56 422.20 C 323.85 468.34, 271.45 492.79, 208.13 475.72 C 144.81 458.65, 123.62 410.70, 92.74 344.62 C 61.86 278.54, 42.16 237.80, 67.78 175.36 C 93.39 112.92, 140.68 74.82, 209.17 60.81 C 277.65 46.80, 322.60 66.52, 379.08 111.66 C 435.57 156.80, 465.59 197.68, 465.92 266.00 Z"
+            fill="#00897B" />
+    </g>
+    <g>
+        <path d="M 200 218 L 207 234 L 224 236 L 211 248 L 215 264 L 200 256 L 185 264 L 189 248 L 176 236 L 193 234 Z"
+            fill="#ffffff" />
+        <path d="M 312 218 L 319 234 L 336 236 L 323 248 L 327 264 L 312 256 L 297 264 L 301 248 L 288 236 L 305 234 Z"
+            fill="#ffffff" />
+        <path d="M 200 310 Q 256 355 312 310" stroke="#ffffff" stroke-width="12" fill="none" stroke-linecap="round" />
+    </g>
+</svg>

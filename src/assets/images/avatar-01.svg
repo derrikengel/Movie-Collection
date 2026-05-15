@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+    <defs>
+        <filter id="soft" x="-10%" y="-10%" width="120%" height="120%">
+            <feGaussianBlur in="SourceAlpha" stdDeviation="6" />
+            <feOffset dx="0" dy="6" result="off" />
+            <feComponentTransfer><feFuncA type="linear" slope="0.18" /></feComponentTransfer>
+            <feMerge>
+                <feMergeNode />
+                <feMergeNode in="SourceGraphic" />
+            </feMerge>
+        </filter>
+    </defs>
+    <rect width="512" height="512" fill="#FFE5B4" />
+    <g transform="rotate(0 256 256)" filter="url(#soft)">
+        <path d="M 466.79 266.00 C 473.26 330.82, 464.39 387.22, 418.01 428.01 C 371.64 468.81, 318.32 460.39, 256.00 451.43 C 193.68 442.46, 174.43 428.06, 134.74 387.26 C 95.04 346.47, 82.91 326.70, 75.57 266.00 C 68.23 205.30, 61.67 150.53, 101.37 111.37 C 141.06 72.20, 192.80 83.13, 256.00 87.97 C 319.20 92.81, 342.26 94.20, 388.64 133.36 C 435.01 172.53, 460.33 201.18, 466.79 266.00 Z" fill="#FF6B6B" />
+    </g>
+    <g>
+        <circle cx="200" cy="240" r="22" fill="#2D2D2D" />
+        <circle cx="312" cy="240" r="22" fill="#2D2D2D" />
+        <circle cx="208" cy="232" r="7" fill="#FFFFFF" />
+        <circle cx="320" cy="232" r="7" fill="#FFFFFF" />
+        <path d="M 220 320 Q 256 350 292 320" stroke="#2D2D2D" stroke-width="10" fill="none" stroke-linecap="round" />
+    </g>
+</svg>

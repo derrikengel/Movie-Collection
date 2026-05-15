@@ -6,10 +6,14 @@
 
             <Transition name="count" mode="out-in">
                 <h1 v-if="isListPage" :key="route.path" :class="[s.pageTitle, routeListClass]">
-                    <span :class="s.countHeaderNumber">{{ displayCount }}</span>
-                    <span :class="s.countHeaderList">
-                        {{ listName || 'movies' }}
-                    </span>
+                    <UserAvatar v-if="isOtherUserList" :user="resolvedUserName" :avatar="resolvedProfileEntry.avatar"
+                        :class="s.pageTitleAvatar" />
+                    <div :class="s.pageTitleText">
+                        <span :class="s.countHeaderNumber">{{ displayCount }}</span>
+                        <span :class="s.countHeaderList">
+                            {{ listName || 'movies' }}
+                        </span>
+                    </div>
                 </h1>
 
                 <a v-else-if="isMovieDetail" key="back" :href="backHref" :class="s.backBtn" @click.prevent="handleBack">
@@ -17,7 +21,10 @@
                     Back
                 </a>
 
-                <h1 v-else-if="isProfile" key="profile" :class="s.pageTitle">{{ auth.displayName }}</h1>
+                <h1 v-else-if="isProfile" key="profile" :class="[s.pageTitle, s.profileTitle]">
+                    <UserAvatar :avatar="resolvedProfileEntry?.avatar" :class="s.pageTitleAvatar" />
+                    {{ resolvedUserName ?? auth.displayName }}
+                </h1>
 
                 <h1 v-else :key="`title-${route.path}`" :class="s.pageTitle">{{ route.meta.title }}</h1>
             </Transition>
@@ -45,7 +52,8 @@
                 <RouterLink v-for="link in navLinks" :key="link.to" :to="link.to" :exact="link.exact"
                     :class="[s.navLink, link.colored && s.navLinkColored, link.listClass, forcedActiveRoute === link.to.name && s.navLinkActive]"
                     :active-class="s.navLinkActive">
-                    <span v-html="link.icon" :class="s.navIcon" />
+                    <UserAvatar v-if="link.isAvatar" :avatar="auth.profile?.avatar" :class="s.navAvatar" />
+                    <span v-else v-html="link.icon" :class="s.navIcon" />
                     <span :class="s.navLabel">{{ link.label }}</span>
                 </RouterLink>
             </nav>
@@ -268,6 +276,8 @@
     import { useFiltersStore } from '@/stores/filters'
     import { useNavContextStore } from '@/stores/navContext'
     import { mpaaGroupOptions } from '@/lib/filterOptions'
+    import { slugifyName } from '@/lib/movies'
+    import UserAvatar from '@/components/profile/UserAvatar.vue'
     import FilterPanel from '@/components/filters/NarrowFilterPanel.vue'
     import FilterOptionList from '@/components/filters/FilterOptionList.vue'
     import FilterRangeSlider from '@/components/filters/FilterRangeSlider.vue'
@@ -314,8 +324,19 @@
 
     const listingNames = ['home', 'watchlist', 'watched', 'favorites', 'ignored']
     const isListPage = computed(() => listingNames.includes(route.name))
-    const isMovieDetail = computed(() => !route.meta?.title && route.name !== 'home')
+    const isMovieDetail = computed(() => route.name === 'movie')
     const isProfile = computed(() => route.name === 'profile')
+
+    const resolvedProfileEntry = computed(() => {
+        const nameParam = route.params.name
+        if (!nameParam) return null
+        return auth.allProfiles.find(p => slugifyName(p.display_name) === nameParam) ?? null
+    })
+
+    const resolvedUserName = computed(() => resolvedProfileEntry.value?.display_name ?? null)
+    const isOtherUserList = computed(() =>
+        resolvedProfileEntry.value !== null && resolvedProfileEntry.value.id !== auth.user?.id
+    )
 
     const listNameMap = {
         watchlist: 'Watchlist',
@@ -392,9 +413,10 @@
         ]
 
         if (auth.user) {
+            const userSlug = slugifyName(auth.displayName ?? '')
             items.push(
                 {
-                    to: { name: 'watchlist' },
+                    to: { name: 'watchlist', params: { name: userSlug } },
                     exact: false,
                     label: 'Watchlist',
                     icon: bookmark,
@@ -402,7 +424,7 @@
                     colored: true,
                 },
                 {
-                    to: { name: 'favorites' },
+                    to: { name: 'favorites', params: { name: userSlug } },
                     exact: false,
                     label: 'Favorites',
                     icon: heart,
@@ -415,7 +437,7 @@
                 items.push({ to: { name: 'add-movie' }, exact: false, label: 'Add Movie', icon: plus })
             }
 
-            items.push({ to: { name: 'profile' }, exact: true, label: auth.displayName, icon: userIcon })
+            items.push({ to: { name: 'profile', params: { name: userSlug } }, exact: true, label: auth.displayName, isAvatar: true })
         } else {
             items.push({ to: { name: 'login' }, exact: false, label: 'Sign In', icon: userIcon })
         }
@@ -464,7 +486,10 @@
         else filters.mpaaGroups.splice(i, 1)
     }
 
-    const backHref = computed(() => router.resolve({ name: navContext.sourceList ?? 'home' }).href)
+    const backHref = computed(() => router.resolve({
+        name: navContext.sourceList ?? 'home',
+        params: navContext.sourceParams,
+    }).href)
 
     function handleBack() {
         if (navContext.sourceList !== null) {
@@ -588,10 +613,10 @@
     /* ── Count / title ── */
 
     .pageTitle {
+        align-items: center;
         color: var(--blue-50);
         display: flex;
-        justify-content: center;
-        flex-direction: column;
+        gap: var(--size-3);
         font-size: var(--text-lg);
         font-weight: var(--font-weight-bold);
         letter-spacing: var(--tracking-widest);
@@ -600,7 +625,23 @@
 
         @media (min-width: 64rem) {
             font-size: var(--text-3xl);
+            gap: var(--size-4);
             letter-spacing: var(--tracking-widest);
+        }
+    }
+
+    .pageTitleText {
+        display: flex;
+        justify-content: center;
+        flex-direction: column;
+    }
+
+    .pageTitleAvatar {
+        flex-shrink: 0;
+        font-size: var(--text-4xl);
+
+        @media (min-width: 64rem) {
+            font-size: var(--text-6xl);
         }
     }
 
@@ -617,6 +658,7 @@
     .countHeaderList {
         color: var(--color-list-400, var(--blue-400));
     }
+
 
     .backBtn {
         align-items: center;
@@ -780,6 +822,13 @@
         transition: color var(--transition-fast);
     }
 
+    .navAvatar {
+        filter: grayscale(100%) brightness(1.1) sepia(100%) hue-rotate(155deg) saturate(2.5);
+        font-size: var(--text-2xl);
+        opacity: 0.7;
+        transition: filter var(--transition-fast), opacity var(--transition-fast);
+    }
+
     .navLabel {
         font-size: var(--text-xs);
         font-weight: var(--font-weight-bold);
@@ -791,6 +840,10 @@
 
     .navLink:hover {
         color: var(--blue-200);
+
+        .navAvatar {
+            opacity: 1;
+        }
     }
 
     .navLinkActive {
@@ -809,6 +862,11 @@
 
         .navIcon {
             color: var(--color-list-400);
+        }
+
+        .navAvatar {
+            filter: none;
+            opacity: 1;
         }
     }
 

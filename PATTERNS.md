@@ -58,12 +58,10 @@ Class names are **camelCase** — required for JS property access without bracke
 /* ✅ correct */
 --gray-hue: 265;
 --amber-hue: 75;
-background: var(--color-surface);
 
 /* ❌ wrong — column-aligned */
 --gray-hue:  265;
 --amber-hue:  75;
-background:  var(--color-surface);
 ```
 
 ---

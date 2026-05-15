@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+    <defs>
+        <filter id="soft" x="-10%" y="-10%" width="120%" height="120%">
+            <feGaussianBlur in="SourceAlpha" stdDeviation="6" />
+            <feOffset dx="0" dy="6" result="off" />
+            <feComponentTransfer><feFuncA type="linear" slope="0.18" /></feComponentTransfer>
+            <feMerge>
+                <feMergeNode />
+                <feMergeNode in="SourceGraphic" />
+            </feMerge>
+        </filter>
+    </defs>
+    <rect width="512" height="512" fill="#FFE0F0" />
+    <g transform="rotate(-15 256 256)" filter="url(#soft)">
+        <path d="M 462.52 266.00 C 460.52 328.62, 420.69 357.45, 364.95 402.61 C 309.20 447.78, 275.00 481.19, 209.14 471.31 C 143.28 461.42, 93.84 421.43, 65.59 357.70 C 37.34 293.96, 48.21 242.82, 80.73 181.60 C 113.25 120.38, 148.89 93.42, 213.42 79.43 C 277.94 65.43, 319.25 76.93, 374.05 117.97 C 428.85 159.02, 464.52 203.38, 462.52 266.00 Z" fill="#E91E63" />
+    </g>
+    <g>
+        <circle cx="200" cy="240" r="14" fill="#2D2D2D" />
+        <circle cx="312" cy="240" r="14" fill="#2D2D2D" />
+        <ellipse cx="256" cy="325" rx="22" ry="28" fill="#2D2D2D" />
+    </g>
+</svg>

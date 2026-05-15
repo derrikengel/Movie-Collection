@@ -23,8 +23,26 @@ export const useAuthStore = defineStore('auth', () => {
     async function fetchAllProfiles() {
         const { data } = await supabase
             .from('profiles')
-            .select('id, display_name')
+            .select('id, display_name, avatar')
         if (data) allProfiles.value = data
+    }
+
+    async function updateAvatar(avatarKey) {
+        const prev = profile.value?.avatar
+        if (profile.value) profile.value.avatar = avatarKey
+        const entry = allProfiles.value.find(p => p.id === user.value?.id)
+        if (entry) entry.avatar = avatarKey
+
+        const { error } = await supabase
+            .from('profiles')
+            .update({ avatar: avatarKey })
+            .eq('id', user.value.id)
+
+        if (error) {
+            if (profile.value) profile.value.avatar = prev
+            const rollbackEntry = allProfiles.value.find(p => p.id === user.value?.id)
+            if (rollbackEntry) rollbackEntry.avatar = prev
+        }
     }
 
     async function init() {
@@ -71,5 +89,5 @@ export const useAuthStore = defineStore('auth', () => {
         await supabase.auth.signOut()
     }
 
-    return { user, profile, allProfiles, initialized, isAdmin, displayName, init, fetchAllProfiles, login, logout }
+    return { user, profile, allProfiles, initialized, isAdmin, displayName, init, fetchAllProfiles, login, logout, updateAvatar }
 })

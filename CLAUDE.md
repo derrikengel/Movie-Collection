@@ -46,46 +46,49 @@ A mobile-first PWA for browsing, searching, and filtering a household movie coll
 - **Container queries** for component-level responsive layout (not media queries inside components)
 - **Media queries** only for global layout concerns (showing/hiding desktop vs mobile nav)
 - **Vendor prefixes only when no standard exists** — avoid `-webkit-` etc. unless absolutely necessary
-- **Frosted glass pattern:** `background: var(--color-bg-frosted); backdrop-filter: var(--bg-frosted-N);`
-- **All colors in oklch format** — use relative color syntax for opacity variants: `oklch(from var(--token) l c h / 0.12)`
+- **Frosted glass pattern:** `background: var(--color-bg-frosted); backdrop-filter: var(--bg-frosted-md);` — pick the blur size that fits the context
+- **All colors in oklch format** — use relative color syntax for opacity variants: `oklch(from var(--blue-950) l c h / 0.5)`
+- **Primitives over aliases** — semantic alias tokens don't exist; use palette primitives directly (e.g. `var(--blue-200)` for body text, `var(--blue-950)` for page background)
 
 ### Design Tokens (from global.css)
 
-Two-layer architecture: **primitives** (color scales, spacing, radius, typography) + **semantic tokens** (what components use).
-
 ```css
-/* Semantic color tokens — use these in components */
---color-bg                  /* page background */
---color-surface             /* card/panel background */
---color-surface-raised      /* elevated card */
---color-overlay             /* overlay/modal background */
---color-text                /* primary text */
---color-text-secondary      /* secondary text */
---color-text-muted          /* muted/placeholder text */
---color-text-on-accent      /* text on colored (accent) backgrounds */
---color-border              /* default border */
---color-border-subtle       /* subtle/faint border */
---color-border-strong       /* prominent border */
---color-accent              /* amber/gold accent */
---color-accent-bright       /* brighter accent */
---color-accent-muted        /* muted accent */
---color-accent-subtle       /* accent at 12% opacity */
---color-accent-glow         /* accent at 40% opacity */
---color-success             /* green */
---color-error               /* red */
---color-warning             /* amber */
---color-bg-frosted          /* bg at 85% opacity (frosted glass) */
---color-border-frosted      /* white at 6% opacity (frosted glass) */
---color-bg-hover            /* white at 5% opacity (hover states) */
---color-disabled            /* gray-800 — disabled element backgrounds */
---color-backdrop            /* black at 50% opacity (modal backdrops) */
+/* Primitive color scales — blue/red/green/yellow/purple, steps 50–950 */
+/* e.g. --blue-950 (page bg), --blue-200 (body text), --yellow-400 (accent) */
+/* Built from shared --l-* (lightness) and --c-* (chroma) scales + per-hue --*-h values */
 
-/* Spacing: --size-1 through --size-12 (4px increments) */
-/* Radius: --radius-sm(8px) --radius-md(12px) --radius-lg(16px) --radius-xl(24px) --radius-full(9999px) */
-/* Typography: --text-xs through --text-3xl, --font-weight-*, --leading-* */
-/* Layout: --header-height: 56px, --content-max-width: 960px, --content-padding */
-/* Shadows: --shadow-sm, --shadow-md, --shadow-lg */
-/* Transitions: --transition-fast, --transition-normal */
+/* List-specific color ramps (full 50–950 scale) */
+--color-watched-*    /* green */
+--color-watchlist-*  /* purple */
+--color-favorite-*   /* yellow */
+--color-ignored-*    /* red */
+
+/* List context pattern — utility classes set --color-list-* to the active ramp */
+/* .list-watched / .list-watchlist / .list-favorite / .list-ignored */
+/* Components use --color-list-400, --color-list-700, etc. for context-aware coloring */
+
+/* Frosted glass */
+--color-bg-frosted              /* blue-800 at 85% opacity */
+--color-bg-frosted-subtle       /* blue-950 at 50% opacity */
+--color-divider-frosted         /* blue-400 at 10% opacity */
+--color-bg-frosted-selected     /* blue-400 at 20% opacity */
+--color-bg-frosted-unselected   /* blue-950 at 20% opacity */
+--color-frosted-input           /* blue-950 at 50% opacity */
+--color-frosted-input-focus     /* blue-950 at 75% opacity */
+--bg-frosted-xs/sm/md/lg/xl/2xl/3xl/4xl/5xl/6xl  /* blur() scale */
+
+/* Utility */
+
+/* Service brand tokens (utility classes on container elements) */
+/* .svc-fandango-at-home / .svc-movies-anywhere / .svc-apple-tv / .svc-youtube / .svc-plex */
+/* Each sets --brand-fg, --brand-bg, --btn-bg, --btn-fg */
+
+/* Spacing: --size-0-5, --size-1 through --size-24 (0.25rem base) */
+/* Radius: --radius-xs(2px) --radius-sm(4px) --radius-md(6px) --radius-lg(8px) --radius-xl(12px) --radius-2xl(16px) --radius-3xl(24px) --radius-4xl(32px) --radius-full */
+/* Typography: --font-sans (futura-pt), --text-2xs through --text-9xl, --font-weight-*, --leading-*, --tracking-* */
+/* Layout: --content-width(64rem), --content-padding (responsive: 20px→32px→48px→64px), --tab-bar-height(64px) */
+/* Shadows: --shadow-2xs/xs/sm/md/lg/xl/2xl, --text-shadow-2xs/xs/sm/md/lg */
+/* Transitions: --transition-fast(150ms), --transition-normal(250ms), --transition-slow(500ms) */
 ```
 
 ---
@@ -164,11 +167,11 @@ src/
 /                      → HomeView (public)
 /login                 → LoginView (public)
 /:slug                 → MovieDetailView (public, e.g. /speak-no-evil-2024)
-/profile               → ProfileView (requiresAuth)
-/profile/watchlist     → WatchlistView (requiresAuth)
-/profile/watched       → WatchedView (requiresAuth)
-/profile/favorites     → FavoritesView (requiresAuth)
-/profile/ignored       → IgnoredView (requiresAuth)
+/user/:name            → ProfileView (requiresAuth)
+/user/:name/watchlist  → WatchlistView (requiresAuth)
+/user/:name/watched    → WatchedView (requiresAuth)
+/user/:name/favorites  → FavoritesView (requiresAuth)
+/user/:name/ignored    → IgnoredView (requiresAuth)
 /styleguide            → StyleGuideView (requiresAdmin)
 /admin/add             → MovieFormView (requiresAdmin)
 /admin/edit/:slug      → MovieFormView (requiresAdmin)

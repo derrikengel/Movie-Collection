@@ -2,13 +2,15 @@
     <section v-if="rows.length">
         <ul :class="s.community">
             <li v-for="row in rows" :key="row.field" :class="[s.row, row.listClass]">
-                <span v-html="row.icon" :class="s.icon" />
-                <span :class="s.message">
-                    <template v-for="seg in row.segments" :key="seg.key">
-                        <span v-if="seg.type === 'name'" :class="s.name">{{ seg.text }}</span>
-                        <template v-else>{{ seg.text }}</template>
-                    </template>
-                </span>
+                <template v-for="seg in row.segments" :key="seg.key">
+                    <span v-if="seg.type === 'name'" :class="s.nameGroup">
+                        <UserAvatar :avatar="seg.avatar" :class="s.nameAvatar" />
+                        <RouterLink :to="{ name: 'profile', params: { name: seg.slug } }" :class="s.name">
+                            {{ seg.text }}
+                        </RouterLink>
+                    </span>
+                    <template v-else>{{ seg.text }}</template>
+                </template>
             </li>
         </ul>
     </section>
@@ -18,6 +20,8 @@
     import { computed } from 'vue'
     import { useAuthStore } from '@/stores/auth'
     import { useUserMoviesStore } from '@/stores/userMovies'
+    import { slugifyName } from '@/lib/movies'
+    import UserAvatar from '@/components/profile/UserAvatar.vue'
     import watchedIcon from '@/assets/icons/eye.svg?raw'
     import watchlistIcon from '@/assets/icons/bookmark.svg?raw'
     import favoriteIcon from '@/assets/icons/heart.svg?raw'
@@ -72,7 +76,7 @@
                     segments.push({ type: 'text', key: `sep-${i}`, text: ', and ' })
                 }
             }
-            segments.push({ type: 'name', key: p.id, text: p.display_name })
+            segments.push({ type: 'name', key: p.id, text: p.display_name, slug: p.slug ?? slugifyName(p.display_name), avatar: p.avatar })
         })
         segments.push({ type: 'text', key: 'verb', text: verbPhrase })
         return segments
@@ -82,7 +86,7 @@
         if (!auth.user) return []
 
         return listConfig.flatMap(config => {
-            const profiles = auth.allProfiles
+            const otherProfiles = auth.allProfiles
                 .filter(p => p.id !== auth.user.id)
                 .filter(p => {
                     const entry = userMoviesStore.allUserMovies.find(
@@ -90,6 +94,11 @@
                     )
                     return entry?.[config.field] === true
                 })
+
+            const currentUserHas = userMoviesStore.getForMovie(props.movie.id)?.[config.field] === true
+            const profiles = currentUserHas && otherProfiles.length
+                ? [{ id: auth.user.id, display_name: 'You', slug: slugifyName(auth.displayName), avatar: auth.profile?.avatar }, ...otherProfiles]
+                : otherProfiles
 
             if (!profiles.length) return []
 
@@ -107,16 +116,17 @@
     .community {
         display: flex;
         flex-direction: column;
+        font-weight: var(--font-weight-normal);
         gap: var(--size-4);
         list-style: none;
         margin-top: var(--size-8);
     }
 
     .row {
-        align-items: center;
-        color: var(--color-list-500);
-        display: flex;
-        gap: var(--size-3);
+        align-items: baseline;
+        color: var(--color-list-400);
+        /* display: flex;
+        gap: 0.3125em; */
         line-height: var(--leading-tight);
     }
 
@@ -129,8 +139,32 @@
         justify-content: center;
     }
 
+    .nameGroup {
+        align-items: baseline;
+        display: inline-flex;
+        gap: 0.3125em;
+
+        &:not(:first-child) {
+            margin-left: 0.125em;
+        }
+    }
+
+    .nameAvatar {
+        align-self: center;
+        font-size: var(--text-xl);
+    }
+
     .name {
-        color: var(--color-list-400);
         font-weight: var(--font-weight-bold);
+        transition: color var(--transition-fast);
+
+        @media (hover: hover) and (pointer: fine) {
+            &:hover {
+                color: var(--color-list-100);
+                text-decoration-line: underline;
+                text-decoration-thickness: 0.0625em;
+                text-underline-offset: 0.25em;
+            }
+        }
     }
 </style>

@@ -26,7 +26,10 @@
     const router = useRouter()
     const navContext = useNavContextStore()
 
-    const backHref = computed(() => router.resolve({ name: navContext.sourceList ?? 'home' }).href)
+    const backHref = computed(() => router.resolve({
+        name: navContext.sourceList ?? 'home',
+        params: navContext.sourceParams,
+    }).href)
 
     function handleBack() {
         if (navContext.sourceList !== null) {

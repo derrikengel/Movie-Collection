@@ -258,9 +258,6 @@
         --bg-frosted-5xl: blur(8rem);
         --bg-frosted-6xl: blur(10rem);
 
-        --color-bg-hover: var(--blue-700);
-        --color-disabled: var(--blue-700);
-
         --shadow-2xs: 0 1px oklch(from var(--blue-950) l c h / 0.25);
         --shadow-xs: 0 1px 2px 0 oklch(from var(--blue-950) l c h / 0.25);
         --shadow-sm: 0 1px 3px 0 oklch(from var(--blue-950) l c h / 0.5), 0 1px 2px -1px oklch(from var(--blue-950) l c h / 0.5);

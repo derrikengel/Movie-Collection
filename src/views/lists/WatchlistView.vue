@@ -1,5 +1,5 @@
 <template>
-    <MovieGrid :movies="movies" emptyMessage="Your watchlist is empty." defaultIgnoredMode="show"
+    <MovieGrid :movies="movies" :emptyMessage="emptyMessage" defaultWatchedMode="show" defaultIgnoredMode="show"
         whenAddedSortLabel="Recently Watchlisted" />
 </template>
 
@@ -8,13 +8,28 @@
     import MovieGrid from '@/components/grid/MovieGrid.vue'
     import { useMoviesStore } from '@/stores/movies'
     import { useUserMoviesStore } from '@/stores/userMovies'
+    import { useResolvedUser } from '@/composables/useResolvedUser'
+    import { usePageTitle } from '@/composables/usePageTitle'
 
     const moviesStore = useMoviesStore()
     const userMoviesStore = useUserMoviesStore()
+    const { resolvedProfile } = useResolvedUser()
+
+    const firstName = computed(() => resolvedProfile.value?.display_name?.split(' ')[0] ?? '')
+
+    usePageTitle(computed(() =>
+        firstName.value ? `${firstName.value}'s Watchlist | Movie Collection` : 'Watchlist | Movie Collection'
+    ))
+
+    const emptyMessage = computed(() =>
+        firstName.value ? `${firstName.value}'s watchlist is empty.` : 'This watchlist is empty.'
+    )
 
     const movies = computed(() => {
-        return userMoviesStore.userMovies
-            .filter(um => um.watchlist)
+        const userId = resolvedProfile.value?.id
+        if (!userId) return []
+        return userMoviesStore.allUserMovies
+            .filter(um => um.user_id === userId && um.watchlist)
             .map(um => {
                 const movie = moviesStore.movies.find(m => m.id === um.movie_id)
                 if (!movie) return null

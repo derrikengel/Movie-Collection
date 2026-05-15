@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+    <defs>
+        <filter id="soft" x="-10%" y="-10%" width="120%" height="120%">
+            <feGaussianBlur in="SourceAlpha" stdDeviation="6" />
+            <feOffset dx="0" dy="6" result="off" />
+            <feComponentTransfer><feFuncA type="linear" slope="0.18" /></feComponentTransfer>
+            <feMerge>
+                <feMergeNode />
+                <feMergeNode in="SourceGraphic" />
+            </feMerge>
+        </filter>
+    </defs>
+    <rect width="512" height="512" fill="#FFDBC7" />
+    <g transform="rotate(-38 256 256)" filter="url(#soft)">
+        <path d="M 476.88 266.00 C 469.54 329.74, 432.78 353.64, 384.19 394.19 C 335.60 434.74, 315.52 447.19, 256.00 450.31 C 196.48 453.42, 152.50 448.88, 113.67 408.33 C 74.83 367.79, 81.45 330.60, 79.47 266.00 C 77.49 201.40, 65.84 164.89, 104.68 114.68 C 143.51 64.47, 187.17 40.02, 256.00 37.78 C 324.83 35.53, 368.94 54.26, 417.53 104.47 C 466.13 154.68, 484.21 202.26, 476.88 266.00 Z" fill="#D84315" />
+    </g>
+    <g>
+        <circle cx="200" cy="240" r="22" fill="#FFFFFF" />
+        <circle cx="208" cy="232" r="7" fill="#FFFFFF" />
+        <path d="M 285 240 Q 312 230 339 240" stroke="#FFFFFF" stroke-width="11" fill="none" stroke-linecap="round" />
+        <path d="M 215 318 Q 256 345 297 318" stroke="#FFFFFF" stroke-width="10" fill="none" stroke-linecap="round" />
+    </g>
+</svg>
