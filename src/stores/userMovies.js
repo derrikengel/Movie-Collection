@@ -2,6 +2,13 @@ import { defineStore } from 'pinia'
 import { ref } from 'vue'
 import { supabase } from '@/lib/supabase'
 
+const timestampField = {
+    watchlist: 'watchlist_added_at',
+    watched: 'watched_at',
+    favorite: 'favorited_at',
+    ignored: 'ignored_at',
+}
+
 export const useUserMoviesStore = defineStore('userMovies', () => {
     const userMovies = ref([])
 
@@ -22,6 +29,7 @@ export const useUserMoviesStore = defineStore('userMovies', () => {
         const existing = getForMovie(movieId)
         const currentValue = existing?.[field] ?? false
         const newValue = !currentValue
+        const tsField = timestampField[field]
 
         // Build the full row to upsert
         const row = {
@@ -31,8 +39,13 @@ export const useUserMoviesStore = defineStore('userMovies', () => {
             watched: existing?.watched ?? false,
             favorite: existing?.favorite ?? false,
             ignored: existing?.ignored ?? false,
+            watchlist_added_at: existing?.watchlist_added_at ?? null,
+            watched_at: existing?.watched_at ?? null,
+            favorited_at: existing?.favorited_at ?? null,
+            ignored_at: existing?.ignored_at ?? null,
             updated_at: new Date().toISOString(),
             [field]: newValue,
+            [tsField]: newValue ? new Date().toISOString() : null,
         }
 
         // Optimistic update

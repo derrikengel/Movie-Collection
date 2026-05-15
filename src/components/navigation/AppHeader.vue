@@ -424,11 +424,18 @@
     })
 
     // ── Filter options ──────────────────────────────────
-    const sortOptions = [
-        { value: 'acquired-desc', label: 'Recently Added' },
-        { value: 'year-desc', label: 'Latest Release' },
-        { value: 'rating-desc', label: 'Top Rated' },
-    ]
+    const sortOptions = computed(() => {
+        const options = []
+        if (filters.whenAddedSortLabel) {
+            options.push({ value: 'added-desc', label: filters.whenAddedSortLabel })
+        }
+        options.push(
+            { value: 'acquired-desc', label: 'Recently Acquired' },
+            { value: 'year-desc', label: 'Latest Release' },
+            { value: 'rating-desc', label: 'Top Rated' },
+        )
+        return options
+    })
 
     const genreOptions = computed(() =>
         filters.allGenres.map(genre => ({

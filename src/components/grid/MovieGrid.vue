@@ -30,6 +30,7 @@
         emptyMessage: { type: String, default: 'Nothing here yet.' },
         defaultWatchedMode: { type: String, default: 'fade' },
         defaultIgnoredMode: { type: String, default: 'hide' },
+        whenAddedSortLabel: { type: String, default: null },
     })
 
     const router = useRouter()
@@ -75,7 +76,12 @@
     )
 
     function initFilters() {
-        filters.setDefaults({ watchedMode: props.defaultWatchedMode, ignoredMode: props.defaultIgnoredMode })
+        filters.setDefaults({
+            watchedMode: props.defaultWatchedMode,
+            ignoredMode: props.defaultIgnoredMode,
+            defaultSort: props.whenAddedSortLabel ? 'added-desc' : 'acquired-desc',
+            whenAddedSortLabel: props.whenAddedSortLabel,
+        })
         filters.reset()
         filters.setBase(props.movies)
         filters.initFromUrl()
@@ -107,7 +113,7 @@
     })
 
     watch(() => props.movies, (newMovies) => {
-        filters.setBase(newMovies)
+        if (isActive) filters.setBase(newMovies)
     })
 </script>
 

@@ -26,6 +26,8 @@ export const useFiltersStore = defineStore('filters', () => {
     const _baseMovies = ref(null)  // null = use all movies
     const _defaultWatchedMode = ref('fade')
     const _defaultIgnoredMode = ref('hide')
+    const _defaultSort = ref('acquired-desc')
+    const _whenAddedSortLabel = ref(null)
 
     // ── MPAA groups ────────────────────────────────────
     const mpaaMap = {
@@ -91,6 +93,11 @@ export const useFiltersStore = defineStore('filters', () => {
                 case 'year-asc': return new Date(a.release_date ?? 0) - new Date(b.release_date ?? 0)
                 case 'rating-desc': return (b.tmdb_rating ?? 0) - (a.tmdb_rating ?? 0)
                 case 'rating-asc': return (a.tmdb_rating ?? 0) - (b.tmdb_rating ?? 0)
+                case 'added-desc': {
+                    const at = a._added_at ? new Date(a._added_at).getTime() : 0
+                    const bt = b._added_at ? new Date(b._added_at).getTime() : 0
+                    return bt - at
+                }
                 default: return 0
             }
         })
@@ -214,9 +221,11 @@ export const useFiltersStore = defineStore('filters', () => {
     }
 
     // ── Per-view defaults ──────────────────────────────
-    function setDefaults({ watchedMode: wm = 'fade', ignoredMode: im = 'hide' } = {}) {
+    function setDefaults({ watchedMode: wm = 'fade', ignoredMode: im = 'hide', defaultSort: ds = 'acquired-desc', whenAddedSortLabel: wsl = null } = {}) {
         _defaultWatchedMode.value = wm
         _defaultIgnoredMode.value = im
+        _defaultSort.value = ds
+        _whenAddedSortLabel.value = wsl
     }
 
     // ── Reset ──────────────────────────────────────────
@@ -230,7 +239,7 @@ export const useFiltersStore = defineStore('filters', () => {
         runtimeMax.value = null
         watchedMode.value = _defaultWatchedMode.value
         ignoredMode.value = _defaultIgnoredMode.value
-        sort.value = 'acquired-desc'
+        sort.value = _defaultSort.value
     }
 
     // ── URL sync ───────────────────────────────────────
@@ -245,7 +254,7 @@ export const useFiltersStore = defineStore('filters', () => {
         if (Number.isFinite(runtimeMax.value)) p.rmax = runtimeMax.value
         if (watchedMode.value !== _defaultWatchedMode.value) p.watched = watchedMode.value
         if (ignoredMode.value !== _defaultIgnoredMode.value) p.ignored = ignoredMode.value
-        if (sort.value !== 'acquired-desc') p.sort = sort.value
+        if (sort.value !== _defaultSort.value) p.sort = sort.value
         return p
     }
 
@@ -281,6 +290,7 @@ export const useFiltersStore = defineStore('filters', () => {
         runtimeMin, runtimeMax,
         watchedMode, ignoredMode,
         sort,
+        whenAddedSortLabel: _whenAddedSortLabel,
         allGenres, genreCounts,
         yearBounds, runtimeBounds,
         filteredMovies, visibleMovies,

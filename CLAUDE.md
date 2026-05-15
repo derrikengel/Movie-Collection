@@ -1,19 +1,12 @@
 # Movie Collection App — Claude Code Context
 
 ## What This Project Is
-A mobile-first PWA for browsing, searching, and filtering a household movie collection (~2,000 titles, growing 2–5/month). 4 family members have accounts with personal lists. The public can browse without an account. Only Derrik (admin) can add/edit movies.
-
-This is a **Vue 3 rebuild** of an existing Firebase/Vue app. The rebuild migrates to Supabase and adds per-user lists, TMDB-powered data entry, fuzzy search, faceted filtering, and push notifications.
+A mobile-first PWA for browsing, searching, and filtering a household movie collection (~2,000 titles, growing 2–5/month). 4 family members have accounts with personal lists. The public can browse without an account. Only admins can add/edit movies.
 
 **Live dev URL:** movies-dev.derrikengel.com
-**Production URL:** movies.derrikengel.com (not yet switched over)
-**GitHub branch:** `v3`
+**Production URL:** movies.derrikengel.com
+**GitHub branch:** `master`
 **Hosting:** Cloudflare Pages
-
----
-
-## Developer Background
-UI designer and front-end developer. Primary tools: HTML, SCSS, Tailwind, Vue, vanilla JS. No backend languages. Always prioritize clean, practical, accessible solutions. Avoid over-engineering.
 
 ---
 
@@ -52,10 +45,9 @@ UI designer and front-end developer. Primary tools: HTML, SCSS, Tailwind, Vue, v
 - **CSS custom properties** for all design tokens — defined in `src/assets/global.css`
 - **Container queries** for component-level responsive layout (not media queries inside components)
 - **Media queries** only for global layout concerns (showing/hiding desktop vs mobile nav)
-- **No vendor prefixes** — drop `-webkit-` etc.
-- **Frosted glass pattern:** `background: var(--color-bg-frosted); backdrop-filter: blur(Npx);`
+- **Vendor prefixes only when no standard exists** — avoid `-webkit-` etc. unless absolutely necessary
+- **Frosted glass pattern:** `background: var(--color-bg-frosted); backdrop-filter: var(--bg-frosted-N);`
 - **All colors in oklch format** — use relative color syntax for opacity variants: `oklch(from var(--token) l c h / 0.12)`
-- **No Tailwind** — scoped CSS Modules only
 
 ### Design Tokens (from global.css)
 
@@ -104,33 +96,65 @@ src/
 ├── assets/
 │   └── global.css              # CSS layers: reset, tokens, base, utilities, components
 ├── components/
-│   ├── AppTabBar.vue            # Mobile bottom tab bar (hidden on desktop)
-│   ├── FilterBar.vue            # Search + filter controls (sticky, desktop + mobile)
-│   ├── FilterSection.vue        # Collapsible section wrapper used in mobile filter sheet
-│   ├── MovieHero.vue            # Hero banner: YouTube autoplay > backdrop > blurred poster
-│   └── MovieList.vue            # Reusable movie grid
-├── composables/                 # (empty, reserved)
+│   ├── detail/
+│   │   ├── MovieActionBar.vue  # action buttons (watched/watchlist/favorite/ignore)
+│   │   ├── MovieCast.vue       # cast list
+│   │   ├── MovieHero.vue       # hero banner: YouTube > backdrop > blurred poster
+│   │   └── MovieServices.vue   # streaming services bottom sheet
+│   ├── filters/
+│   │   ├── FilterOptionList.vue   # multi-select option list
+│   │   ├── FilterRangeSlider.vue  # dual-handle range slider
+│   │   ├── NarrowFilterPanel.vue  # mobile filter sheet
+│   │   └── ToggleSwitch.vue       # toggle for watched/ignored modes
+│   ├── grid/
+│   │   ├── MovieCard.vue       # individual movie card
+│   │   └── MovieGrid.vue       # paginated grid (infinite scroll, filter integration)
+│   ├── navigation/
+│   │   ├── AppHeader.vue       # header with search, sort, filter UI, nav links
+│   │   └── NarrowTabBar.vue    # mobile bottom tab bar (hidden on desktop)
+│   ├── profile/
+│   │   └── ProfileListCard.vue # list preview card (used in ProfileView)
+│   ├── ConfirmDialog.vue       # promise-based confirmation modal (scaffolded, not active yet)
+│   └── ToastStack.vue          # renders active toasts
+├── composables/
+│   ├── useConfirm.js           # wraps confirm store with a promisified request() call
+│   ├── useDualSlider.js        # dual-handle range slider logic
+│   ├── useListCounts.js        # watchlist + favorites counts from userMovies
+│   ├── useMovieActions.js      # list action toggles with toast feedback
+│   ├── useMovieForm.js         # admin form state
+│   ├── useMovieSubmit.js       # admin form submission (add/edit)
+│   ├── usePageTitle.js         # dynamic <title> updates
+│   └── useTmdbSearch.js        # TMDB search + selection logic
 ├── lib/
-│   └── supabase.js              # Supabase client (uses VITE_SUPABASE_URL + VITE_SUPABASE_ANON_KEY)
+│   ├── datetime.js             # date utilities (e.g. releaseYear)
+│   ├── filterOptions.js        # filter/sort option constants (mpaaGroupOptions, sortOptions, etc.)
+│   ├── icons.js                # service icon SVGs keyed by service name
+│   ├── movies.js               # movie utility functions
+│   ├── supabase.js             # Supabase client (uses VITE_SUPABASE_URL + VITE_SUPABASE_PUBLISHABLE_KEY)
+│   └── tmdb.js                 # TMDB API helpers
 ├── router/
-│   └── index.js                 # Vue Router with auth guards + initialized flag
+│   └── index.js                # Vue Router with auth guards + initialized flag
 ├── stores/
-│   ├── auth.js                  # Auth store: user, profile, isAdmin, displayName
-│   ├── filters.js               # Filter + sort state, filteredMovies, URL sync
-│   ├── movies.js                # Movies store: fetchMovies(), movies[], loading
-│   └── userMovies.js            # User list store: optimistic upserts + rollback
+│   ├── auth.js                 # user, profile, isAdmin, displayName
+│   ├── confirm.js              # promise-based confirmation dialog state
+│   ├── filters.js              # filter + sort state, filteredMovies, URL sync
+│   ├── movies.js               # fetchMovies(), movies[], loading
+│   ├── navContext.js           # source list tracking for back navigation
+│   ├── toast.js                # toast queue (max 3 visible, auto-dismiss after 3s)
+│   └── userMovies.js           # user list store: optimistic upserts + rollback
 └── views/
-    ├── HomeView.vue              # Main browse/search/filter page
-    ├── LoginView.vue             # Login form
-    ├── MovieDetailView.vue       # Movie detail: hero, metadata, sticky action bar, services sheet
+    ├── HomeView.vue            # main browse/search/filter page
+    ├── LoginView.vue           # login form
+    ├── MovieDetailView.vue     # movie detail: hero, metadata, action bar, services sheet
+    ├── ProfileView.vue         # user dashboard: list previews + sign out
+    ├── StyleGuideView.vue      # color palette reference (requiresAdmin)
     ├── admin/
-    │   ├── MovieFormView.vue     # Combined Add + Edit form (mode detected by route param)
+    │   └── MovieFormView.vue   # combined Add + Edit form (mode detected by route param)
     └── lists/
-        ├── ProfileView.vue       # User dashboard: list previews + sign out
-        ├── WatchlistView.vue
-        ├── WatchedView.vue
         ├── FavoritesView.vue
-        └── IgnoredView.vue
+        ├── IgnoredView.vue
+        ├── WatchedView.vue
+        └── WatchlistView.vue
 ```
 
 ---
@@ -145,6 +169,7 @@ src/
 /profile/watched       → WatchedView (requiresAuth)
 /profile/favorites     → FavoritesView (requiresAuth)
 /profile/ignored       → IgnoredView (requiresAuth)
+/styleguide            → StyleGuideView (requiresAdmin)
 /admin/add             → MovieFormView (requiresAdmin)
 /admin/edit/:slug      → MovieFormView (requiresAdmin)
 ```
@@ -167,8 +192,8 @@ src/
 
 ### CSS Modules + `backdrop-filter` Gotcha
 **Critical:** Elements using `backdrop-filter` create a new stacking context that traps `position: fixed` children. Always use `<Teleport to="body">` for modals, bottom sheets, and overlays that need to escape their parent. This affects:
-- Filter sheet in `FilterBar.vue`
-- Services sheet in `MovieDetailView.vue`
+- Filter panel in `AppHeader.vue` / `NarrowFilterPanel.vue`
+- Services sheet in `MovieServices.vue`
 - Any future modals/overlays
 
 ### MovieHero Background Tiers
@@ -187,7 +212,7 @@ src/
 ## Environment Variables
 ```
 VITE_SUPABASE_URL
-VITE_SUPABASE_ANON_KEY
+VITE_SUPABASE_PUBLISHABLE_KEY
 VITE_TMDB_TOKEN
 ```
 All three set in `.env.local` and in Cloudflare Pages environment variables.
@@ -197,14 +222,14 @@ All three set in `.env.local` and in Cloudflare Pages environment variables.
 ## Database Schema Summary
 
 ### `movies`
-`id, tmdb_id, title, slug, search_keywords, year, runtime_minutes, description, genres (text[]), mpaa_rating, tmdb_rating, poster_path, backdrop_path, trailer_youtube_id, disc_format, notes, acquired_at`
+`id, tmdb_id, title, slug, search_keywords, release_date (date), runtime_minutes, description, genres (text[]), mpaa_rating, tmdb_rating, poster_path, backdrop_path, trailer_youtube_id, disc_format, notes, acquired_at, cast_members (jsonb)`
 
 ### `movie_services`
 `id, movie_id, service, quality, url`
 Services: `fandango_at_home`, `apple_tv`, `youtube`, `plex`, `movies_anywhere`
 
 ### `user_movies`
-`id, user_id, movie_id, watchlist, watched, favorite, ignored, updated_at`
+`id, user_id, movie_id, watchlist, watched, favorite, ignored, updated_at, watchlist_added_at, watched_at, favorited_at, ignored_at`
 
 ### `profiles`
 `id, display_name, is_admin`
@@ -221,57 +246,56 @@ Services: `fandango_at_home`, `apple_tv`, `youtube`, `plex`, `movies_anywhere`
   - Poster: `https://image.tmdb.org/t/p/w300{poster_path}`
   - Backdrop: `https://image.tmdb.org/t/p/w1280{backdrop_path}`
   - YouTube: `https://img.youtube.com/vi/{id}/...`
-- Attribution required: "Powered by TMDB" badge in footer
 
 ---
 
 ## Filtering & Sorting (filters.js store)
 - **Genre:** multi-select, AND logic
 - **MPAA:** grouped (Family=G/PG, Teens=PG-13/TV-14, Mature=R/NC-17/TV-MA, Unrated=NR/null)
-- **Year, Runtime, TMDB Rating:** min/max number inputs
+- **Year, Runtime, TMDB Rating:** min/max number inputs with dynamic bounds
 - **Watched:** fade (default) / show / hide
 - **Ignored:** hide (default) / show
 - **Sort:** acquired-desc (default), acquired-asc, title-asc, title-desc, year-desc, year-asc, rating-desc, rating-asc
 - All filter state syncs to URL query params bidirectionally
 - `visibleMovies` computed = filteredMovies with watched-hide applied
 - `isWatchedFaded(movie)` returns true when watchedMode=fade and movie is watched
+- `setBase(movies)` — restricts the filter pool to a subset; `MovieGrid` calls this on mount with its `movies` prop (used by list views to scope filtering to e.g. only favorited movies)
+- `setDefaults(options)` — lets individual views override initial filter state on mount
 
 ---
 
-## What's Built (as of this handoff)
+## What's Built
 - ✅ Supabase project, tables, RLS policies, 4 user accounts
-- ✅ Cloudflare Pages + dev subdomain
+- ✅ Cloudflare Pages + dev subdomain, production domain live
 - ✅ Vue 3 + Vite + Pinia + Vue Router scaffolded
-- ✅ All stores: auth, movies, userMovies, filters
+- ✅ All stores: auth, movies, userMovies, filters, toast, navContext, confirm
 - ✅ App.vue with frosted glass header + desktop nav
-- ✅ AppTabBar.vue (mobile bottom nav, hidden on desktop)
-- ✅ HomeView with FilterBar + movie grid (faded watched movies)
-- ✅ FilterBar.vue with mobile sheet + desktop dropdowns + URL sync
-- ✅ FilterSection.vue (collapsible sections for mobile sheet)
+- ✅ AppHeader.vue with embedded filter UI, search, sort, nav links
+- ✅ NarrowTabBar.vue (mobile bottom nav, hidden on desktop)
+- ✅ HomeView with filter UI + movie grid (faded watched movies)
+- ✅ MovieGrid.vue (infinite scroll, filter integration via setBase)
 - ✅ MovieHero.vue (YouTube autoplay > backdrop > blurred poster)
 - ✅ MovieDetailView.vue with sticky action bar + services bottom sheet
 - ✅ MovieFormView.vue (combined Add + Edit, TMDB search + auto-populate)
 - ✅ ProfileView.vue (user dashboard: list previews + sign out)
+- ✅ WatchlistView, WatchedView, FavoritesView, IgnoredView (functional with filtering, infinite scroll, empty states)
 - ✅ LoginView.vue
+- ✅ Toast notification system (ToastStack + toast store)
+- ✅ StyleGuideView (color palette reference for admins)
 
 ## What's Not Built Yet
-- ⬜ WatchlistView, WatchedView, FavoritesView, IgnoredView (individual list management pages — currently placeholders)
 - ⬜ PWA manifest + service worker configuration (vite-plugin-pwa)
 - ⬜ Push notifications (v1.1 — Supabase Edge Function + VAPID)
-- ⬜ Data migration script (Firebase → Supabase, ~2,000 movies)
-- ⬜ Footer with TMDB attribution
 - ⬜ Loading states, error handling, empty states (polish pass)
 - ⬜ Accessibility audit
-- ⬜ Production domain switch (movies.derrikengel.com → Cloudflare Pages)
 
 ---
 
 ## Known Issues / Things to Watch For
 1. **`backdrop-filter` + `position: fixed`** — always use `<Teleport to="body">` for overlays
-2. **Filter sheet top offset** — currently uses a hardcoded `calc(var(--header-height) + 120px)`. May need adjustment if the filter bar height changes.
-3. **`@vue-youtube/core` requires `app.use(createManager())`** in `main.js` — already done, but don't remove it
-4. **CSS Modules active-class on RouterLink** — Vue Router's `:active-class` prop accepts a string, but with CSS Modules the hashed class name must be passed dynamically. Pattern: `:active-class="s.navLinkActive"`
-5. **Reactive badge values in computed arrays** — don't snapshot `.value` inside a computed object literal. Either inline the filter expression directly or use the ref itself and access `.value` in the template.
+2. **`@vue-youtube/core` requires `app.use(createManager())`** in `main.js` — already done, but don't remove it
+3. **CSS Modules active-class on RouterLink** — Vue Router's `:active-class` prop accepts a string, but with CSS Modules the hashed class name must be passed dynamically. Pattern: `:active-class="s.navLinkActive"`
+4. **Reactive badge values in computed arrays** — don't snapshot `.value` inside a computed object literal. Either inline the filter expression directly or use the ref itself and access `.value` in the template.
 
 ---
 

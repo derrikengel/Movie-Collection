@@ -1,5 +1,6 @@
 <template>
-    <MovieGrid :movies="movies" emptyMessage="Nothing ignored yet." defaultIgnoredMode="show" />
+    <MovieGrid :movies="movies" emptyMessage="Nothing ignored yet." defaultIgnoredMode="show"
+        whenAddedSortLabel="Recently Ignored" />
 </template>
 
 <script setup>
@@ -12,9 +13,13 @@
     const userMoviesStore = useUserMoviesStore()
 
     const movies = computed(() => {
-        const ids = new Set(
-            userMoviesStore.userMovies.filter(m => m.ignored).map(m => m.movie_id)
-        )
-        return moviesStore.movies.filter(m => ids.has(m.id))
+        return userMoviesStore.userMovies
+            .filter(um => um.ignored)
+            .map(um => {
+                const movie = moviesStore.movies.find(m => m.id === um.movie_id)
+                if (!movie) return null
+                return { ...movie, _added_at: um.ignored_at }
+            })
+            .filter(Boolean)
     })
 </script>
