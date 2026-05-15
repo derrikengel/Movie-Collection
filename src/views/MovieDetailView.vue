@@ -90,6 +90,8 @@
 
                     <MovieCast v-if="movie.cast_members?.length" :cast="movie.cast_members" />
 
+                    <MovieCommunity :movie="movie" />
+
                     <p v-if="auth.isAdmin" :class="s.edit">
                         <RouterLink :to="{ name: 'edit-movie', params: { slug: movie.slug } }" :class="s.editLink">
                             <span v-html="pencil" :class="s.editIcon" />
@@ -158,6 +160,7 @@
     import MovieHero from '@/components/detail/MovieHero.vue'
     import MovieActionBar from '@/components/detail/MovieActionBar.vue'
     import MovieCast from '@/components/detail/MovieCast.vue'
+    import MovieCommunity from '@/components/detail/MovieCommunity.vue'
     import MovieServices from '@/components/detail/MovieServices.vue'
     import { usePageTitle } from '@/composables/usePageTitle'
     import { posterUrl, profileUrl } from '@/lib/tmdb'
@@ -670,7 +673,7 @@
     }
 
     .edit {
-        margin-top: var(--size-8) auto 0 auto;
+        margin-block: var(--size-9) 0;
     }
 
     .editLink {
@@ -685,7 +688,6 @@
         justify-content: center;
         letter-spacing: var(--tracking-widest);
         line-height: var(--leading-tight);
-        margin-top: var(--size-9);
         text-transform: uppercase;
         transition: background var(--transition-fast), color var(--transition-fast);
 

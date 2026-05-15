@@ -11,6 +11,7 @@ const timestampField = {
 
 export const useUserMoviesStore = defineStore('userMovies', () => {
     const userMovies = ref([])
+    const allUserMovies = ref([])
 
     async function fetchUserMovies(userId) {
         const { data, error } = await supabase
@@ -19,6 +20,14 @@ export const useUserMoviesStore = defineStore('userMovies', () => {
             .eq('user_id', userId)
 
         if (!error) userMovies.value = data
+    }
+
+    async function fetchAllUserMovies() {
+        const { data, error } = await supabase
+            .from('user_movies')
+            .select('user_id, movie_id, watchlist, watched, favorite, ignored')
+
+        if (!error) allUserMovies.value = data
     }
 
     function getForMovie(movieId) {
@@ -78,7 +87,8 @@ export const useUserMoviesStore = defineStore('userMovies', () => {
 
     function clear() {
         userMovies.value = []
+        allUserMovies.value = []
     }
 
-    return { userMovies, fetchUserMovies, getForMovie, toggle, clear }
+    return { userMovies, allUserMovies, fetchUserMovies, fetchAllUserMovies, getForMovie, toggle, clear }
 })

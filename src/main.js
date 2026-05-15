@@ -22,6 +22,8 @@ auth.init().then(() => {
     if (auth.user) {
         const userMovies = useUserMoviesStore()
         userMovies.fetchUserMovies(auth.user.id)
+        userMovies.fetchAllUserMovies()
+        auth.fetchAllProfiles()
     }
     app.mount('#app')
 })

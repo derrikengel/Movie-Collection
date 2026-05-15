@@ -5,6 +5,7 @@ import { supabase } from '@/lib/supabase'
 export const useAuthStore = defineStore('auth', () => {
     const user = ref(null)
     const profile = ref(null)
+    const allProfiles = ref([])
     const initialized = ref(false)
 
     const isAdmin = computed(() => profile.value?.is_admin === true)
@@ -17,6 +18,13 @@ export const useAuthStore = defineStore('auth', () => {
             .eq('id', userId)
             .single()
         profile.value = data
+    }
+
+    async function fetchAllProfiles() {
+        const { data } = await supabase
+            .from('profiles')
+            .select('id, display_name')
+        if (data) allProfiles.value = data
     }
 
     async function init() {
@@ -38,9 +46,12 @@ export const useAuthStore = defineStore('auth', () => {
                     const { useUserMoviesStore } = await import('@/stores/userMovies')
                     const userMovies = useUserMoviesStore()
                     await userMovies.fetchUserMovies(session.user.id)
+                    userMovies.fetchAllUserMovies()
+                    fetchAllProfiles()
                 }, 0)
             } else {
                 profile.value = null
+                allProfiles.value = []
                 setTimeout(async () => {
                     const { useUserMoviesStore } = await import('@/stores/userMovies')
                     const userMovies = useUserMoviesStore()
@@ -60,5 +71,5 @@ export const useAuthStore = defineStore('auth', () => {
         await supabase.auth.signOut()
     }
 
-    return { user, profile, initialized, isAdmin, displayName, init, login, logout }
+    return { user, profile, allProfiles, initialized, isAdmin, displayName, init, fetchAllProfiles, login, logout }
 })
