@@ -25,7 +25,7 @@ export const useUserMoviesStore = defineStore('userMovies', () => {
     async function fetchAllUserMovies() {
         const { data, error } = await supabase
             .from('user_movies')
-            .select('user_id, movie_id, watchlist, watched, favorite, ignored')
+            .select('user_id, movie_id, watchlist, watched, favorite, ignored, watchlist_added_at, watched_at, favorited_at, ignored_at')
 
         if (!error) allUserMovies.value = data
     }
@@ -39,6 +39,7 @@ export const useUserMoviesStore = defineStore('userMovies', () => {
         const currentValue = existing?.[field] ?? false
         const newValue = !currentValue
         const tsField = timestampField[field]
+        const currentTs = existing?.[tsField] ?? null
 
         // Build the full row to upsert
         const row = {
@@ -57,11 +58,20 @@ export const useUserMoviesStore = defineStore('userMovies', () => {
             [tsField]: newValue ? new Date().toISOString() : null,
         }
 
-        // Optimistic update
+        // Optimistic update — userMovies (current user) and allUserMovies (all users)
         if (existing) {
             existing[field] = newValue
+            existing[tsField] = row[tsField]
         } else {
             userMovies.value.push({ ...row })
+        }
+
+        const existingAll = allUserMovies.value.find(m => m.user_id === userId && m.movie_id === movieId)
+        if (existingAll) {
+            existingAll[field] = newValue
+            existingAll[tsField] = row[tsField]
+        } else {
+            allUserMovies.value.push({ ...row })
         }
 
         const { data, error } = await supabase
@@ -73,8 +83,17 @@ export const useUserMoviesStore = defineStore('userMovies', () => {
         if (error) {
             if (existing) {
                 existing[field] = currentValue
+                existing[tsField] = currentTs
             } else {
                 userMovies.value = userMovies.value.filter(m => m.movie_id !== movieId)
+            }
+            if (existingAll) {
+                existingAll[field] = currentValue
+                existingAll[tsField] = currentTs
+            } else {
+                allUserMovies.value = allUserMovies.value.filter(
+                    m => !(m.user_id === userId && m.movie_id === movieId)
+                )
             }
             throw error
         }
