@@ -335,7 +335,7 @@
         border-radius: var(--radius-xl);
         color: var(--blue-50);
         display: flex;
-        flex: 1;
+        flex: 1 1 0;
         flex-direction: column;
         font-size: var(--text-xs);
         font-weight: var(--font-weight-bold);
@@ -343,7 +343,7 @@
         justify-content: center;
         letter-spacing: var(--tracking-widest);
         line-height: var(--leading-tighter);
-        padding: var(--size-6);
+        padding: var(--size-6) var(--size-2);
         text-align: center;
         text-decoration: none;
         text-transform: uppercase;
@@ -351,6 +351,7 @@
 
         @container (min-width: 32rem) {
             font-size: var(--text-sm);
+            padding: var(--size-6);
         }
 
         @container (min-width: 48rem) {
