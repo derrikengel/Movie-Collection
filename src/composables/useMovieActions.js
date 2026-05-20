@@ -2,6 +2,7 @@ import { computed } from 'vue'
 import { useAuthStore } from '@/stores/auth'
 import { useUserMoviesStore } from '@/stores/userMovies'
 import { useToastStore } from '@/stores/toast'
+import { slugifyName } from '@/lib/movies'
 import watchedIcon from '@/assets/icons/eye.svg?raw'
 import watchlistIcon from '@/assets/icons/bookmark.svg?raw'
 import favoriteIcon from '@/assets/icons/heart.svg?raw'
@@ -15,11 +16,11 @@ const listLabels = {
     ignored: 'Ignored',
 }
 
-const listRoutes = {
-    watched: { name: 'watched' },
-    watchlist: { name: 'watchlist' },
-    favorite: { name: 'favorites' },
-    ignored: { name: 'ignored' },
+const listRouteNames = {
+    watched: 'watched',
+    watchlist: 'watchlist',
+    favorite: 'favorites',
+    ignored: 'ignored',
 }
 
 export function useMovieActions(movieRef) {
@@ -75,7 +76,7 @@ export function useMovieActions(movieRef) {
         const wasActive = isActive(field)
         const title = movieRef.value?.title ?? 'Movie'
         const list = listLabels[field] ?? field
-        const route = listRoutes[field]
+        const route = { name: listRouteNames[field], params: { name: slugifyName(auth.displayName ?? '') } }
         const icon = actions.find(a => a.field === field)?.icon
 
         try {
