@@ -47,7 +47,7 @@
             await auth.login(email.value, password.value)
             toast.success(`Signed in as`, {
                 icon: userIcon,
-                action: { label: auth.displayName, to: { name: 'profile' } }
+                action: { label: auth.displayName, to: { name: 'profile', params: { name: auth.displayName } } }
             })
             router.push({ name: 'home' })
         } catch (err) {

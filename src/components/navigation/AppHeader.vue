@@ -480,7 +480,7 @@
             { to: { name: 'home' }, exact: true, label: 'All Movies', icon: film },
         ]
 
-        if (auth.user) {
+        if (auth.user && auth.displayName) {
             const userSlug = slugifyName(auth.displayName ?? '')
             items.push(
                 {

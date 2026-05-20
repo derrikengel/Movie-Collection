@@ -47,7 +47,7 @@
             },
         ]
 
-        if (auth.user) {
+        if (auth.user && auth.displayName) {
             items.push(
                 {
                     to: { name: 'watchlist', params: { name: userSlug.value } },
