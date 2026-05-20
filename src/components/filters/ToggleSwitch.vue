@@ -4,17 +4,28 @@
 
         <span :class="s.check" v-if="modelValue" v-html="checkmark" aria-hidden="true" />
 
+        <UserAvatar v-if="avatar" :avatar="avatar" :class="s.avatar" />
         {{ label }}
+        <span v-if="count != null" :class="s.count">{{ count }}</span>
     </button>
 </template>
 
 <script setup>
     import checkmark from '@/assets/icons/checkmark.svg?raw'
+    import UserAvatar from '@/components/profile/UserAvatar.vue'
     defineProps({
         modelValue: Boolean,
         label: {
             type: String,
             required: true
+        },
+        count: {
+            type: Number,
+            default: null
+        },
+        avatar: {
+            type: String,
+            default: null
         }
     })
     defineEmits(['update:modelValue'])
@@ -42,14 +53,23 @@
         }
     }
 
+    .avatar {
+        font-size: var(--text-xl);
+    }
+
     .check {
         align-items: center;
         display: flex;
-        color: var(--blue-400);
-        opacity: 0.2;
+        color: var(--green-300);
         font-size: var(--text-base);
         justify-content: center;
         line-height: 0;
+    }
+
+    .count {
+        color: var(--blue-400);
+        font-size: var(--text-2xs);
+        font-weight: var(--font-weight-bold);
     }
 
     @media (hover: hover) and (pointer: fine) {
@@ -63,9 +83,8 @@
         background: var(--color-bg-frosted-selected);
         color: var(--blue-50);
 
-        .check {
-            color: var(--green-400);
-            opacity: 1;
+        .count {
+            color: var(--blue-300);
         }
     }
 </style>

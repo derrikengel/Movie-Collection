@@ -2,6 +2,13 @@ export function slugifyName(name) {
     return (name ?? '').toLowerCase().replace(/\s+/g, '-')
 }
 
+export function generateSlug(title, year) {
+    return `${title}-${year}`
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, '-')
+        .replace(/^-+|-+$/g, '')
+}
+
 /**
  * Extracts the 4-digit release year from a Supabase date string (e.g. "2024-07-15" → 2024).
  * Returns null if the date is absent or unparseable.

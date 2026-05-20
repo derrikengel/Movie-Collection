@@ -220,34 +220,6 @@ Anchor names are global CSS idents — use descriptive, namespaced names (e.g. `
 
 ---
 
-## Fixed/Sticky Positioning + backdrop-filter
-
-**Critical pattern:** `backdrop-filter` on an ancestor creates a containing block for `position: fixed` children, trapping them. Always teleport overlays to body:
-
-```vue
-<Teleport to="body">
-  <Transition name="fade">
-    <div v-if="open" class="backdrop" @click="open = false" />
-  </Transition>
-  <Transition name="sheet">
-    <div v-if="open" class="sheet">...</div>
-  </Transition>
-</Teleport>
-```
-
-Global transition classes (must be in a non-scoped `<style>` block or global.css):
-```css
-.sheet-enter-active, .sheet-leave-active {
-  transition: transform 0.3s cubic-bezier(0.32, 0.72, 0, 1);
-}
-.sheet-enter-from, .sheet-leave-to { transform: translateY(100%); }
-
-.fade-enter-active, .fade-leave-active { transition: opacity 0.2s ease; }
-.fade-enter-from, .fade-leave-to { opacity: 0; }
-```
-
----
-
 ## Pinia Stores
 
 All stores use the Composition API style (not options):

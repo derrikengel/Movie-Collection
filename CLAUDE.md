@@ -103,11 +103,11 @@ src/
 │   │   ├── MovieActionBar.vue  # action buttons (watched/watchlist/favorite/ignore)
 │   │   ├── MovieCast.vue       # cast list
 │   │   ├── MovieHero.vue       # hero banner: YouTube > backdrop > blurred poster
-│   │   └── MovieServices.vue   # streaming services bottom sheet
+│   │   └── MovieServices.vue   # streaming services modal
 │   ├── filters/
 │   │   ├── FilterOptionList.vue   # multi-select option list
 │   │   ├── FilterRangeSlider.vue  # dual-handle range slider
-│   │   ├── NarrowFilterPanel.vue  # mobile filter sheet
+│   │   ├── NarrowFilterPanel.vue  # mobile filter
 │   │   └── ToggleSwitch.vue       # toggle for watched/ignored modes
 │   ├── grid/
 │   │   ├── MovieCard.vue       # individual movie card
@@ -148,7 +148,7 @@ src/
 └── views/
     ├── HomeView.vue            # main browse/search/filter page
     ├── LoginView.vue           # login form
-    ├── MovieDetailView.vue     # movie detail: hero, metadata, action bar, services sheet
+    ├── MovieDetailView.vue     # movie detail: hero, metadata, action bar, services
     ├── ProfileView.vue         # user dashboard: list previews + sign out
     ├── StyleGuideView.vue      # color palette reference (requiresAdmin)
     ├── admin/
@@ -194,9 +194,9 @@ src/
 - RLS policies enforce access at the database level (public read on movies, admin-only writes, user-scoped user_movies).
 
 ### CSS Modules + `backdrop-filter` Gotcha
-**Critical:** Elements using `backdrop-filter` create a new stacking context that traps `position: fixed` children. Always use `<Teleport to="body">` for modals, bottom sheets, and overlays that need to escape their parent. This affects:
+**Critical:** Elements using `backdrop-filter` create a new stacking context that traps `position: fixed` children. Always use `<Teleport to="body">` for modals and overlays that need to escape their parent. This affects:
 - Filter panel in `AppHeader.vue` / `NarrowFilterPanel.vue`
-- Services sheet in `MovieServices.vue`
+- Services modal in `MovieServices.vue`
 - Any future modals/overlays
 
 ### MovieHero Background Tiers
@@ -206,7 +206,7 @@ src/
 
 ### Bottom Bar on Movie Detail
 - Sticky bottom bar with 5 slots: Watched · Watchlist · Play (center, elevated, amber) · Favorite · Ignore
-- Play button opens a bottom sheet showing all streaming service links + disc format
+- Play button opens a modal showing all streaming service links + disc format
 - List buttons: active for logged-in users, greyed + tap-to-login-prompt for guests
 - Both the bottom bar AND the mobile tab bar are visible on mobile detail pages — detail bar sits above tab bar
 
@@ -278,7 +278,7 @@ Services: `fandango_at_home`, `apple_tv`, `youtube`, `plex`, `movies_anywhere`
 - ✅ HomeView with filter UI + movie grid (faded watched movies)
 - ✅ MovieGrid.vue (infinite scroll, filter integration via setBase)
 - ✅ MovieHero.vue (YouTube autoplay > backdrop > blurred poster)
-- ✅ MovieDetailView.vue with sticky action bar + services bottom sheet
+- ✅ MovieDetailView.vue with sticky action bar + services modal
 - ✅ MovieFormView.vue (combined Add + Edit, TMDB search + auto-populate)
 - ✅ ProfileView.vue (user dashboard: list previews + sign out)
 - ✅ WatchlistView, WatchedView, FavoritesView, IgnoredView (functional with filtering, infinite scroll, empty states)

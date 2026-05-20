@@ -59,6 +59,7 @@
     import { useToastStore } from '@/stores/toast'
     import { useUserMoviesStore } from '@/stores/userMovies'
     import { useMoviesStore } from '@/stores/movies'
+    import { useRequestsStore } from '@/stores/requests'
     import { useResolvedUser } from '@/composables/useResolvedUser'
     import { usePageTitle } from '@/composables/usePageTitle'
     import { slugifyName } from '@/lib/movies'
@@ -68,6 +69,7 @@
     import watchlistIcon from '@/assets/icons/bookmark.svg?raw'
     import favoritesIcon from '@/assets/icons/heart.svg?raw'
     import ignoredIcon from '@/assets/icons/ignore.svg?raw'
+    import requestsIcon from '@/assets/icons/numbered-list.svg?raw'
     import userIcon from '@/assets/icons/user.svg?raw'
 
     const route = useRoute()
@@ -76,6 +78,7 @@
     const toast = useToastStore()
     const userMoviesStore = useUserMoviesStore()
     const moviesStore = useMoviesStore()
+    const requestsStore = useRequestsStore()
     const { resolvedProfile, notFound } = useResolvedUser()
 
     const AVATAR_KEYS = Array.from({ length: 16 }, (_, i) => `avatar-${String(i + 1).padStart(2, '0')}`)
@@ -125,6 +128,19 @@
             .filter(m => m?.poster_path)
     }
 
+    const requestsData = computed(() => {
+        const userId = resolvedProfile.value?.id
+        if (!userId) return { count: 0, previews: [] }
+        const wanted = requestsStore.requests.filter(r => r.wants.some(w => w.user_id === userId))
+        return {
+            count: wanted.length,
+            previews: wanted
+                .filter(r => r.poster_path)
+                .slice(0, 5)
+                .map(r => ({ id: r.id, title: r.title, release_date: r.release_date, poster_path: r.poster_path })),
+        }
+    })
+
     const lists = computed(() => [
         {
             to: { name: 'watchlist', params: { name: route.params.name } },
@@ -157,6 +173,16 @@
             previews: getPreviewMovies('ignored'),
             icon: ignoredIcon,
             listClass: 'list-ignored',
+        },
+        {
+            to: isOwnProfile.value
+                ? { name: 'requests' }
+                : { name: 'requests', query: { user: route.params.name } },
+            label: 'Movie Requests',
+            count: requestsData.value.count,
+            previews: requestsData.value.previews,
+            icon: requestsIcon,
+            listClass: 'list-requests',
         },
     ])
 
@@ -263,7 +289,7 @@
         display: flex;
         gap: var(--size-1);
         overflow-x: auto;
-        padding-block: var(--size-1);
+        padding-block: var(--size-1) var(--size-2);
         padding-inline: var(--content-padding);
         scroll-padding-inline: var(--content-padding);
         scrollbar-width: thin;

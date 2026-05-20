@@ -462,6 +462,20 @@
         --color-list-950: var(--color-ignored-950);
     }
 
+    .list-requests {
+        --color-list-50: var(--blue-50);
+        --color-list-100: var(--blue-100);
+        --color-list-200: var(--blue-200);
+        --color-list-300: var(--blue-300);
+        --color-list-400: var(--blue-400);
+        --color-list-500: var(--blue-500);
+        --color-list-600: var(--blue-600);
+        --color-list-700: var(--blue-700);
+        --color-list-800: var(--blue-800);
+        --color-list-900: var(--blue-900);
+        --color-list-950: var(--blue-950);
+    }
+
     .svc-fandango-at-home {
         --brand-fg: #fff;
         --brand-bg: #ff7300;

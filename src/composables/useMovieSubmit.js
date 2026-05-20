@@ -3,7 +3,7 @@ import { useRouter } from 'vue-router'
 import { supabase } from '@/lib/supabase'
 import { useMoviesStore } from '@/stores/movies'
 import { useToastStore } from '@/stores/toast'
-import { releaseYear } from '@/lib/movies'
+import { releaseYear, generateSlug } from '@/lib/movies'
 
 export function useMovieSubmit(form, isEditMode, getRouteSlug) {
     const submitting = ref(false)
@@ -13,13 +13,6 @@ export function useMovieSubmit(form, isEditMode, getRouteSlug) {
     const router = useRouter()
     const moviesStore = useMoviesStore()
     const toast = useToastStore()
-
-    function generateSlug(title, year) {
-        return `${title}-${year}`
-            .toLowerCase()
-            .replace(/[^a-z0-9]+/g, '-')
-            .replace(/^-+|-+$/g, '')
-    }
 
     function generateSearchKeywords(title) {
         let kw = title.toLowerCase()

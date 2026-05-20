@@ -51,6 +51,10 @@
         @container (min-width: 48rem) {
             border-radius: var(--radius-2xl);
             padding: var(--size-8);
+
+            &:last-child {
+                grid-column: 1 / -1;
+            }
         }
     }
 

@@ -32,8 +32,7 @@
                     <p :class="s.tmdbResultInfo">
                         <span :class="s.tmdbResultTitle">{{ result.title }}</span>
                         <span :class="s.tmdbResultYear">{{ result.release_date?.slice(0, 4) }}</span>
-                        <span v-if="libraryByTmdbId[result.id]" :class="s.tmdbResultLibraryBadge">Already in your
-                            library</span>
+                        <span v-if="libraryByTmdbId[result.id]" :class="s.tmdbResultLibraryBadge">Already owned</span>
                     </p>
 
                     <span v-html="libraryByTmdbId[result.id] ? pencilIcon : plusIcon" aria-hidden="true"
@@ -72,6 +71,12 @@
                         <span v-html="rightArrowIcon" :class="s.viewIcon" />
                     </RouterLink>
                 </div>
+            </div>
+
+            <!-- Request match notice -->
+            <div v-if="matchedRequest" :class="s.requestNotice">
+                <p>This movie was requested by {{ requestedByNames }}. Adding it will automatically remove it from the
+                    requests list.</p>
             </div>
 
             <!-- Services -->
@@ -205,7 +210,7 @@
                                 </div>
                             </div>
                             <p v-if="fieldErrors['runtime-hours']" :class="s.errorMsg">{{ fieldErrors['runtime-hours']
-                                }}</p>
+                            }}</p>
                         </div>
                     </div>
 
@@ -456,10 +461,14 @@
     import arrowUpIcon from '@/assets/icons/arrow-up.svg?raw'
     import arrowDownIcon from '@/assets/icons/arrow-down.svg?raw'
     import silhouette from '@/assets/icons/user.svg?raw'
+    import { useRequestsStore } from '@/stores/requests'
+    import { useAuthStore } from '@/stores/auth'
 
     const route = useRoute()
     const router = useRouter()
     const moviesStore = useMoviesStore()
+    const requestsStore = useRequestsStore()
+    const auth = useAuthStore()
 
     const libraryByTmdbId = computed(() =>
         Object.fromEntries(moviesStore.movies.filter(m => m.tmdb_id).map(m => [m.tmdb_id, m.slug]))
@@ -545,7 +554,11 @@
         handleTrailerInput()
         await _submit()
         const firstErrorId = Object.keys(fieldErrors)[0]
-        if (!firstErrorId) return
+        if (!firstErrorId) {
+            const reqId = pendingRequestId.value ?? matchedRequest.value?.id
+            if (reqId) await requestsStore.removeRequest(reqId, { silent: true })
+            return
+        }
         await nextTick()
         const el = document.getElementById(firstErrorId)
         if (!el) return
@@ -580,6 +593,20 @@
     })
 
     const selectingId = ref(null)
+    const pendingRequestId = ref(route.query.requestId ?? null)
+    const matchedRequest = ref(null)
+
+    const requestedByNames = computed(() => {
+        if (!matchedRequest.value) return ''
+        const wants = matchedRequest.value.wants
+        if (!wants.length) return 'someone'
+        const names = wants.map(w => {
+            if (w.user_id === auth.user?.id) return 'you'
+            return auth.allProfiles.find(p => p.id === w.user_id)?.display_name ?? 'someone'
+        })
+        if (names.length === 1) return names[0]
+        return names.slice(0, -1).join(', ') + ' and ' + names.at(-1)
+    })
 
     async function selectTmdb(result) {
         selectingId.value = result.id
@@ -590,6 +617,9 @@
             syncRuntimeFromForm()
             formReady.value = true
             takeSnapshot()
+            if (!pendingRequestId.value) {
+                matchedRequest.value = requestsStore.requestByTmdbId[form.tmdb_id] ?? null
+            }
         } finally {
             selectingId.value = null
         }
@@ -599,6 +629,7 @@
         _resetTmdb()
         formReady.value = false
         formSnapshot.value = null
+        matchedRequest.value = null
     }
 
     onBeforeRouteLeave(() => {
@@ -609,7 +640,24 @@
     function onBeforeUnload(e) {
         if (!submitted.value && formReady.value && isDirty.value) e.preventDefault()
     }
-    onMounted(() => window.addEventListener('beforeunload', onBeforeUnload))
+    onMounted(async () => {
+        window.addEventListener('beforeunload', onBeforeUnload)
+        if (!pendingRequestId.value) return
+        if (!requestsStore.requests.length) await requestsStore.fetchRequests()
+        const req = requestsStore.requests.find(r => r.id === pendingRequestId.value)
+        if (!req) return
+        selectingId.value = req.tmdb_id
+        try {
+            const { cast_members, ...rest } = await _selectTmdb({ id: req.tmdb_id })
+            Object.assign(form, rest)
+            setCastMembers(cast_members)
+            syncRuntimeFromForm()
+            formReady.value = true
+            takeSnapshot()
+        } finally {
+            selectingId.value = null
+        }
+    })
     onBeforeUnmount(() => window.removeEventListener('beforeunload', onBeforeUnload))
 </script>
 
@@ -1513,7 +1561,7 @@
     }
 
     .submit {
-        background: linear-gradient(transparent, oklch(from var(--blue-950) l c h / 0.75));
+        background: linear-gradient(transparent, var(--blue-950));
         bottom: calc(var(--tab-bar-height) + env(safe-area-inset-bottom));
         margin-inline: calc(-1 * var(--content-padding));
         padding: var(--size-2) var(--content-padding);
@@ -1566,6 +1614,16 @@
 
     .emptyMsg {
         margin-top: var(--size-2);
+    }
+
+    .requestNotice {
+        background: oklch(from var(--yellow-400) l c h / 0.1);
+        border: 1px solid oklch(from var(--yellow-400) l c h / 0.3);
+        border-radius: var(--radius-lg);
+        color: var(--yellow-300);
+        font-size: var(--text-sm);
+        line-height: var(--leading-normal);
+        padding: var(--size-3) var(--size-4);
     }
 
     /* Cast editor */

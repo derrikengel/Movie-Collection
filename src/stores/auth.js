@@ -20,11 +20,19 @@ export const useAuthStore = defineStore('auth', () => {
         profile.value = data
     }
 
+    const profileOrder = ['Derrik', 'Mary', 'Grayce', 'Gretchen']
+
     async function fetchAllProfiles() {
         const { data } = await supabase
             .from('profiles')
             .select('id, display_name, avatar')
-        if (data) allProfiles.value = data
+        if (data) {
+            allProfiles.value = data.sort((a, b) => {
+                const ai = profileOrder.indexOf(a.display_name)
+                const bi = profileOrder.indexOf(b.display_name)
+                return (ai === -1 ? Infinity : ai) - (bi === -1 ? Infinity : bi)
+            })
+        }
     }
 
     async function updateAvatar(avatarKey) {
@@ -53,8 +61,9 @@ export const useAuthStore = defineStore('auth', () => {
         }
         initialized.value = true
 
-        supabase.auth.onAuthStateChange((_event, session) => {
+        supabase.auth.onAuthStateChange((event, session) => {
             user.value = session?.user ?? null
+            if (event === 'INITIAL_SESSION' || event === 'TOKEN_REFRESHED') return
             if (session?.user) {
                 // Defer async Supabase calls via setTimeout to break out of the auth lock context.
                 // In Supabase JS v2, onAuthStateChange fires while a navigator.locks lock is held.
@@ -66,6 +75,8 @@ export const useAuthStore = defineStore('auth', () => {
                     await userMovies.fetchUserMovies(session.user.id)
                     userMovies.fetchAllUserMovies()
                     fetchAllProfiles()
+                    const { useRequestsStore } = await import('@/stores/requests')
+                    useRequestsStore().fetchRequests()
                 }, 0)
             } else {
                 profile.value = null

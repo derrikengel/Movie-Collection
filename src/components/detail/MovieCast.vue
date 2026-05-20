@@ -73,13 +73,12 @@
     .card {
         display: flex;
         flex-direction: column;
-        flex-shrink: 0;
+        flex: 0 0 6rem;
         gap: var(--size-1);
         scroll-snap-align: start;
-        width: 6rem;
 
         @media (min-width: 48rem) {
-            width: 7rem;
+            flex: 0 0 7rem;
         }
     }
 

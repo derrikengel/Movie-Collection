@@ -144,9 +144,9 @@
         display: inline-flex;
         gap: 0.3125em;
 
-        &:not(:first-child) {
+        /* &:not(:first-child) {
             margin-left: 0.125em;
-        }
+        } */
     }
 
     .nameAvatar {

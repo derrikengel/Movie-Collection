@@ -111,6 +111,24 @@ const router = createRouter({
             }
         },
         {
+            path: '/requests',
+            name: 'requests',
+            component: () => import('@/views/RequestsView.vue'),
+            meta: {
+                requiresAuth: true,
+                title: 'Requests'
+            }
+        },
+        {
+            path: '/requests/:slug',
+            name: 'request',
+            component: () => import('@/views/MovieDetailView.vue'),
+            meta: {
+                requiresAuth: true,
+                isRequest: true,
+            }
+        },
+        {
             path: '/:slug',
             name: 'movie',
             component: () => import('@/views/MovieDetailView.vue')

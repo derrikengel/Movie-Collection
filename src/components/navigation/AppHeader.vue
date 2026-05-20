@@ -31,20 +31,20 @@
 
             <!-- Narrow: filter toggle + random buttons (listing pages only, hidden on wide) -->
             <div v-if="isListPage" :class="s.narrowButtons">
-                <button v-if="filters.activeFilterCount > 0 || filters.search" :class="[s.narrowBtn, s.resetBtn]"
-                    @click="filters.reset()" aria-label="Reset search & filters">
+                <button v-if="hasActiveFilters" :class="[s.narrowBtn, s.resetBtn]" @click="handleReset()"
+                    aria-label="Reset search & filters">
                     <span :class="s.narrowResetIcon" v-html="resetIcon" />
                 </button>
                 <button
-                    :class="[s.narrowBtn, filtersOpen && s.narrowBtnActive, filters.activeFilterCount > 0 && s.narrowBtnSelections]"
+                    :class="[s.narrowBtn, filtersOpen && s.narrowBtnActive, activeFilterCount > 0 && s.narrowBtnSelections]"
                     @click="filtersOpen = !filtersOpen" aria-label="Open filters">
                     <span :class="s.narrowFilterIcon" v-html="filterIcon" />
-                    <span v-if="filters.activeFilterCount > 0" class="badge" :class="s.narrowFilterBadge">
-                        {{ filters.activeFilterCount }}
+                    <span v-if="activeFilterCount > 0" class="badge" :class="s.narrowFilterBadge">
+                        {{ activeFilterCount }}
                     </span>
                 </button>
-                <button :class="[s.narrowBtn, s.randomBtn]" @click="handleRandom" aria-label="Random movie"
-                    v-html="randomIcon" />
+                <button v-if="!isRequests" :class="[s.narrowBtn, s.randomBtn]" @click="handleRandom"
+                    aria-label="Random movie" v-html="randomIcon" />
             </div>
 
             <!-- Wide nav links (hidden on narrow) -->
@@ -66,13 +66,13 @@
             <!-- Search — always visible on listing pages -->
             <div :class="s.searchInputWrap">
                 <label for="search" class="visually-hidden">Search</label>
-                <input v-model="filters.search" id="search" type="search" inputmode="search" placeholder="Search"
-                    :class="s.searchInput" aria-label="Search movies" />
+                <input v-model="searchQuery" id="search" type="search" inputmode="search" placeholder="Search"
+                    :class="s.searchInput" :aria-label="isRequests ? 'Search requests' : 'Search movies'" />
                 <span :class="s.searchIcon" v-html="searchIcon" />
             </div>
 
-            <!-- Random -->
-            <button :class="[s.wideFilterBtn, s.wideRandomBtn]" @click="handleRandom">
+            <!-- Random (movie lists only) -->
+            <button v-if="!isRequests" :class="[s.wideFilterBtn, s.wideRandomBtn]" @click="handleRandom">
                 <span :class="s.wideFilterIcon" v-html="randomIcon" />
                 Random Movie
             </button>
@@ -81,179 +81,236 @@
             <Transition name="filters-fade">
                 <div v-show="filtersOpen" :class="s.narrowFilters">
 
-                    <!-- Sort -->
-                    <FilterPanel>
-                        <template #label>
-                            <span :class="s.sortIcon" v-html="sortIcon" />
-                            <span :class="s.sortCurrentNarrow">
-                                {{sortOptions.find(o => o.value === filters.sort)?.label}}
-                            </span>
-                        </template>
-                        <FilterOptionList :options="sortOptions" :active-values="[filters.sort]"
-                            @toggle="filters.sort = $event" />
-                    </FilterPanel>
+                    <template v-if="isRequests">
 
-                    <!-- Genre -->
-                    <FilterPanel label="Genre" :count="filters.genres.length">
-                        <FilterOptionList :options="genreOptions" :active-values="filters.genres"
-                            @toggle="toggleGenre" />
-                    </FilterPanel>
+                        <!-- Sort -->
+                        <FilterPanel>
+                            <template #label>
+                                <span :class="s.sortIcon" v-html="sortIcon" />
+                                <span :class="s.sortCurrentNarrow">{{ reqActiveSortLabel }}</span>
+                            </template>
+                            <FilterOptionList :options="reqSortOptions" :active-values="[requestFilters.sortBy]"
+                                @toggle="requestFilters.setSort($event)" />
+                        </FilterPanel>
 
-                    <!-- Rating -->
-                    <FilterPanel label="Rating" :count="filters.mpaaGroups.length">
-                        <FilterOptionList :options="mpaaOptions" :active-values="filters.mpaaGroups"
-                            @toggle="toggleMpaa" />
-                    </FilterPanel>
+                        <!-- User -->
+                        <div :class="s.narrowToggles">
+                            <ToggleSwitch v-for="user in reqUserOptions" :key="user.value" :label="user.label"
+                                :avatar="user.avatar" :count="user.count"
+                                :model-value="requestFilters.filterUserId === user.value"
+                                @update:model-value="toggleReqUser(user.value)" />
+                        </div>
 
-                    <!-- Year -->
-                    <FilterPanel label="Year"
-                        :count="(Number.isFinite(filters.yearMin) ? 1 : 0) + (Number.isFinite(filters.yearMax) ? 1 : 0)">
-                        <FilterRangeSlider :min="filters.yearBounds.min ?? 1900" :max="filters.yearBounds.max ?? 2025"
-                            :model-value-min="filters.yearMin" :model-value-max="filters.yearMax" label-min="From"
-                            label-max="To" aria-label-min="Minimum year" aria-label-max="Maximum year"
-                            @update:model-value-min="filters.yearMin = $event"
-                            @update:model-value-max="filters.yearMax = $event" />
-                    </FilterPanel>
+                    </template>
+                    <template v-else>
 
-                    <!-- Runtime -->
-                    <FilterPanel label="Runtime"
-                        :count="(Number.isFinite(filters.runtimeMin) ? 1 : 0) + (Number.isFinite(filters.runtimeMax) ? 1 : 0)">
-                        <FilterRangeSlider :min="filters.runtimeBounds.min ?? 0" :max="filters.runtimeBounds.max ?? 300"
-                            :model-value-min="filters.runtimeMin" :model-value-max="filters.runtimeMax" label-min="Min"
-                            label-max="Max" unit="time" aria-label-min="Minimum runtime"
-                            aria-label-max="Maximum runtime" @update:model-value-min="filters.runtimeMin = $event"
-                            @update:model-value-max="filters.runtimeMax = $event" />
-                    </FilterPanel>
-
-                    <!-- Watched / Ignored toggles -->
-                    <div v-if="auth.user" :class="s.narrowToggles">
-                        <ToggleSwitch label="Fade Watched" :model-value="filters.watchedMode === 'fade'"
-                            @update:model-value="filters.watchedMode = $event ? 'fade' : 'show'" />
-
-                        <ToggleSwitch label="Hide Ignored" :model-value="filters.ignoredMode === 'hide'"
-                            @update:model-value="filters.ignoredMode = $event ? 'hide' : 'show'" />
-                    </div>
-                </div>
-            </Transition>
-
-            <!-- Wide inline filter controls (hidden on narrow) -->
-            <div :class="s.wideFilters">
-
-                <!-- Sort -->
-                <div :class="s.wideFilter">
-                    <button :class="[s.wideFilterBtn, s.sortBtn]" popovertarget="filter-sort">
-                        <span :class="[s.sortIcon, s.wideFilterIcon]" v-html="sortIcon" />
-                        {{sortOptions.find(o => o.value === filters.sort)?.label}}
-                        <span :class="s.chevron" v-html="chevronIcon" />
-                    </button>
-                    <div id="filter-sort" popover="auto" :class="[s.widePanel, s.sortPanel]">
-                        <div :class="s.widePanelContent">
+                        <!-- Sort -->
+                        <FilterPanel>
+                            <template #label>
+                                <span :class="s.sortIcon" v-html="sortIcon" />
+                                <span :class="s.sortCurrentNarrow">
+                                    {{sortOptions.find(o => o.value === filters.sort)?.label}}
+                                </span>
+                            </template>
                             <FilterOptionList :options="sortOptions" :active-values="[filters.sort]"
                                 @toggle="filters.sort = $event" />
-                        </div>
-                    </div>
-                </div>
+                        </FilterPanel>
 
-                <!-- Genre -->
-                <div :class="s.wideFilter">
-                    <button :class="[s.wideFilterBtn, s.genreBtn, filters.genres.length && s.wideFilterBtnActive]"
-                        popovertarget="filter-genre">
-                        Genre
-                        <span v-if="filters.genres.length" class="badge" :class="s.filterBadge">
-                            {{ filters.genres.length }}
-                        </span>
-                        <span :class="s.chevron" v-html="chevronIcon" />
-                    </button>
-                    <div id="filter-genre" popover="auto" :class="[s.widePanel, s.genrePanel]">
-                        <div :class="s.widePanelContent">
+                        <!-- Genre -->
+                        <FilterPanel label="Genre" :count="filters.genres.length">
                             <FilterOptionList :options="genreOptions" :active-values="filters.genres"
                                 @toggle="toggleGenre" />
-                        </div>
-                    </div>
-                </div>
+                        </FilterPanel>
 
-                <!-- Rating -->
-                <div :class="s.wideFilter">
-                    <button :class="[s.wideFilterBtn, s.mpaaBtn, filters.mpaaGroups.length && s.wideFilterBtnActive]"
-                        popovertarget="filter-mpaa">
-                        Rating
-                        <span v-if="filters.mpaaGroups.length" class="badge" :class="s.filterBadge">
-                            {{ filters.mpaaGroups.length }}
-                        </span>
-                        <span :class="s.chevron" v-html="chevronIcon" />
-                    </button>
-                    <div id="filter-mpaa" popover="auto" :class="[s.widePanel, s.mpaaPanel]">
-                        <div :class="s.widePanelContent">
+                        <!-- Rating -->
+                        <FilterPanel label="Rating" :count="filters.mpaaGroups.length">
                             <FilterOptionList :options="mpaaOptions" :active-values="filters.mpaaGroups"
                                 @toggle="toggleMpaa" />
-                        </div>
-                    </div>
-                </div>
+                        </FilterPanel>
 
-                <!-- Year -->
-                <div :class="s.wideFilter">
-                    <button
-                        :class="[s.wideFilterBtn, s.yearBtn, (Number.isFinite(filters.yearMin) || Number.isFinite(filters.yearMax)) && s.wideFilterBtnActive]"
-                        popovertarget="filter-year">
-                        Year
-                        <span :class="s.chevron" v-html="chevronIcon" />
-                    </button>
-                    <div id="filter-year" popover="auto" :class="[s.widePanel, s.yearPanel]">
-                        <div :class="s.widePanelContent">
+                        <!-- Year -->
+                        <FilterPanel label="Year"
+                            :count="(Number.isFinite(filters.yearMin) ? 1 : 0) + (Number.isFinite(filters.yearMax) ? 1 : 0)">
                             <FilterRangeSlider :min="filters.yearBounds.min ?? 1900"
                                 :max="filters.yearBounds.max ?? 2025" :model-value-min="filters.yearMin"
                                 :model-value-max="filters.yearMax" label-min="From" label-max="To"
                                 aria-label-min="Minimum year" aria-label-max="Maximum year"
                                 @update:model-value-min="filters.yearMin = $event"
                                 @update:model-value-max="filters.yearMax = $event" />
-                        </div>
-                    </div>
-                </div>
+                        </FilterPanel>
 
-                <!-- Runtime -->
-                <div :class="s.wideFilter">
-                    <button
-                        :class="[s.wideFilterBtn, s.runtimeBtn, (Number.isFinite(filters.runtimeMin) || Number.isFinite(filters.runtimeMax)) && s.wideFilterBtnActive]"
-                        popovertarget="filter-runtime">
-                        Runtime
-                        <span :class="s.chevron" v-html="chevronIcon" />
-                    </button>
-                    <div id="filter-runtime" popover="auto" :class="[s.widePanel, s.runtimePanel]">
-                        <div :class="s.widePanelContent">
+                        <!-- Runtime -->
+                        <FilterPanel label="Runtime"
+                            :count="(Number.isFinite(filters.runtimeMin) ? 1 : 0) + (Number.isFinite(filters.runtimeMax) ? 1 : 0)">
                             <FilterRangeSlider :min="filters.runtimeBounds.min ?? 0"
                                 :max="filters.runtimeBounds.max ?? 300" :model-value-min="filters.runtimeMin"
                                 :model-value-max="filters.runtimeMax" label-min="Min" label-max="Max" unit="time"
                                 aria-label-min="Minimum runtime" aria-label-max="Maximum runtime"
                                 @update:model-value-min="filters.runtimeMin = $event"
                                 @update:model-value-max="filters.runtimeMax = $event" />
+                        </FilterPanel>
+
+                        <!-- Watched / Ignored toggles -->
+                        <div v-if="auth.user" :class="s.narrowToggles">
+                            <ToggleSwitch label="Fade Watched" :model-value="filters.watchedMode === 'fade'"
+                                @update:model-value="filters.watchedMode = $event ? 'fade' : 'show'" />
+
+                            <ToggleSwitch label="Hide Ignored" :model-value="filters.ignoredMode === 'hide'"
+                                @update:model-value="filters.ignoredMode = $event ? 'hide' : 'show'" />
+                        </div>
+
+                    </template>
+                </div>
+            </Transition>
+
+            <!-- Wide inline filter controls (hidden on narrow) -->
+            <div :class="s.wideFilters">
+
+                <template v-if="isRequests">
+
+                    <!-- Sort -->
+                    <div :class="s.wideFilter">
+                        <button :class="[s.wideFilterBtn, s.reqSortBtn]" popovertarget="req-sort">
+                            <span :class="[s.sortIcon, s.wideFilterIcon]" v-html="sortIcon" />
+                            {{ reqActiveSortLabel }}
+                            <span :class="s.chevron" v-html="chevronIcon" />
+                        </button>
+                        <div id="req-sort" popover="auto" :class="[s.widePanel, s.reqSortPanel]">
+                            <div :class="s.widePanelContent">
+                                <FilterOptionList :options="reqSortOptions" :active-values="[requestFilters.sortBy]"
+                                    @toggle="requestFilters.setSort($event)" />
+                            </div>
                         </div>
                     </div>
-                </div>
 
-                <!-- Watched toggle -->
-                <ToggleSwitch v-if="auth.user" label="Fade Watched" :model-value="filters.watchedMode === 'fade'"
-                    @update:model-value="filters.watchedMode = $event ? 'fade' : 'show'" />
+                    <!-- User -->
+                    <ToggleSwitch v-for="user in reqUserOptions" :key="user.value" :label="user.label"
+                        :avatar="user.avatar" :count="user.count"
+                        :model-value="requestFilters.filterUserId === user.value"
+                        @update:model-value="toggleReqUser(user.value)" />
 
-                <!-- Ignored toggle -->
-                <ToggleSwitch v-if="auth.user" label="Hide Ignored" :model-value="filters.ignoredMode === 'hide'"
-                    @update:model-value="filters.ignoredMode = $event ? 'hide' : 'show'" />
+                </template>
+                <template v-else>
 
-                <!-- Reset -->
-                <button :class="[s.resetBtn, s.wideResetBtn]" :disabled="!filters.activeFilterCount && !filters.search"
-                    @click="filters.reset()">
-                    <span :class="s.wideResetIcon" v-html="resetIcon" />
-                    Reset
-                </button>
+                    <!-- Sort -->
+                    <div :class="s.wideFilter">
+                        <button :class="[s.wideFilterBtn, s.sortBtn]" popovertarget="filter-sort">
+                            <span :class="[s.sortIcon, s.wideFilterIcon]" v-html="sortIcon" />
+                            {{sortOptions.find(o => o.value === filters.sort)?.label}}
+                            <span :class="s.chevron" v-html="chevronIcon" />
+                        </button>
+                        <div id="filter-sort" popover="auto" :class="[s.widePanel, s.sortPanel]">
+                            <div :class="s.widePanelContent">
+                                <FilterOptionList :options="sortOptions" :active-values="[filters.sort]"
+                                    @toggle="filters.sort = $event" />
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Genre -->
+                    <div :class="s.wideFilter">
+                        <button :class="[s.wideFilterBtn, s.genreBtn, filters.genres.length && s.wideFilterBtnActive]"
+                            popovertarget="filter-genre">
+                            Genre
+                            <span v-if="filters.genres.length" class="badge" :class="s.filterBadge">
+                                {{ filters.genres.length }}
+                            </span>
+                            <span :class="s.chevron" v-html="chevronIcon" />
+                        </button>
+                        <div id="filter-genre" popover="auto" :class="[s.widePanel, s.genrePanel]">
+                            <div :class="s.widePanelContent">
+                                <FilterOptionList :options="genreOptions" :active-values="filters.genres"
+                                    @toggle="toggleGenre" />
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Rating -->
+                    <div :class="s.wideFilter">
+                        <button
+                            :class="[s.wideFilterBtn, s.mpaaBtn, filters.mpaaGroups.length && s.wideFilterBtnActive]"
+                            popovertarget="filter-mpaa">
+                            Rating
+                            <span v-if="filters.mpaaGroups.length" class="badge" :class="s.filterBadge">
+                                {{ filters.mpaaGroups.length }}
+                            </span>
+                            <span :class="s.chevron" v-html="chevronIcon" />
+                        </button>
+                        <div id="filter-mpaa" popover="auto" :class="[s.widePanel, s.mpaaPanel]">
+                            <div :class="s.widePanelContent">
+                                <FilterOptionList :options="mpaaOptions" :active-values="filters.mpaaGroups"
+                                    @toggle="toggleMpaa" />
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Year -->
+                    <div :class="s.wideFilter">
+                        <button
+                            :class="[s.wideFilterBtn, s.yearBtn, (Number.isFinite(filters.yearMin) || Number.isFinite(filters.yearMax)) && s.wideFilterBtnActive]"
+                            popovertarget="filter-year">
+                            Year
+                            <span :class="s.chevron" v-html="chevronIcon" />
+                        </button>
+                        <div id="filter-year" popover="auto" :class="[s.widePanel, s.yearPanel]">
+                            <div :class="s.widePanelContent">
+                                <FilterRangeSlider :min="filters.yearBounds.min ?? 1900"
+                                    :max="filters.yearBounds.max ?? 2025" :model-value-min="filters.yearMin"
+                                    :model-value-max="filters.yearMax" label-min="From" label-max="To"
+                                    aria-label-min="Minimum year" aria-label-max="Maximum year"
+                                    @update:model-value-min="filters.yearMin = $event"
+                                    @update:model-value-max="filters.yearMax = $event" />
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Runtime -->
+                    <div :class="s.wideFilter">
+                        <button
+                            :class="[s.wideFilterBtn, s.runtimeBtn, (Number.isFinite(filters.runtimeMin) || Number.isFinite(filters.runtimeMax)) && s.wideFilterBtnActive]"
+                            popovertarget="filter-runtime">
+                            Runtime
+                            <span :class="s.chevron" v-html="chevronIcon" />
+                        </button>
+                        <div id="filter-runtime" popover="auto" :class="[s.widePanel, s.runtimePanel]">
+                            <div :class="s.widePanelContent">
+                                <FilterRangeSlider :min="filters.runtimeBounds.min ?? 0"
+                                    :max="filters.runtimeBounds.max ?? 300" :model-value-min="filters.runtimeMin"
+                                    :model-value-max="filters.runtimeMax" label-min="Min" label-max="Max" unit="time"
+                                    aria-label-min="Minimum runtime" aria-label-max="Maximum runtime"
+                                    @update:model-value-min="filters.runtimeMin = $event"
+                                    @update:model-value-max="filters.runtimeMax = $event" />
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Watched toggle -->
+                    <ToggleSwitch v-if="auth.user" label="Fade Watched" :model-value="filters.watchedMode === 'fade'"
+                        @update:model-value="filters.watchedMode = $event ? 'fade' : 'show'" />
+
+                    <!-- Ignored toggle -->
+                    <ToggleSwitch v-if="auth.user" label="Hide Ignored" :model-value="filters.ignoredMode === 'hide'"
+                        @update:model-value="filters.ignoredMode = $event ? 'hide' : 'show'" />
+
+                    <!-- Reset -->
+                    <button :class="[s.resetBtn, s.wideResetBtn]"
+                        :disabled="!filters.activeFilterCount && !filters.search" @click="filters.reset()">
+                        <span :class="s.wideResetIcon" v-html="resetIcon" />
+                        Reset
+                    </button>
+
+                </template>
             </div>
 
             <!-- Narrow footer: "View X movies" + Reset (only shown when filters are open) -->
             <Transition name="filters-fade">
                 <div v-if="filtersOpen" :class="s.narrowFooter">
-                    <button :class="s.viewBtn" :disabled="filters.visibleMovies.length === 0"
-                        @click="filtersOpen = false">
-                        <span v-if="filters.visibleMovies.length">
-                            View {{ filters.visibleMovies.length }}
-                            {{ filters.visibleMovies.length === 1 ? 'movie' : 'movies' }}
+                    <button :class="s.viewBtn" :disabled="countSource === 0" @click="filtersOpen = false">
+                        <span v-if="countSource > 0">
+                            View {{ countSource }}
+                            {{ isRequests ? (countSource === 1 ? 'request' : 'requests') : (countSource === 1 ? 'movie'
+                                : 'movies')
+                            }}
                         </span>
                         <span v-else>No Results</span>
                     </button>
@@ -275,6 +332,8 @@
     import { useAuthStore } from '@/stores/auth'
     import { useFiltersStore } from '@/stores/filters'
     import { useNavContextStore } from '@/stores/navContext'
+    import { useRequestFiltersStore } from '@/stores/requestFilters'
+    import { useRequestsStore } from '@/stores/requests'
     import { mpaaGroupOptions } from '@/lib/filterOptions'
     import { slugifyName } from '@/lib/movies'
     import UserAvatar from '@/components/profile/UserAvatar.vue'
@@ -300,6 +359,10 @@
     const auth = useAuthStore()
     const filters = useFiltersStore()
     const navContext = useNavContextStore()
+    const requestFilters = useRequestFiltersStore()
+    const requestsStore = useRequestsStore()
+
+    const isRequests = computed(() => route.name === 'requests')
 
     // ── Filter panel state ──────────────────────────────
     const filtersOpen = ref(false)
@@ -322,9 +385,9 @@
     }
     const routeListClass = computed(() => routeListClassMap[route.name] ?? null)
 
-    const listingNames = ['home', 'watchlist', 'watched', 'favorites', 'ignored']
+    const listingNames = ['home', 'watchlist', 'watched', 'favorites', 'ignored', 'requests']
     const isListPage = computed(() => listingNames.includes(route.name))
-    const isMovieDetail = computed(() => route.name === 'movie')
+    const isMovieDetail = computed(() => route.name === 'movie' || route.name === 'request')
     const isProfile = computed(() => route.name === 'profile')
 
     const resolvedProfileEntry = computed(() => {
@@ -343,11 +406,16 @@
         watched: 'Watched',
         favorites: 'Favorites',
         ignored: 'Ignored',
+        requests: 'Requests',
     }
     const listName = computed(() => listNameMap[route.name] ?? null)
 
     // ── Animated count ──────────────────────────────────
-    const displayCount = ref(filters.visibleMovies.length)
+    const countSource = computed(() =>
+        isRequests.value ? requestFilters.filteredRequests.length : filters.visibleMovies.length
+    )
+
+    const displayCount = ref(countSource.value)
     let animFrame = null
     let debounceTimer = null
     let routeTimer = null
@@ -384,12 +452,12 @@
         routeTimer = setTimeout(() => {
             if (!isRouteChange) return
             isRouteChange = false
-            runAnim(0, filters.visibleMovies.length)
+            runAnim(0, countSource.value)
         }, 200)
     })
 
     // Count change: immediate for route changes, debounced for filter/slider changes
-    watch(() => filters.visibleMovies.length, (to) => {
+    watch(countSource, (to) => {
         if (isRouteChange) {
             isRouteChange = false
             clearTimeout(routeTimer)
@@ -486,16 +554,76 @@
         else filters.mpaaGroups.splice(i, 1)
     }
 
-    const backHref = computed(() => router.resolve({
-        name: navContext.sourceList ?? 'home',
-        params: navContext.sourceParams,
-    }).href)
+    const backHref = computed(() => {
+        if (route.meta.isRequest) return router.resolve({ name: 'requests' }).href
+        return router.resolve({
+            name: navContext.sourceList ?? 'home',
+            params: navContext.sourceParams,
+        }).href
+    })
 
     function handleBack() {
-        if (navContext.sourceList !== null) {
+        if (route.meta.isRequest) {
+            router.push({ name: 'requests' })
+        } else if (navContext.sourceList !== null) {
             router.back()
         } else {
             router.push({ name: 'home' })
+        }
+    }
+
+    // ── Requests filters ────────────────────────────────
+    const reqSortOptions = [
+        { value: 'date-requested', label: 'Date Added' },
+        { value: 'most-wanted', label: 'Most Wanted' },
+        { value: 'title', label: 'Title A-Z' },
+    ]
+
+    const reqUserOptions = computed(() =>
+        auth.allProfiles.map(p => ({
+            value: p.id,
+            label: p.display_name,
+            avatar: p.avatar,
+            count: requestsStore.requests.filter(r => r.wants.some(w => w.user_id === p.id)).length,
+        }))
+    )
+
+    const reqActiveSortLabel = computed(() =>
+        reqSortOptions.find(o => o.value === requestFilters.sortBy)?.label ?? reqSortOptions[0].label
+    )
+
+    function toggleReqUser(userId) {
+        const next = requestFilters.filterUserId === userId ? null : userId
+        requestFilters.setFilterUser(next)
+        const name = next ? slugifyName(auth.allProfiles.find(p => p.id === next)?.display_name ?? '') : undefined
+        router.replace({ query: name ? { user: name } : {} })
+    }
+
+    // ── Unified filter helpers ───────────────────────────
+    const activeFilterCount = computed(() =>
+        isRequests.value
+            ? (requestFilters.search ? 1 : 0) + (requestFilters.filterUserId ? 1 : 0)
+            : filters.activeFilterCount
+    )
+
+    const hasActiveFilters = computed(() =>
+        isRequests.value
+            ? !!(requestFilters.search || requestFilters.filterUserId)
+            : !!(filters.activeFilterCount > 0 || filters.search)
+    )
+
+    const searchQuery = computed({
+        get: () => isRequests.value ? requestFilters.search : filters.search,
+        set: (v) => { isRequests.value ? (requestFilters.search = v) : (filters.search = v) },
+    })
+
+    function handleReset() {
+        if (isRequests.value) {
+            requestFilters.search = ''
+            requestFilters.setFilterUser(null)
+            router.replace({ query: {} })
+        } else {
+            filters.reset()
         }
     }
 
@@ -891,7 +1019,6 @@
     }
 
     /* ── Search ── */
-
     .searchInputWrap {
         max-width: 100%;
         position: relative;
@@ -904,6 +1031,13 @@
             .searchIcon {
                 color: var(--blue-300);
             }
+        }
+    }
+
+    .filterArea:not(:has(.wideRandomBtn)) .searchInputWrap {
+        @media (min-width: 64rem) {
+            display: flex;
+            margin-right: auto;
         }
     }
 
@@ -965,9 +1099,14 @@
     }
 
     .narrowToggles {
-        display: flex;
+        display: grid;
         gap: var(--size-2);
+        grid-template-columns: repeat(2, 1fr);
         margin-top: var(--size-4);
+
+        @media (min-width: 48rem) {
+            grid-template-columns: repeat(4, 1fr);
+        }
     }
 
     .sortIcon {
@@ -1042,6 +1181,14 @@
 
     .sortBtn {
         anchor-name: --filter-sort;
+    }
+
+    .reqSortBtn {
+        anchor-name: --req-sort;
+    }
+
+    .reqSortPanel {
+        position-anchor: --req-sort;
     }
 
     .genreBtn {
