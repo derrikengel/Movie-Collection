@@ -136,6 +136,7 @@ export const useRequestsStore = defineStore('requests', () => {
                     toast.error('Failed to delete request')
                     throw error
                 }
+                toast.show(`${request.title} request removed`, { type: 'info' })
             } else {
                 const { error } = await supabase
                     .from('request_wants')

@@ -1,7 +1,7 @@
 <template>
     <div :class="s.page">
 
-        <p v-if="notFound" :class="s.notFound">User not found.</p>
+        <p v-if="notFound" :class="s.notFound">User does not exist.</p>
 
         <template v-else-if="resolvedProfile">
 
@@ -16,7 +16,6 @@
             </div>
 
             <div v-if="isOwnProfile" :class="s.avatarSelector">
-                <!-- <span :class="s.accountLabel">Select Your Avatar</span> -->
                 <div ref="avatarGridRef" :class="s.avatarGrid">
                     <button type="button" v-for="key in AVATAR_KEYS" :key="key"
                         :class="[s.avatarOption, resolvedProfile?.avatar === key && s.avatarOptionSelected]"
@@ -178,7 +177,7 @@
             to: isOwnProfile.value
                 ? { name: 'requests' }
                 : { name: 'requests', query: { user: route.params.name } },
-            label: 'Movie Requests',
+            label: isOwnProfile.value ? 'Movie Requests' : `${resolvedProfile.value.display_name.split(' ')[0]}'s Requests`,
             count: requestsData.value.count,
             previews: requestsData.value.previews,
             icon: requestsIcon,

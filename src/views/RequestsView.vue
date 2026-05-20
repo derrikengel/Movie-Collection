@@ -78,7 +78,7 @@
 
     .list {
         display: grid;
-        gap: var(--size-4);
+        gap: var(--size-6);
 
         @container (min-width: 30rem) {
             grid-template-columns: repeat(auto-fill, minmax(30rem, 1fr));
