@@ -26,8 +26,7 @@
 
                 <div :class="s.cardBtns">
                     <button :class="[s.wantBtn, isWanted && s.wantBtnActive]" @click="handleToggleWant"
-                        :disabled="toggling" :aria-pressed="isWanted"
-                        :aria-label="isWanted ? 'Remove want' : 'I want this'">
+                        :disabled="toggling" :aria-pressed="isWanted">
                         <span v-html="isWanted ? checkIcon : plusIcon" :class="s.wantIcon" aria-hidden="true" />
                         <span :class="s.wantLabel">{{ isWanted ? 'Requested' : 'Request' }}</span>
                     </button>

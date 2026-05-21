@@ -97,11 +97,6 @@ All tokens live in `src/assets/global.css`. The app uses **primitives directly**
 /* Frosted blur values */
 --bg-frosted-xs through --bg-frosted-6xl   /* blur(0.25rem) … blur(10rem) */
 
-/* Status */
---color-success     /* green-400 */
---color-error       /* red-400 */
---color-warning     /* red-400 */
-
 /* Toast */
 --color-toast-bg, --color-toast-text, --color-toast-text-secondary, --color-toast-text-muted
 

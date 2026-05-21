@@ -33,6 +33,8 @@
                         <span :class="s.tmdbResultTitle">{{ result.title }}</span>
                         <span :class="s.tmdbResultYear">{{ result.release_date?.slice(0, 4) }}</span>
                         <span v-if="libraryByTmdbId[result.id]" :class="s.tmdbResultLibraryBadge">Already owned</span>
+                        <span v-if="requestsStore.requestByTmdbId[result.id]"
+                            :class="s.tmdbResultRequestedBadge">Requested</span>
                     </p>
 
                     <span v-html="libraryByTmdbId[result.id] ? pencilIcon : plusIcon" aria-hidden="true"
@@ -75,8 +77,8 @@
 
             <!-- Request match notice -->
             <div v-if="matchedRequest" :class="s.requestNotice">
-                <p>This movie was requested by {{ requestedByNames }}. Adding it will automatically remove it from the
-                    requests list.</p>
+                <p>This movie was requested. Adding it will automatically remove it from the <RouterLink
+                        :to="{ name: 'requests' }" :class="s.requestLink">requests</RouterLink> list.</p>
             </div>
 
             <!-- Services -->
@@ -112,9 +114,10 @@
                                 <input :id="`svc-${svc.value}-url`" v-model="getService(svc.value).url" type="url"
                                     :class="[s.input, s.mutedPlaceholder]"
                                     :placeholder="servicePlaceholderUrl(svc.value)" />
-                                <p v-if="fieldErrors[`svc-${svc.value}-url`]" :class="s.errorMsg">{{
-                                    fieldErrors[`svc-${svc.value}-url`] }}</p>
                             </div>
+
+                            <p v-if="fieldErrors[`svc-${svc.value}-url`]" :class="s.errorMsg">{{
+                                fieldErrors[`svc-${svc.value}-url`] }}</p>
 
                             <div :class="s.field">
                                 <span :id="`svc-${svc.value}-quality-label`" :class="s.fieldLabel">Quality</span>
@@ -125,9 +128,10 @@
                                         {{ q }}
                                     </button>
                                 </div>
-                                <p v-if="fieldErrors[`svc-${svc.value}-quality-label`]" :class="s.errorMsg">{{
-                                    fieldErrors[`svc-${svc.value}-quality-label`] }}</p>
                             </div>
+
+                            <p v-if="fieldErrors[`svc-${svc.value}-quality-label`]" :class="s.errorMsg">{{
+                                fieldErrors[`svc-${svc.value}-quality-label`] }}</p>
                         </div>
                     </details>
 
@@ -596,18 +600,6 @@
     const pendingRequestId = ref(route.query.requestId ?? null)
     const matchedRequest = ref(null)
 
-    const requestedByNames = computed(() => {
-        if (!matchedRequest.value) return ''
-        const wants = matchedRequest.value.wants
-        if (!wants.length) return 'someone'
-        const names = wants.map(w => {
-            if (w.user_id === auth.user?.id) return 'you'
-            return auth.allProfiles.find(p => p.id === w.user_id)?.display_name ?? 'someone'
-        })
-        if (names.length === 1) return names[0]
-        return names.slice(0, -1).join(', ') + ' and ' + names.at(-1)
-    })
-
     async function selectTmdb(result) {
         selectingId.value = result.id
         try {
@@ -847,6 +839,11 @@
         font-size: var(--text-2xs);
     }
 
+    .tmdbResultRequestedBadge {
+        color: var(--yellow-400);
+        font-size: var(--text-2xs);
+    }
+
     .tmdbResultIcon {
         align-items: center;
         display: flex;
@@ -1033,7 +1030,7 @@
     }
 
     .required {
-        color: var(--color-error);
+        color: var(--red-400);
     }
 
     /* Pill buttons */
@@ -1607,7 +1604,7 @@
 
     /* Messages */
     .errorMsg {
-        color: var(--color-error);
+        color: var(--red-400);
         font-size: var(--text-sm);
         margin: 0;
     }
@@ -1617,13 +1614,21 @@
     }
 
     .requestNotice {
-        background: oklch(from var(--yellow-400) l c h / 0.1);
-        border: 1px solid oklch(from var(--yellow-400) l c h / 0.3);
-        border-radius: var(--radius-lg);
         color: var(--yellow-300);
-        font-size: var(--text-sm);
-        line-height: var(--leading-normal);
-        padding: var(--size-3) var(--size-4);
+    }
+
+    .requestLink {
+        font-weight: var(--font-weight-bold);
+        text-decoration-line: underline;
+        text-decoration-thickness: 0.0625em;
+        text-underline-offset: 0.25em;
+        transition: color var(--transition-fast);
+
+        @media (hover: hover) and (pointer: fine) {
+            &:hover {
+                color: var(--yellow-50);
+            }
+        }
     }
 
     /* Cast editor */
