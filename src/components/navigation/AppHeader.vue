@@ -65,9 +65,9 @@
 
             <!-- Search — always visible on listing pages -->
             <div :class="s.searchInputWrap">
-                <label for="search" class="visually-hidden">Search</label>
-                <input v-model="searchQuery" id="search" type="search" inputmode="search" placeholder="Search"
-                    :class="s.searchInput" :aria-label="isRequests ? 'Search requests' : 'Search movies'" />
+                <label for="search" class="visually-hidden">{{ searchPlaceholder }}</label>
+                <input v-model="searchQuery" id="search" type="search" inputmode="search"
+                    :placeholder="searchPlaceholder" :class="s.searchInput" />
                 <span :class="s.searchIcon" v-html="searchIcon" />
             </div>
 
@@ -409,6 +409,7 @@
         requests: 'Requests',
     }
     const listName = computed(() => listNameMap[route.name] ?? null)
+    const searchPlaceholder = computed(() => listName.value ? `Search ${listName.value}` : 'Search')
 
     // ── Animated count ──────────────────────────────────
     const countSource = computed(() =>

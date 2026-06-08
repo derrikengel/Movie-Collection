@@ -22,7 +22,7 @@
         <div :class="s.addWrap">
             <button :class="s.addBtn" @click="modalOpen = true">
                 <span v-html="plusIcon" :class="s.addIcon" />
-                Request a Movie
+                Add a Request
             </button>
         </div>
 

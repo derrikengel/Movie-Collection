@@ -26,13 +26,14 @@
 
 <script setup>
     import { ref } from 'vue'
-    import { useRouter } from 'vue-router'
+    import { useRoute, useRouter } from 'vue-router'
     import { useAuthStore } from '@/stores/auth'
     import { useToastStore } from '@/stores/toast'
     import userIcon from '@/assets/icons/user.svg?raw'
 
     const auth = useAuthStore()
     const toast = useToastStore()
+    const route = useRoute()
     const router = useRouter()
 
     const email = ref('')
@@ -49,7 +50,7 @@
                 icon: userIcon,
                 action: { label: auth.displayName, to: { name: 'profile', params: { name: auth.displayName } } }
             })
-            router.push({ name: 'home' })
+            router.push(route.query.redirect || { name: 'home' })
         } catch (err) {
             errorMsg.value = 'Invalid email or password.'
         } finally {

@@ -1,7 +1,7 @@
 <template>
     <div :class="s.bar">
         <button :class="[s.wantBtn, isWanted && s.wantBtnActive]" @click="handleToggleWant" :aria-pressed="isWanted">
-            <span v-html="isWanted ? checkIcon : plusIcon" :class="s.wantIcon" />
+            <span v-html="isWanted ? checkIcon : thumbsUpIcon" :class="s.wantIcon" />
             <span :class="s.wantLabel">{{ isWanted ? 'Requested' : 'Request' }}</span>
         </button>
 
@@ -22,10 +22,6 @@
                 <span v-html="plusIcon" :class="s.addIcon" />
                 Add to Collection
             </RouterLink>
-            <button :class="s.removeBtn" @click="handleRemove">
-                <span v-html="trashIcon" :class="s.removeIcon" />
-                Delete Request
-            </button>
         </div>
     </div>
 </template>
@@ -39,7 +35,7 @@
     import UserAvatar from '@/components/profile/UserAvatar.vue'
     import checkIcon from '@/assets/icons/checkmark.svg?raw'
     import plusIcon from '@/assets/icons/plus-simple.svg?raw'
-    import trashIcon from '@/assets/icons/trash.svg?raw'
+    import thumbsUpIcon from '@/assets/icons/thumbs-up.svg?raw'
 
     const props = defineProps({
         request: {

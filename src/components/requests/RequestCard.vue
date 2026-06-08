@@ -27,7 +27,7 @@
                 <div :class="s.cardBtns">
                     <button :class="[s.wantBtn, isWanted && s.wantBtnActive]" @click="handleToggleWant"
                         :disabled="toggling" :aria-pressed="isWanted">
-                        <span v-html="isWanted ? checkIcon : plusIcon" :class="s.wantIcon" aria-hidden="true" />
+                        <span v-html="isWanted ? checkIcon : thumbsUpIcon" :class="s.wantIcon" aria-hidden="true" />
                         <span :class="s.wantLabel">{{ isWanted ? 'Requested' : 'Request' }}</span>
                     </button>
 
@@ -49,8 +49,8 @@
     import { releaseYear, slugifyName } from '@/lib/movies'
     import UserAvatar from '@/components/profile/UserAvatar.vue'
     import checkIcon from '@/assets/icons/checkmark.svg?raw'
-    import plusIcon from '@/assets/icons/plus-simple.svg?raw'
     import rightArrowIcon from '@/assets/icons/arrow-right.svg?raw'
+    import thumbsUpIcon from '@/assets/icons/thumbs-up.svg?raw'
 
     const props = defineProps({
         request: {
