@@ -5,13 +5,7 @@ precacheAndRoute(self.__WB_MANIFEST)
 self.addEventListener('push', (event) => {
     const data = event.data?.json() ?? {}
     const payload = data.data ?? {}
-
-    const actions = (data.actions ?? []).map(a => {
-        if (a.action === 'watch' && payload.watchUrl) {
-            return { ...a, navigate: payload.watchUrl }
-        }
-        return a
-    })
+    const actions = data.actions ?? []
 
     event.waitUntil(
         self.registration.showNotification(data.title ?? 'Movie Collection', {
@@ -29,8 +23,6 @@ self.addEventListener('notificationclick', (event) => {
     event.notification.close()
     const data = event.notification.data ?? {}
 
-    // action buttons with `navigate` bypass this handler entirely — only body taps and
-    // browsers that don't support `navigate` land here
     const moviePath = typeof data.url === 'string' && data.url.startsWith('/') ? data.url : '/'
     const streamUrl = typeof data.watchUrl === 'string' && data.watchUrl.startsWith('http') ? data.watchUrl : null
     const path = event.action === 'watch' && streamUrl ? streamUrl : moviePath

@@ -96,7 +96,7 @@ Deno.serve(async (req) => {
                 })
 
                 try {
-                    await webpush.sendNotification(row.subscription, notificationPayload)
+                    await webpush.sendNotification(row.subscription, notificationPayload, { urgency: 'high', TTL: 86400 })
                 } catch (err: any) {
                     if (err?.statusCode === 404 || err?.statusCode === 410) {
                         await query(`push_subscriptions?id=eq.${row.id}`, 'DELETE')

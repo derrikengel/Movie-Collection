@@ -55,18 +55,19 @@ export function usePushNotifications() {
 
             const subJson = subscription.toJSON()
 
-            // Delete any existing row for this endpoint before inserting — this is
-            // idempotent and prevents duplicate rows from concurrent subscribe() calls
-            await supabase
+            const { data: savedRow } = await supabase
                 .from('push_subscriptions')
-                .delete()
+                .select('id')
                 .eq('user_id', auth.user.id)
                 .filter('subscription->>endpoint', 'eq', subJson.endpoint)
+                .maybeSingle()
 
-            await supabase.from('push_subscriptions').insert({
-                user_id: auth.user.id,
-                subscription: subJson,
-            })
+            if (!savedRow) {
+                await supabase.from('push_subscriptions').insert({
+                    user_id: auth.user.id,
+                    subscription: subJson,
+                })
+            }
 
             isSubscribed.value = true
         } finally {
