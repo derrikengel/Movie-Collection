@@ -264,6 +264,14 @@
     watch(() => movie.value?.slug, () => {
         descriptionExpanded.value = false
     })
+
+    const refetched = ref(false)
+    watch(notFound, (isNotFound) => {
+        if (isNotFound && !refetched.value) {
+            refetched.value = true
+            moviesStore.fetchMovies()
+        }
+    }, { immediate: true })
 </script>
 
 <style module="s">
