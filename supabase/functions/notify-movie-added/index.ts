@@ -5,7 +5,6 @@ const VAPID_PRIVATE_KEY = Deno.env.get('VAPID_PRIVATE_KEY')!
 const VAPID_SUBJECT = Deno.env.get('VAPID_SUBJECT') ?? 'mailto:derrikirred@gmail.com'
 const SUPABASE_URL = Deno.env.get('SUPABASE_URL')!
 const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!
-
 webpush.setVapidDetails(VAPID_SUBJECT, VAPID_PUBLIC_KEY, VAPID_PRIVATE_KEY)
 
 const QUALITY_RANK: Record<string, number> = { '4K': 3, 'HD': 2, 'SD': 1 }
@@ -53,11 +52,9 @@ Deno.serve(async (req) => {
         const posterUrl = movie.poster_path
             ? `https://image.tmdb.org/t/p/w300${movie.poster_path}`
             : null
-        const backdropUrl = movie.backdrop_path
-            ? `https://image.tmdb.org/t/p/w1280${movie.backdrop_path}`
-            : null
-        const icon = posterUrl ?? undefined
-        const image = backdropUrl ?? posterUrl ?? undefined
+        const icon = 'https://movies.derrikengel.com/icon-192.png'
+        const badge = 'https://movies.derrikengel.com/notification-badge.png'
+        const image = posterUrl ?? undefined
 
         // Check if this movie was a request — find requester user_ids
         const requests = await query(`movie_requests?tmdb_id=eq.${movie.tmdb_id}&select=id`)
@@ -85,13 +82,13 @@ Deno.serve(async (req) => {
         await Promise.all(
             (subscriptions ?? []).map(async (row: { user_id: string; subscription: PushSubscription }) => {
                 const isRequester = requesterUserIds.has(row.user_id)
-                const title = isRequester
-                    ? `Your request for ${titleWithYear} added to the movie collection`
-                    : `${titleWithYear} added to the movie collection`
+                const title = isRequester ? 'Your Requested Movie Added' : 'New Movie Added'
 
                 const notificationPayload = JSON.stringify({
                     title,
+                    body: titleWithYear,
                     icon,
+                    badge,
                     image,
                     actions,
                     data: { url: `/${movie.slug}`, watchUrl },
