@@ -52,9 +52,12 @@ Deno.serve(async (req) => {
         const posterUrl = movie.poster_path
             ? `https://image.tmdb.org/t/p/w300${movie.poster_path}`
             : null
-        const icon = 'https://movies.derrikengel.com/icon-192.png'
+        const backdropUrl = movie.backdrop_path
+            ? `https://image.tmdb.org/t/p/w1280${movie.backdrop_path}`
+            : null
+        const icon = posterUrl ?? undefined
         const badge = 'https://movies.derrikengel.com/notification-badge.png'
-        const image = posterUrl ?? undefined
+        const image = backdropUrl ?? posterUrl ?? undefined
 
         // Check if this movie was a request — find requester user_ids
         const requests = await query(`movie_requests?tmdb_id=eq.${movie.tmdb_id}&select=id`)
