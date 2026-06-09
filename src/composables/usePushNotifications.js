@@ -40,12 +40,7 @@ export function usePushNotifications() {
         permissionStatus.value = permission
         if (permission !== 'granted') return
 
-        const registration = await Promise.race([
-            navigator.serviceWorker.ready,
-            new Promise((_, reject) => setTimeout(() => reject(new Error('Service worker not ready')), 5000)),
-        ]).catch((err) => { console.error('[push]', err); return null })
-        if (!registration) return
-
+        const registration = await navigator.serviceWorker.ready
         const existingSub = await registration.pushManager.getSubscription()
         const subscription = existingSub ?? await registration.pushManager.subscribe({
             userVisibleOnly: true,
@@ -73,12 +68,7 @@ export function usePushNotifications() {
         if (!('serviceWorker' in navigator)) return
         if (!auth.user) return
 
-        const registration = await Promise.race([
-            navigator.serviceWorker.ready,
-            new Promise((_, reject) => setTimeout(() => reject(new Error('Service worker not ready')), 5000)),
-        ]).catch((err) => { console.error('[push]', err); return null })
-        if (!registration) return
-
+        const registration = await navigator.serviceWorker.ready
         const subscription = await registration.pushManager.getSubscription()
         if (subscription) {
             const endpoint = subscription.toJSON().endpoint

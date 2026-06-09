@@ -36,7 +36,7 @@
     watch(() => auth.user, (user) => {
         if (!user) return
         if (!('serviceWorker' in navigator) || !('PushManager' in window)) return
-        if (permissionStatus.value === 'default') subscribe()
+        if (permissionStatus.value === 'default' || permissionStatus.value === 'granted') subscribe()
     }, { immediate: true })
 </script>
 
