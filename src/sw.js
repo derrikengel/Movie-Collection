@@ -7,9 +7,6 @@ self.addEventListener('push', (event) => {
     const payload = data.data ?? {}
 
     const actions = (data.actions ?? []).map(a => {
-        if (a.action === 'view' && payload.url) {
-            return { ...a, navigate: self.location.origin + payload.url }
-        }
         if (a.action === 'watch' && payload.watchUrl) {
             return { ...a, navigate: payload.watchUrl }
         }

@@ -73,9 +73,7 @@ Deno.serve(async (req) => {
         const watchUrl = getPrimaryServiceUrl(movieServices ?? [])
 
         // Notification actions
-        const actions: { action: string; title: string }[] = [
-            { action: 'view', title: 'View Details' },
-        ]
+        const actions: { action: string; title: string }[] = []
         if (watchUrl) actions.push({ action: 'watch', title: 'Watch Now' })
 
         // Get all push subscriptions
