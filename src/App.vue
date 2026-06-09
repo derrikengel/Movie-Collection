@@ -19,8 +19,8 @@
 </template>
 
 <script setup>
-    import { watch } from 'vue'
-    import { useRoute } from 'vue-router'
+    import { onMounted, watch } from 'vue'
+    import { useRoute, useRouter } from 'vue-router'
     import { triggerScrollResolve } from '@/router'
     import { useAuthStore } from '@/stores/auth'
     import { usePushNotifications } from '@/composables/usePushNotifications'
@@ -30,6 +30,7 @@
     import ConfirmDialog from '@/components/ConfirmDialog.vue'
 
     const route = useRoute()
+    const router = useRouter()
     const auth = useAuthStore()
     const { permissionStatus, subscribe } = usePushNotifications()
 
@@ -38,6 +39,16 @@
         if (!('serviceWorker' in navigator) || !('PushManager' in window)) return
         if (permissionStatus.value === 'default' || permissionStatus.value === 'granted') subscribe()
     }, { immediate: true })
+
+    onMounted(() => {
+        if (!navigator.serviceWorker) return
+        navigator.serviceWorker.addEventListener('message', (event) => {
+            if (event.data?.type === 'navigate') {
+                const url = new URL(event.data.url)
+                router.push(url.pathname + url.search + url.hash)
+            }
+        })
+    })
 </script>
 
 <style module="s">
