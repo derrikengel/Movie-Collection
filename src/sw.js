@@ -21,15 +21,19 @@ self.addEventListener('push', (event) => {
 self.addEventListener('notificationclick', (event) => {
     event.notification.close()
     const data = event.notification.data ?? {}
-    const url = event.action === 'watch' && data.watchUrl
+    const path = event.action === 'watch' && data.watchUrl
         ? data.watchUrl
         : (data.url ?? '/')
 
+    const absoluteUrl = path.startsWith('http') ? path : self.location.origin + path
+    const isExternal = !absoluteUrl.startsWith(self.location.origin)
+
     event.waitUntil(
         clients.matchAll({ type: 'window', includeUncontrolled: true }).then((windowClients) => {
-            const existing = windowClients.find(c => c.url.includes(url))
-            if (existing) return existing.focus()
-            return clients.openWindow(url)
+            if (isExternal) return clients.openWindow(absoluteUrl)
+            const existing = windowClients.find(c => c.url.startsWith(self.location.origin))
+            if (existing) return existing.navigate(absoluteUrl).then(() => existing.focus())
+            return clients.openWindow(absoluteUrl)
         })
     )
 })
