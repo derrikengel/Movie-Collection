@@ -19,14 +19,25 @@
 </template>
 
 <script setup>
+    import { watch } from 'vue'
     import { useRoute } from 'vue-router'
     import { triggerScrollResolve } from '@/router'
-
-    const route = useRoute()
+    import { useAuthStore } from '@/stores/auth'
+    import { usePushNotifications } from '@/composables/usePushNotifications'
     import AppHeader from '@/components/navigation/AppHeader.vue'
     import NarrowTabBar from '@/components/navigation/NarrowTabBar.vue'
     import ToastStack from '@/components/ToastStack.vue'
     import ConfirmDialog from '@/components/ConfirmDialog.vue'
+
+    const route = useRoute()
+    const auth = useAuthStore()
+    const { permissionStatus, subscribe } = usePushNotifications()
+
+    watch(() => auth.user, (user) => {
+        if (!user) return
+        if (!('serviceWorker' in navigator) || !('PushManager' in window)) return
+        if (permissionStatus.value === 'default') subscribe()
+    }, { immediate: true })
 </script>
 
 <style module="s">

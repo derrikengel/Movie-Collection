@@ -11,6 +11,13 @@ export default defineConfig({
         vueDevTools(),
         VitePWA({
             registerType: 'autoUpdate',
+            strategies: 'injectManifest',
+            srcDir: 'src',
+            filename: 'sw.js',
+            devOptions: {
+                enabled: true,
+                type: 'module',
+            },
             manifest: {
                 id: '/',
                 name: 'Movies',

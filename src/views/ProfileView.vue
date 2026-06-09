@@ -400,4 +400,80 @@
             font-size: var(--text-5xl);
         }
     }
+
+    /* ── Notifications ── */
+    .notifications {
+        align-items: center;
+        background: var(--color-bg-frosted);
+        backdrop-filter: var(--bg-frosted-md);
+        border-radius: var(--radius-xl);
+        display: flex;
+        flex-wrap: wrap;
+        gap: var(--size-2) var(--size-4);
+        padding: var(--size-4) var(--size-5);
+    }
+
+    .notificationsLabel {
+        color: var(--blue-50);
+        flex: 1;
+        font-size: var(--text-sm);
+        font-weight: var(--font-weight-semibold);
+    }
+
+    .notificationsStatus {
+        color: var(--blue-400);
+        font-size: var(--text-xs);
+        font-weight: var(--font-weight-bold);
+        letter-spacing: var(--tracking-widest);
+        text-transform: uppercase;
+    }
+
+    .notificationsBlocked {
+        color: var(--blue-500);
+        flex-basis: 100%;
+        font-size: var(--text-xs);
+        order: 1;
+    }
+
+    .notificationsToggle {
+        border-radius: var(--radius-full);
+        cursor: pointer;
+        flex-shrink: 0;
+        height: var(--size-7);
+        position: relative;
+        transition: background var(--transition-fast);
+        width: var(--size-12);
+
+        &::after {
+            background: var(--blue-50);
+            border-radius: var(--radius-full);
+            content: '';
+            height: calc(var(--size-7) - var(--size-2));
+            position: absolute;
+            top: var(--size-1);
+            transition: translate var(--transition-fast);
+            width: calc(var(--size-7) - var(--size-2));
+        }
+    }
+
+    .notificationsToggleOn {
+        background: var(--yellow-400);
+
+        &::after {
+            translate: calc(var(--size-12) - var(--size-7) + 0.125rem) 0;
+        }
+    }
+
+    .notificationsToggleOff {
+        background: var(--blue-700);
+
+        &::after {
+            translate: var(--size-1) 0;
+        }
+    }
+
+    .notificationsToggleLocked {
+        cursor: not-allowed;
+        opacity: 0.5;
+    }
 </style>

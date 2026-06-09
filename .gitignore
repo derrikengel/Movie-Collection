@@ -42,3 +42,9 @@ __screenshots__/
 .env.local
 .env.*.local
 .claude/settings.local.json
+
+# Vite PWA dev output
+dev-dist
+
+# Supabase CLI
+supabase/.temp
