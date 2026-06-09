@@ -77,17 +77,17 @@ Deno.serve(async (req) => {
         if (watchUrl) actions.push({ action: 'watch', title: 'Watch Now' })
 
         // Get all push subscriptions
-        const subscriptions = await query('push_subscriptions?select=user_id,subscription')
+        const subscriptions = await query('push_subscriptions?select=id,user_id,subscription')
 
         // Fan out
         await Promise.all(
-            (subscriptions ?? []).map(async (row: { user_id: string; subscription: PushSubscription }) => {
+            (subscriptions ?? []).map(async (row: { id: string; user_id: string; subscription: PushSubscription }) => {
                 const isRequester = requesterUserIds.has(row.user_id)
                 const title = isRequester ? 'Your Requested Movie Added' : 'New Movie Added'
 
                 const notificationPayload = JSON.stringify({
                     title,
-                    body: titleWithYear,
+                    body: `${titleWithYear} added to the collection.`,
                     icon,
                     badge,
                     image,
@@ -99,7 +99,7 @@ Deno.serve(async (req) => {
                     await webpush.sendNotification(row.subscription, notificationPayload)
                 } catch (err: any) {
                     if (err?.statusCode === 404 || err?.statusCode === 410) {
-                        await query(`push_subscriptions?user_id=eq.${row.user_id}`, 'DELETE')
+                        await query(`push_subscriptions?id=eq.${row.id}`, 'DELETE')
                     } else {
                         console.error(`Failed to send to user ${row.user_id}:`, err)
                     }

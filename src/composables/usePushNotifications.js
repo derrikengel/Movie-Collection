@@ -18,6 +18,7 @@ function getPermission() {
 
 const isSubscribed = ref(false)
 const permissionStatus = ref(getPermission())
+let subscribeInProgress = false
 
 export function usePushNotifications() {
     const auth = useAuthStore()
@@ -28,40 +29,49 @@ export function usePushNotifications() {
             .from('push_subscriptions')
             .select('id')
             .eq('user_id', auth.user.id)
+            .limit(1)
             .maybeSingle()
         isSubscribed.value = !!data
     }
 
     async function subscribe() {
-        if (!('serviceWorker' in navigator) || !('PushManager' in window)) return
-        if (!auth.user) return
+        if (subscribeInProgress) return
+        subscribeInProgress = true
 
-        const permission = await Notification.requestPermission()
-        permissionStatus.value = permission
-        if (permission !== 'granted') return
+        try {
+            if (!('serviceWorker' in navigator) || !('PushManager' in window)) return
+            if (!auth.user) return
 
-        const registration = await navigator.serviceWorker.ready
-        const existingSub = await registration.pushManager.getSubscription()
-        const subscription = existingSub ?? await registration.pushManager.subscribe({
-            userVisibleOnly: true,
-            applicationServerKey: urlBase64ToUint8Array(VAPID_PUBLIC_KEY),
-        })
+            const permission = await Notification.requestPermission()
+            permissionStatus.value = permission
+            if (permission !== 'granted') return
 
-        const subJson = subscription.toJSON()
-        const { data: savedRow } = await supabase
-            .from('push_subscriptions')
-            .select('id')
-            .eq('user_id', auth.user.id)
-            .filter('subscription->>endpoint', 'eq', subJson.endpoint)
-            .maybeSingle()
-        if (!savedRow) {
+            const registration = await navigator.serviceWorker.ready
+            const existingSub = await registration.pushManager.getSubscription()
+            const subscription = existingSub ?? await registration.pushManager.subscribe({
+                userVisibleOnly: true,
+                applicationServerKey: urlBase64ToUint8Array(VAPID_PUBLIC_KEY),
+            })
+
+            const subJson = subscription.toJSON()
+
+            // Delete any existing row for this endpoint before inserting — this is
+            // idempotent and prevents duplicate rows from concurrent subscribe() calls
+            await supabase
+                .from('push_subscriptions')
+                .delete()
+                .eq('user_id', auth.user.id)
+                .filter('subscription->>endpoint', 'eq', subJson.endpoint)
+
             await supabase.from('push_subscriptions').insert({
                 user_id: auth.user.id,
                 subscription: subJson,
             })
-        }
 
-        isSubscribed.value = true
+            isSubscribed.value = true
+        } finally {
+            subscribeInProgress = false
+        }
     }
 
     async function unsubscribe() {
