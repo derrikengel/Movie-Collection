@@ -45,17 +45,26 @@ export function usePushNotifications() {
             new Promise((_, reject) => setTimeout(() => reject(new Error('Service worker not ready')), 5000)),
         ]).catch((err) => { console.error('[push]', err); return null })
         if (!registration) return
-        const existing = await registration.pushManager.getSubscription()
-        const subscription = existing ?? await registration.pushManager.subscribe({
+
+        const existingSub = await registration.pushManager.getSubscription()
+        const subscription = existingSub ?? await registration.pushManager.subscribe({
             userVisibleOnly: true,
             applicationServerKey: urlBase64ToUint8Array(VAPID_PUBLIC_KEY),
         })
 
-        await supabase.from('push_subscriptions').delete().eq('user_id', auth.user.id)
-        await supabase.from('push_subscriptions').insert({
-            user_id: auth.user.id,
-            subscription: subscription.toJSON(),
-        })
+        const subJson = subscription.toJSON()
+        const { data: savedRow } = await supabase
+            .from('push_subscriptions')
+            .select('id')
+            .eq('user_id', auth.user.id)
+            .filter('subscription->>endpoint', 'eq', subJson.endpoint)
+            .maybeSingle()
+        if (!savedRow) {
+            await supabase.from('push_subscriptions').insert({
+                user_id: auth.user.id,
+                subscription: subJson,
+            })
+        }
 
         isSubscribed.value = true
     }
@@ -69,13 +78,17 @@ export function usePushNotifications() {
             new Promise((_, reject) => setTimeout(() => reject(new Error('Service worker not ready')), 5000)),
         ]).catch((err) => { console.error('[push]', err); return null })
         if (!registration) return
-        const subscription = await registration.pushManager.getSubscription()
-        if (subscription) await subscription.unsubscribe()
 
-        await supabase
-            .from('push_subscriptions')
-            .delete()
-            .eq('user_id', auth.user.id)
+        const subscription = await registration.pushManager.getSubscription()
+        if (subscription) {
+            const endpoint = subscription.toJSON().endpoint
+            await subscription.unsubscribe()
+            await supabase
+                .from('push_subscriptions')
+                .delete()
+                .eq('user_id', auth.user.id)
+                .filter('subscription->>endpoint', 'eq', endpoint)
+        }
 
         isSubscribed.value = false
     }
