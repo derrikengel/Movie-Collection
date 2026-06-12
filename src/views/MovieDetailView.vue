@@ -90,7 +90,10 @@
                             {{ movie.description }}
                         </p>
 
-                        <p v-if="movie.notes" :class="s.notes">{{ movie.notes }}</p>
+                        <p v-if="movie.notes" :class="s.notes">
+                            <span v-html="infoIcon" :class="s.notesIcon" />
+                            {{ movie.notes }}
+                        </p>
 
                         <MovieCast v-if="movie.cast_members?.length" :cast="movie.cast_members" />
 
@@ -105,8 +108,6 @@
                     </div>
                 </div>
             </div>
-
-
 
             <div :class="[s.browse, sourceListClass]">
                 <div :class="s.browseNav">
@@ -179,6 +180,7 @@
     import pencil from '@/assets/icons/pencil.svg?raw'
     import arrowLeft from '@/assets/icons/arrow-left.svg?raw'
     import arrowRight from '@/assets/icons/arrow-right.svg?raw'
+    import infoIcon from '@/assets/icons/info.svg?raw'
 
     const route = useRoute()
     const moviesStore = useMoviesStore()
@@ -541,10 +543,16 @@
     }
 
     .notes {
-        color: var(--blue-200);
+        color: var(--blue-500);
+        display: flex;
         font-size: var(--text-xs);
         font-weight: var(--font-weight-bold);
+        gap: var(--size-1);
         margin-top: var(--size-2);
+    }
+
+    .notesIcon {
+        font-size: var(--text-lg);
     }
 
     .browse {

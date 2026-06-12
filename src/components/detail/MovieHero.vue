@@ -60,8 +60,8 @@
             playerVars: {
                 controls: 0,
                 modestbranding: 1,
-                loop: 1,
-                playlist: props.movie.trailer_youtube_id,
+                // loop: 1,
+                // playlist: props.movie.trailer_youtube_id,
                 rel: 0,
                 mute: 1,
                 playsinline: 1,
@@ -156,7 +156,7 @@
     .youtubePlayer {
         aspect-ratio: 16 / 9;
         height: auto;
-        pointer-events: none;
+        /* pointer-events: none; */
         position: absolute;
         top: 50%;
         translate: 0 -50%;
