@@ -175,6 +175,8 @@ src/
 /styleguide            → StyleGuideView (requiresAdmin)
 /admin/add             → MovieFormView (requiresAdmin)
 /admin/edit/:slug      → MovieFormView (requiresAdmin)
+/requests              → RequestsView (requiresAuth)
+/requests/:slug        → MovieDetailView, isRequest route meta (requiresAuth, e.g. /requests/sinners-2025)
 ```
 
 ---
