@@ -6,9 +6,11 @@
                 :to="{ name: 'actor', params: { actorSlug: slugifyActor(member.name, member.profile_path) } }"
                 :class="s.card">
                 <span :class="s.actor">
-                    <img v-if="member.profile_path" :src="profileUrl(member.profile_path)" :alt="member.name"
-                        :class="s.photo" loading="lazy" />
-                    <span v-else :class="s.silhouette" v-html="silhouette" />
+                    <div :class="s.photoWrap">
+                        <img v-if="member.profile_path" :src="profileUrl(member.profile_path)" :alt="member.name"
+                            :class="s.photo" loading="lazy" />
+                        <span v-else :class="s.silhouette" v-html="silhouette" />
+                    </div>
 
                     <span :class="s.name">{{ member.name }}</span>
                 </span>
@@ -92,15 +94,29 @@
         width: 100%;
     }
 
-    .photo,
-    .silhouette {
+    .photoWrap {
         aspect-ratio: 3 / 4;
-        background-color: var(--blue-900);
         border-radius: var(--radius-lg);
         display: block;
+        overflow: hidden;
+        width: 100%;
+    }
+
+    .photo,
+    .silhouette {
+        background-color: var(--blue-900);
+        display: block;
+        height: 100%;
         object-fit: cover;
         object-position: 0 25%;
+        transform-origin: 50% 25%;
+        transition: scale var(--transition-normal);
         width: 100%;
+        will-change: scale;
+
+        .card:hover & {
+            scale: 1.05;
+        }
     }
 
     .silhouette {
@@ -117,6 +133,12 @@
         font-weight: var(--font-weight-semibold);
         line-height: var(--leading-tight);
         text-wrap: pretty;
+
+        .card:hover & {
+            text-decoration-line: underline;
+            text-decoration-thickness: 0.0625em;
+            /* text-underline-offset: 0.125em; */
+        }
     }
 
     .character {
