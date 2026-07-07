@@ -5,6 +5,7 @@
             @click="!primaryService ? popoverEl?.showPopover() : undefined">
             <span v-if="primaryService" :class="s.primaryIcon" v-html="serviceIcon(primaryService.service)" />
             {{ primaryService ? 'Watch Now' : 'Watch Options' }}
+            <span :class="s.watchNowQuality" v-if="primaryService">{{ primaryService.quality }}</span>
             <span v-if="primaryService" :class="s.watchNowArrow" v-html="arrowRightIcon" />
         </component>
 
@@ -151,6 +152,10 @@
         .watchNowBtn:hover {
             background: oklch(from var(--btn-bg, var(--blue-300)) calc(l - 0.05) c h);
         }
+    }
+
+    .watchNowQuality {
+        opacity: 0.6;
     }
 
     .primaryIcon {
