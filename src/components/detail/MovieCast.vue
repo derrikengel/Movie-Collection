@@ -1,24 +1,27 @@
 <template>
     <section :class="s.cast">
         <h2 :class="s.heading">Top Cast</h2>
-        <dl :class="s.scroll">
-            <div v-for="member in cast" :key="member.name" :class="s.card">
-                <dt :class="s.actor">
+        <div :class="s.scroll">
+            <RouterLink v-for="member in cast" :key="member.name"
+                :to="{ name: 'actor', params: { actorSlug: slugifyActor(member.name, member.profile_path) } }"
+                :class="s.card">
+                <span :class="s.actor">
                     <img v-if="member.profile_path" :src="profileUrl(member.profile_path)" :alt="member.name"
                         :class="s.photo" loading="lazy" />
-                    <div v-else :class="s.silhouette" v-html="silhouette" />
+                    <span v-else :class="s.silhouette" v-html="silhouette" />
 
                     <span :class="s.name">{{ member.name }}</span>
-                </dt>
+                </span>
 
-                <dd :class="s.character">{{ member.character }}</dd>
-            </div>
-        </dl>
+                <span :class="s.character">{{ member.character }}</span>
+            </RouterLink>
+        </div>
     </section>
 </template>
 
 <script setup>
     import { profileUrl } from '@/lib/tmdb'
+    import { slugifyActor } from '@/lib/movies'
     import silhouette from '@/assets/icons/user.svg?raw'
 
     defineProps({

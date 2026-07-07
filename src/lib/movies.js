@@ -2,6 +2,18 @@ export function slugifyName(name) {
     return (name ?? '').toLowerCase().replace(/\s+/g, '-')
 }
 
+/**
+ * Actor identity has no stable ID in the schema (cast_members stores only name +
+ * profile_path), so profile_path is the primary key and name is the fallback for
+ * actors with no TMDB photo. See docs/adr/0003-actor-identity-by-profile-path.md.
+ */
+export function slugifyActor(name, profilePath) {
+    const nameSlug = slugifyName(name)
+    if (!profilePath) return nameSlug
+    const fragment = profilePath.replace(/^\//, '').replace(/\.[a-z0-9]+$/i, '')
+    return `${nameSlug}-${fragment}`
+}
+
 export function generateSlug(title, year) {
     return `${title}-${year}`
         .toLowerCase()

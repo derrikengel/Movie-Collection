@@ -8,6 +8,10 @@
                 <h1 v-if="isListPage" :key="route.path" :class="[s.pageTitle, routeListClass]">
                     <UserAvatar v-if="isOtherUserList" :user="resolvedUserName" :avatar="resolvedProfileEntry.avatar"
                         :class="s.pageTitleAvatar" />
+                    <span v-else-if="isActor" :class="s.pageTitleActorPhoto">
+                        <img v-if="actorProfilePath" :src="profileUrl(actorProfilePath)" alt="" />
+                        <span v-else :class="s.silhouette" v-html="userIcon" />
+                    </span>
                     <div :class="s.pageTitleText">
                         <span :class="s.countHeaderNumber">{{ displayCount }}</span>
                         <span :class="s.countHeaderList">
@@ -334,8 +338,10 @@
     import { useNavContextStore } from '@/stores/navContext'
     import { useRequestFiltersStore } from '@/stores/requestFilters'
     import { useRequestsStore } from '@/stores/requests'
+    import { useResolvedActor } from '@/composables/useResolvedActor'
     import { mpaaGroupOptions } from '@/lib/filterOptions'
     import { slugifyName } from '@/lib/movies'
+    import { profileUrl } from '@/lib/tmdb'
     import UserAvatar from '@/components/profile/UserAvatar.vue'
     import FilterPanel from '@/components/filters/NarrowFilterPanel.vue'
     import FilterOptionList from '@/components/filters/FilterOptionList.vue'
@@ -361,6 +367,7 @@
     const navContext = useNavContextStore()
     const requestFilters = useRequestFiltersStore()
     const requestsStore = useRequestsStore()
+    const { actorName, actorProfilePath } = useResolvedActor()
 
     const isRequests = computed(() => route.name === 'requests')
 
@@ -385,10 +392,11 @@
     }
     const routeListClass = computed(() => routeListClassMap[route.name] ?? null)
 
-    const listingNames = ['home', 'watchlist', 'watched', 'favorites', 'ignored', 'requests']
+    const listingNames = ['home', 'watchlist', 'watched', 'favorites', 'ignored', 'requests', 'actor']
     const isListPage = computed(() => listingNames.includes(route.name))
     const isMovieDetail = computed(() => route.name === 'movie' || route.name === 'request')
     const isProfile = computed(() => route.name === 'profile')
+    const isActor = computed(() => route.name === 'actor')
 
     const resolvedProfileEntry = computed(() => {
         const nameParam = route.params.name
@@ -408,8 +416,11 @@
         ignored: 'Ignored',
         requests: 'Requests',
     }
-    const listName = computed(() => listNameMap[route.name] ?? null)
-    const searchPlaceholder = computed(() => listName.value ? `Search ${listName.value}` : 'Search')
+    const listName = computed(() => isActor.value ? actorName.value : (listNameMap[route.name] ?? null))
+    const searchPlaceholder = computed(() => {
+        if (isActor.value) return 'Search movies'
+        return listName.value ? `Search ${listName.value}` : 'Search'
+    })
 
     // ── Animated count ──────────────────────────────────
     const countSource = computed(() =>
@@ -517,8 +528,8 @@
     // ── Filter options ──────────────────────────────────
     const sortOptions = computed(() => {
         const options = []
-        if (filters.whenAddedSortLabel) {
-            options.push({ value: 'added-desc', label: filters.whenAddedSortLabel })
+        if (filters.defaultSortLabel) {
+            options.push({ value: filters.defaultSort, label: filters.defaultSortLabel })
         }
         options.push(
             { value: 'acquired-desc', label: 'Recently Acquired' },
@@ -768,6 +779,43 @@
     .pageTitleAvatar {
         flex-shrink: 0;
         font-size: var(--text-4xl);
+
+        @media (min-width: 64rem) {
+            font-size: var(--text-6xl);
+        }
+    }
+
+    .pageTitleActorPhoto {
+        align-items: center;
+        background: var(--blue-950);
+        border-radius: var(--radius-full);
+        color: var(--blue-700);
+        display: flex;
+        flex-shrink: 0;
+        font-size: var(--text-4xl);
+        height: 1em;
+        justify-content: center;
+        overflow: hidden;
+        width: 1em;
+
+        img {
+            height: 100%;
+            object-fit: cover;
+            object-position: 0 25%;
+            width: 100%;
+        }
+
+        .silhouette {
+            align-items: center;
+            color: var(--blue-700);
+            display: flex;
+            font-size: var(--text-xl);
+            justify-content: center;
+
+            @media (min-width: 64rem) {
+                font-size: var(--text-4xl);
+            }
+        }
 
         @media (min-width: 64rem) {
             font-size: var(--text-6xl);

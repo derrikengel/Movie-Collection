@@ -84,6 +84,14 @@ const router = createRouter({
             }
         },
         {
+            path: '/actor/:actorSlug',
+            name: 'actor',
+            component: () => import('@/views/ActorView.vue'),
+            meta: {
+                filterBar: true,
+            }
+        },
+        {
             path: '/styleguide',
             name: 'styleguide',
             component: () => import('@/views/StyleGuideView.vue'),

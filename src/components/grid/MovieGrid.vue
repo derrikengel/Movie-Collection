@@ -30,7 +30,8 @@
         emptyMessage: { type: String, default: 'Nothing here yet.' },
         defaultWatchedMode: { type: String, default: 'fade' },
         defaultIgnoredMode: { type: String, default: 'hide' },
-        whenAddedSortLabel: { type: String, default: null },
+        defaultSort: { type: String, default: null },
+        defaultSortLabel: { type: String, default: null },
     })
 
     const router = useRouter()
@@ -79,8 +80,8 @@
         filters.setDefaults({
             watchedMode: props.defaultWatchedMode,
             ignoredMode: props.defaultIgnoredMode,
-            defaultSort: props.whenAddedSortLabel ? 'added-desc' : 'acquired-desc',
-            whenAddedSortLabel: props.whenAddedSortLabel,
+            defaultSort: props.defaultSort ?? (props.defaultSortLabel ? 'added-desc' : 'acquired-desc'),
+            defaultSortLabel: props.defaultSortLabel,
         })
         filters.reset()
         filters.setBase(props.movies)

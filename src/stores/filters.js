@@ -27,7 +27,7 @@ export const useFiltersStore = defineStore('filters', () => {
     const _defaultWatchedMode = ref('fade')
     const _defaultIgnoredMode = ref('hide')
     const _defaultSort = ref('acquired-desc')
-    const _whenAddedSortLabel = ref(null)
+    const _defaultSortLabel = ref(null)
 
     // ── MPAA groups ────────────────────────────────────
     const mpaaMap = {
@@ -98,6 +98,7 @@ export const useFiltersStore = defineStore('filters', () => {
                     const bt = b._added_at ? new Date(b._added_at).getTime() : 0
                     return bt - at
                 }
+                case 'billing-asc': return (a._billing_rank ?? Infinity) - (b._billing_rank ?? Infinity)
                 default: return 0
             }
         })
@@ -221,11 +222,11 @@ export const useFiltersStore = defineStore('filters', () => {
     }
 
     // ── Per-view defaults ──────────────────────────────
-    function setDefaults({ watchedMode: wm = 'fade', ignoredMode: im = 'hide', defaultSort: ds = 'acquired-desc', whenAddedSortLabel: wsl = null } = {}) {
+    function setDefaults({ watchedMode: wm = 'fade', ignoredMode: im = 'hide', defaultSort: ds = 'acquired-desc', defaultSortLabel: dsl = null } = {}) {
         _defaultWatchedMode.value = wm
         _defaultIgnoredMode.value = im
         _defaultSort.value = ds
-        _whenAddedSortLabel.value = wsl
+        _defaultSortLabel.value = dsl
     }
 
     // ── Reset ──────────────────────────────────────────
@@ -290,7 +291,8 @@ export const useFiltersStore = defineStore('filters', () => {
         runtimeMin, runtimeMax,
         watchedMode, ignoredMode,
         sort,
-        whenAddedSortLabel: _whenAddedSortLabel,
+        defaultSort: _defaultSort,
+        defaultSortLabel: _defaultSortLabel,
         allGenres, genreCounts,
         yearBounds, runtimeBounds,
         filteredMovies, visibleMovies,

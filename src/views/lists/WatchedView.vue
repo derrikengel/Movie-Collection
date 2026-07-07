@@ -1,6 +1,6 @@
 <template>
     <MovieGrid :movies="movies" :emptyMessage="emptyMessage" defaultWatchedMode="show" defaultIgnoredMode="show"
-        whenAddedSortLabel="Recently Watched" />
+        defaultSortLabel="Recently Watched" />
 </template>
 
 <script setup>
