@@ -147,7 +147,7 @@ export function useMovieForm() {
         const q = encodeURIComponent(`${form.title} (${releaseYear(form.release_date)})`)
         const urls = {
             fandango_at_home: `https://athome.fandango.com/content/browse/search?searchString=${q}`,
-            apple_tv: `https://www.google.com/search?q=${form.title}+site%3Atv.apple.com%2Fus%2Fmovie%2F`,
+            apple_tv: `https://www.google.com/search?q=${q}+site%3Atv.apple.com%2Fus%2Fmovie%2F`,
             youtube: `https://www.youtube.com/results?search_query=${q}`,
             plex: `https://app.plex.tv/desktop/#!/search?query=${q}`,
             movies_anywhere: `https://moviesanywhere.com/my-movies`,
