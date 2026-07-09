@@ -1,11 +1,9 @@
 # Movie Collection App — Claude Code Context
 
 ## What This Project Is
-A mobile-first PWA for browsing, searching, and filtering a household movie collection (~2,000 titles, growing 2–5/month). 4 family members have accounts with personal lists. The public can browse without an account. Only admins can add/edit movies.
+A mobile-first PWA for browsing, searching, and filtering a household movie collection (~2,000 titles, a few added each month). 4 family members have accounts with personal lists. The public can browse without an account. Only admins can add/edit movies.
 
-**Live dev URL:** movies-dev.derrikengel.com
 **Production URL:** movies.derrikengel.com
-**GitHub branch:** `master`
 **Hosting:** Cloudflare Pages
 
 ---
@@ -33,7 +31,7 @@ A mobile-first PWA for browsing, searching, and filtering a household movie coll
 | Database + Auth | Supabase (Postgres + Supabase Auth) |
 | Movie data API | TMDB (free, used only during admin data entry) |
 | Fuzzy search | Fuse.js (client-side, searches `title` + `search_keywords`) |
-| PWA tooling | vite-plugin-pwa (minimal — installability + push only) |
+| PWA tooling | vite-plugin-pwa (`injectManifest` strategy, custom `src/sw.js` with Workbox precache + Web Push) |
 | YouTube player | @vue-youtube/core (muted autoplay background video) |
 | Hosting | Cloudflare Pages |
 
@@ -46,9 +44,7 @@ A mobile-first PWA for browsing, searching, and filtering a household movie coll
 - **Container queries** for component-level responsive layout (not media queries inside components)
 - **Media queries** only for global layout concerns (showing/hiding desktop vs mobile nav)
 - **Vendor prefixes only when no standard exists** — avoid `-webkit-` etc. unless absolutely necessary
-- **Frosted glass pattern:** `background: var(--color-bg-frosted); backdrop-filter: var(--bg-frosted-md);` — pick the blur size that fits the context
 - **All colors in oklch format** — use relative color syntax for opacity variants: `oklch(from var(--blue-950) l c h / 0.5)`
-- **Primitives over aliases** — semantic alias tokens don't exist; use palette primitives directly (e.g. `var(--blue-200)` for body text, `var(--blue-950)` for page background)
 
 ### Design Tokens (from global.css)
 
@@ -102,7 +98,9 @@ src/
 │   ├── detail/
 │   │   ├── MovieActionBar.vue  # action buttons (watched/watchlist/favorite/ignore)
 │   │   ├── MovieCast.vue       # cast list
+│   │   ├── MovieCommunity.vue  # shows which family members watched/favorited a movie
 │   │   ├── MovieHero.vue       # hero banner: YouTube > backdrop > blurred poster
+│   │   ├── MovieRequestBar.vue # want-toggle + admin "Add to Collection" (request detail pages)
 │   │   └── MovieServices.vue   # streaming services modal
 │   ├── filters/
 │   │   ├── FilterOptionList.vue   # multi-select option list
@@ -116,7 +114,11 @@ src/
 │   │   ├── AppHeader.vue       # header with search, sort, filter UI, nav links
 │   │   └── NarrowTabBar.vue    # mobile bottom tab bar (hidden on desktop)
 │   ├── profile/
-│   │   └── ProfileListCard.vue # list preview card (used in ProfileView)
+│   │   ├── ProfileListCard.vue # list preview card (used in ProfileView)
+│   │   └── UserAvatar.vue      # renders a user's chosen avatar
+│   ├── requests/
+│   │   ├── AddRequest.vue      # popover: TMDB search + submit a movie request
+│   │   └── RequestCard.vue     # request grid card (poster, wanters, request/requested toggle)
 │   ├── ConfirmDialog.vue       # promise-based confirmation modal (scaffolded, not active yet)
 │   └── ToastStack.vue          # renders active toasts
 ├── composables/
@@ -127,6 +129,9 @@ src/
 │   ├── useMovieForm.js         # admin form state
 │   ├── useMovieSubmit.js       # admin form submission (add/edit)
 │   ├── usePageTitle.js         # dynamic <title> updates
+│   ├── usePushNotifications.js # permission flow, VAPID subscribe/unsubscribe, persists to push_subscriptions
+│   ├── useResolvedActor.js     # resolves :actorSlug → canonical actor (by TMDB profile_path) + filmography
+│   ├── useResolvedUser.js      # resolves :name route param → profile, notFound state
 │   └── useTmdbSearch.js        # TMDB search + selection logic
 ├── lib/
 │   ├── datetime.js             # date utilities (e.g. releaseYear)
@@ -138,18 +143,22 @@ src/
 ├── router/
 │   └── index.js                # Vue Router with auth guards + initialized flag
 ├── stores/
-│   ├── auth.js                 # user, profile, isAdmin, displayName
+│   ├── auth.js                 # user, profile, allProfiles, isAdmin, displayName; cascades post-login fetches
 │   ├── confirm.js              # promise-based confirmation dialog state
 │   ├── filters.js              # filter + sort state, filteredMovies, URL sync
-│   ├── movies.js               # fetchMovies(), movies[], loading
+│   ├── movies.js               # fetchMovies(), movies[], loading, Fuse.js search index
 │   ├── navContext.js           # source list tracking for back navigation
+│   ├── requestFilters.js       # filter/sort state for RequestsView (by user, search, sort)
+│   ├── requests.js             # movie_requests + request_wants: addRequest, toggleWant, removeRequest
 │   ├── toast.js                # toast queue (max 3 visible, auto-dismiss after 3s)
 │   └── userMovies.js           # user list store: optimistic upserts + rollback
 └── views/
+    ├── ActorView.vue           # filmography page for :actorSlug (public)
     ├── HomeView.vue            # main browse/search/filter page
     ├── LoginView.vue           # login form
-    ├── MovieDetailView.vue     # movie detail: hero, metadata, action bar, services
-    ├── ProfileView.vue         # user dashboard: list previews + sign out
+    ├── MovieDetailView.vue     # movie or request detail (route.meta.isRequest branches behavior)
+    ├── ProfileView.vue         # user dashboard: list previews, avatar picker, sign out
+    ├── RequestsView.vue        # grid of pending movie requests, filterable by user
     ├── StyleGuideView.vue      # color palette reference (requiresAdmin)
     ├── admin/
     │   └── MovieFormView.vue   # combined Add + Edit form (mode detected by route param)
@@ -166,6 +175,7 @@ src/
 ```
 /                      → HomeView (public)
 /login                 → LoginView (public)
+/actor/:actorSlug      → ActorView (public, filmography page)
 /:slug                 → MovieDetailView (public, e.g. /speak-no-evil-2024)
 /user/:name            → ProfileView (requiresAuth)
 /user/:name/watchlist  → WatchlistView (requiresAuth)
@@ -173,7 +183,7 @@ src/
 /user/:name/favorites  → FavoritesView (requiresAuth)
 /user/:name/ignored    → IgnoredView (requiresAuth)
 /styleguide            → StyleGuideView (requiresAdmin)
-/admin/add             → MovieFormView (requiresAdmin)
+/admin/add             → MovieFormView (requiresAdmin; accepts ?requestId= to fulfill a request)
 /admin/edit/:slug      → MovieFormView (requiresAdmin)
 /requests              → RequestsView (requiresAuth)
 /requests/:slug        → MovieDetailView, isRequest route meta (requiresAuth, e.g. /requests/sinners-2025)
@@ -185,9 +195,11 @@ src/
 
 ### Data Flow
 - On app init: single Supabase query fetches all `movies` + joined `movie_services`. Stored in Pinia. Fuse.js index built from this data.
-- On login: fetch `user_movies` for the authenticated user, merge into `useUserMoviesStore`.
+- On login: `auth.init()` cascades to fetch `user_movies`, `allProfiles`, and `movie_requests` (+ joined `request_wants`) for the authenticated session.
 - User list toggles (watchlist/watched/favorite/ignored): optimistic local update first, then Supabase upsert. Rollback on failure.
-- Admin add/edit: TMDB API calls in the form. On submit, write to Supabase, update local store without full refetch.
+- Request toggles (`toggleWant`): optimistic; removing the last want deletes the `movie_requests` row.
+- Admin add/edit: TMDB API calls in the form. On submit, write to Supabase, update local store without full refetch. Fulfilling a request (`?requestId=`) also deletes the request row.
+- New movie / request activity trigger Supabase DB webhooks → Edge Functions → Web Push (see Edge Functions section below).
 - No localStorage caching. Fresh fetch each session.
 
 ### Authentication
@@ -215,12 +227,23 @@ src/
 ---
 
 ## Environment Variables
+
+### Client (`.env.local` + Cloudflare Pages)
 ```
 VITE_SUPABASE_URL
 VITE_SUPABASE_PUBLISHABLE_KEY
 VITE_TMDB_TOKEN
+VITE_VAPID_PUBLIC_KEY
 ```
-All three set in `.env.local` and in Cloudflare Pages environment variables.
+
+### Supabase Edge Functions only (set via `supabase secrets`, not client-visible)
+```
+SUPABASE_SERVICE_ROLE_KEY
+VAPID_PUBLIC_KEY
+VAPID_PRIVATE_KEY
+VAPID_SUBJECT
+MY_USER_ID          # recipient of notify-request-activity pushes
+```
 
 ---
 
@@ -237,10 +260,28 @@ Services: `fandango_at_home`, `apple_tv`, `youtube`, `plex`, `movies_anywhere`
 `id, user_id, movie_id, watchlist, watched, favorite, ignored, updated_at, watchlist_added_at, watched_at, favorited_at, ignored_at`
 
 ### `profiles`
-`id, display_name, is_admin`
+`id, display_name, is_admin, avatar`
 
 ### `push_subscriptions`
 `id, user_id, subscription (jsonb), created_at`
+
+### `movie_requests`
+`id, tmdb_id, slug, title, release_date, runtime_minutes, description, genres, mpaa_rating, tmdb_rating, poster_path, backdrop_path, trailer_youtube_id, cast_members (jsonb), created_at`
+A pending request for a movie not yet in the collection. Deleted once every want is withdrawn, or once an admin fulfills it (adds the movie and removes the request).
+
+### `request_wants`
+`id, request_id, user_id, created_at`
+One row per user wanting a given request. `movie_requests` always has ≥1 want — the last one removed deletes the request.
+
+---
+
+## Supabase Edge Functions (`supabase/functions/`)
+Both use VAPID Web Push (`web-push` library) against rows in `push_subscriptions`, and delete subscriptions that come back 404/410.
+
+- **`notify-movie-added`** — triggered by a DB webhook on `movies` INSERT. Cross-references `movie_requests`/`request_wants` by `tmdb_id` to personalize the push ("Your Requested Movie Added" vs "New Movie Added") and fans out to all subscriptions.
+- **`notify-request-activity`** — triggered by a DB webhook on `request_wants` INSERT. Sends only to the hardcoded `MY_USER_ID` recipient, skips self-triggered notifications, and distinguishes "New Request" vs "Request Update" (someone joined an existing want).
+
+See `docs/adr/0002-supabase-edge-function-vapid-push.md` for the design rationale.
 
 ---
 
@@ -273,26 +314,27 @@ Services: `fandango_at_home`, `apple_tv`, `youtube`, `plex`, `movies_anywhere`
 - ✅ Supabase project, tables, RLS policies, 4 user accounts
 - ✅ Cloudflare Pages + dev subdomain, production domain live
 - ✅ Vue 3 + Vite + Pinia + Vue Router scaffolded
-- ✅ All stores: auth, movies, userMovies, filters, toast, navContext, confirm
+- ✅ All stores: auth, movies, userMovies, filters, requests, requestFilters, toast, navContext, confirm
 - ✅ App.vue with frosted glass header + desktop nav
 - ✅ AppHeader.vue with embedded filter UI, search, sort, nav links
 - ✅ NarrowTabBar.vue (mobile bottom nav, hidden on desktop)
 - ✅ HomeView with filter UI + movie grid (faded watched movies)
 - ✅ MovieGrid.vue (infinite scroll, filter integration via setBase)
 - ✅ MovieHero.vue (YouTube autoplay > backdrop > blurred poster)
-- ✅ MovieDetailView.vue with sticky action bar + services modal
-- ✅ MovieFormView.vue (combined Add + Edit, TMDB search + auto-populate)
-- ✅ ProfileView.vue (user dashboard: list previews + sign out)
+- ✅ MovieDetailView.vue with sticky action bar + services modal (movie mode) or MovieRequestBar (request mode)
+- ✅ ActorView.vue (filmography by actor, matched via TMDB profile_path)
+- ✅ MovieFormView.vue (combined Add + Edit, TMDB search + auto-populate, fulfills requests via `?requestId=`)
+- ✅ ProfileView.vue (user dashboard: list previews, avatar picker, sign out)
 - ✅ WatchlistView, WatchedView, FavoritesView, IgnoredView (functional with filtering, infinite scroll, empty states)
+- ✅ RequestsView.vue + AddRequest.vue + RequestCard.vue (request a movie, see who else wants it)
 - ✅ LoginView.vue
 - ✅ Toast notification system (ToastStack + toast store)
 - ✅ StyleGuideView (color palette reference for admins)
+- ✅ PWA manifest + custom service worker (`vite-plugin-pwa` injectManifest + `src/sw.js`, installable)
+- ✅ Push notifications (Supabase Edge Functions + VAPID) — new movie added, request fulfilled, request activity
 
 ## What's Not Built Yet
-- ⬜ PWA manifest + service worker configuration (vite-plugin-pwa)
-- ⬜ Push notifications (v1.1 — Supabase Edge Function + VAPID)
 - ⬜ Loading states, error handling, empty states (polish pass)
-- ⬜ Accessibility audit
 
 ---
 
