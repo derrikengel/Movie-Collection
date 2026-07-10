@@ -864,11 +864,13 @@
         width: var(--size-8);
     }
 
-    .backBtn:hover {
-        color: var(--blue-200);
+    @media (hover: hover) and (pointer: fine) {
+        .backBtn:hover {
+            color: var(--blue-200);
 
-        .backIcon {
-            background-color: var(--blue-200);
+            .backIcon {
+                background-color: var(--blue-200);
+            }
         }
     }
 
@@ -1015,11 +1017,13 @@
         transition: color var(--transition-fast);
     }
 
-    .navLink:hover {
-        color: var(--blue-200);
+    @media (hover: hover) and (pointer: fine) {
+        .navLink:hover {
+            color: var(--blue-200);
 
-        .navAvatar {
-            opacity: 1;
+            .navAvatar {
+                opacity: 1;
+            }
         }
     }
 
@@ -1193,11 +1197,13 @@
         line-height: var(--leading-tight);
         padding: var(--size-2) var(--size-4);
         transition: background-color var(--transition-fast), color var(--transition-fast);
-    }
 
-    .wideFilterBtn:hover {
-        background: var(--color-bg-frosted-selected);
-        color: var(--blue-50);
+        @media (hover: hover) and (pointer: fine) {
+            &:hover {
+                background: var(--color-bg-frosted-selected);
+                color: var(--blue-50);
+            }
+        }
     }
 
     .wideFilterBtn:has(+ .widePanel:popover-open) {
@@ -1348,11 +1354,13 @@
         text-transform: uppercase;
         transition: background var(--transition-fast), color var(--transition-fast);
         width: 100%;
-    }
 
-    .viewBtn:hover {
-        background: var(--green-400);
-        color: var(--green-900);
+        @media (hover: hover) and (pointer: fine) {
+            &:hover {
+                background: var(--green-400);
+                color: var(--green-900);
+            }
+        }
     }
 
     .viewBtn:disabled {

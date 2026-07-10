@@ -114,8 +114,10 @@
         width: 100%;
         will-change: scale;
 
-        .card:hover & {
-            scale: 1.05;
+        @media (hover: hover) and (pointer: fine) {
+            .card:hover & {
+                scale: 1.05;
+            }
         }
     }
 
@@ -134,10 +136,11 @@
         line-height: var(--leading-tight);
         text-wrap: pretty;
 
-        .card:hover & {
-            text-decoration-line: underline;
-            text-decoration-thickness: 0.0625em;
-            /* text-underline-offset: 0.125em; */
+        @media (hover: hover) and (pointer: fine) {
+            .card:hover & {
+                text-decoration-line: underline;
+                text-decoration-thickness: 0.0625em;
+            }
         }
     }
 

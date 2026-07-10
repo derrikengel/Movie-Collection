@@ -109,11 +109,13 @@
         padding: var(--size-3) var(--size-5);
         transition: background var(--transition-fast), color var(--transition-fast);
         width: 100%;
-    }
 
-    .btnConfirm:hover {
-        background: var(--red-500);
-        color: var(--red-950);
+        @media (hover: hover) and (pointer: fine) {
+            &:hover {
+                background: var(--red-500);
+                color: var(--red-950);
+            }
+        }
     }
 
     .btnCancel {
@@ -124,10 +126,12 @@
         padding: var(--size-3);
         transition: background var(--transition-fast), color var(--transition-fast);
         width: 100%;
-    }
 
-    .btnCancel:hover {
-        background: var(--blue-700);
-        color: var(--blue-100);
+        @media (hover: hover) and (pointer: fine) {
+            &:hover {
+                background: var(--blue-700);
+                color: var(--blue-100);
+            }
+        }
     }
 </style>

@@ -241,6 +241,12 @@
         @container (min-width: 12rem) {
             border-radius: var(--radius-lg);
         }
+
+        @media (hover: hover) and (pointer: fine) {
+            &:hover {
+                --grad-start: oklch(from var(--color-list-400) l c h / 0.25);
+            }
+        }
     }
 
     .cardActionIcon {
@@ -262,10 +268,6 @@
         }
     }
 
-    .cardAction:hover {
-        --grad-start: oklch(from var(--color-list-400) l c h / 0.25);
-    }
-
     .cardActionActive {
         --grad-start: var(--color-list-400);
         --grad-end: var(--color-list-500);
@@ -278,12 +280,12 @@
         }
     }
 
-    .cardActionActive:hover {
-        --grad-start: var(--color-list-400);
-        --grad-end: var(--color-list-400);
-    }
-
     @media (hover: hover) and (pointer: fine) {
+        .cardActionActive:hover {
+            --grad-start: var(--color-list-400);
+            --grad-end: var(--color-list-400);
+        }
+
         .cardOverlay {
             display: flex;
         }

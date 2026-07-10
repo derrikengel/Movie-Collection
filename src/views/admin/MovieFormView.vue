@@ -872,10 +872,12 @@
         text-transform: uppercase;
         transition: background var(--transition-fast);
         width: 100%;
-    }
 
-    .tmdbResult:hover {
-        background: var(--color-bg-frosted-selected);
+        @media (hover: hover) and (pointer: fine) {
+            &:hover {
+                background: var(--color-bg-frosted-selected);
+            }
+        }
     }
 
     .tmdbResultPoster {

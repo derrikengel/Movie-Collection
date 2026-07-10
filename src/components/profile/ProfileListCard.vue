@@ -48,6 +48,12 @@
         padding: var(--size-6);
         transition: border-color var(--transition-fast), background var(--transition-fast);
 
+        @media (hover: hover) and (pointer: fine) {
+            &:hover {
+                background: var(--blue-800);
+            }
+        }
+
         @container (min-width: 48rem) {
             border-radius: var(--radius-2xl);
             padding: var(--size-8);
@@ -55,12 +61,6 @@
             &:last-child {
                 grid-column: 1 / -1;
             }
-        }
-    }
-
-    @media (hover: hover) and (pointer: fine) {
-        .listCard:hover {
-            background: var(--blue-800);
         }
     }
 

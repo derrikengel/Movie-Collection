@@ -122,9 +122,11 @@
         margin-top: var(--size-2);
         text-wrap: pretty;
 
-        .card:hover & {
-            text-decoration-line: underline;
-            text-decoration-thickness: 0.0625em;
+        @media (hover: hover) and (pointer: fine) {
+            .card:hover & {
+                text-decoration-line: underline;
+                text-decoration-thickness: 0.0625em;
+            }
         }
     }
 

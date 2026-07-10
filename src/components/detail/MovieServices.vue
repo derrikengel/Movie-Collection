@@ -385,10 +385,12 @@
         justify-content: center;
     }
 
-    a.service:hover {
-        .watchNow {
-            background: var(--blue-300);
-            color: var(--blue-800);
+    @media (hover: hover) and (pointer: fine) {
+        a.service:hover {
+            .watchNow {
+                background: var(--blue-300);
+                color: var(--blue-800);
+            }
         }
     }
 </style>

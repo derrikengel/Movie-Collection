@@ -137,11 +137,13 @@
         text-transform: uppercase;
         transition: background var(--transition-fast), color var(--transition-fast);
         width: 100%;
-    }
 
-    .submit:hover:not(:disabled) {
-        background: var(--green-400);
-        color: var(--green-900);
+        @media (hover: hover) and (pointer: fine) {
+            &:hover:not(:disabled) {
+                background: var(--green-400);
+                color: var(--green-900);
+            }
+        }
     }
 
     .submit:disabled {
