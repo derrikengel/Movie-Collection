@@ -98,15 +98,18 @@
                         <MovieCast v-if="movie.cast_members?.length" :cast="movie.cast_members" />
 
                         <MovieCommunity v-if="!isRequest" :movie="movie" />
-
-                        <p v-if="auth.isAdmin && !isRequest" :class="s.edit">
-                            <RouterLink :to="{ name: 'edit-movie', params: { slug: movie.slug } }" :class="s.editLink">
-                                <span v-html="pencil" :class="s.editIcon" />
-                                Edit Movie
-                            </RouterLink>
-                        </p>
                     </div>
                 </div>
+
+                <p v-if="auth.isAdmin && !isRequest" :class="s.edit">
+                    <RouterLink :to="{ name: 'edit-movie', params: { slug: movie.slug } }" :class="s.editLink">
+                        <span v-html="pencil" :class="s.editIcon" />
+                        Edit Movie
+                    </RouterLink>
+                </p>
+
+                <RelatedMovies v-if="!isRequest && relatedMovies.length" :movies="relatedMovies"
+                    :collection-name="relatedCollectionName" />
             </div>
 
             <div :class="[s.browse, sourceListClass]">
@@ -168,6 +171,7 @@
     import MovieHero from '@/components/detail/MovieHero.vue'
     import MovieActionBar from '@/components/detail/MovieActionBar.vue'
     import MovieCast from '@/components/detail/MovieCast.vue'
+    import RelatedMovies from '@/components/detail/RelatedMovies.vue'
     import MovieCommunity from '@/components/detail/MovieCommunity.vue'
     import MovieServices from '@/components/detail/MovieServices.vue'
     import MovieRequestBar from '@/components/detail/MovieRequestBar.vue'
@@ -209,6 +213,16 @@
     const hasServices = computed(() =>
         movie.value?.movie_services?.length || movie.value?.disc_format
     )
+    // Related movies are just other owned movies sharing this movie's collection ID — whether
+    // that ID came from TMDB or was manually assigned by an admin (see MovieFormView.vue). A
+    // shared value is inherently symmetric, so no separate link table or graph traversal is needed.
+    const relatedMovies = computed(() => {
+        if (isRequest.value || !movie.value?.tmdb_collection_id) return []
+        return moviesStore.movies
+            .filter(m => m.tmdb_collection_id === movie.value.tmdb_collection_id && m.id !== movie.value.id)
+            .sort((a, b) => a.release_date.localeCompare(b.release_date))
+    })
+    const relatedCollectionName = computed(() => movie.value?.tmdb_collection_name || null)
     const formattedRuntime = computed(() => {
         if (!movie.value?.runtime_minutes) return null
         const h = Math.floor(movie.value.runtime_minutes / 60)

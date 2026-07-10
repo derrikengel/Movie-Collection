@@ -79,6 +79,8 @@ export function useMovieSubmit(form, isEditMode, getRouteSlug) {
                     : null,
                 genres: form.genres,
                 notes: form.notes || null,
+                tmdb_collection_id: form.tmdb_collection_id || null,
+                tmdb_collection_name: form.tmdb_collection_name || null,
                 acquired_at: new Date(form.acquired_at).toISOString(),
             }
 

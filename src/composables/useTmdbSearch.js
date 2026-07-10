@@ -64,6 +64,8 @@ export function useTmdbSearch() {
             genres: details.genres.map(g => g.name).filter(g => g !== 'TV Movie'),
             trailer_youtube_id: trailer?.key ?? '',
             cast_members,
+            tmdb_collection_id: details.belongs_to_collection?.id ?? null,
+            tmdb_collection_name: details.belongs_to_collection?.name ?? null,
         }
     }
 

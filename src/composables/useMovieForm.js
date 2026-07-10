@@ -39,6 +39,8 @@ export function useMovieForm() {
         genres: [],
         search_keywords: [],
         notes: '',
+        tmdb_collection_id: null,
+        tmdb_collection_name: '',
         acquired_at: nowLocal(),
         services: [
             { service: 'fandango_at_home', quality: '', url: '' },
@@ -81,6 +83,8 @@ export function useMovieForm() {
         form.genres = [...(movie.genres ?? [])]
         form.search_keywords = movie.search_keywords ? movie.search_keywords.split(/\s+/).filter(Boolean) : []
         form.notes = movie.notes ?? ''
+        form.tmdb_collection_id = movie.tmdb_collection_id ?? null
+        form.tmdb_collection_name = movie.tmdb_collection_name ?? ''
         form.acquired_at = toLocalDatetime(movie.acquired_at)
         const existingMap = Object.fromEntries(
             (movie.movie_services ?? []).map(svc => [svc.service, svc])
@@ -122,6 +126,22 @@ export function useMovieForm() {
 
     function removeGenre(i) {
         form.genres.splice(i, 1)
+    }
+
+    function setCollection(id, name) {
+        form.tmdb_collection_id = id
+        form.tmdb_collection_name = name
+    }
+
+    function clearCollection() {
+        form.tmdb_collection_id = null
+        form.tmdb_collection_name = ''
+    }
+
+    // Synthetic ID for a franchise TMDB has no record of (negative — real TMDB collection IDs
+    // are always positive, so this can never collide with one).
+    function createCollection(name) {
+        setCollection(-Math.floor(Math.random() * 2_000_000_000) - 1, name)
     }
 
     function addKeyword() {
@@ -180,6 +200,9 @@ export function useMovieForm() {
         removeGenre,
         addKeyword,
         removeKeyword,
+        setCollection,
+        clearCollection,
+        createCollection,
         getService,
         isServiceActive,
         serviceSearchUrl,

@@ -5,7 +5,7 @@
         <section v-if="!isEditMode && !formReady" :class="s.section">
 
             <div :class="s.field">
-                <label for="tmbdSearch" :class="s.fieldLabel">Search TMDB</label>
+                <label for="tmbdSearch" :class="s.fieldLabel">Search The Movie Database</label>
                 <div :class="s.tmbdSearch">
                     <input id="tmbdSearch" v-model="tmdbQuery" type="search" placeholder="Search by title and year"
                         :class="s.input" @keydown.enter.prevent="searchTmdb" />
@@ -214,7 +214,7 @@
                                 </div>
                             </div>
                             <p v-if="fieldErrors['runtime-hours']" :class="s.errorMsg">{{ fieldErrors['runtime-hours']
-                            }}</p>
+                                }}</p>
                         </div>
                     </div>
 
@@ -331,6 +331,44 @@
                             :class="[s.input, s.mutedPlaceholder]" placeholder="e.g. /abc123.jpg" />
                     </div>
 
+                    <!-- Collection -->
+                    <div :class="s.field">
+                        <label for="collection" :class="s.fieldLabel">Collection</label>
+
+                        <p v-if="form.tmdb_collection_name" :class="s.collectionNotice">
+                            <button type="button" :class="s.tag" @click="clearCollection"
+                                title="Remove from collection">
+                                {{ form.tmdb_collection_name }}
+                                <span :class="s.tagRemove" v-html="xIcon" />
+                            </button>
+                        </p>
+
+                        <div v-else :class="s.genreWrapper" ref="collectionWrapperEl" @focusout="onCollectionBlur"
+                            @keydown.escape="closeCollectionDropdown">
+                            <input id="collection" v-model="collectionInput" type="text" :class="s.input"
+                                placeholder="Search or create a collection…" @focus="collectionFocused = true" />
+
+                            <div v-if="collectionFocused && (collectionResults.length || collectionInput.trim())"
+                                :class="s.genreDropdown">
+                                <div :class="s.genreDropdownContent">
+                                    <button v-if="collectionInput.trim() && !exactCollectionMatch" type="button"
+                                        :class="s.genreOption" @click="handleCreateCollection">
+                                        <span :class="s.createCollectionOption">
+                                            <span :class="s.createCollectionLabel">Create</span>
+                                            <span :class="s.createCollectionName">{{ collectionInput.trim() }}</span>
+                                        </span>
+                                    </button>
+                                    <hr v-if="collectionInput.trim() && collectionResults.length"
+                                        :class="s.collectionDivider" />
+                                    <button type="button" v-for="option in collectionResults" :key="option.id"
+                                        :class="s.genreOption" @click="selectCollection(option)">
+                                        {{ option.name }}
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
                     <!-- Cast Members -->
                     <div>
                         <span id="cast" :class="s.fieldLabel">Cast</span>
@@ -365,22 +403,22 @@
                                     </div>
 
                                     <div :class="s.castUtilities">
-                                        <button type="button" :class="[s.castUtility, s.castMoveUp]" :disabled="i === 0"
+                                        <button type="button" :class="[s.utilityLink, s.castMoveUp]" :disabled="i === 0"
                                             @click="moveCastMember(i, -1)">
-                                            <span :class="s.castUtilityIcon" v-html="arrowUpIcon" />
+                                            <span :class="s.utilityLinkIcon" v-html="arrowUpIcon" />
                                             Move Up
                                         </button>
 
-                                        <button type="button" :class="[s.castUtility, s.castMoveDown]"
+                                        <button type="button" :class="[s.utilityLink, s.castMoveDown]"
                                             :disabled="i === form.cast_members.length - 1"
                                             @click="moveCastMember(i, 1)">
-                                            <span :class="s.castUtilityIcon" v-html="arrowDownIcon" />
+                                            <span :class="s.utilityLinkIcon" v-html="arrowDownIcon" />
                                             Move Down
                                         </button>
 
-                                        <button type="button" :class="[s.castUtility, s.castRemove]"
+                                        <button type="button" :class="[s.utilityLink, s.removeBtn]"
                                             @click="removeCastMember(i)">
-                                            <span :class="s.castUtilityIcon" v-html="trashIcon" />
+                                            <span :class="s.utilityLinkIcon" v-html="trashIcon" />
                                             Remove
                                         </button>
                                     </div>
@@ -483,7 +521,7 @@
     const formSnapshot = ref(null)
 
     const { tmdbQuery, tmdbResults, tmdbSearching, tmdbSearched, searchTmdb, selectTmdb: _selectTmdb, resetTmdb: _resetTmdb } = useTmdbSearch()
-    const { form, genreInput, keywordInput, trailerSearchUrl, populateFromMovie, setCastMembers, addCastMember, removeCastMember, moveCastMember, addGenre, removeGenre, addKeyword, removeKeyword, getService, isServiceActive, serviceSearchUrl, servicePlaceholderUrl } = useMovieForm()
+    const { form, genreInput, keywordInput, trailerSearchUrl, populateFromMovie, setCastMembers, addCastMember, removeCastMember, moveCastMember, addGenre, removeGenre, addKeyword, removeKeyword, setCollection, clearCollection, createCollection, getService, isServiceActive, serviceSearchUrl, servicePlaceholderUrl } = useMovieForm()
 
     const runtimeHours = ref(0)
     const runtimeMinutes = ref(0)
@@ -592,9 +630,52 @@
     watchEffect(() => {
         if (isEditMode.value && !formReady.value && moviesStore.movies.length) {
             const movie = moviesStore.movies.find(m => m.slug === route.params.slug)
-            if (movie) { populateFromMovie(movie); syncRuntimeFromForm(); formReady.value = true; takeSnapshot() }
+            if (movie) {
+                populateFromMovie(movie)
+                syncRuntimeFromForm()
+                formReady.value = true
+                takeSnapshot()
+            }
         }
     })
+
+    // Collection picker — every distinct collection already used by an owned movie, whether
+    // TMDB-derived or previously created here, is searchable and joinable by any other movie.
+    const collectionInput = ref('')
+    const collectionFocused = ref(false)
+    const collectionWrapperEl = ref(null)
+    const collectionOptions = computed(() => {
+        const seen = new Map()
+        for (const m of moviesStore.movies) {
+            if (m.tmdb_collection_id && !seen.has(m.tmdb_collection_id)) {
+                seen.set(m.tmdb_collection_id, m.tmdb_collection_name)
+            }
+        }
+        return [...seen].map(([id, name]) => ({ id, name }))
+    })
+    const collectionResults = computed(() => {
+        const q = collectionInput.value.trim().toLowerCase()
+        if (!q) return []
+        return collectionOptions.value.filter(o => o.name.toLowerCase().includes(q)).slice(0, 8)
+    })
+    const exactCollectionMatch = computed(() =>
+        collectionOptions.value.some(o => o.name.toLowerCase() === collectionInput.value.trim().toLowerCase())
+    )
+    function selectCollection(option) {
+        setCollection(option.id, option.name)
+        collectionInput.value = ''
+    }
+    function handleCreateCollection() {
+        createCollection(collectionInput.value.trim())
+        collectionInput.value = ''
+    }
+    function closeCollectionDropdown() {
+        collectionFocused.value = false
+    }
+    function onCollectionBlur(event) {
+        if (collectionWrapperEl.value?.contains(event.relatedTarget)) return
+        closeCollectionDropdown()
+    }
 
     const selectingId = ref(null)
     const pendingRequestId = ref(route.query.requestId ?? null)
@@ -1377,7 +1458,7 @@
     .movieDetails {
         background: var(--blue-900);
         border-radius: var(--radius-xl);
-        overflow: hidden;
+        /* overflow: hidden; */
         transition: background var(--transition-fast);
     }
 
@@ -1762,7 +1843,7 @@
         margin-top: var(--size-4);
     }
 
-    .castUtility {
+    .utilityLink {
         align-items: center;
         background: transparent;
         border: none;
@@ -1793,7 +1874,7 @@
         margin-right: auto;
     }
 
-    .castRemove {
+    .removeBtn {
         color: var(--red-400);
 
         @media (hover:hover) and (pointer: fine) {
@@ -1803,7 +1884,7 @@
         }
     }
 
-    .castUtilityIcon {
+    .utilityLinkIcon {
         align-items: center;
         display: flex;
         font-size: var(--text-xs);
@@ -1848,6 +1929,41 @@
 
     .fieldLabel+.btnSecondary {
         margin-top: var(--size-2);
+    }
+
+    /* Collection */
+    .createCollectionOption {
+        align-items: baseline;
+        display: flex;
+        gap: var(--size-2);
+    }
+
+    .createCollectionLabel {
+        font-size: var(--text-xs);
+        font-weight: var(--font-weight-bold);
+        letter-spacing: var(--tracking-widest);
+        text-transform: uppercase;
+        transition: color var(--transition-fast);
+    }
+
+    .createCollectionName {
+        color: var(--blue-50);
+        font-weight: var(--font-weight-semibold);
+    }
+
+    .collectionDivider {
+        background: var(--color-divider-frosted);
+        border: none;
+        height: 1px;
+        margin-block: var(--size-2);
+    }
+
+    .collectionNotice {
+        align-items: center;
+        color: var(--blue-50);
+        display: flex;
+        gap: var(--size-4);
+        margin: 0;
     }
 
     /* ─── Preview Popover ─── */

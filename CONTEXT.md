@@ -1,5 +1,13 @@
 # Movie Collection — Domain Context
 
+## Related Movies
+
+**Related Movies**
+Other owned movies shown on a movie's public detail page because they belong to the same franchise. The public heading prefers the specific franchise name (e.g. "The Toy Story Collection") when one is set, falling back to a generic "Related Movies" label otherwise — it never displays a bare, unqualified "Collection" label, since the app itself is already "Movie Collection" (the whole household library) and that word alone would be ambiguous. The admin form's field for assigning this is labeled "Collection" (matching TMDB's own terminology for the concept); that's an admin-only label with clear context, not user-facing prose.
+
+**Franchise (`tmdb_collection_id` / `tmdb_collection_name`)**
+The single grouping a movie belongs to. Usually captured automatically at admin add/edit time from TMDB's `belongs_to_collection` field (no extra API call — already present in the movie-details response). Owned siblings sharing the same `tmdb_collection_id` are derived locally from the already-loaded movie list; TMDB's collection-detail endpoint is never called at page-render time. An admin can also assign a movie into any existing franchise directly (searchable in the admin form by name, across every franchise already in use by an owned movie) — this is how a movie TMDB didn't group correctly (e.g. a spin-off short) gets added to the right franchise, since it becomes a sibling of every other member the moment it shares that ID. An admin can also invent a franchise TMDB has no record of at all, which gets a synthetic ID (negative, so it can never collide with a real TMDB collection ID) and becomes a normal joinable option for future movies. Clearing a movie's franchise (the × button in the admin form) removes it from the group entirely.
+
 ## Push Notifications
 
 **Push Subscription**
