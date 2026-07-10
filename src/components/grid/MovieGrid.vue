@@ -20,7 +20,6 @@
 
 <script setup>
     import { ref, computed, watch, onMounted, onUnmounted, onActivated, onDeactivated } from 'vue'
-    import { useRouter } from 'vue-router'
     import { useMoviesStore } from '@/stores/movies'
     import { useFiltersStore } from '@/stores/filters'
     import MovieCard from '@/components/grid/MovieCard.vue'
@@ -34,16 +33,13 @@
         defaultSortLabel: { type: String, default: null },
     })
 
-    const router = useRouter()
     const moviesStore = useMoviesStore()
     const filters = useFiltersStore()
     const PAGE_SIZE = 100
     const visibleCount = ref(PAGE_SIZE)
     const sentinel = ref(null)
     let observer = null
-    let fromRoute = null
-
-    const removeAfterEach = router.afterEach((_to, from) => { fromRoute = from })
+    const instanceId = Symbol('movieGrid')
 
     const displayedMovies = computed(() => filters.visibleMovies.slice(0, visibleCount.value))
     const hasMore = computed(() => visibleCount.value < filters.visibleMovies.length)
@@ -89,8 +85,8 @@
     }
 
     onActivated(() => {
-        const isReturningFromDetail = !!fromRoute?.params?.slug
-        if (!isReturningFromDetail) {
+        const wasOwner = filters.claimOwnership(instanceId)
+        if (!wasOwner) {
             visibleCount.value = PAGE_SIZE
             initFilters()
         } else {
@@ -102,13 +98,13 @@
 
     onMounted(() => {
         isActive = true
+        filters.claimOwnership(instanceId)
         initFilters()
         setupObserver()
     })
 
     onUnmounted(() => {
         isActive = false
-        removeAfterEach()
         if (observer) observer.disconnect()
         filters.clearBase()
     })

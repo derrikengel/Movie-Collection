@@ -28,6 +28,7 @@ export const useFiltersStore = defineStore('filters', () => {
     const _defaultIgnoredMode = ref('hide')
     const _defaultSort = ref('acquired-desc')
     const _defaultSortLabel = ref(null)
+    const _owner = ref(null)
 
     // ── MPAA groups ────────────────────────────────────
     const mpaaMap = {
@@ -221,6 +222,16 @@ export const useFiltersStore = defineStore('filters', () => {
         _baseMovies.value = null
     }
 
+    // Tracks which MovieGrid instance last configured this shared store, so a
+    // reactivated view can tell "I was untouched while away" apart from
+    // "another MovieGrid-based view (e.g. ActorView) claimed the store since".
+    // Returns true if `id` was already the owner.
+    function claimOwnership(id) {
+        const wasOwner = _owner.value === id
+        _owner.value = id
+        return wasOwner
+    }
+
     // ── Per-view defaults ──────────────────────────────
     function setDefaults({ watchedMode: wm = 'fade', ignoredMode: im = 'hide', defaultSort: ds = 'acquired-desc', defaultSortLabel: dsl = null } = {}) {
         _defaultWatchedMode.value = wm
@@ -299,7 +310,7 @@ export const useFiltersStore = defineStore('filters', () => {
         activeFilterCount,
         isWatchedFaded,
         randomMovie, reset,
-        setBase, clearBase, setDefaults,
+        setBase, clearBase, setDefaults, claimOwnership,
         initFromUrl,
         mpaaMap,
     }
