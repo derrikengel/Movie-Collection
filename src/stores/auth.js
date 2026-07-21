@@ -22,12 +22,19 @@ export const useAuthStore = defineStore('auth', () => {
 
     const profileOrder = ['Derrik', 'Mary', 'Grayce', 'Gretchen']
 
+    // The E2E test account is a real profiles row (see CONTEXT.md's "Test Account") so it can log
+    // in and use the app normally, but must never appear to anyone else — not in "Other User
+    // Lists", the community "X wants to watch this" rows, or the requests filter. Excluding it
+    // here, at the single source `allProfiles` everything else reads from, covers all of those at
+    // once. It still sees itself, so its own profile page keeps working when it's signed in.
     async function fetchAllProfiles() {
         const { data } = await supabase
             .from('profiles')
             .select('id, display_name, avatar')
         if (data) {
-            allProfiles.value = data.sort((a, b) => {
+            const testProfileId = import.meta.env.VITE_TEST_PROFILE_ID
+            const visible = data.filter(p => p.id !== testProfileId || p.id === user.value?.id)
+            allProfiles.value = visible.sort((a, b) => {
                 const ai = profileOrder.indexOf(a.display_name)
                 const bi = profileOrder.indexOf(b.display_name)
                 return (ai === -1 ? Infinity : ai) - (bi === -1 ? Infinity : bi)
